@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPD Online - Pharmacist Note</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+        .tab-btn { transition: all 0.2s ease; }
+        .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        .tab-btn:not(.active) { background-color: #f3f4f6; color: #4b5563; }
+        .tab-btn:not(.active):hover { background-color: #e5e7eb; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen p-4 md:p-8">
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        
+        <!-- Header & Patient Info -->
+        <div class="bg-blue-600 p-6 text-white">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-semibold">OPD Online (Pharmacist Note)</h1>
+                <button onclick="resetForm()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    ล้างข้อมูลคนไข้
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">HN</label>
+                    <input type="text" id="hn" class="w-full rounded-lg border-none px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-300" placeholder="ระบุ HN" oninput="generateOutput()">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">ชื่อ-นามสกุล</label>
+                    <input type="text" id="ptName" class="w-full rounded-lg border-none px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-300" placeholder="ระบุ ชื่อ-นามสกุล" oninput="generateOutput()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Clinic Tabs -->
+        <div class="p-6 border-b border-gray-200 bg-gray-50">
+            <h2 class="text-lg font-medium text-gray-700 mb-3">เลือกคลินิก</h2>
+            <div class="flex flex-wrap gap-3">
+                <button onclick="switchTab('MR')" id="tab-MR" class="tab-btn active px-6 py-2 rounded-full font-medium border shadow-sm">1. MR</button>
+                <a href="https://apps-npr.github.io/preop/" target="_blank" class="tab-btn bg-purple-100 text-purple-700 hover:bg-purple-200 border-purple-200 px-6 py-2 rounded-full font-medium border shadow-sm flex items-center">
+                    2. Pre-OP <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </a>
+                <button onclick="switchTab('ADR')" id="tab-ADR" class="tab-btn px-6 py-2 rounded-full font-medium border shadow-sm">3. ADR/SE</button>
+                <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-6 py-2 rounded-full font-medium border shadow-sm">4. Clinic HIV</button>
+            </div>
+        </div>
+
+        <!-- Forms Container -->
+        <div class="p-6">
+            
+            <!-- 1. MR Form -->
+            <div id="form-MR" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ป่วยรับยาจาก (สถานที่)</label>
+                        <input type="text" id="mrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" oninput="generateOutput()">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา</label>
+                        <input type="date" id="mrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" oninput="generateOutput()">
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทการทำ MR</label>
+                    <div class="flex gap-6">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="mrType" value="phone" class="form-radio text-blue-600" onchange="generateOutput()">
+                            <span class="ml-2">จากการโทรสอบถามยาที่อื่น</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="mrType" value="patient" class="form-radio text-blue-600" onchange="generateOutput()">
+                            <span class="ml-2">จากการดูซองยา / สอบถามคนไข้</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อยา (ข้อมูล Text สำหรับลง Column M)</label>
+                    <input type="text" id="mrDrugName" placeholder="เช่น Amlodipine 5 mg..." class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" oninput="generateOutput()">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">รายการยา (เพื่อลง Note)</label>
+                    <textarea id="mrDrugList" rows="3" class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" placeholder="1. ... 2. ... 3. ..." oninput="generateOutput()"></textarea>
+                </div>
+
+                <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+                    <label class="inline-flex items-center mb-2">
+                        <input type="checkbox" id="mrAllergyCheck" class="form-checkbox text-red-600 rounded" onchange="toggleAllergyInput(); generateOutput()">
+                        <span class="ml-2 font-medium text-red-700">มีประวัติแพ้ยา</span>
+                    </label>
+                    <input type="text" id="mrAllergyDetail" placeholder="ระบุ ชื่อยา/อาการที่แพ้" class="w-full rounded-lg border-gray-300 border px-3 py-2 hidden focus:ring-red-500 focus:border-red-500" oninput="generateOutput()">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">สมุนไพร / อาหารเสริม</label>
+                        <input type="text" id="mrHerb" class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" oninput="generateOutput()">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ภก./ภญ. ผู้บันทึก และวันที่</label>
+                        <input type="text" id="mrPharm" class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" placeholder="ระบุชื่อ และ วันที่" oninput="generateOutput()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. ADR Form -->
+            <div id="form-ADR" class="space-y-4 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ป่วยรับยาจาก</label>
+                        <input type="text" id="adrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" oninput="generateOutput()">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา</label>
+                        <input type="date" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" oninput="generateOutput()">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">รายการยา</label>
+                    <input type="text" id="adrDrug" class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" oninput="generateOutput()">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ประเมินว่าเป็นสาเหตุจากยาไหม (ชื่อยา/อาการ)</label>
+                    <input type="text" id="adrAssessment" class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" oninput="generateOutput()">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ภก./ภญ. ผู้ประเมิน และวันที่</label>
+                    <input type="text" id="adrPharm" class="w-full rounded-lg border-gray-300 border px-3 py-2 focus:ring-blue-500 focus:border-blue-500" oninput="generateOutput()">
+                </div>
+            </div>
+
+            <!-- 4. HIV Form -->
+            <div id="form-HIV" class="space-y-4 hidden">
+                
+                <div class="flex gap-4 border-b border-gray-200 pb-2 mb-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="hivType" value="refill" checked class="form-radio text-blue-600" onchange="toggleHivType(); generateOutput()">
+                        <span class="ml-2 font-medium">1) เติมยาให้แพทย์</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="hivType" value="refer" class="form-radio text-red-600" onchange="toggleHivType(); generateOutput()">
+                        <span class="ml-2 font-medium text-red-600">2) ส่งพบแพทย์ (ปรึกษาความผิดปกติ)</span>
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">CD4 (%CD4) + วันที่เจาะ</label>
+                        <input type="text" id="hivCd4" placeholder="เช่น 500 (15%) (01/01/67)" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">VL load + วันที่เจาะ</label>
+                        <input type="text" id="hivVl" placeholder="เช่น <40 (01/01/67)" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ผล Lab (Scr, BUN, UA และอื่นๆ)</label>
+                    <input type="text" id="hivLabs" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <label class="block text-sm font-medium text-blue-800 mb-2">ข้อมูลยา & การคำนวณ % Adherence</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                        <div class="md:col-span-3">
+                            <input type="text" id="hivArv" placeholder="ชื่อสูตรยา / วิธีทาน / เวลาที่ทาน" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">นัดกี่วัน?</label>
+                            <input type="number" id="hivDays" placeholder="เช่น 180" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">ทานกี่มื้อต่อวัน?</label>
+                            <input type="number" id="hivDoses" placeholder="เช่น 1 (สำหรับ 1x1)" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-red-500 mb-1">ลืมไปกี่มื้อ?</label>
+                            <input type="number" id="hivMissed" placeholder="เช่น 2" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: เติมยาให้แพทย์ (Refill) -->
+                <div id="hivRefillSection" class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">rm วันที่</label>
+                            <input type="text" id="hivRmDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">จำนวน (เดือน)</label>
+                            <input type="text" id="hivRmMonths" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">การเจาะ Lab ครั้งหน้า</label>
+                        <input type="text" id="hivNextLab" placeholder="เช่น เจาะ lab M1, Scr, BUN, lipid profile..." class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">รคส.พญ.วรวรรณ / ภก. ภญ. ผู้จ่ายยา</label>
+                        <input type="text" id="hivPharm" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                    </div>
+                </div>
+
+                <!-- Section: ส่งพบแพทย์ (Refer) -->
+                <div id="hivReferSection" class="hidden bg-red-50 p-4 rounded-lg border border-red-200">
+                    <label class="block text-sm font-medium text-red-800 mb-3">ปรึกษาแพทย์เรื่องมีความผิดปกติของ (ติ๊กเลือกเพื่อกรอกรายละเอียด)</label>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Ht -->
+                        <div>
+                            <label class="inline-flex items-center mb-1">
+                                <input type="checkbox" id="chkHt" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Ht'); generateOutput()">
+                                <span class="ml-2 font-medium">Ht (ความดัน)</span>
+                            </label>
+                            <input type="text" id="txtHt" placeholder="ระบุ BP เช่น BP 150/90" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
+                        </div>
+                        <!-- DM -->
+                        <div>
+                            <label class="inline-flex items-center mb-1">
+                                <input type="checkbox" id="chkDm" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Dm'); generateOutput()">
+                                <span class="ml-2 font-medium">DM (เบาหวาน)</span>
+                            </label>
+                            <input type="text" id="txtDm" placeholder="ระบุ FBS, HbA1c" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
+                        </div>
+                        <!-- DLP -->
+                        <div>
+                            <label class="inline-flex items-center mb-1">
+                                <input type="checkbox" id="chkDlp" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Dlp'); generateOutput()">
+                                <span class="ml-2 font-medium">DLP (ไขมัน)</span>
+                            </label>
+                            <input type="text" id="txtDlp" placeholder="ระบุ LDL, Chol" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
+                        </div>
+                        <!-- Liver -->
+                        <div>
+                            <label class="inline-flex items-center mb-1">
+                                <input type="checkbox" id="chkLiver" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Liver'); generateOutput()">
+                                <span class="ml-2 font-medium">Liver (ตับ)</span>
+                            </label>
+                            <input type="text" id="txtLiver" placeholder="ระบุ AST, ALT" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
+                        </div>
+                        <!-- CKD -->
+                        <div>
+                            <label class="inline-flex items-center mb-1">
+                                <input type="checkbox" id="chkCkd" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Ckd'); generateOutput()">
+                                <span class="ml-2 font-medium">CKD (ไต)</span>
+                            </label>
+                            <input type="text" id="txtCkd" placeholder="ระบุ Scr, eGFR" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
+                        </div>
+                        <!-- Anemia (CBC) -->
+                        <div>
+                            <label class="inline-flex items-center mb-1">
+                                <input type="checkbox" id="chkAnemia" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Anemia'); generateOutput()">
+                                <span class="ml-2 font-medium">CBC / Anemia</span>
+                            </label>
+                            <input type="text" id="txtAnemia" placeholder="ระบุ Hb, Hct" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Output & Actions -->
+        <div class="bg-gray-100 p-6 border-t border-gray-200">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK)</label>
+            <textarea id="outputPmk" rows="6" class="w-full rounded-lg border-gray-300 border px-4 py-3 bg-white font-mono text-sm mb-4" readonly></textarea>
+            
+            <div class="flex flex-wrap gap-4">
+                <button onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    1. คัดลอกลง PMK
+                </button>
+                <button onclick="copyToSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    2. คัดลอกลง Google Sheet (คลิก Col B แล้ว Ctrl+Shift+V)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300">
+        คัดลอกข้อมูลเรียบร้อยแล้ว!
+    </div>
+
+    <script>
+        let currentTab = 'MR';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            
+            // Show/Hide forms
+            ['MR', 'ADR', 'HIV'].forEach(t => {
+                document.getElementById(`form-${t}`).classList.add('hidden');
+            });
+            document.getElementById(`form-${tab}`).classList.remove('hidden');
+            
+            generateOutput();
+        }
+
+        function toggleAllergyInput() {
+            const isChecked = document.getElementById('mrAllergyCheck').checked;
+            const input = document.getElementById('mrAllergyDetail');
+            isChecked ? input.classList.remove('hidden') : input.classList.add('hidden');
+        }
+
+        function toggleHivType() {
+            const isRefill = document.querySelector('input[name="hivType"]:checked').value === 'refill';
+            if (isRefill) {
+                document.getElementById('hivRefillSection').classList.remove('hidden');
+                document.getElementById('hivReferSection').classList.add('hidden');
+            } else {
+                document.getElementById('hivRefillSection').classList.add('hidden');
+                document.getElementById('hivReferSection').classList.remove('hidden');
+            }
+        }
+
+        function toggleReferInput(id) {
+            const isChecked = document.getElementById(`chk${id}`).checked;
+            const input = document.getElementById(`txt${id}`);
+            isChecked ? input.classList.remove('hidden') : input.classList.add('hidden');
+        }
+
+        function resetForm() {
+            if(confirm('ต้องการล้างข้อมูลคนไข้ทั้งหมดหรือไม่?')) {
+                document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], textarea').forEach(el => el.value = '');
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+                    el.checked = false;
+                    const event = new Event('change');
+                    el.dispatchEvent(event);
+                });
+                document.querySelector('input[name="mrType"][value="phone"]').checked = false;
+                document.querySelector('input[name="mrType"][value="patient"]').checked = false;
+                document.querySelector('input[name="hivType"][value="refill"]').checked = true;
+                toggleHivType();
+                generateOutput();
+            }
+        }
+
+        function generateOutput() {
+            let note = '';
+            
+            if (currentTab === 'MR') {
+                const place = document.getElementById('mrPlace').value || '...................';
+                const date = document.getElementById('mrDate').value || '..................';
+                const drugs = document.getElementById('mrDrugList').value || '1. 2. 3. 4.';
+                const hasAllergy = document.getElementById('mrAllergyCheck').checked;
+                const allergyDetail = document.getElementById('mrAllergyDetail').value || 'ไม่มี';
+                const herb = document.getElementById('mrHerb').value || '-';
+                const pharm = document.getElementById('mrPharm').value || '...................';
+
+                note = `ผู้ป่วยรับยาจาก ${place} วันที่ ${date}\n`;
+                note += `รายการยา ${drugs} ตามที่คนไข้มี\n`;
+                note += `แพ้ยา/แพ้อาหาร: ${hasAllergy ? allergyDetail : 'ปฏิเสธ'} | สมุนไพร/อาหารเสริม: ${herb}\n`;
+                note += `/ภก.หรือภญ ${pharm}`;
+            } 
+            else if (currentTab === 'ADR') {
+                const place = document.getElementById('adrPlace').value || '...................';
+                const date = document.getElementById('adrDate').value || '..................';
+                const drug = document.getElementById('adrDrug').value || '....................';
+                const assess = document.getElementById('adrAssessment').value || '..........................';
+                const pharm = document.getElementById('adrPharm').value || '..................';
+
+                note = `ผู้ป่วยรับยาจาก ${place} วันที่ ${date}\n`;
+                note += `รายการยา ${drug} ประเมินว่าเป็นสาเหตุจากยาไหม ${assess} /ภก.หรือภญ ${pharm}`;
+            }
+            else if (currentTab === 'HIV') {
+                const cd4 = document.getElementById('hivCd4').value || '..................';
+                const vl = document.getElementById('hivVl').value || '..................';
+                const labs = document.getElementById('hivLabs').value || '..................';
+                const arv = document.getElementById('hivArv').value || '..................';
+                
+                // Adherence Calc
+                const days = parseFloat(document.getElementById('hivDays').value) || 0;
+                const doses = parseFloat(document.getElementById('hivDoses').value) || 0;
+                const missed = parseFloat(document.getElementById('hivMissed').value) || 0;
+                const totalM = days * doses;
+                const taken = totalM - missed;
+                const adPercent = totalM > 0 ? ((taken/totalM)*100).toFixed(2) : 0;
+                
+                let adText = '';
+                if(days > 0) {
+                    adText = `นัด ${days}วัน ทานมื้ออาหารวันละ ${doses} มื้อ คือ ${totalM} มื้อ ลืมไป ${missed} มื้อ คือ ${taken}/${totalM}*100= ${adPercent}%`;
+                } else {
+                    adText = 'คำนวณ%Adherence ........................';
+                }
+
+                note = `CD4(%CD4) ${cd4} VL load ${vl}\n`;
+                
+                const type = document.querySelector('input[name="hivType"]:checked').value;
+                if (type === 'refill') {
+                    note += `Scr BUN UA + Lab อื่นๆ ${labs}\n`;
+                    note += `on ${arv}\n`;
+                    note += `${adText}\n`;
+                    
+                    const rmDate = document.getElementById('hivRmDate').value || '.......';
+                    const rmMonths = document.getElementById('hivRmMonths').value || '.......';
+                    const nextLab = document.getElementById('hivNextLab').value || '.......';
+                    const pharm = document.getElementById('hivPharm').value || '.......';
+                    note += `rm วันที่ ${rmDate} จำนวน ${rmMonths} เดือน + ${nextLab} รคส.พญ.วรวรรณ/ภก ภญ ${pharm}`;
+                } else {
+                    note += `Scr BUN UA + Lab อื่นๆที่มีปัญหา ${labs}\n`;
+                    note += `on ${arv}\n`;
+                    note += `${adText}\n`;
+                    
+                    let issues = [];
+                    ['Ht', 'Dm', 'Dlp', 'Liver', 'Ckd', 'Anemia'].forEach(id => {
+                        if(document.getElementById(`chk${id}`).checked) {
+                            let label = document.querySelector(`label[for="chk${id}"]`)?.innerText || id;
+                            let val = document.getElementById(`txt${id}`).value;
+                            issues.push(val ? `${id.toUpperCase()} (มี ${val})` : id.toUpperCase());
+                        }
+                    });
+                    
+                    note += `ปรึกษาแพทย์เรื่องมีความผิดปกติของ ${issues.length > 0 ? issues.join(' ') : '........................'}`;
+                }
+            }
+            
+            document.getElementById('outputPmk').value = note;
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).value;
+            navigator.clipboard.writeText(text).then(() => showToast());
+        }
+
+        function copyToSheet() {
+            // สร้าง Array 18 ช่อง สำหรับ Column B ถึง S
+            // Index: 0=B, 1=C, 2=D, 3=E, 4=F, 5=G, 6=H, 7=I, 8=J, 9=K, 10=L, 11=M, 12=N, 13=O, 14=P, 15=Q, 16=R, 17=S
+            let rowData = Array(18).fill('');
+            
+            rowData[0] = document.getElementById('hn').value;       // Col B
+            rowData[1] = document.getElementById('ptName').value;   // Col C
+            
+            if (currentTab === 'MR') {
+                const mrType = document.querySelector('input[name="mrType"]:checked')?.value;
+                if(mrType === 'phone') rowData[3] = '1';   // Col E
+                if(mrType === 'patient') rowData[4] = '1'; // Col F
+                
+                if(document.getElementById('mrAllergyCheck').checked) {
+                    rowData[6] = '1'; // Col H: MR Allergy flag
+                    rowData[9] = document.getElementById('mrAllergyDetail').value; // Col K
+                }
+                
+                rowData[10] = document.getElementById('mrPlace').value; // Col L
+                rowData[11] = document.getElementById('mrDrugName').value; // Col M (ชื่อยาแบบ Text)
+            } 
+            else if (currentTab === 'ADR') {
+                rowData[7] = '1'; // Col I
+                rowData[9] = document.getElementById('adrAssessment').value; // Col K
+            }
+            else if (currentTab === 'HIV') {
+                const type = document.querySelector('input[name="hivType"]:checked').value;
+                if (type === 'refer') {
+                    // Col H (รายละเอียดส่งพบหมอ)
+                    let referDetails = [];
+                    if(document.getElementById('chkHt').checked) { referDetails.push(`ความดัน มี ${document.getElementById('txtHt').value}`); rowData[12] = '1'; } // N
+                    if(document.getElementById('chkDm').checked) { referDetails.push(`เบาหวาน มี ${document.getElementById('txtDm').value}`); rowData[13] = '1'; } // O
+                    if(document.getElementById('chkDlp').checked) { referDetails.push(`ไขมัน มี ${document.getElementById('txtDlp').value}`); rowData[14] = '1'; } // P
+                    if(document.getElementById('chkLiver').checked) { referDetails.push(`ตับ มี ${document.getElementById('txtLiver').value}`); rowData[15] = '1'; } // Q
+                    if(document.getElementById('chkCkd').checked) { referDetails.push(`CKD มี ${document.getElementById('txtCkd').value}`); rowData[16] = '1'; } // R
+                    if(document.getElementById('chkAnemia').checked) { referDetails.push(`CBC มี ${document.getElementById('txtAnemia').value}`); rowData[17] = '1'; } // S
+                    
+                    if(referDetails.length > 0) {
+                        rowData[6] = `ส่งพบเรื่อง ${referDetails.join(', ')}`; // Col H
+                    }
+                }
+            }
+
+            // แปลง Array เป็น String คั่นด้วย Tab สำหรับ Paste ลง Spreadsheet
+            const tsvString = rowData.join('\t');
+            navigator.clipboard.writeText(tsvString).then(() => {
+                showToast('คัดลอกข้อมูลสำหรับ Google Sheet เรียบร้อยแล้ว!');
+            });
+        }
+
+        function showToast(msg = 'คัดลอกลง PMK เรียบร้อยแล้ว!') {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Initialize
+        generateOutput();
+    </script>
+</body>
+</html>
