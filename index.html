@@ -80,12 +80,9 @@
                     </div>
                 </div>
 
-                <!-- ระบบเพิ่มรายการยา -->
                 <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                     <label class="block text-sm font-medium text-gray-700 mb-2">รายการยา (สำหรับลง PMK Note และสถิติ Col M)</label>
-                    <div id="mrDrugContainer" class="space-y-2 mb-3">
-                        <!-- JS จะเรนเดอร์ช่องกรอกยาที่นี่ -->
-                    </div>
+                    <div id="mrDrugContainer" class="space-y-2 mb-3"></div>
                     <button onclick="addMrDrugRow()" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         เพิ่มรายการยา
@@ -164,23 +161,38 @@
                     </label>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">CD4 (%CD4) + วันที่เจาะ</label>
-                        <input type="text" id="hivCd4" placeholder="เช่น 500 (15%) (01/01/67)" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                <!-- CD4 & VL -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-3 border border-gray-200 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">CD4 (%CD4)</label>
+                        <div class="flex gap-2 mb-2">
+                            <input type="text" id="hivCd4Val" placeholder="ค่า CD4 (เช่น 500)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                            <input type="text" id="hivCd4Percent" placeholder="%CD4 (เช่น 28.9)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        </div>
+                        <input type="text" id="hivCd4Date" placeholder="วันที่เจาะ (วว/ดด/พศ)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">VL load + วันที่เจาะ</label>
-                        <input type="text" id="hivVl" placeholder="เช่น <40 (01/01/67)" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                    
+                    <div class="bg-white p-3 border border-gray-200 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">VL load</label>
+                        <div class="flex gap-2 mb-2">
+                            <select id="hivVlSelect" class="rounded-lg border-gray-300 border px-3 py-2 flex-grow" onchange="toggleVlInput(); generateOutput()">
+                                <option value="">-- เลือกค่า VL --</option>
+                                <option value="<20log<1.3"><20log<1.3</option>
+                                <option value="other">อื่นๆ (ระบุเอง)</option>
+                            </select>
+                            <input type="text" id="hivVlCustom" placeholder="ระบุค่า VL" class="rounded-lg border-gray-300 border px-3 py-2 hidden w-1/2" oninput="generateOutput()">
+                        </div>
+                        <input type="text" id="hivVlDate" placeholder="วันที่เจาะ (วว/ดด/พศ)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                     </div>
                 </div>
 
+                <!-- Labs -->
                 <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
                     <label class="block text-sm font-medium text-indigo-900 mb-2">เพิ่มผล Lab (ค่ามาตรฐาน รพ.)</label>
                     <div class="flex flex-col md:flex-row gap-2">
-                        <select id="labSelect" class="rounded-lg border-gray-300 border px-3 py-2 flex-grow">
+                        <select id="labSelect" class="rounded-lg border-gray-300 border px-2 py-2 w-full md:w-1/3 text-sm">
                             <option value="">-- เลือก Lab --</option>
-                            <optgroup label="Chemistry (เคมีคลินิก)">
+                            <optgroup label="Chemistry">
                                 <option value="BUN">BUN</option>
                                 <option value="Creatinine (Serum)">Creatinine (Serum) / Scr</option>
                                 <option value="eGFR (CKD-EPI)">eGFR (CKD-EPI)</option>
@@ -196,25 +208,16 @@
                                 <option value="Sodium (Na)">Sodium (Na)</option>
                                 <option value="Potassium (K)">Potassium (K)</option>
                             </optgroup>
-                            <optgroup label="Hematology & Immunology">
+                            <optgroup label="Hematology">
                                 <option value="Hb">Hb</option>
                                 <option value="HCT">HCT</option>
                                 <option value="WBC Count">WBC Count</option>
                                 <option value="Pletelet Count [Plt. count]">Platelet Count</option>
                                 <option value="HbA1c (CMIA)">HbA1c (CMIA)</option>
-                                <option value="%CD4">%CD4</option>
-                                <option value="HIV-1 RNA">HIV-1 RNA (VL)</option>
-                            </optgroup>
-                            <optgroup label="Urinalysis (UA)">
-                                <option value="Specific Gravity (UA) [Sp.gr.]">Sp.gr.</option>
-                                <option value="pH(UA)">pH</option>
-                                <option value="Protein(UA)">Protein</option>
-                                <option value="Sugar(UA)">Sugar</option>
-                                <option value="WBC(UA)">WBC</option>
                             </optgroup>
                         </select>
-                        <input type="text" id="labValue" placeholder="ระบุผลเลือด" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-32" onkeypress="if(event.key === 'Enter') addLab()">
-                        <button onclick="addLab()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 whitespace-nowrap">เพิ่ม</button>
+                        <input type="text" id="labValue" placeholder="ระบุผลเลือด" class="rounded-lg border-indigo-300 border-2 px-3 py-2 flex-grow focus:ring-indigo-500 font-medium" onkeypress="if(event.key === 'Enter') addLab()">
+                        <button onclick="addLab()" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 whitespace-nowrap font-medium shadow-sm">เพิ่ม</button>
                     </div>
                     <div id="labTags" class="flex flex-wrap gap-2 mt-3"></div>
                     <div class="mt-3 border-t border-indigo-200 pt-3">
@@ -223,23 +226,28 @@
                     </div>
                 </div>
 
+                <!-- ข้อมูลยา -->
                 <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
                     <label class="block text-sm font-medium text-blue-800 mb-2">ข้อมูลยา & การคำนวณ % Adherence</label>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
-                        <div class="md:col-span-3">
-                            <input type="text" id="hivArv" placeholder="ชื่อสูตรยา / วิธีทาน / เวลาที่ทาน" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
-                        </div>
+                    
+                    <div class="flex flex-col md:flex-row gap-2 mb-4">
+                        <input type="text" id="hivDrugName" placeholder="ชื่อยา (เช่น TLD)" class="rounded-lg border-gray-300 border px-3 py-2 flex-grow" oninput="generateOutput()">
+                        <input type="text" id="hivDrugUsage" placeholder="วิธีใช้ (เช่น 1x1 po)" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/4" oninput="generateOutput()">
+                        <input type="text" id="hivDrugTime" placeholder="เวลา (เช่น 22.00น.)" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/4" oninput="generateOutput()">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">นัดกี่วัน?</label>
                             <input type="number" id="hivDays" placeholder="เช่น 180" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">ทานกี่มื้อต่อวัน?</label>
-                            <input type="number" id="hivDoses" placeholder="เช่น 1 (สำหรับ 1x1)" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                            <input type="number" id="hivDoses" placeholder="เช่น 1" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                         </div>
                         <div>
                             <label class="block text-xs text-red-500 mb-1">ลืมไปกี่มื้อ?</label>
-                            <input type="number" id="hivMissed" placeholder="เช่น 2" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                            <input type="number" id="hivMissed" placeholder="เช่น 0" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                         </div>
                     </div>
                 </div>
@@ -248,7 +256,7 @@
                 <div id="hivRefillSection" class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">rm วันที่</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">RM วันที่</label>
                             <input type="text" id="hivRmDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()">
                         </div>
                         <div>
@@ -258,7 +266,14 @@
                     </div>
                     <div class="mb-3">
                         <label class="block text-sm font-medium text-gray-700 mb-1">การเจาะ Lab ครั้งหน้า</label>
-                        <input type="text" id="hivNextLab" placeholder="เช่น เจาะ lab M1, lipid profile..." class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        <div class="flex gap-2">
+                            <select id="hivNextLabSelect" class="rounded-lg border-gray-300 border px-3 py-2" onchange="toggleNextLabInput(); generateOutput()">
+                                <option value="">-- เลือก --</option>
+                                <option value="M1">M1</option>
+                                <option value="other">อื่นๆ (ระบุเอง)</option>
+                            </select>
+                            <input type="text" id="hivNextLabCustom" placeholder="ระบุ Lab เพิ่มเติม" class="w-full rounded-lg border-gray-300 border px-3 py-2 hidden" oninput="generateOutput()">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ผู้จ่ายยา</label>
@@ -348,7 +363,6 @@
     </div>
 
     <script>
-        // ฐานข้อมูล Lab ดึงจากไฟล์ lab_Reference
         const labStandards = {
             "Glucose (NaF)": { unit: "mg/dL", ref: "74 - 100" },
             "BUN": { unit: "mg/dL", ref: "8.40 - 25.7" },
@@ -368,14 +382,7 @@
             "HCT": { unit: "%", ref: "40 - 54" },
             "WBC Count": { unit: "10^3/uL", ref: "5 - 10" },
             "Pletelet Count [Plt. count]": { unit: "10^3/uL", ref: "140 - 400" },
-            "HbA1c (CMIA)": { unit: "%", ref: "4.50 - 6.3 <6.5" },
-            "%CD4": { unit: "%", ref: "24.10 - 50.7" },
-            "HIV-1 RNA": { unit: "Copies/mL", ref: "0 - 0" },
-            "Specific Gravity (UA) [Sp.gr.]": { unit: "-", ref: "1.0030 - 1.035" },
-            "pH(UA)": { unit: "-", ref: "4.50 - 8" },
-            "Protein(UA)": { unit: "-", ref: "Negative" },
-            "Sugar(UA)": { unit: "-", ref: "Negative" },
-            "WBC(UA)": { unit: "-", ref: "0-5" }
+            "HbA1c (CMIA)": { unit: "%", ref: "4.50 - 6.3 <6.5" }
         };
 
         let currentTab = 'MR';
@@ -393,7 +400,7 @@
             generateOutput();
         }
 
-        /* ----- ฟังก์ชันจัดการรายการยา MR ----- */
+        // --- MR Functions ---
         function renderMrDrugs() {
             const container = document.getElementById('mrDrugContainer');
             container.innerHTML = '';
@@ -401,7 +408,7 @@
                 container.innerHTML += `
                     <div class="flex gap-2 items-center">
                         <span class="font-medium text-gray-500 w-5">${index + 1}.</span>
-                        <input type="text" value="${drug}" oninput="updateMrDrug(${index}, this.value)" class="flex-1 rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="ระบุชื่อยา ขนาด วิธีใช้ (เช่น amlodipine 10mg 1x1 po pc)">
+                        <input type="text" value="${drug}" oninput="updateMrDrug(${index}, this.value)" class="flex-1 rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="ระบุชื่อยา ขนาด วิธีใช้">
                         <button onclick="removeMrDrug(${index})" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition" title="ลบรายการนี้">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
@@ -411,29 +418,19 @@
             generateOutput();
         }
 
-        function addMrDrugRow() {
-            mrDrugs.push("");
-            renderMrDrugs();
-        }
-
-        function updateMrDrug(index, val) {
-            mrDrugs[index] = val;
-            generateOutput();
-        }
-
+        function addMrDrugRow() { mrDrugs.push(""); renderMrDrugs(); }
+        function updateMrDrug(index, val) { mrDrugs[index] = val; generateOutput(); }
         function removeMrDrug(index) {
             mrDrugs.splice(index, 1);
             if (mrDrugs.length === 0) mrDrugs.push(""); 
             renderMrDrugs();
         }
-
-        /* ----- ฟังก์ชันจัดการ HIV และทั่วไป ----- */
         function toggleAllergyInput() {
-            const isChecked = document.getElementById('mrAllergyCheck').checked;
             const input = document.getElementById('mrAllergyDetail');
-            isChecked ? input.classList.remove('hidden') : input.classList.add('hidden');
+            document.getElementById('mrAllergyCheck').checked ? input.classList.remove('hidden') : input.classList.add('hidden');
         }
 
+        // --- HIV Functions ---
         function toggleHivType() {
             const isRefill = document.querySelector('input[name="hivType"]:checked').value === 'refill';
             if (isRefill) {
@@ -444,11 +441,24 @@
                 document.getElementById('hivReferSection').classList.remove('hidden');
             }
         }
+        
+        function toggleVlInput() {
+            const select = document.getElementById('hivVlSelect');
+            const custom = document.getElementById('hivVlCustom');
+            if(select.value === 'other') { custom.classList.remove('hidden'); } 
+            else { custom.classList.add('hidden'); }
+        }
+
+        function toggleNextLabInput() {
+            const select = document.getElementById('hivNextLabSelect');
+            const custom = document.getElementById('hivNextLabCustom');
+            if(select.value === 'other') { custom.classList.remove('hidden'); } 
+            else { custom.classList.add('hidden'); }
+        }
 
         function toggleReferInput(id) {
-            const isChecked = document.getElementById(`chk${id}`).checked;
             const input = document.getElementById(`txt${id}`);
-            isChecked ? input.classList.remove('hidden') : input.classList.add('hidden');
+            document.getElementById(`chk${id}`).checked ? input.classList.remove('hidden') : input.classList.add('hidden');
         }
 
         function addLab() {
@@ -489,21 +499,16 @@
         function resetForm() {
             if(confirm('ต้องการล้างข้อมูลคนไข้ทั้งหมดหรือไม่?')) {
                 document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => el.value = '');
-                document.querySelectorAll('input[type="checkbox"]').forEach(el => {
-                    el.checked = false;
-                    const event = new Event('change');
-                    el.dispatchEvent(event);
-                });
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => { el.checked = false; });
                 document.querySelector('input[name="mrType"][value="phone"]').checked = false;
                 document.querySelector('input[name="mrType"][value="patient"]').checked = false;
                 document.querySelector('input[name="hivType"][value="refill"]').checked = true;
+                document.getElementById('hivVlSelect').selectedIndex = 0;
+                document.getElementById('hivNextLabSelect').selectedIndex = 0;
+                toggleVlInput(); toggleNextLabInput();
                 
-                selectedLabs = [];
-                mrDrugs = [""];
-                renderLabTags();
-                renderMrDrugs();
-                toggleHivType();
-                generateOutput();
+                selectedLabs = []; mrDrugs = [""];
+                renderLabTags(); renderMrDrugs(); toggleHivType(); generateOutput();
             }
         }
 
@@ -521,7 +526,6 @@
 
                 if (place || date || validDrugs.length > 0 || hasAllergy || herb || pharmName) {
                     notes.push("pharmacist note");
-                    
                     let line1 = [];
                     if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
                     if (date) line1.push(`วันที่ ${date}`);
@@ -529,18 +533,13 @@
 
                     if (validDrugs.length > 0) {
                         notes.push("รายการยา");
-                        validDrugs.forEach((d, i) => {
-                            notes.push(`${i + 1}. ${d}`);
-                        });
+                        validDrugs.forEach((d, i) => { notes.push(`${i + 1}. ${d}`); });
                     }
 
                     let allergyText = hasAllergy ? `แพ้ยา/แพ้อาหาร: ${document.getElementById('mrAllergyDetail').value || 'ไม่ระบุ'}` : `แพ้ยา/แพ้อาหาร: ปฏิเสธ`;
                     let herbText = herb ? `สมุนไพร/อาหารเสริม: ${herb}` : `สมุนไพร/อาหารเสริม: -`;
                     notes.push(`${allergyText} | ${herbText}`);
-
-                    if (pharmName) {
-                        notes.push(`/${pharmTitle}${pharmName}`);
-                    }
+                    if (pharmName) notes.push(`/${pharmTitle}${pharmName}`);
                 }
             } 
             else if (currentTab === 'ADR') {
@@ -553,7 +552,6 @@
 
                 if (place || date || drug || assess || pharmName) {
                     notes.push("pharmacist note");
-                    
                     let line1 = [];
                     if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
                     if (date) line1.push(`วันที่ ${date}`);
@@ -561,25 +559,37 @@
 
                     let line2 = [];
                     if (drug) line2.push(`รายการยา ${drug}`);
-                    if (assess) line2.push(`${assess}`); // ไม่แสดงคำว่า "ประเมินว่าเป็นสาเหตุจากยาไหม:"
-                    
+                    if (assess) line2.push(`${assess}`); 
                     if (line2.length > 0) notes.push(line2.join(' '));
-                    
-                    if (pharmName) {
-                        notes.push(`/${pharmTitle}${pharmName}`);
-                    }
+                    if (pharmName) notes.push(`/${pharmTitle}${pharmName}`);
                 }
             }
             else if (currentTab === 'HIV') {
-                const cd4 = document.getElementById('hivCd4').value;
-                const vl = document.getElementById('hivVl').value;
-                
                 notes.push("pharmacist note");
                 
-                let cd4vl = [];
-                if (cd4) cd4vl.push(`CD4(%CD4) ${cd4}`);
-                if (vl) cd4vl.push(`VL load ${vl}`);
-                if (cd4vl.length > 0) notes.push(cd4vl.join(' '));
+                // CD4
+                const cd4Val = document.getElementById('hivCd4Val').value;
+                const cd4Per = document.getElementById('hivCd4Percent').value;
+                const cd4Date = document.getElementById('hivCd4Date').value;
+                let cd4Str = '';
+                if(cd4Val && cd4Per) cd4Str = `CD4(%CD4) ${cd4Val}(${cd4Per}%)`;
+                else if (cd4Val) cd4Str = `CD4(%CD4) ${cd4Val}`;
+                else if (cd4Per) cd4Str = `CD4(%CD4) (${cd4Per}%)`;
+                if (cd4Str && cd4Date) cd4Str += ` วันที่ ${cd4Date}`;
+
+                // VL
+                const vlSel = document.getElementById('hivVlSelect').value;
+                const vlCust = document.getElementById('hivVlCustom').value;
+                const vlDate = document.getElementById('hivVlDate').value;
+                let vlStr = '';
+                let finalVl = vlSel === 'other' ? vlCust : vlSel;
+                if(finalVl) vlStr = `VL load ${finalVl}`;
+                if(vlStr && vlDate) vlStr += ` วันที่ ${vlDate}`;
+
+                let cd4vlLine = [];
+                if(cd4Str) cd4vlLine.push(cd4Str);
+                if(vlStr) cd4vlLine.push(vlStr);
+                if (cd4vlLine.length > 0) notes.push(cd4vlLine.join(' '));
 
                 const type = document.querySelector('input[name="hivType"]:checked').value;
                 const labPrefix = type === 'refill' ? 'Scr BUN UA + Lab อื่นๆ' : 'Scr BUN UA + Lab อื่นๆที่มีปัญหา';
@@ -594,33 +604,47 @@
                 }
                 const extraLabs = document.getElementById('hivLabsText').value;
                 if (extraLabs) labStrings.push(extraLabs);
-                
-                if (labStrings.length > 0) {
-                    notes.push(`${labPrefix}: ${labStrings.join(', ')}`);
-                }
+                if (labStrings.length > 0) notes.push(`${labPrefix}: ${labStrings.join(', ')}`);
 
-                const arv = document.getElementById('hivArv').value;
-                if (arv) notes.push(`on ${arv}`);
+                // Drug & Adherence
+                const dName = document.getElementById('hivDrugName').value;
+                const dUsage = document.getElementById('hivDrugUsage').value;
+                const dTime = document.getElementById('hivDrugTime').value;
                 
+                let drugArr = [];
+                if(dName) drugArr.push(dName);
+                if(dUsage) drugArr.push(dUsage);
+                if(dTime) drugArr.push(dTime);
+                let drugLine = drugArr.length > 0 ? `on ${drugArr.join(' ')}` : "";
+
                 const days = parseFloat(document.getElementById('hivDays').value);
                 const doses = parseFloat(document.getElementById('hivDoses').value);
+                
                 if (days && doses) {
                     const missed = parseFloat(document.getElementById('hivMissed').value) || 0;
                     const totalM = days * doses;
                     const taken = totalM - missed;
                     const adPercent = totalM > 0 ? ((taken/totalM)*100).toFixed(2) : 0;
+                    if(drugLine) drugLine += ` adherence ${adPercent}%`; // นำไปต่อท้ายบรรทัดยา
+                    notes.push(drugLine);
                     notes.push(`นัด ${days}วัน ทานมื้ออาหารวันละ ${doses} มื้อ คือ ${totalM} มื้อ ลืมไป ${missed} มื้อ คือ ${taken}/${totalM}*100= ${adPercent}%`);
+                } else if (drugLine) {
+                    notes.push(drugLine);
                 }
 
                 if (type === 'refill') {
                     const rmDate = document.getElementById('hivRmDate').value;
                     const rmMonths = document.getElementById('hivRmMonths').value;
-                    const nextLab = document.getElementById('hivNextLab').value;
+                    
+                    const nextLabSel = document.getElementById('hivNextLabSelect').value;
+                    const nextLabCust = document.getElementById('hivNextLabCustom').value;
+                    const nextLab = nextLabSel === 'other' ? nextLabCust : nextLabSel;
+                    
                     const pharmTitle = document.getElementById('hivPharmTitle').value;
                     const pharmName = document.getElementById('hivPharmName').value;
                     
                     let rmLine = [];
-                    if (rmDate) rmLine.push(`rm วันที่ ${rmDate}`);
+                    if (rmDate) rmLine.push(`RM วันที่ ${rmDate}`);
                     if (rmMonths) rmLine.push(`จำนวน ${rmMonths} เดือน`);
                     if (nextLab) rmLine.push(`+ ${nextLab}`);
                     if (pharmName) rmLine.push(`รคส.พญ.วรวรรณ/${pharmTitle}${pharmName}`);
@@ -634,10 +658,8 @@
                             issues.push(val ? `${label} (มี ${val})` : label);
                         }
                     });
-                    if (issues.length > 0) {
-                        notes.push(`ปรึกษาแพทย์เรื่องมีความผิดปกติของ ${issues.join(' ')}`);
-                    }
-                    // เพิ่มชื่อผู้ประเมินในกรณี refer
+                    if (issues.length > 0) notes.push(`ปรึกษาแพทย์เรื่องมีความผิดปกติของ ${issues.join(' ')}`);
+                    
                     const pharmTitle = document.getElementById('hivPharmTitle').value;
                     const pharmName = document.getElementById('hivPharmName').value;
                     if (pharmName) notes.push(`/${pharmTitle}${pharmName}`);
@@ -668,7 +690,6 @@
                     rowData[9] = document.getElementById('mrAllergyDetail').value;
                 }
                 rowData[10] = document.getElementById('mrPlace').value; 
-                
                 const validDrugs = mrDrugs.filter(d => d.trim() !== '');
                 rowData[11] = validDrugs.join(', ');
             } 
@@ -687,28 +708,21 @@
                     if(document.getElementById('chkCkd').checked) { referDetails.push(`CKD มี ${document.getElementById('txtCkd').value}`); rowData[16] = '1'; }
                     if(document.getElementById('chkAnemia').checked) { referDetails.push(`CBC มี ${document.getElementById('txtAnemia').value}`); rowData[17] = '1'; }
                     
-                    if(referDetails.length > 0) {
-                        rowData[6] = `ส่งพบเรื่อง ${referDetails.join(', ')}`;
-                    }
+                    if(referDetails.length > 0) { rowData[6] = `ส่งพบเรื่อง ${referDetails.join(', ')}`; }
                 }
             }
 
             const tsvString = rowData.join('\t');
-            navigator.clipboard.writeText(tsvString).then(() => {
-                showToast('คัดลอกข้อมูลสำหรับลง Google Sheet เรียบร้อยแล้ว!');
-            });
+            navigator.clipboard.writeText(tsvString).then(() => { showToast('คัดลอกข้อมูลสำหรับลง Google Sheet เรียบร้อยแล้ว!'); });
         }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.innerText = msg;
             toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
         }
 
-        // Initialize UI
         renderMrDrugs();
         generateOutput();
     </script>
