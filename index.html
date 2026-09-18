@@ -58,7 +58,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ป่วยรับยาจาก (สถานที่)</label>
-                        <input type="text" id="mrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น รพ.นพรัตนฯ" oninput="generateOutput()">
+                        <input type="text" id="mrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น คลินิกเวชกรรมกล้วยน้ำไท คู้บอน" oninput="generateOutput()">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา</label>
@@ -80,14 +80,16 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อยา (ข้อมูล Text สำหรับลง Column M ในระบบสถิติ)</label>
-                    <input type="text" id="mrDrugName" placeholder="ระบุเฉพาะชื่อยา" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">รายการยา (สำหรับลง PMK Note)</label>
-                    <textarea id="mrDrugList" rows="3" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="1. ... 2. ... 3. ..." oninput="generateOutput()"></textarea>
+                <!-- ระบบเพิ่มรายการยา -->
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">รายการยา (สำหรับลง PMK Note และสถิติ Col M)</label>
+                    <div id="mrDrugContainer" class="space-y-2 mb-3">
+                        <!-- JS จะเรนเดอร์ช่องกรอกยาที่นี่ -->
+                    </div>
+                    <button onclick="addMrDrugRow()" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        เพิ่มรายการยา
+                    </button>
                 </div>
 
                 <div class="bg-red-50 p-4 rounded-lg border border-red-100">
@@ -95,7 +97,7 @@
                         <input type="checkbox" id="mrAllergyCheck" class="form-checkbox text-red-600 rounded" onchange="toggleAllergyInput(); generateOutput()">
                         <span class="ml-2 font-medium text-red-700">มีประวัติแพ้ยา</span>
                     </label>
-                    <input type="text" id="mrAllergyDetail" placeholder="ระบุ ชื่อยา/อาการที่แพ้" class="w-full rounded-lg border-gray-300 border px-3 py-2 hidden" oninput="generateOutput()">
+                    <input type="text" id="mrAllergyDetail" placeholder="ระบุ ชื่อยา/อาการที่แพ้ เช่น Amoxicillin/ผื่นคัน" class="w-full rounded-lg border-gray-300 border px-3 py-2 hidden" oninput="generateOutput()">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -104,8 +106,14 @@
                         <input type="text" id="mrHerb" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เว้นว่างไว้หากไม่มี" oninput="generateOutput()">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ภก./ภญ. ผู้บันทึก และวันที่</label>
-                        <input type="text" id="mrPharm" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="ระบุชื่อ และ วันที่" oninput="generateOutput()">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก</label>
+                        <div class="flex gap-2">
+                            <select id="mrPharmTitle" class="rounded-lg border-gray-300 border px-3 py-2 bg-white" onchange="generateOutput()">
+                                <option value="ภก.">ภก.</option>
+                                <option value="ภญ.">ภญ.</option>
+                            </select>
+                            <input type="text" id="mrPharmName" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="ระบุชื่อ เช่น กันตพงศ์" oninput="generateOutput()">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,12 +139,12 @@
                     <input type="text" id="adrAssessment" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">ภก./ภญ. ผู้ประเมิน และวันที่</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ภก./ภญ. ผู้ประเมิน</label>
                     <input type="text" id="adrPharm" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                 </div>
             </div>
 
-            <!-- 4. HIV Form -->
+            <!-- 4. HIV Form (คงเดิม) -->
             <div id="form-HIV" class="space-y-4 hidden">
                 
                 <div class="flex gap-4 border-b border-gray-200 pb-2 mb-4">
@@ -161,7 +169,6 @@
                     </div>
                 </div>
 
-                <!-- ระบบจัดการ Lab อัจฉริยะ -->
                 <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
                     <label class="block text-sm font-medium text-indigo-900 mb-2">เพิ่มผล Lab (ค่ามาตรฐาน รพ.)</label>
                     <div class="flex flex-col md:flex-row gap-2">
@@ -256,9 +263,7 @@
                 <!-- Section: ส่งพบแพทย์ (Refer) -->
                 <div id="hivReferSection" class="hidden bg-red-50 p-4 rounded-lg border border-red-200">
                     <label class="block text-sm font-medium text-red-800 mb-3">ปรึกษาแพทย์เรื่องมีความผิดปกติของ (ติ๊กเลือกเพื่อกรอกรายละเอียด)</label>
-                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Ht -->
                         <div>
                             <label class="inline-flex items-center mb-1">
                                 <input type="checkbox" id="chkHt" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Ht'); generateOutput()">
@@ -266,7 +271,6 @@
                             </label>
                             <input type="text" id="txtHt" placeholder="เช่น BP 150/90" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
                         </div>
-                        <!-- DM -->
                         <div>
                             <label class="inline-flex items-center mb-1">
                                 <input type="checkbox" id="chkDm" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Dm'); generateOutput()">
@@ -274,7 +278,6 @@
                             </label>
                             <input type="text" id="txtDm" placeholder="เช่น FBS สูง" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
                         </div>
-                        <!-- DLP -->
                         <div>
                             <label class="inline-flex items-center mb-1">
                                 <input type="checkbox" id="chkDlp" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Dlp'); generateOutput()">
@@ -282,7 +285,6 @@
                             </label>
                             <input type="text" id="txtDlp" placeholder="เช่น LDL สูง" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
                         </div>
-                        <!-- Liver -->
                         <div>
                             <label class="inline-flex items-center mb-1">
                                 <input type="checkbox" id="chkLiver" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Liver'); generateOutput()">
@@ -290,7 +292,6 @@
                             </label>
                             <input type="text" id="txtLiver" placeholder="เช่น AST, ALT ผิดปกติ" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
                         </div>
-                        <!-- CKD -->
                         <div>
                             <label class="inline-flex items-center mb-1">
                                 <input type="checkbox" id="chkCkd" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Ckd'); generateOutput()">
@@ -298,7 +299,6 @@
                             </label>
                             <input type="text" id="txtCkd" placeholder="เช่น Scr พุ่ง" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
                         </div>
-                        <!-- Anemia -->
                         <div>
                             <label class="inline-flex items-center mb-1">
                                 <input type="checkbox" id="chkAnemia" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Anemia'); generateOutput()">
@@ -315,8 +315,7 @@
         <!-- Output & Actions -->
         <div class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK)</label>
-            <!-- กล่องข้อความแสดงผล จะโชว์เฉพาะข้อมูลที่มีการกรอกเท่านั้น ไม่มีจุดไข่ปลาให้รกตา -->
-            <textarea id="outputPmk" rows="6" class="w-full rounded-lg border-gray-300 border px-4 py-3 bg-white font-mono text-sm mb-4 leading-relaxed" readonly placeholder="ข้อความ Pharmacist Note จะค่อยๆ ปรากฏขึ้นที่นี่ เมื่อคุณเริ่มกรอกข้อมูลด้านบน"></textarea>
+            <textarea id="outputPmk" rows="10" class="w-full rounded-lg border-gray-300 border px-4 py-3 bg-white font-mono text-sm mb-4 leading-relaxed" readonly placeholder="ข้อความ Pharmacist Note จะค่อยๆ ปรากฏขึ้นที่นี่ เมื่อคุณเริ่มกรอกข้อมูลด้านบน"></textarea>
             
             <div class="flex flex-wrap gap-4">
                 <button onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
@@ -369,6 +368,7 @@
 
         let currentTab = 'MR';
         let selectedLabs = [];
+        let mrDrugs = [""]; // Array สำหรับเก็บรายการยา MR เริ่มต้น 1 แถว
 
         function switchTab(tab) {
             currentTab = tab;
@@ -381,6 +381,41 @@
             generateOutput();
         }
 
+        /* ----- ฟังก์ชันจัดการรายการยา MR ----- */
+        function renderMrDrugs() {
+            const container = document.getElementById('mrDrugContainer');
+            container.innerHTML = '';
+            mrDrugs.forEach((drug, index) => {
+                container.innerHTML += `
+                    <div class="flex gap-2 items-center">
+                        <span class="font-medium text-gray-500 w-5">${index + 1}.</span>
+                        <input type="text" value="${drug}" oninput="updateMrDrug(${index}, this.value)" class="flex-1 rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="ระบุชื่อยา ขนาด วิธีใช้ (เช่น amlodipine 10mg 1x1 po pc)">
+                        <button onclick="removeMrDrug(${index})" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition" title="ลบรายการนี้">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                `;
+            });
+            generateOutput();
+        }
+
+        function addMrDrugRow() {
+            mrDrugs.push("");
+            renderMrDrugs();
+        }
+
+        function updateMrDrug(index, val) {
+            mrDrugs[index] = val;
+            generateOutput();
+        }
+
+        function removeMrDrug(index) {
+            mrDrugs.splice(index, 1);
+            if (mrDrugs.length === 0) mrDrugs.push(""); // ป้องกันไม่ให้ลบจนหมดเหลือ 0 แถว
+            renderMrDrugs();
+        }
+
+        /* ----- ฟังก์ชันจัดการ HIV และทั่วไป ----- */
         function toggleAllergyInput() {
             const isChecked = document.getElementById('mrAllergyCheck').checked;
             const input = document.getElementById('mrAllergyDetail');
@@ -452,10 +487,20 @@
                 document.querySelector('input[name="hivType"][value="refill"]').checked = true;
                 
                 selectedLabs = [];
+                mrDrugs = [""];
                 renderLabTags();
+                renderMrDrugs();
                 toggleHivType();
                 generateOutput();
             }
+        }
+
+        // แปลงวันที่ YYYY-MM-DD เป็น DD/MM/YYYY (พ.ศ.)
+        function formatThaiDate(dateString) {
+            if (!dateString) return "";
+            const [y, m, d] = dateString.split('-');
+            const thaiYear = parseInt(y) + 543;
+            return `${d}/${m}/${thaiYear}`;
         }
 
         function generateOutput() {
@@ -464,26 +509,37 @@
             if (currentTab === 'MR') {
                 const place = document.getElementById('mrPlace').value;
                 const date = document.getElementById('mrDate').value;
-                const drugs = document.getElementById('mrDrugList').value;
+                const formattedDate = formatThaiDate(date);
+                const validDrugs = mrDrugs.filter(d => d.trim() !== '');
                 const hasAllergy = document.getElementById('mrAllergyCheck').checked;
                 const herb = document.getElementById('mrHerb').value;
-                const pharm = document.getElementById('mrPharm').value;
+                const pharmTitle = document.getElementById('mrPharmTitle').value;
+                const pharmName = document.getElementById('mrPharmName').value;
 
-                let line1 = [];
-                if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
-                if (date) line1.push(`วันที่ ${date}`);
-                if (line1.length > 0) notes.push(line1.join(' '));
+                // ตรวจสอบว่ามีการกรอกข้อมูลใดๆ หรือไม่ ถ้ามีถึงจะสร้าง Note
+                if (place || date || validDrugs.length > 0 || hasAllergy || herb || pharmName) {
+                    notes.push("pharmacist note");
+                    
+                    let line1 = [];
+                    if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
+                    if (formattedDate) line1.push(`วันที่ ${formattedDate}`);
+                    if (line1.length > 0) notes.push(line1.join(' '));
 
-                if (drugs) notes.push(`รายการยา ${drugs.replace(/\n/g, ' ')} ตามที่คนไข้มี`);
+                    if (validDrugs.length > 0) {
+                        notes.push("รายการยา");
+                        validDrugs.forEach((d, i) => {
+                            notes.push(`${i + 1}. ${d}`);
+                        });
+                    }
 
-                // สร้างบล็อกแพ้ยา หากมีการเริ่มพิมพ์ข้อมูลบางส่วนแล้วเท่านั้น
-                if (place || date || drugs || hasAllergy || herb) {
                     let allergyText = hasAllergy ? `แพ้ยา/แพ้อาหาร: ${document.getElementById('mrAllergyDetail').value || 'ไม่ระบุ'}` : `แพ้ยา/แพ้อาหาร: ปฏิเสธ`;
                     let herbText = herb ? `สมุนไพร/อาหารเสริม: ${herb}` : `สมุนไพร/อาหารเสริม: -`;
                     notes.push(`${allergyText} | ${herbText}`);
-                }
 
-                if (pharm) notes.push(`/ภก.หรือภญ ${pharm}`);
+                    if (pharmName) {
+                        notes.push(`/${pharmTitle}${pharmName}`);
+                    }
+                }
             } 
             else if (currentTab === 'ADR') {
                 const place = document.getElementById('adrPlace').value;
@@ -494,7 +550,7 @@
 
                 let line1 = [];
                 if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
-                if (date) line1.push(`วันที่ ${date}`);
+                if (date) line1.push(`วันที่ ${formatThaiDate(date)}`);
                 if (line1.length > 0) notes.push(line1.join(' '));
 
                 let line2 = [];
@@ -595,7 +651,10 @@
                     rowData[9] = document.getElementById('mrAllergyDetail').value;
                 }
                 rowData[10] = document.getElementById('mrPlace').value; 
-                rowData[11] = document.getElementById('mrDrugName').value;
+                
+                // สำหรับ Col M นำรายการยาทั้งหมดมาต่อกันด้วย ,
+                const validDrugs = mrDrugs.filter(d => d.trim() !== '');
+                rowData[11] = validDrugs.join(', ');
             } 
             else if (currentTab === 'ADR') {
                 rowData[7] = '1';
@@ -633,6 +692,8 @@
             }, 3000);
         }
 
+        // Initialize UI
+        renderMrDrugs();
         generateOutput();
     </script>
 </body>
