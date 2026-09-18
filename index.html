@@ -62,7 +62,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา</label>
-                        <input type="date" id="mrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        <input type="text" id="mrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ เช่น 18/09/69" oninput="generateOutput()">
                     </div>
                 </div>
                 
@@ -123,28 +123,34 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ป่วยรับยาจาก</label>
-                        <input type="text" id="adrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        <input type="text" id="adrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น รพ.นพรัตนฯ" oninput="generateOutput()">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา</label>
-                        <input type="date" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        <input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ เช่น 18/09/69" oninput="generateOutput()">
                     </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">รายการยา</label>
-                    <input type="text" id="adrDrug" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                    <input type="text" id="adrDrug" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น Simvastatin 20mg" oninput="generateOutput()">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">ประเมินว่าเป็นสาเหตุจากยาไหม (ชื่อยา/อาการ)</label>
-                    <input type="text" id="adrAssessment" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ประเมินว่าเป็นสาเหตุจากยาไหม (ระบุชื่อยา/อาการ/รายละเอียด)</label>
+                    <input type="text" id="adrAssessment" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น ปวดกล้ามเนื้อ ตั้งแต่วันที่... จากการสอบถามไม่ค่อยสงสัยเนื่องจากทานมานานแล้ว" oninput="generateOutput()">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">ภก./ภญ. ผู้ประเมิน</label>
-                    <input type="text" id="adrPharm" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ประเมิน</label>
+                    <div class="flex gap-2">
+                        <select id="adrPharmTitle" class="rounded-lg border-gray-300 border px-3 py-2 bg-white" onchange="generateOutput()">
+                            <option value="ภก.">ภก.</option>
+                            <option value="ภญ.">ภญ.</option>
+                        </select>
+                        <input type="text" id="adrPharmName" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="ระบุชื่อ เช่น กันตพงศ์" oninput="generateOutput()">
+                    </div>
                 </div>
             </div>
 
-            <!-- 4. HIV Form (คงเดิม) -->
+            <!-- 4. HIV Form -->
             <div id="form-HIV" class="space-y-4 hidden">
                 
                 <div class="flex gap-4 border-b border-gray-200 pb-2 mb-4">
@@ -243,7 +249,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">rm วันที่</label>
-                            <input type="text" id="hivRmDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                            <input type="text" id="hivRmDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">จำนวน (เดือน)</label>
@@ -255,8 +261,14 @@
                         <input type="text" id="hivNextLab" placeholder="เช่น เจาะ lab M1, lipid profile..." class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">รคส.พญ.วรวรรณ / ภก. ภญ. ผู้จ่ายยา</label>
-                        <input type="text" id="hivPharm" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้จ่ายยา</label>
+                        <div class="flex gap-2">
+                            <select id="hivPharmTitle" class="rounded-lg border-gray-300 border px-3 py-2 bg-white" onchange="generateOutput()">
+                                <option value="ภก.">ภก.</option>
+                                <option value="ภญ.">ภญ.</option>
+                            </select>
+                            <input type="text" id="hivPharmName" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="ระบุชื่อ เช่น กันตพงศ์" oninput="generateOutput()">
+                        </div>
                     </div>
                 </div>
 
@@ -368,7 +380,7 @@
 
         let currentTab = 'MR';
         let selectedLabs = [];
-        let mrDrugs = [""]; // Array สำหรับเก็บรายการยา MR เริ่มต้น 1 แถว
+        let mrDrugs = [""]; 
 
         function switchTab(tab) {
             currentTab = tab;
@@ -411,7 +423,7 @@
 
         function removeMrDrug(index) {
             mrDrugs.splice(index, 1);
-            if (mrDrugs.length === 0) mrDrugs.push(""); // ป้องกันไม่ให้ลบจนหมดเหลือ 0 แถว
+            if (mrDrugs.length === 0) mrDrugs.push(""); 
             renderMrDrugs();
         }
 
@@ -476,7 +488,7 @@
 
         function resetForm() {
             if(confirm('ต้องการล้างข้อมูลคนไข้ทั้งหมดหรือไม่?')) {
-                document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], textarea').forEach(el => el.value = '');
+                document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => el.value = '');
                 document.querySelectorAll('input[type="checkbox"]').forEach(el => {
                     el.checked = false;
                     const event = new Event('change');
@@ -495,34 +507,24 @@
             }
         }
 
-        // แปลงวันที่ YYYY-MM-DD เป็น DD/MM/YYYY (พ.ศ.)
-        function formatThaiDate(dateString) {
-            if (!dateString) return "";
-            const [y, m, d] = dateString.split('-');
-            const thaiYear = parseInt(y) + 543;
-            return `${d}/${m}/${thaiYear}`;
-        }
-
         function generateOutput() {
             let notes = [];
             
             if (currentTab === 'MR') {
                 const place = document.getElementById('mrPlace').value;
                 const date = document.getElementById('mrDate').value;
-                const formattedDate = formatThaiDate(date);
                 const validDrugs = mrDrugs.filter(d => d.trim() !== '');
                 const hasAllergy = document.getElementById('mrAllergyCheck').checked;
                 const herb = document.getElementById('mrHerb').value;
                 const pharmTitle = document.getElementById('mrPharmTitle').value;
                 const pharmName = document.getElementById('mrPharmName').value;
 
-                // ตรวจสอบว่ามีการกรอกข้อมูลใดๆ หรือไม่ ถ้ามีถึงจะสร้าง Note
                 if (place || date || validDrugs.length > 0 || hasAllergy || herb || pharmName) {
                     notes.push("pharmacist note");
                     
                     let line1 = [];
                     if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
-                    if (formattedDate) line1.push(`วันที่ ${formattedDate}`);
+                    if (date) line1.push(`วันที่ ${date}`);
                     if (line1.length > 0) notes.push(line1.join(' '));
 
                     if (validDrugs.length > 0) {
@@ -546,23 +548,33 @@
                 const date = document.getElementById('adrDate').value;
                 const drug = document.getElementById('adrDrug').value;
                 const assess = document.getElementById('adrAssessment').value;
-                const pharm = document.getElementById('adrPharm').value;
+                const pharmTitle = document.getElementById('adrPharmTitle').value;
+                const pharmName = document.getElementById('adrPharmName').value;
 
-                let line1 = [];
-                if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
-                if (date) line1.push(`วันที่ ${formatThaiDate(date)}`);
-                if (line1.length > 0) notes.push(line1.join(' '));
+                if (place || date || drug || assess || pharmName) {
+                    notes.push("pharmacist note");
+                    
+                    let line1 = [];
+                    if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
+                    if (date) line1.push(`วันที่ ${date}`);
+                    if (line1.length > 0) notes.push(line1.join(' '));
 
-                let line2 = [];
-                if (drug) line2.push(`รายการยา ${drug}`);
-                if (assess) line2.push(`ประเมินว่าเป็นสาเหตุจากยาไหม: ${assess}`);
-                if (pharm) line2.push(`/ภก.หรือภญ ${pharm}`);
-                
-                if (line2.length > 0) notes.push(line2.join(' '));
+                    let line2 = [];
+                    if (drug) line2.push(`รายการยา ${drug}`);
+                    if (assess) line2.push(`${assess}`); // ไม่แสดงคำว่า "ประเมินว่าเป็นสาเหตุจากยาไหม:"
+                    
+                    if (line2.length > 0) notes.push(line2.join(' '));
+                    
+                    if (pharmName) {
+                        notes.push(`/${pharmTitle}${pharmName}`);
+                    }
+                }
             }
             else if (currentTab === 'HIV') {
                 const cd4 = document.getElementById('hivCd4').value;
                 const vl = document.getElementById('hivVl').value;
+                
+                notes.push("pharmacist note");
                 
                 let cd4vl = [];
                 if (cd4) cd4vl.push(`CD4(%CD4) ${cd4}`);
@@ -604,13 +616,14 @@
                     const rmDate = document.getElementById('hivRmDate').value;
                     const rmMonths = document.getElementById('hivRmMonths').value;
                     const nextLab = document.getElementById('hivNextLab').value;
-                    const pharm = document.getElementById('hivPharm').value;
+                    const pharmTitle = document.getElementById('hivPharmTitle').value;
+                    const pharmName = document.getElementById('hivPharmName').value;
                     
                     let rmLine = [];
                     if (rmDate) rmLine.push(`rm วันที่ ${rmDate}`);
                     if (rmMonths) rmLine.push(`จำนวน ${rmMonths} เดือน`);
                     if (nextLab) rmLine.push(`+ ${nextLab}`);
-                    if (pharm) rmLine.push(`รคส.พญ.วรวรรณ/ภก ภญ ${pharm}`);
+                    if (pharmName) rmLine.push(`รคส.พญ.วรวรรณ/${pharmTitle}${pharmName}`);
                     if (rmLine.length > 0) notes.push(rmLine.join(' '));
                 } else {
                     let issues = [];
@@ -624,6 +637,10 @@
                     if (issues.length > 0) {
                         notes.push(`ปรึกษาแพทย์เรื่องมีความผิดปกติของ ${issues.join(' ')}`);
                     }
+                    // เพิ่มชื่อผู้ประเมินในกรณี refer
+                    const pharmTitle = document.getElementById('hivPharmTitle').value;
+                    const pharmName = document.getElementById('hivPharmName').value;
+                    if (pharmName) notes.push(`/${pharmTitle}${pharmName}`);
                 }
             }
             
@@ -652,7 +669,6 @@
                 }
                 rowData[10] = document.getElementById('mrPlace').value; 
                 
-                // สำหรับ Col M นำรายการยาทั้งหมดมาต่อกันด้วย ,
                 const validDrugs = mrDrugs.filter(d => d.trim() !== '');
                 rowData[11] = validDrugs.join(', ');
             } 
