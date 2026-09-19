@@ -117,7 +117,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา</label>
-                        <input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()">
+                        <input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ เช่น 18/09/69" oninput="generateOutput()">
                     </div>
                 </div>
                 <div>
@@ -163,7 +163,6 @@
                                 <option value="other">อื่นๆ (ระบุเอง)</option>
                             </select>
                             
-                            <!-- ช่องกรอก log แบบแยกส่วน -->
                             <div id="hivVlCustomContainer" class="hidden flex gap-2 w-full md:w-3/5">
                                 <input type="text" id="hivVlVal" placeholder="ค่า (เช่น 40)" class="w-1/2 rounded-lg border-gray-300 border px-2 py-2 text-center" oninput="generateOutput()">
                                 <span class="self-center font-semibold text-gray-500">log</span>
@@ -193,7 +192,7 @@
                         <input type="text" id="hivLabDate" placeholder="วันที่เจาะ Lab หลัก (วว/ดด/พศ)" class="w-full md:w-1/3 rounded-lg border-gray-300 border px-3 py-2 text-sm shadow-sm" oninput="generateOutput()">
                     </div>
 
-                    <!-- ค่า Lab ที่ต้องกรอกประจำ -->
+                    <!-- ค่า Lab หลัก (ใช้วันที่หลัก) -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-white p-4 rounded-lg border border-indigo-200 shadow-sm">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Scr</label>
@@ -238,9 +237,8 @@
                 <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
                     <label class="block text-sm font-semibold text-blue-900 mb-3">ข้อมูลยา & การคำนวณ % Adherence</label>
                     
-                    <div id="hivDrugsContainer" class="space-y-3 mb-3">
-                        <!-- รายการยา HIV จะเรนเดอร์ที่นี่ -->
-                    </div>
+                    <div id="hivDrugsContainer" class="space-y-3 mb-3"></div>
+                    
                     <button onclick="addHivDrugRow()" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center mb-4 border border-blue-200">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         เพิ่มรายการยา HIV
@@ -276,7 +274,7 @@
                     </div>
                 </div>
 
-                <!-- การตัดสินใจ (ย้ายมาไว้ล่าง) -->
+                <!-- การตัดสินใจ -->
                 <div class="bg-yellow-50 p-4 border border-yellow-200 rounded-xl">
                     <label class="block text-sm font-semibold text-yellow-900 mb-3">การจัดการ / แผนการรักษา</label>
                     <div class="flex gap-4 border-b border-yellow-200 pb-3 mb-4">
@@ -395,9 +393,8 @@
 
     <script>
         let currentTab = 'MR';
-        
         let mrSources = [ { place: '', date: '', drugs: [""] } ];
-        let selectedLabs = []; // format: { name, val, date }
+        let selectedLabs = []; 
         let hivDrugs = [ { name: '', usage: '', time: '' } ]; 
 
         function switchTab(tab) {
@@ -596,10 +593,10 @@
             }
         }
 
-        // จัดการเวลา 20.00 ให้เติม "น." 
         function formatTime(timeStr) {
             if(!timeStr) return "";
             timeStr = timeStr.trim();
+            // ถ้ากรอกมาแค่ตัวเลขหรือจุด (เช่น 20.00) ให้เติม น.
             if (timeStr.match(/^[0-9:\.]+$/) && !timeStr.includes('น.')) {
                 return `${timeStr} น.`;
             }
@@ -700,37 +697,47 @@
                 if(vlStr) cd4vlLine.push(vlStr);
                 if (cd4vlLine.length > 0) notes.push(cd4vlLine.join(' '));
 
-                // Labs
+                // Labs Grouping
                 const type = document.querySelector('input[name="hivType"]:checked').value;
-                const labPrefix = type === 'refill' ? 'Scr BUN UA + Lab อื่นๆ' : 'Scr BUN UA + Lab อื่นๆที่มีปัญหา';
+                const labPrefix = type === 'refill' ? 'Lab' : 'Lab ที่มีปัญหา';
                 
-                // หา Main Date
                 const labDateRef = document.getElementById('hivLabDateRef').value;
                 let mainLabDate = "";
                 if (labDateRef === 'cd4') mainLabDate = cd4Date;
                 else if (labDateRef === 'vl') mainLabDate = vlDate;
                 else if (labDateRef === 'custom') mainLabDate = document.getElementById('hivLabDate').value;
 
-                let labStrings = [];
-                // Scr & eGFR (ใช้ main date)
-                if (document.getElementById('hivScr').value) labStrings.push(`Scr ${document.getElementById('hivScr').value}`);
-                if (document.getElementById('hivEgfr').value) labStrings.push(`eGFR ${document.getElementById('hivEgfr').value}`);
+                let labStringsMain = [];
+                let labStringsSpecific = [];
+
+                if (document.getElementById('hivScr').value) labStringsMain.push(`Scr ${document.getElementById('hivScr').value}`);
+                if (document.getElementById('hivEgfr').value) labStringsMain.push(`eGFR ${document.getElementById('hivEgfr').value}`);
                 
                 if (selectedLabs.length > 0) {
-                    let labTexts = selectedLabs.map(lab => {
-                        let lstr = `${lab.name} ${lab.val}`;
-                        if(lab.date) lstr += ` (วันที่ ${lab.date})`; // ใส่วันที่เฉพาะเจาะจงถ้ามี
-                        return lstr;
+                    selectedLabs.forEach(lab => {
+                        if(lab.date) {
+                            labStringsSpecific.push(`${lab.name} ${lab.val} (วันที่ ${lab.date})`);
+                        } else {
+                            labStringsMain.push(`${lab.name} ${lab.val}`);
+                        }
                     });
-                    labStrings.push(labTexts.join(', '));
                 }
+
+                let allLabs = [];
+                if (labStringsMain.length > 0) {
+                    let str = labStringsMain.join(', ');
+                    if (mainLabDate) str += ` (วันที่ ${mainLabDate})`;
+                    allLabs.push(str);
+                }
+                if (labStringsSpecific.length > 0) {
+                    allLabs.push(labStringsSpecific.join(', '));
+                }
+
                 const extraLabs = document.getElementById('hivLabsText').value;
-                if (extraLabs) labStrings.push(extraLabs);
+                if (extraLabs) allLabs.push(extraLabs);
                 
-                if (labStrings.length > 0) {
-                    let labFinalStr = `${labPrefix}: ${labStrings.join(', ')}`;
-                    if(mainLabDate) labFinalStr += ` (วันที่ ${mainLabDate})`;
-                    notes.push(labFinalStr);
+                if (allLabs.length > 0) {
+                    notes.push(`${labPrefix}: ${allLabs.join(', ')}`);
                 }
 
                 // Drug & Adherence
@@ -776,11 +783,9 @@
                 if (type === 'refill') {
                     const rmDate = document.getElementById('hivRmDate').value;
                     const rmMonths = document.getElementById('hivRmMonths').value;
-                    
                     const nextLabSel = document.getElementById('hivNextLabSelect').value;
                     const nextLabCust = document.getElementById('hivNextLabCustom').value;
                     const nextLab = nextLabSel === 'other' ? nextLabCust : nextLabSel;
-                    
                     const pharmTitle = document.getElementById('hivPharmTitle').value;
                     const pharmName = document.getElementById('hivPharmName').value;
                     
@@ -790,7 +795,6 @@
                     if (nextLab) rmLine.push(`+ Lab ${nextLab}`);
                     if (rmLine.length > 0) notes.push(rmLine.join(' '));
                     
-                    // ปัดชื่อลงบรรทัดใหม่
                     if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmTitle} ${pharmName}`);
                     
                 } else {
@@ -806,7 +810,7 @@
                     
                     const pharmTitle = document.getElementById('hivPharmTitleRefer').value;
                     const pharmName = document.getElementById('hivPharmNameRefer').value;
-                    if (pharmName) notes.push(`/${pharmTitle}${pharmName}`);
+                    if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmTitle}${pharmName}`);
                 }
             }
             
