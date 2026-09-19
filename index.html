@@ -21,7 +21,8 @@
         <div class="bg-blue-600 p-6 text-white">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-semibold">OPD Online (Pharmacist Note)</h1>
-                <button onclick="resetForm()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">
+                <button onclick="resetForm()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                     ล้างข้อมูลคนไข้
                 </button>
             </div>
@@ -69,10 +70,7 @@
                     </div>
                 </div>
 
-                <!-- ระบบสถานที่รับยา & รายการยาแบบยืดหยุ่น -->
-                <div id="mrSourcesContainer" class="space-y-4 mb-2">
-                    <!-- สถานที่รับยาจะถูก Render ด้วย JS ที่นี่ -->
-                </div>
+                <div id="mrSourcesContainer" class="space-y-4 mb-2"></div>
                 
                 <button onclick="addMrSource()" class="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center mb-4 w-full justify-center border border-indigo-200 shadow-sm">
                     <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -119,7 +117,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา</label>
-                        <input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ เช่น 18/09/69" oninput="generateOutput()">
+                        <input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()">
                     </div>
                 </div>
                 <div>
@@ -137,7 +135,7 @@
                             <option value="ภก.">ภก.</option>
                             <option value="ภญ.">ภญ.</option>
                         </select>
-                        <input type="text" id="adrPharmName" class="w-full rounded-lg border-gray-300 border px-3 py-2 flex-grow" placeholder="ระบุชื่อ เช่น กันตพงศ์" oninput="generateOutput()">
+                        <input type="text" id="adrPharmName" class="w-full rounded-lg border-gray-300 border px-3 py-2 flex-grow" placeholder="ระบุชื่อ" oninput="generateOutput()">
                     </div>
                 </div>
             </div>
@@ -150,8 +148,8 @@
                     <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
                         <label class="block text-sm font-medium text-gray-700 mb-2">CD4 (%CD4)</label>
                         <div class="flex gap-2 mb-2">
-                            <input type="text" id="hivCd4Val" placeholder="ค่า CD4 (เช่น 500)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
-                            <input type="text" id="hivCd4Percent" placeholder="%CD4 (เช่น 28.9)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                            <input type="text" id="hivCd4Val" placeholder="ค่า CD4 (เช่น 200)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                            <input type="text" id="hivCd4Percent" placeholder="%CD4 (เช่น 25.2)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                         </div>
                         <input type="text" id="hivCd4Date" placeholder="วันที่เจาะ (วว/ดด/พศ)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()">
                     </div>
@@ -178,19 +176,25 @@
 
                 <!-- Labs -->
                 <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
-                    <div class="flex justify-between items-center mb-3">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-2">
                         <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab</label>
-                        <label class="inline-flex items-center text-sm text-indigo-700 bg-white px-2 py-1 rounded border border-indigo-200">
-                            <input type="checkbox" id="hivLabSameDate" class="form-checkbox text-indigo-600 rounded mr-2" onchange="generateOutput()" checked>
-                            ใช้วันที่เดียวกับ CD4 / VL
-                        </label>
+                        
+                        <div class="flex items-center text-sm bg-white px-2 py-1.5 rounded border border-indigo-200">
+                            <span class="mr-2 text-gray-600">วันที่ Lab หลัก:</span>
+                            <select id="hivLabDateRef" class="border-none text-indigo-700 focus:ring-0 cursor-pointer font-medium" onchange="toggleLabDateCustom(); generateOutput()">
+                                <option value="cd4">ใช้วันที่เดียวกับ CD4</option>
+                                <option value="vl">ใช้วันที่เดียวกับ VL</option>
+                                <option value="custom">ระบุวันที่เอง</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <input type="text" id="hivLabDate" placeholder="วันที่เจาะ Lab (วว/ดด/พศ)" class="w-full md:w-1/3 rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                    
+                    <div id="hivLabDateCustomContainer" class="mb-3 hidden">
+                        <input type="text" id="hivLabDate" placeholder="วันที่เจาะ Lab หลัก (วว/ดด/พศ)" class="w-full md:w-1/3 rounded-lg border-gray-300 border px-3 py-2 text-sm shadow-sm" oninput="generateOutput()">
                     </div>
 
                     <!-- ค่า Lab ที่ต้องกรอกประจำ -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-white p-3 rounded-lg border border-indigo-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-white p-4 rounded-lg border border-indigo-200 shadow-sm">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Scr</label>
                             <input type="text" id="hivScr" placeholder="ระบุค่า Scr" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
@@ -201,29 +205,32 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-col md:flex-row gap-2">
-                        <select id="labSelect" class="rounded-lg border-gray-300 border px-2 py-2 w-full md:w-1/3 text-sm bg-white">
-                            <option value="">-- เลือก Lab อื่นๆ --</option>
-                            <option value="BUN">BUN</option>
-                            <option value="Glucose (NaF)">Fasting Blood Sugar</option>
-                            <option value="Cholesterol">Cholesterol</option>
-                            <option value="Triglyceride">Triglyceride</option>
-                            <option value="HDL-C">HDL-C</option>
-                            <option value="LDL-C">LDL-C</option>
-                            <option value="SGOT (AST)">AST / SGOT</option>
-                            <option value="SGPT (ALT)">ALT / SGPT</option>
-                            <option value="Total Protein">Total Protein</option>
-                            <option value="Albumin">Albumin</option>
-                            <option value="Hb">Hb</option>
-                            <option value="HCT">HCT</option>
-                            <option value="HbA1c (CMIA)">HbA1c</option>
-                        </select>
-                        <input type="text" id="labValue" placeholder="ระบุผลเลือด" class="rounded-lg border-indigo-300 border-2 px-3 py-2 flex-grow focus:ring-indigo-500 font-medium bg-white" onkeypress="if(event.key === 'Enter') addLab()">
-                        <button onclick="addLab()" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 whitespace-nowrap font-medium shadow-sm">เพิ่ม</button>
+                    <!-- เพิ่ม Lab อิสระ -->
+                    <div class="bg-white p-3 rounded-lg border border-indigo-200">
+                        <div class="flex flex-col md:flex-row gap-2">
+                            <select id="labSelect" class="rounded-lg border-gray-300 border px-2 py-2 w-full md:w-1/4 text-sm bg-gray-50">
+                                <option value="">-- เลือก Lab --</option>
+                                <option value="BUN">BUN</option>
+                                <option value="Glucose">FBS</option>
+                                <option value="Cholesterol">Cholesterol</option>
+                                <option value="Triglyceride">TG</option>
+                                <option value="HDL-C">HDL-C</option>
+                                <option value="LDL-C">LDL-C</option>
+                                <option value="AST">AST</option>
+                                <option value="ALT">ALT</option>
+                                <option value="Hb">Hb</option>
+                                <option value="HCT">HCT</option>
+                            </select>
+                            <input type="text" id="labValue" placeholder="ผลเลือด" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/4" onkeypress="if(event.key === 'Enter') addLab()">
+                            <input type="text" id="labSpecificDate" placeholder="วันที่เจาะ (เว้นว่างเพื่อใช้วันที่หลัก)" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/3 text-sm" onkeypress="if(event.key === 'Enter') addLab()">
+                            
+                            <button onclick="addLab()" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 whitespace-nowrap font-medium shadow-sm">เพิ่ม</button>
+                        </div>
+                        <div id="labTags" class="flex flex-wrap gap-2 mt-3"></div>
                     </div>
-                    <div id="labTags" class="flex flex-wrap gap-2 mt-3"></div>
-                    <div class="mt-3 border-t border-indigo-200 pt-3">
-                        <input type="text" id="hivLabsText" placeholder="หรือพิมพ์ Lab อื่นๆ แบบอิสระที่นี่..." class="w-full text-sm rounded-lg border-gray-300 border px-3 py-2 bg-white" oninput="generateOutput()">
+                    
+                    <div class="mt-3">
+                        <input type="text" id="hivLabsText" placeholder="หรือพิมพ์ Lab อื่นๆ แบบอิสระเต็มประโยคที่นี่..." class="w-full text-sm rounded-lg border-gray-300 border px-3 py-2 bg-white" oninput="generateOutput()">
                     </div>
                 </div>
 
@@ -313,7 +320,7 @@
                                     <option value="ภก.">ภก.</option>
                                     <option value="ภญ.">ภญ.</option>
                                 </select>
-                                <input type="text" id="hivPharmName" class="w-full rounded-lg border-gray-300 border px-3 py-2 flex-grow" placeholder="ระบุชื่อ เช่น กันตพงศ์" oninput="generateOutput()">
+                                <input type="text" id="hivPharmName" class="w-full rounded-lg border-gray-300 border px-3 py-2 flex-grow" placeholder="ระบุชื่อ" oninput="generateOutput()">
                             </div>
                         </div>
                     </div>
@@ -354,7 +361,7 @@
                                     <option value="ภก.">ภก.</option>
                                     <option value="ภญ.">ภญ.</option>
                                 </select>
-                                <input type="text" id="hivPharmNameRefer" class="w-full rounded-lg border-gray-300 border px-3 py-2 flex-grow" placeholder="ระบุชื่อ เช่น กันตพงศ์" oninput="generateOutput()">
+                                <input type="text" id="hivPharmNameRefer" class="w-full rounded-lg border-gray-300 border px-3 py-2 flex-grow" placeholder="ระบุชื่อ" oninput="generateOutput()">
                             </div>
                         </div>
                     </div>
@@ -366,7 +373,7 @@
         <!-- Output & Actions -->
         <div class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK)</label>
-            <textarea id="outputPmk" rows="12" class="w-full rounded-lg border-gray-300 border px-4 py-3 bg-white font-mono text-sm mb-4 leading-relaxed shadow-inner" readonly placeholder="ข้อความ Pharmacist Note จะค่อยๆ ปรากฏขึ้นที่นี่ เมื่อคุณเริ่มกรอกข้อมูลด้านบน"></textarea>
+            <textarea id="outputPmk" rows="12" class="w-full rounded-lg border-gray-300 border px-4 py-3 bg-white font-mono text-sm mb-4 leading-relaxed shadow-inner" readonly placeholder="ข้อความ Pharmacist Note จะค่อยๆ ปรากฏขึ้นที่นี่"></textarea>
             
             <div class="flex flex-wrap gap-4">
                 <button onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
@@ -389,12 +396,10 @@
     <script>
         let currentTab = 'MR';
         
-        // Data Structures
         let mrSources = [ { place: '', date: '', drugs: [""] } ];
-        let selectedLabs = [];
+        let selectedLabs = []; // format: { name, val, date }
         let hivDrugs = [ { name: '', usage: '', time: '' } ]; 
 
-        // --- Tabs ---
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -404,7 +409,7 @@
             generateOutput();
         }
 
-        // --- MR Functions ---
+        // --- MR ---
         function renderMrSources() {
             const container = document.getElementById('mrSourcesContainer');
             container.innerHTML = '';
@@ -413,7 +418,7 @@
                     <div class="flex gap-2 items-center mb-2 pl-4">
                         <span class="font-medium text-gray-500 w-4">${dIndex + 1}.</span>
                         <input type="text" value="${d}" oninput="updateMrDrug(${srcIndex}, ${dIndex}, this.value)" class="flex-1 rounded-lg border-gray-300 border px-3 py-1.5 text-sm" placeholder="ชื่อยา ขนาด วิธีใช้">
-                        <button onclick="removeMrDrug(${srcIndex}, ${dIndex})" class="text-red-400 hover:text-red-600" title="ลบยา"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                        <button onclick="removeMrDrug(${srcIndex}, ${dIndex})" class="text-red-400 hover:text-red-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                     </div>
                 `).join('');
 
@@ -427,7 +432,7 @@
                                 <input type="text" value="${src.place}" oninput="updateMrSource(${srcIndex}, 'place', this.value)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น รพ. A">
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1">วันที่รับยา (วว/ดด/พศ)</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">วันที่รับยา</label>
                                 <input type="text" value="${src.date}" oninput="updateMrSource(${srcIndex}, 'date', this.value)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 18/09/69">
                             </div>
                         </div>
@@ -442,11 +447,9 @@
             });
             generateOutput();
         }
-
         function addMrSource() { mrSources.push({ place: '', date: '', drugs: [""] }); renderMrSources(); }
         function removeMrSource(idx) { mrSources.splice(idx, 1); renderMrSources(); }
         function updateMrSource(idx, field, val) { mrSources[idx][field] = val; generateOutput(); }
-        
         function addMrDrug(srcIdx) { mrSources[srcIdx].drugs.push(""); renderMrSources(); }
         function updateMrDrug(srcIdx, drugIdx, val) { mrSources[srcIdx].drugs[drugIdx] = val; generateOutput(); }
         function removeMrDrug(srcIdx, drugIdx) { 
@@ -454,13 +457,12 @@
             if(mrSources[srcIdx].drugs.length === 0) mrSources[srcIdx].drugs.push("");
             renderMrSources(); 
         }
-        
         function toggleAllergyInput() {
             const input = document.getElementById('mrAllergyDetail');
             document.getElementById('mrAllergyCheck').checked ? input.classList.remove('hidden') : input.classList.add('hidden');
         }
 
-        // --- HIV Functions ---
+        // --- HIV ---
         function renderHivDrugs() {
             const container = document.getElementById('hivDrugsContainer');
             container.innerHTML = '';
@@ -470,7 +472,7 @@
                         <span class="font-bold text-blue-500 w-4 text-center text-sm">${index+1}.</span>
                         <input type="text" value="${drug.name}" oninput="updateHivDrug(${index}, 'name', this.value)" placeholder="ชื่อยา (เช่น TDF)" class="w-full md:w-2/5 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
                         <input type="text" value="${drug.usage}" oninput="updateHivDrug(${index}, 'usage', this.value)" placeholder="วิธีใช้ (เช่น 1x1 po)" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
-                        <input type="text" value="${drug.time}" oninput="updateHivDrug(${index}, 'time', this.value)" placeholder="เวลา (เช่น 20.00น.)" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
+                        <input type="text" value="${drug.time}" oninput="updateHivDrug(${index}, 'time', this.value)" placeholder="เวลา (เช่น 20.00)" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
                         <button onclick="removeHivDrug(${index})" class="text-red-400 hover:text-red-600 p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                     </div>
                 `;
@@ -520,6 +522,13 @@
             if(select.value === 'other') { custom.classList.remove('hidden'); } 
             else { custom.classList.add('hidden'); }
         }
+        
+        function toggleLabDateCustom() {
+            const select = document.getElementById('hivLabDateRef').value;
+            const container = document.getElementById('hivLabDateCustomContainer');
+            if(select === 'custom') { container.classList.remove('hidden'); }
+            else { container.classList.add('hidden'); }
+        }
 
         function toggleReferInput(id) {
             const input = document.getElementById(`txt${id}`);
@@ -530,9 +539,12 @@
             const select = document.getElementById('labSelect');
             const labName = select.options[select.selectedIndex].value;
             const labVal = document.getElementById('labValue').value;
+            const labDate = document.getElementById('labSpecificDate').value;
+            
             if (labName && labVal) {
-                selectedLabs.push({ name: labName, val: labVal });
+                selectedLabs.push({ name: labName, val: labVal, date: labDate });
                 document.getElementById('labValue').value = '';
+                document.getElementById('labSpecificDate').value = '';
                 select.selectedIndex = 0;
                 renderLabTags();
                 generateOutput();
@@ -549,10 +561,12 @@
             const container = document.getElementById('labTags');
             container.innerHTML = '';
             selectedLabs.forEach((lab, index) => {
+                let text = `${lab.name} ${lab.val}`;
+                if(lab.date) text += ` (วันที่ ${lab.date})`;
                 container.innerHTML += `
                     <span class="inline-flex items-center gap-1 bg-white border border-indigo-200 text-indigo-800 text-sm font-medium px-2.5 py-1.5 rounded-full shadow-sm">
-                        ${lab.name} ${lab.val}
-                        <button onclick="removeLab(${index})" class="text-indigo-400 hover:text-red-500 font-bold ml-1 focus:outline-none">&times;</button>
+                        ${text}
+                        <button onclick="removeLab(${index})" class="text-indigo-400 hover:text-red-500 font-bold ml-1">&times;</button>
                     </span>
                 `;
             });
@@ -563,9 +577,8 @@
                 document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => el.value = '');
                 document.querySelectorAll('input[type="checkbox"]').forEach(el => { el.checked = false; });
                 
-                // Defaults
                 document.getElementById('hivManualAdherence').value = '100%';
-                document.getElementById('hivLabSameDate').checked = true;
+                document.getElementById('hivLabDateRef').value = 'cd4';
                 
                 document.querySelector('input[name="mrType"][value="phone"]').checked = false;
                 document.querySelector('input[name="mrType"][value="patient"]').checked = false;
@@ -573,7 +586,7 @@
                 document.getElementById('hivVlSelect').selectedIndex = 0;
                 document.getElementById('hivNextLabSelect').selectedIndex = 0;
                 
-                toggleVlInput(); toggleNextLabInput(); toggleAdherence();
+                toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
                 
                 mrSources = [ { place: '', date: '', drugs: [""] } ];
                 selectedLabs = []; 
@@ -581,6 +594,16 @@
                 
                 renderLabTags(); renderMrSources(); renderHivDrugs(); toggleHivType(); generateOutput();
             }
+        }
+
+        // จัดการเวลา 20.00 ให้เติม "น." 
+        function formatTime(timeStr) {
+            if(!timeStr) return "";
+            timeStr = timeStr.trim();
+            if (timeStr.match(/^[0-9:\.]+$/) && !timeStr.includes('น.')) {
+                return `${timeStr} น.`;
+            }
+            return timeStr;
         }
 
         function generateOutput() {
@@ -617,7 +640,7 @@
                     let herbText = herb ? `สมุนไพร/อาหารเสริม: ${herb}` : `สมุนไพร/อาหารเสริม: -`;
                     notes.push(`${allergyText} | ${herbText}`);
                     
-                    if (extraNote) notes.push(extraNote); // ข้อความแทรก
+                    if (extraNote) notes.push(extraNote);
                     if (pharmName) notes.push(`/${pharmTitle}${pharmName}`);
                 }
             } 
@@ -651,9 +674,9 @@
                 const cd4Per = document.getElementById('hivCd4Percent').value;
                 const cd4Date = document.getElementById('hivCd4Date').value;
                 let cd4Str = '';
-                if(cd4Val && cd4Per) cd4Str = `CD4(%CD4) ${cd4Val}(${cd4Per}%)`;
-                else if (cd4Val) cd4Str = `CD4(%CD4) ${cd4Val}`;
-                else if (cd4Per) cd4Str = `CD4(%CD4) (${cd4Per}%)`;
+                if(cd4Val && cd4Per) cd4Str = `CD4 = ${cd4Val}(${cd4Per}%)`;
+                else if (cd4Val) cd4Str = `CD4 = ${cd4Val}`;
+                else if (cd4Per) cd4Str = `CD4 = (${cd4Per}%)`;
                 if (cd4Str && cd4Date) cd4Str += ` วันที่ ${cd4Date}`;
 
                 // VL
@@ -681,12 +704,24 @@
                 const type = document.querySelector('input[name="hivType"]:checked').value;
                 const labPrefix = type === 'refill' ? 'Scr BUN UA + Lab อื่นๆ' : 'Scr BUN UA + Lab อื่นๆที่มีปัญหา';
                 
+                // หา Main Date
+                const labDateRef = document.getElementById('hivLabDateRef').value;
+                let mainLabDate = "";
+                if (labDateRef === 'cd4') mainLabDate = cd4Date;
+                else if (labDateRef === 'vl') mainLabDate = vlDate;
+                else if (labDateRef === 'custom') mainLabDate = document.getElementById('hivLabDate').value;
+
                 let labStrings = [];
+                // Scr & eGFR (ใช้ main date)
                 if (document.getElementById('hivScr').value) labStrings.push(`Scr ${document.getElementById('hivScr').value}`);
                 if (document.getElementById('hivEgfr').value) labStrings.push(`eGFR ${document.getElementById('hivEgfr').value}`);
                 
                 if (selectedLabs.length > 0) {
-                    let labTexts = selectedLabs.map(lab => `${lab.name} ${lab.val}`);
+                    let labTexts = selectedLabs.map(lab => {
+                        let lstr = `${lab.name} ${lab.val}`;
+                        if(lab.date) lstr += ` (วันที่ ${lab.date})`; // ใส่วันที่เฉพาะเจาะจงถ้ามี
+                        return lstr;
+                    });
                     labStrings.push(labTexts.join(', '));
                 }
                 const extraLabs = document.getElementById('hivLabsText').value;
@@ -694,17 +729,7 @@
                 
                 if (labStrings.length > 0) {
                     let labFinalStr = `${labPrefix}: ${labStrings.join(', ')}`;
-                    
-                    // Lab Date string
-                    let finalLabDate = "";
-                    if(document.getElementById('hivLabSameDate').checked) {
-                        // ใช้ CD4 or VL date
-                        finalLabDate = cd4Date || vlDate || "";
-                    } else {
-                        finalLabDate = document.getElementById('hivLabDate').value;
-                    }
-                    if(finalLabDate) labFinalStr += ` (วันที่ ${finalLabDate})`;
-                    
+                    if(mainLabDate) labFinalStr += ` (วันที่ ${mainLabDate})`;
                     notes.push(labFinalStr);
                 }
 
@@ -714,7 +739,7 @@
                     let parts = [];
                     if(d.name) parts.push(d.name);
                     if(d.usage) parts.push(d.usage);
-                    if(d.time) parts.push(d.time);
+                    if(d.time) parts.push(formatTime(d.time));
                     if(parts.length > 0) drugLines.push(parts.join(' '));
                 });
                 
@@ -763,8 +788,11 @@
                     if (rmDate) rmLine.push(`RM ${rmDate}`);
                     if (rmMonths) rmLine.push(`จำนวน ${rmMonths} เดือน`);
                     if (nextLab) rmLine.push(`+ Lab ${nextLab}`);
-                    if (pharmName) rmLine.push(`รคส. พญ. วรวรรณ/ ${pharmTitle} ${pharmName}`);
                     if (rmLine.length > 0) notes.push(rmLine.join(' '));
+                    
+                    // ปัดชื่อลงบรรทัดใหม่
+                    if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmTitle} ${pharmName}`);
+                    
                 } else {
                     let issues = [];
                     ['Ht', 'Dm', 'Dlp', 'Liver', 'Ckd', 'Anemia'].forEach(id => {
@@ -804,12 +832,9 @@
                     rowData[9] = document.getElementById('mrAllergyDetail').value;
                 }
                 
-                // สำหรับ Sheet: นำสถานที่ทั้งหมดมาต่อกัน และยาทั้งหมดมาต่อกัน
                 let allPlaces = mrSources.map(s => s.place).filter(p => p).join(', ');
                 let allDrugs = [];
-                mrSources.forEach(s => {
-                    s.drugs.filter(d => d.trim() !== '').forEach(d => allDrugs.push(d));
-                });
+                mrSources.forEach(s => { s.drugs.filter(d => d.trim() !== '').forEach(d => allDrugs.push(d)); });
                 
                 rowData[10] = allPlaces; 
                 rowData[11] = allDrugs.join(', ');
@@ -844,7 +869,6 @@
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
         }
 
-        // Initialize UI
         renderMrSources();
         renderHivDrugs();
         generateOutput();
