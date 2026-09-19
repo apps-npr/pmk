@@ -366,6 +366,10 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     2. คัดลอกลง Google Sheet (วางลง Col B)
                 </button>
+                <button onclick="sendToGoogleSheet()" id="btnSendDb" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    3. บันทึกลง Google Sheet อัตโนมัติ
+                </button>
             </div>
         </div>
     </div>
@@ -376,6 +380,10 @@
     </div>
 
     <script>
+        // === ตั้งค่า URL ของ Web App ตรงนี้ ===
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec'; 
+        // ===================================
+
         let currentTab = 'MR';
         let mrSources = [ { place: '', date: '', drugs: [""] } ];
         let selectedLabs = []; 
@@ -586,6 +594,41 @@
             return timeStr;
         }
 
+        // --- ฟังก์ชันจัดกลุ่ม Lab ด้วยวันที่ ---
+        function groupLabsByDate(mainDate, labPrefix, scr, egfr, customLabsArray, extraLabText) {
+            let grouped = {};
+            
+            if (scr || egfr) {
+                if (!grouped[mainDate]) grouped[mainDate] = [];
+                if (scr) grouped[mainDate].push(`Scr ${scr}`);
+                if (egfr) grouped[mainDate].push(`eGFR ${egfr}`);
+            }
+
+            customLabsArray.forEach(lab => {
+                let lDate = lab.date ? lab.date : mainDate;
+                if (!grouped[lDate]) grouped[lDate] = [];
+                grouped[lDate].push(`${lab.name} ${lab.val}`);
+            });
+
+            let groupStrings = [];
+            for (const [dateKey, labList] of Object.entries(grouped)) {
+                if (labList.length > 0) {
+                    let groupStr = labList.join(', ');
+                    if (dateKey) groupStr += ` (วันที่ ${dateKey})`;
+                    groupStrings.push(groupStr);
+                }
+            }
+
+            if (extraLabText) {
+                groupStrings.push(extraLabText);
+            }
+
+            if (groupStrings.length > 0) {
+                return `${labPrefix}: ${groupStrings.join(', ')}`;
+            }
+            return "";
+        }
+
         function generateOutput() {
             let notes = [];
             
@@ -688,38 +731,12 @@
                 else if (labDateRef === 'vl') mainLabDate = vlDate;
                 else if (labDateRef === 'custom') mainLabDate = document.getElementById('hivLabDate').value;
 
-                let labStringsMain = [];
-                let labStringsSpecific = [];
+                let scrVal = document.getElementById('hivScr').value;
+                let egfrVal = document.getElementById('hivEgfr').value;
+                let extraLabs = document.getElementById('hivLabsText').value;
 
-                if (document.getElementById('hivScr').value) labStringsMain.push(`Scr ${document.getElementById('hivScr').value}`);
-                if (document.getElementById('hivEgfr').value) labStringsMain.push(`eGFR ${document.getElementById('hivEgfr').value}`);
-                
-                if (selectedLabs.length > 0) {
-                    selectedLabs.forEach(lab => {
-                        if(lab.date) {
-                            labStringsSpecific.push(`${lab.name} ${lab.val} (วันที่ ${lab.date})`);
-                        } else {
-                            labStringsMain.push(`${lab.name} ${lab.val}`);
-                        }
-                    });
-                }
-
-                let allLabs = [];
-                if (labStringsMain.length > 0) {
-                    let str = labStringsMain.join(', ');
-                    if (mainLabDate) str += ` (วันที่ ${mainLabDate})`;
-                    allLabs.push(str);
-                }
-                if (labStringsSpecific.length > 0) {
-                    allLabs.push(labStringsSpecific.join(', '));
-                }
-
-                const extraLabs = document.getElementById('hivLabsText').value;
-                if (extraLabs) allLabs.push(extraLabs);
-                
-                if (allLabs.length > 0) {
-                    notes.push(`${labPrefix}: ${allLabs.join(', ')}`);
-                }
+                let finalLabOutput = groupLabsByDate(mainLabDate, labPrefix, scrVal, egfrVal, selectedLabs, extraLabs);
+                if (finalLabOutput) notes.push(finalLabOutput);
 
                 // Drug & Adherence
                 let drugLines = [];
@@ -796,15 +813,11 @@
             document.getElementById('outputPmk').value = notes.join('\n');
         }
 
-        function copyToClipboard(elementId) {
-            const text = document.getElementById(elementId).value;
-            if(text) { navigator.clipboard.writeText(text).then(() => showToast('คัดลอกลง PMK เรียบร้อยแล้ว!')); }
-        }
-
-        function copyToSheet() {
+        // === ส่วนจัดเตรียมข้อมูลสำหรับลง Sheet ===
+        function getRowDataArray() {
             let rowData = Array(18).fill('');
-            rowData[0] = document.getElementById('hn').value;
-            rowData[1] = document.getElementById('ptName').value;
+            rowData[0] = document.getElementById('hn').value;       // Col B
+            rowData[1] = document.getElementById('ptName').value;   // Col C
             
             if (currentTab === 'MR') {
                 const mrType = document.querySelector('input[name="mrType"]:checked')?.value;
@@ -840,16 +853,66 @@
                     if(referDetails.length > 0) { rowData[6] = `ส่งพบเรื่อง ${referDetails.join(', ')}`; }
                 }
             }
+            return rowData;
+        }
 
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).value;
+            if(text) { navigator.clipboard.writeText(text).then(() => showToast('คัดลอกลง PMK เรียบร้อยแล้ว!')); }
+        }
+
+        function copyToSheet() {
+            const rowData = getRowDataArray();
             const tsvString = rowData.join('\t');
             navigator.clipboard.writeText(tsvString).then(() => { showToast('คัดลอกข้อมูลสำหรับลง Google Sheet เรียบร้อยแล้ว!'); });
         }
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+        // === ฟังก์ชันส่งข้อมูลเข้า Google Sheet อัตโนมัติ ===
+        function sendToGoogleSheet() {
+            if (!SCRIPT_URL || SCRIPT_URL === 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่') {
+                alert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนใช้งานฟังก์ชันนี้ครับ');
+                return;
+            }
+
+            const btn = document.getElementById('btnSendDb');
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                กำลังบันทึก...
+            `;
+            btn.disabled = true;
+
+            const rowDataArray = getRowDataArray();
+            
+            const requestData = {
+                action: "saveOPDNote",
+                clinic: currentTab,
+                payload: rowDataArray
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'text/plain', 
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(() => {
+                showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!');
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต');
+            })
+            .finally(() => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            });
         }
 
         renderMrSources();
