@@ -228,7 +228,6 @@
                         <div id="procedureListContainer" class="drug-list-container hidden"></div>
                     </div>
 
-                    <!-- ช่องหัตถการที่ทำ (เอาไว้พิมพ์เองหรือรับค่าจากการค้นหา) -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">หัตถการที่ทำ (ระบุเพื่อลง PMK)</label>
                         <input type="text" id="procedureManual" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" placeholder="ระบุชื่อหัตถการ" oninput="generateOutput()">
@@ -358,7 +357,7 @@
 
                 <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-2">
-                        <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab</label>
+                        <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab (ค่ามาตรฐาน รพ.)</label>
                         <div class="flex items-center text-sm bg-white px-2 py-1.5 rounded border border-indigo-200">
                             <span class="mr-2 text-gray-600">วันที่ Lab หลัก:</span>
                             <select id="hivLabDateRef" class="border-none text-indigo-700 focus:ring-0 cursor-pointer font-medium" onchange="toggleLabDateCustom(); generateOutput()">
@@ -472,13 +471,10 @@
                             <div><label class="inline-flex items-center mb-1"><input type="checkbox" id="chkCkd" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Ckd'); generateOutput()"><span class="ml-2 font-medium">CKD (ไต)</span></label><input type="text" id="txtCkd" placeholder="เช่น Scr พุ่ง" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()"></div>
                             <div><label class="inline-flex items-center mb-1"><input type="checkbox" id="chkAnemia" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Anemia'); generateOutput()"><span class="ml-2 font-medium">CBC / Anemia</span></label><input type="text" id="txtAnemia" placeholder="เช่น Hct ต่ำ" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()"></div>
                         </div>
-                        
-                        <!-- เพิ่มส่งพบแพทย์เรื่องอื่นๆ -->
                         <div class="mt-2 mb-4 border-t border-red-200 pt-3">
                             <label class="inline-flex items-center mb-1"><input type="checkbox" id="chkOtherRefer" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('OtherRefer'); generateOutput()"><span class="ml-2 font-medium text-red-700">ส่งพบเรื่องอื่นๆ (ระบุเพิ่มเติม)</span></label>
                             <input type="text" id="txtOtherRefer" placeholder="เช่น มีอาการไอหอบเหนื่อย, มีผื่นตามตัว" class="w-full text-sm rounded border-gray-300 px-2 py-2 hidden mt-1" oninput="generateOutput()">
                         </div>
-
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ส่งปรึกษา</label>
                             <input type="text" id="hivPharmNameRefer" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 bg-white" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
@@ -943,7 +939,6 @@
             return timeStr;
         }
 
-        // --- ฟังก์ชันจัดกลุ่ม Lab ด้วยวันที่ ---
         function groupLabsByDate(mainDate, labPrefix, mainItemsArray, customLabsArray, extraLabText) {
             let grouped = {};
             if (mainItemsArray && mainItemsArray.length > 0) {
@@ -1033,9 +1028,7 @@
                 
                 if (isMerge) {
                     let mrNotes = getMrNoteArray(true);
-                    if (mrNotes.length > 0) {
-                        notes = notes.concat(mrNotes);
-                    }
+                    if (mrNotes.length > 0) notes = notes.concat(mrNotes);
                 }
 
                 let preopHasData = preopCalculatedNotes.length > 0 || sDate || (bRisk && bRisk !== '-- เลือกความเสี่ยง --') || pManual;
@@ -1054,7 +1047,14 @@
                     if(pManual) metaLines.push(`หัตถการ: ${pManual}`);
                     if(bRisk && bRisk !== '-- เลือกความเสี่ยง --') metaLines.push(`Bleeding Risk: ${bRisk}`);
                     
-                    if (metaLines.length > 0) notes.push(metaLines.join(' | '));
+                    if (metaLines.length > 0) {
+                        // ถ้ารวมข้อมูล ให้ใส่ต่อท้ายบรรทัดแพ้ยาเลย ไม่ต้องเว้นบรรทัดใหม่
+                        if(isMerge && notes.length > 0 && notes[notes.length-1].includes("แพ้ยา")) {
+                             notes[notes.length-1] += ` | ${metaLines.join(' | ')}`;
+                        } else {
+                             notes.push(metaLines.join(' | '));
+                        }
+                    }
                     
                     if(preopCalculatedNotes.length > 0) {
                         preopCalculatedNotes.forEach((n, i) => notes.push(`${i+1}. ${n}`));
@@ -1096,14 +1096,13 @@
                 if(cd4Str) cd4vlLine.push(cd4Str); 
                 if(vlStr) cd4vlLine.push(vlStr);
                 
-                // นำค่า BP มาต่อท้ายบรรทัด CD4/VL
                 const bpVal = document.getElementById('hivBp').value;
                 if (bpVal) cd4vlLine.push(`BP ${bpVal}`);
                 
                 if (cd4vlLine.length > 0) notes.push(cd4vlLine.join(' '));
 
                 const type = document.querySelector('input[name="hivType"]:checked').value;
-                const labPrefix = 'Lab'; // เปลี่ยนเป็น Lab เสมอตามรีเควสใหม่
+                const labPrefix = 'Lab'; 
                 const labDateRef = document.getElementById('hivLabDateRef').value;
                 let mainLabDate = labDateRef === 'cd4' ? cd4Date : (labDateRef === 'vl' ? vlDate : document.getElementById('hivLabDate').value);
 
