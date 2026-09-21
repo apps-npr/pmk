@@ -46,6 +46,19 @@
         .risk-title { font-weight: 600; margin-bottom: 5px;}
         .risk-title.minimal { color: #16a34a; } .risk-title.low-mod { color: #ea580c; } .risk-title.high { color: #dc2626; } .risk-title.critical { color: #991b1b; }
         .risk-list { list-style-type: disc; padding-left: 20px; margin: 0; font-size: 0.85rem; color: #4b5563;}
+
+        /* --- Print Setup for A5 Landscape (Right Side) --- */
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { 
+                position: fixed; left: 0; top: 0; width: 100%; height: 100%; 
+                display: flex; flex-direction: row; background: white;
+            }
+            .print-left { width: 50%; border-right: 1px dashed #ccc; height: 100%; }
+            .print-right { width: 50%; padding: 20px; box-sizing: border-box; font-family: 'Prompt', sans-serif; }
+            @page { size: A5 landscape; margin: 5mm; }
+        }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen p-4 md:p-8">
@@ -60,7 +73,7 @@
         <option value="ภก.กันตพงศ์ วงศ์เอนกเกษม"></option>
     </datalist>
 
-    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden">
         
         <!-- Header -->
         <div class="bg-blue-600 p-6 text-white">
@@ -250,8 +263,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก Pre-OP</label>
                     <input type="text" id="preopPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
                 </div>
-
-                <!-- ผลลัพธ์จากการประมวลผลซ่อนไว้ แต่จะถูกดึงข้อความไปรวมใน Output -->
+                
                 <div id="resultContent" class="hidden"></div>
             </div>
 
@@ -283,7 +295,6 @@
 
             <!-- 4. HIV Form -->
             <div id="form-HIV" class="space-y-6 hidden">
-                <!-- CD4 & VL -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
                         <label class="block text-sm font-medium text-gray-700 mb-2">CD4 (%CD4)</label>
@@ -302,7 +313,6 @@
                                 <option value="<20log<1.3"><20log<1.3</option>
                                 <option value="other">อื่นๆ (ระบุเอง)</option>
                             </select>
-                            
                             <div id="hivVlCustomContainer" class="hidden flex gap-2 w-full md:w-3/5">
                                 <input type="text" id="hivVlVal" placeholder="ค่า (เช่น 40)" class="w-1/2 rounded-lg border-gray-300 border px-2 py-2 text-center" oninput="generateOutput()">
                                 <span class="self-center font-semibold text-gray-500">log</span>
@@ -313,7 +323,6 @@
                     </div>
                 </div>
 
-                <!-- Labs -->
                 <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-2">
                         <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab</label>
@@ -332,55 +341,37 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-white p-4 rounded-lg border border-indigo-200 shadow-sm">
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">Scr</label>
-                            <input type="text" id="hivScr" placeholder="ระบุค่า Scr" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">eGFR (CKD-EPI)</label>
-                            <input type="text" id="hivEgfr" placeholder="ระบุค่า eGFR" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
-                        </div>
+                        <div><label class="block text-xs font-medium text-gray-600 mb-1">Scr</label><input type="text" id="hivScr" placeholder="ระบุค่า Scr" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
+                        <div><label class="block text-xs font-medium text-gray-600 mb-1">eGFR (CKD-EPI)</label><input type="text" id="hivEgfr" placeholder="ระบุค่า eGFR" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
                     </div>
 
                     <div class="bg-white p-3 rounded-lg border border-indigo-200">
                         <div class="flex flex-col md:flex-row gap-2">
                             <select id="labSelect" class="rounded-lg border-gray-300 border px-2 py-2 w-full md:w-1/4 text-sm bg-gray-50">
                                 <option value="">-- เลือก Lab --</option>
-                                <option value="BUN">BUN</option>
-                                <option value="Glucose">FBS</option>
-                                <option value="Cholesterol">Cholesterol</option>
-                                <option value="Triglyceride">TG</option>
-                                <option value="HDL-C">HDL-C</option>
-                                <option value="LDL-C">LDL-C</option>
-                                <option value="AST">AST</option>
-                                <option value="ALT">ALT</option>
-                                <option value="Hb">Hb</option>
-                                <option value="HCT">HCT</option>
+                                <option value="BUN">BUN</option><option value="Glucose">FBS</option><option value="Cholesterol">Cholesterol</option>
+                                <option value="Triglyceride">TG</option><option value="HDL-C">HDL-C</option><option value="LDL-C">LDL-C</option>
+                                <option value="AST">AST</option><option value="ALT">ALT</option><option value="Hb">Hb</option><option value="HCT">HCT</option>
                             </select>
                             <input type="text" id="labValue" placeholder="ผลเลือด" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/4" onkeypress="if(event.key === 'Enter') addLab()">
-                            <input type="text" id="labSpecificDate" placeholder="วันที่เจาะ (เว้นว่างเพื่อใช้วันที่หลัก)" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/3 text-sm" onkeypress="if(event.key === 'Enter') addLab()">
+                            <input type="text" id="labSpecificDate" placeholder="วันที่เจาะ (ถ้าไม่ใช่วันที่หลัก)" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/3 text-sm" onkeypress="if(event.key === 'Enter') addLab()">
                             <button onclick="addLab()" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 whitespace-nowrap font-medium shadow-sm">เพิ่ม</button>
                         </div>
                         <div id="labTags" class="flex flex-wrap gap-2 mt-3"></div>
                     </div>
-                    <div class="mt-3">
-                        <input type="text" id="hivLabsText" placeholder="หรือพิมพ์ Lab อื่นๆ แบบอิสระเต็มประโยคที่นี่..." class="w-full text-sm rounded-lg border-gray-300 border px-3 py-2 bg-white" oninput="generateOutput()">
-                    </div>
+                    <div class="mt-3"><input type="text" id="hivLabsText" placeholder="หรือพิมพ์ Lab อื่นๆ แบบอิสระเต็มประโยคที่นี่..." class="w-full text-sm rounded-lg border-gray-300 border px-3 py-2 bg-white" oninput="generateOutput()"></div>
                 </div>
 
-                <!-- ข้อมูลยา HIV -->
                 <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
                     <label class="block text-sm font-semibold text-blue-900 mb-3">ข้อมูลยา & การคำนวณ % Adherence</label>
                     <div id="hivDrugsContainer" class="space-y-3 mb-3"></div>
                     <button onclick="addHivDrugRow()" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center mb-4 border border-blue-200">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        เพิ่มรายการยา HIV
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> เพิ่มรายการยา HIV
                     </button>
 
                     <div class="border-t border-blue-200 pt-3">
                         <label class="inline-flex items-center text-sm font-medium text-blue-900 mb-3 bg-white px-3 py-1 rounded-full border border-blue-200 shadow-sm cursor-pointer">
-                            <input type="checkbox" id="hivCalcAdherence" class="form-checkbox text-blue-600 rounded mr-2" onchange="toggleAdherence(); generateOutput()">
-                            ให้ระบบคำนวณ % Adherence อัตโนมัติ
+                            <input type="checkbox" id="hivCalcAdherence" class="form-checkbox text-blue-600 rounded mr-2" onchange="toggleAdherence(); generateOutput()"> ให้ระบบคำนวณ % Adherence อัตโนมัติ
                         </label>
                         <div id="adherenceManualContainer" class="mb-2">
                             <label class="block text-xs text-gray-600 mb-1">Adherence (%) - พิมพ์เอง</label>
@@ -394,7 +385,6 @@
                     </div>
                 </div>
 
-                <!-- การตัดสินใจ -->
                 <div class="bg-yellow-50 p-4 border border-yellow-200 rounded-xl">
                     <label class="block text-sm font-semibold text-yellow-900 mb-3">การจัดการ / แผนการรักษา</label>
                     <div class="flex gap-4 border-b border-yellow-200 pb-3 mb-4">
@@ -417,9 +407,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">การเจาะ Lab ครั้งหน้า</label>
                             <div class="flex gap-2 w-full md:w-1/2">
                                 <select id="hivNextLabSelect" class="rounded-lg border-gray-300 border px-3 py-2" onchange="toggleNextLabInput(); generateOutput()">
-                                    <option value="">-- เลือก --</option>
-                                    <option value="M1">M1</option>
-                                    <option value="other">อื่นๆ (ระบุเอง)</option>
+                                    <option value="">-- เลือก --</option><option value="M1">M1</option><option value="other">อื่นๆ (ระบุเอง)</option>
                                 </select>
                                 <input type="text" id="hivNextLabCustom" placeholder="ระบุ Lab เพิ่มเติม" class="w-full rounded-lg border-gray-300 border px-3 py-2 hidden" oninput="generateOutput()">
                             </div>
@@ -453,6 +441,15 @@
         <!-- Output & Actions -->
         <div class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK)</label>
+            
+            <!-- Checkbox ดึงข้อมูล MR สำหรับ Pre-OP -->
+            <div id="mergeMrOption" class="hidden mb-3 bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="chkMergeMr" class="form-checkbox text-blue-600 h-5 w-5 rounded" onchange="generateOutput()">
+                    <span class="ml-2 font-medium text-blue-800">นำข้อมูลการรับยาจากแท็บ '1. MR' มารวมใน Note ด้วย</span>
+                </label>
+            </div>
+
             <textarea id="outputPmk" rows="12" class="w-full rounded-lg border-gray-300 border px-4 py-3 bg-white font-mono text-sm mb-4 leading-relaxed shadow-inner" readonly placeholder="ข้อความ Pharmacist Note จะค่อยๆ ปรากฏขึ้นที่นี่"></textarea>
             
             <div class="flex flex-wrap gap-4">
@@ -466,9 +463,26 @@
                 </button>
                 <button onclick="sendToGoogleSheet()" id="btnSendDb" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                    3. บันทึกลง Google Sheet อัตโนมัติ
+                    3. บันทึกลง Sheet อัตโนมัติ
+                </button>
+                <!-- ปุ่มพิมพ์ OPD Card -->
+                <button onclick="printOpdCard()" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    4. พิมพ์ OPD Card (A5)
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Layout สำหรับการ Print OPD Card A5 -->
+    <div id="printArea" class="hidden">
+        <div class="print-left"></div>
+        <div class="print-right">
+            <div style="font-weight: bold; font-size: 16pt; margin-bottom: 10px; border-bottom: 2px solid #000; padding-bottom: 5px;">
+                ชื่อ-นามสกุล: <span id="printName"></span><br>
+                HN: <span id="printHn"></span>
+            </div>
+            <div id="printNote" style="white-space: pre-wrap;"></div>
         </div>
     </div>
 
@@ -561,11 +575,9 @@
         </div>
     </div>
 
-    <!-- Notification Toast -->
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
 
     <script>
-        // === ตั้งค่า URL ของ Web App ตรงนี้ ===
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec'; 
 
         // --- PREOP DATABASES ---
@@ -581,7 +593,6 @@
             { id: 'chc_hrt', name: 'ยาคุมกำเนิด / ฮอร์โมนทดแทน', category: 'hormone' }, { id: 'hiv_art', name: 'ยารักษา HIV (ART)', category: 'hiv' }, { id: 'thyroid', name: 'Levothyroxine (Thyroid)', category: 'thyroid' }, { id: 'pde5', name: 'Sildenafil / Tadalafil (PDE5i)', category: 'pde5' }
         ];
 
-        // ฐานข้อมูลรายการหัตถการภาษาไทยฉบับเต็ม
         const procedureDatabase = [
             { name: "Cataract surgery / Glaucoma intervention (ผ่าตัดต้อกระจก, ต้อหิน), ขูดหินปูน, ทำฟันปลอม, รักษารากฟัน, ผ่าตัดเหงือก", risk: "minimal", riskLabel: "Minimal Risk" },
             { name: "Minor dermatologic excision (ตัดไฝ, หูด, มะเร็งผิวหนังขนาดเล็ก, ผ่าตัดผิวหนังส่วนตื้น)", risk: "minimal", riskLabel: "Minimal Risk" },
@@ -593,7 +604,6 @@
             { name: "Incision of abscess (กรีดระบายหนอง)", risk: "minimal", riskLabel: "Minimal Risk" },
             { name: "Endoscopy without surgery/biopsy (ส่องกล้องทางเดินอาหารแบบไม่ตัดชิ้นเนื้อ)", risk: "minimal", riskLabel: "Minimal Risk" },
             { name: "Imaging studies: MRI, CT (การตรวจทางภาพถ่ายรังสี)", risk: "minimal", riskLabel: "Minimal Risk" },
-
             { name: "Arthroscopy (ส่องกล้องข้อเข่า, ข้อไหล่)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
             { name: "Cutaneous / Lymph node biopsy (ตัดชิ้นเนื้อผิวหนัง, ต่อมน้ำเหลือง)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
             { name: "Foot / Hand surgery / Carpal tunnel repair (ผ่าตัดมือ, ผ่าตัดเท้า, ผ่าตัดพังผืดทับเส้นประสาทข้อมือ)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
@@ -613,7 +623,6 @@
             { name: "EPS / RF ablation for SVT (จี้ไฟฟ้าหัวใจเต้นผิดจังหวะชนิดไม่ซับซ้อน)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
             { name: "Peripheral arterial angioplasty / EVAR (ทำบอลลูนหลอดเลือดส่วนปลาย, ซ่อมหลอดเลือดโป่งพองผ่านสายสวน)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
             { name: "Splenectomy (ผ่าตัดม้าม)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
-
             { name: "Major surgery / Extensive tissue injury (ผ่าตัดใหญ่เนื้อเยื่อช้ำมาก)", risk: "high", riskLabel: "High Risk" },
             { name: "Cancer surgery / Solid tumor (ผ่าตัดมะเร็งก้อนโต เช่น ปอด, ลำไส้, ตับอ่อน, เต้านมแบบลุกลาม)", risk: "high", riskLabel: "High Risk" },
             { name: "Major orthopedic / Joint replacement (ผ่าตัดเปลี่ยนข้อเข่า, สะโพก, ไหล่)", risk: "high", riskLabel: "High Risk" },
@@ -636,7 +645,6 @@
             { name: "Cervical/Thoracic/Lumbar epidurals (ฉีดยาบล็อกช่องเหนือไขสันหลัง)", risk: "high", riskLabel: "High Risk" },
             { name: "Trigeminal / Ophthalmic / Sphenopalatine ganglion blocks (ฉีดยาบล็อกเส้นประสาทใบหน้า)", risk: "high", riskLabel: "High Risk" },
             { name: "Peripheral nerve stimulation trial/implant (ฝังเครื่องกระตุ้นเส้นประสาท)", risk: "high", riskLabel: "High Risk" },
-
             { name: "Intracranial surgery / Craniotomy (ผ่าตัดสมอง / เปิดกะโหลกศีรษะ)", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" },
             { name: "Spinal surgery / Spinal canal procedures (ผ่าตัดกระดูกสันหลัง / ไขสันหลัง)", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" },
             { name: "Neuraxial anesthesia (บล็อกหลัง, แทงเข็มไขสันหลัง)", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" },
@@ -654,7 +662,6 @@
 
         // --- Initializers ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Setup Pre-OP Search Listeners
             const drugInput = document.getElementById('drugSearch');
             if(drugInput) {
                 drugInput.addEventListener('focus', () => filterPreopDrugs(true));
@@ -672,7 +679,6 @@
                 if(procInput && !document.getElementById('procedureListContainer').contains(e.target) && e.target !== procInput) { document.getElementById('procedureListContainer').classList.add('hidden'); }
             });
 
-            // Handle Pre-OP Modal Checkboxes (Auto calculate)
             document.querySelectorAll('#chadModal input, #chadModal select').forEach(i => i.addEventListener('change', calculateChad));
             document.querySelectorAll('#capriniModal input').forEach(i => i.addEventListener('change', calculateCaprini));
         });
@@ -684,12 +690,18 @@
             document.getElementById(`tab-${tab}`).classList.add('active');
             ['MR', 'PREOP', 'ADR', 'HIV'].forEach(t => { document.getElementById(`form-${t}`).classList.add('hidden'); });
             document.getElementById(`form-${tab}`).classList.remove('hidden');
+            
+            // Show/Hide MR Merge Checkbox in Pre-OP Tab
+            if (tab === 'PREOP') {
+                document.getElementById('mergeMrOption').classList.remove('hidden');
+            } else {
+                document.getElementById('mergeMrOption').classList.add('hidden');
+            }
+            
             generateOutput();
         }
 
-        function toggleInfo(id) {
-            document.getElementById(id).classList.toggle('hidden');
-        }
+        function toggleInfo(id) { document.getElementById(id).classList.toggle('hidden'); }
 
         // ==========================================
         //         PRE-OP SPECIFIC FUNCTIONS
@@ -800,12 +812,10 @@
             if(show) sec.classList.remove('hidden'); else sec.classList.add('hidden');
         }
 
-        // PRE-OP Calculator Core
         function processResults() {
             const bleedRisk = document.getElementById('bleedingRisk').value;
             const crclInput = document.getElementById('renalFunction').value;
             const crcl = crclInput ? parseInt(crclInput) : 90;
-            const surgDate = document.getElementById('surgeryDate').value;
             
             preopCalculatedNotes = [];
             
@@ -816,7 +826,6 @@
 
             selectedPreopDrugs.forEach(drug => {
                 let note = "";
-                
                 if (drug.id === 'warfarin') {
                     if (bleedRisk === 'minimal') note = `${drug.name}: ไม่ต้องหยุดยา (Continue) เช็ค INR ก่อนทำ 1-2 วัน`;
                     else {
@@ -866,10 +875,7 @@
         }
 
         // Modals Logic
-        function openModal(src) { 
-            document.getElementById('img01').src = src; 
-            document.getElementById('imageModal').style.display='flex'; 
-        }
+        function openModal(src) { document.getElementById('img01').src = src; document.getElementById('imageModal').style.display='flex'; }
         function closeModal() { document.getElementById('imageModal').style.display='none'; }
         
         function openChadModal() { document.getElementById('chadModal').style.display='flex'; calculateChad(); }
@@ -1005,40 +1011,62 @@
             }
         }
 
+        // ฟังก์ชันช่วยดึง Note ของ MR (ใช้ร่วมกันได้ตอน Merge)
+        function getMrNoteArray(excludeSignature = false) {
+            let notes = [];
+            const hasAllergy = document.getElementById('mrAllergyCheck').checked;
+            const herb = document.getElementById('mrHerb').value;
+            const extraNote = document.getElementById('mrExtraNote').value;
+            const pharmName = document.getElementById('mrPharmName').value;
+
+            let hasAnyData = mrSources.some(s => s.place || s.date || s.drugs.some(d => d.trim())) || hasAllergy || herb || pharmName;
+
+            if (hasAnyData) {
+                mrSources.forEach((src) => {
+                    let validDrugs = src.drugs.filter(d => d.trim() !== '');
+                    if (src.place || src.date || validDrugs.length > 0) {
+                        let line = []; if(src.place) line.push(`ผู้ป่วยรับยาจาก ${src.place}`); if(src.date) line.push(`วันที่ ${src.date}`);
+                        if(line.length > 0) notes.push(`- ${line.join(' ')}`);
+                        if (validDrugs.length > 0) { notes.push("รายการยา"); validDrugs.forEach((d, i) => notes.push(`  ${i + 1}. ${d}`)); }
+                    }
+                });
+                let allergyText = hasAllergy ? `แพ้ยา/แพ้อาหาร: ${document.getElementById('mrAllergyDetail').value || 'ไม่ระบุ'}` : `แพ้ยา/แพ้อาหาร: ปฏิเสธ`;
+                let herbText = herb ? `สมุนไพร/อาหารเสริม: ${herb}` : `สมุนไพร/อาหารเสริม: -`;
+                notes.push(`${allergyText} | ${herbText}`);
+                if (extraNote) notes.push(extraNote);
+                if (pharmName && !excludeSignature) notes.push(`/${pharmName}`);
+            }
+            return notes;
+        }
+
         function generateOutput() {
             let notes = [];
             
             if (currentTab === 'MR') {
-                const hasAllergy = document.getElementById('mrAllergyCheck').checked;
-                const herb = document.getElementById('mrHerb').value;
-                const extraNote = document.getElementById('mrExtraNote').value;
-                const pharmName = document.getElementById('mrPharmName').value;
-                let hasAnyData = mrSources.some(s => s.place || s.date || s.drugs.some(d => d.trim())) || hasAllergy || herb || pharmName;
-
-                if (hasAnyData) {
+                let mrNotes = getMrNoteArray(false);
+                if(mrNotes.length > 0) {
                     notes.push("pharmacist note");
-                    mrSources.forEach((src) => {
-                        let validDrugs = src.drugs.filter(d => d.trim() !== '');
-                        if (src.place || src.date || validDrugs.length > 0) {
-                            let line = []; if(src.place) line.push(`ผู้ป่วยรับยาจาก ${src.place}`); if(src.date) line.push(`วันที่ ${src.date}`);
-                            if(line.length > 0) notes.push(`- ${line.join(' ')}`);
-                            if (validDrugs.length > 0) { notes.push("รายการยา"); validDrugs.forEach((d, i) => notes.push(`  ${i + 1}. ${d}`)); }
-                        }
-                    });
-                    let allergyText = hasAllergy ? `แพ้ยา/แพ้อาหาร: ${document.getElementById('mrAllergyDetail').value || 'ไม่ระบุ'}` : `แพ้ยา/แพ้อาหาร: ปฏิเสธ`;
-                    let herbText = herb ? `สมุนไพร/อาหารเสริม: ${herb}` : `สมุนไพร/อาหารเสริม: -`;
-                    notes.push(`${allergyText} | ${herbText}`);
-                    if (extraNote) notes.push(extraNote);
-                    if (pharmName) notes.push(`/${pharmName}`);
+                    notes = notes.concat(mrNotes);
                 }
             } 
             else if (currentTab === 'PREOP') {
+                const isMerge = document.getElementById('chkMergeMr') && document.getElementById('chkMergeMr').checked;
+                
+                if (isMerge) {
+                    let mrNotes = getMrNoteArray(true); // ดึงข้อมูล MR แต่ซ่อนลายเซ็นไว้ก่อน
+                    if (mrNotes.length > 0) {
+                        notes = notes.concat(mrNotes);
+                        notes.push(""); // เคาะบรรทัดว่าง 1 บรรทัด
+                    }
+                }
+
                 const sDate = document.getElementById('surgeryDate').value;
                 const bRisk = document.getElementById('bleedingRisk').options[document.getElementById('bleedingRisk').selectedIndex]?.text;
                 const pharm = document.getElementById('preopPharmName').value;
                 
-                if (preopCalculatedNotes.length > 0 || sDate || bRisk !== '-- เลือกความเสี่ยง --') {
-                    notes.push("pharmacist note");
+                let preopHasData = preopCalculatedNotes.length > 0 || sDate || (bRisk && bRisk !== '-- เลือกความเสี่ยง --');
+                
+                if (preopHasData) {
                     notes.push(`[Pre-OP Assessment]`);
                     if(sDate) {
                         const dateParts = sDate.split('-');
@@ -1055,7 +1083,17 @@
                         notes.push(`รายการยาและคำแนะนำ:`);
                         preopCalculatedNotes.forEach((n, i) => notes.push(`  ${i+1}. ${n}`));
                     }
-                    if (pharm) notes.push(`/${pharm}`);
+                }
+
+                // ใส่ลายเซ็นปิดท้าย
+                if (pharm) {
+                    notes.push(`/${pharm}`);
+                } else if (isMerge && document.getElementById('mrPharmName').value) {
+                    notes.push(`/${document.getElementById('mrPharmName').value}`);
+                }
+
+                if (notes.length > 0) {
+                    notes.unshift("pharmacist note");
                 }
             }
             else if (currentTab === 'ADR') {
@@ -1151,8 +1189,9 @@
                 rowData[7] = '1'; rowData[9] = document.getElementById('adrAssessment').value;
             }
             else if (currentTab === 'PREOP') {
-                rowData[6] = preopCalculatedNotes.join(' | '); // ส่งผลประเมินไปที่ H (Col 6)
-                rowData[11] = document.getElementById('procedureSearch').value; // ส่งชื่อหัตถการไป M (Col 11)
+                rowData[5] = '1'; // Col G = 1
+                rowData[9] = preopCalculatedNotes.join(' | '); // ย้ายรายละเอียดไป Col K
+                rowData[11] = document.getElementById('procedureSearch').value; // ใส่ชื่อหัตถการไป M (Col 11)
             }
             else if (currentTab === 'HIV') {
                 const type = document.querySelector('input[name="hivType"]:checked').value;
@@ -1195,6 +1234,20 @@
             .then(() => { showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!'); })
             .catch(error => { console.error('Error!', error); alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
             .finally(() => { btn.innerHTML = originalHTML; btn.disabled = false; });
+        }
+
+        // ==========================================
+        //         PRINT OPD CARD (A5)
+        // ==========================================
+        function printOpdCard() {
+            document.getElementById('printName').innerText = document.getElementById('ptName').value || '-';
+            document.getElementById('printHn').innerText = document.getElementById('hn').value || '-';
+            document.getElementById('printNote').innerText = document.getElementById('outputPmk').value || 'ไม่มีข้อมูล';
+            
+            const printDiv = document.getElementById('printArea');
+            printDiv.classList.remove('hidden');
+            window.print();
+            printDiv.classList.add('hidden');
         }
 
         function showToast(msg) {
