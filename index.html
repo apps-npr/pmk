@@ -4,19 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OPD Online - Pharmacist Note</title>
+    <!-- Tailwind CSS & Fonts & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         body { font-family: 'Prompt', sans-serif; }
         .tab-btn { transition: all 0.2s ease; }
         .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
         .tab-btn:not(.active) { background-color: #f3f4f6; color: #4b5563; }
         .tab-btn:not(.active):hover { background-color: #e5e7eb; }
+
+        /* --- PRE-OP Styles Converted for Tailwind Compatibility --- */
+        .drug-list-container { max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; margin-top: 5px; background: white; position: absolute; z-index: 10; width: 100%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .drug-item { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f9fafb; transition: background 0.2s; font-size: 0.875rem; }
+        .drug-item:hover { background-color: #eff6ff; }
+        .tag { background-color: #3b82f6; color: white; padding: 5px 12px; border-radius: 9999px; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 8px; margin: 4px; }
+        .tag i { cursor: pointer; }
+        .tag:hover { background-color: #2563eb; }
+        
+        .info-box { background-color: #fefce8; border-left: 4px solid #eab308; padding: 12px; margin-top: 10px; border-radius: 4px; font-size: 0.875rem; }
+        
+        .rec-stop { background-color: #fee2e2; border-left: 4px solid #ef4444; }
+        .rec-continue { background-color: #dcfce7; border-left: 4px solid #22c55e; }
+        .rec-bridge { background-color: #e0f2fe; border-left: 4px solid #0ea5e9; }
+        .recommendation-box { border-radius: 0.5rem; padding: 12px; margin-bottom: 12px; font-size: 0.875rem; }
+        
+        .modal-overlay { display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+        .modal-content-card { background-color: white; border-radius: 0.75rem; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-header { padding: 15px; background-color: #3b82f6; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 15px; overflow-y: auto; font-size: 0.875rem; }
+        .modal-footer { padding: 15px; border-top: 1px solid #e5e7eb; text-align: right; background-color: #f9fafb;}
+        
+        /* Modal Image Zoom */
+        #imageModal .modal-content { max-width: 90%; max-height: 90%; margin: auto; border-radius: 8px; display: block; }
+        #imageModal .modal-close { position: absolute; top: 15px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; }
+        .image-container img { cursor: zoom-in; }
+
+        .risk-category-group { margin-bottom: 10px; border-bottom: 1px dashed #e5e7eb; padding-bottom: 10px; }
+        .risk-title { font-weight: 600; margin-bottom: 5px;}
+        .risk-title.minimal { color: #16a34a; } .risk-title.low-mod { color: #ea580c; } .risk-title.high { color: #dc2626; } .risk-title.critical { color: #991b1b; }
+        .risk-list { list-style-type: disc; padding-left: 20px; margin: 0; font-size: 0.85rem; color: #4b5563;}
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen p-4 md:p-8">
     
-    <!-- ฐานข้อมูลรายชื่อเภสัชกร (สามารถเพิ่ม/แก้ไขตรงนี้ได้เลย) -->
     <datalist id="pharmList">
         <option value="ภญ.นิตยา ภาพสมุทร"></option>
         <option value="ภญ.รัตติยาพร แก้วสุ"></option>
@@ -29,7 +62,7 @@
 
     <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
         
-        <!-- Header & Patient Info -->
+        <!-- Header -->
         <div class="bg-blue-600 p-6 text-white">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-semibold">OPD Online (Pharmacist Note)</h1>
@@ -55,9 +88,7 @@
             <h2 class="text-lg font-medium text-gray-700 mb-3">เลือกคลินิก</h2>
             <div class="flex flex-wrap gap-3">
                 <button onclick="switchTab('MR')" id="tab-MR" class="tab-btn active px-6 py-2 rounded-full font-medium border shadow-sm">1. MR</button>
-                <a href="https://apps-npr.github.io/preop/" target="_blank" class="tab-btn bg-purple-100 text-purple-700 hover:bg-purple-200 border-purple-200 px-6 py-2 rounded-full font-medium border shadow-sm flex items-center">
-                    2. Pre-OP
-                </a>
+                <button onclick="switchTab('PREOP')" id="tab-PREOP" class="tab-btn px-6 py-2 rounded-full font-medium border shadow-sm flex items-center">2. Pre-OP</button>
                 <button onclick="switchTab('ADR')" id="tab-ADR" class="tab-btn px-6 py-2 rounded-full font-medium border shadow-sm">3. ADR/SE</button>
                 <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-6 py-2 rounded-full font-medium border shadow-sm">4. Clinic HIV</button>
             </div>
@@ -68,17 +99,12 @@
             
             <!-- 1. MR Form -->
             <div id="form-MR" class="space-y-4">
+                <!-- เนื้อหาเดิม MR -->
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทการทำ MR</label>
                     <div class="flex gap-6">
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="mrType" value="phone" class="form-radio text-blue-600" onchange="generateOutput()">
-                            <span class="ml-2">จากการโทรสอบถามยาที่อื่น</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="mrType" value="patient" class="form-radio text-blue-600" onchange="generateOutput()">
-                            <span class="ml-2">จากการดูซองยา / สอบถามคนไข้</span>
-                        </label>
+                        <label class="inline-flex items-center"><input type="radio" name="mrType" value="phone" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-2">จากการโทรสอบถามยาที่อื่น</span></label>
+                        <label class="inline-flex items-center"><input type="radio" name="mrType" value="patient" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-2">จากการดูซองยา / สอบถามคนไข้</span></label>
                     </div>
                 </div>
 
@@ -114,8 +140,125 @@
                 </div>
             </div>
 
+            <!-- 2. Pre-OP Form -->
+            <div id="form-PREOP" class="space-y-6 hidden">
+                
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h4 class="font-bold text-yellow-800 mb-2"><i class="fa-solid fa-clipboard-question"></i> Checklist: อย่าลืมถามคนไข้!</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
+                        <label><input type="checkbox" class="mr-1"> กิน<strong>ยาละลายลิ่มเลือด</strong> (Warfarin/DOAC)</label>
+                        <label><input type="checkbox" class="mr-1"> กิน<strong>ยาต้านเกล็ดเลือด</strong> หรือเคยทำบอลลูนหัวใจ</label>
+                        <label><input type="checkbox" class="mr-1"> กิน<strong>อาหารเสริม/สมุนไพร</strong></label>
+                        <label><input type="checkbox" class="mr-1"> กิน<strong>ยาแก้ปวด</strong> บ่อยๆ</label>
+                        <label><input type="checkbox" class="mr-1"> ยา<strong>ลดน้ำหนัก/เบาหวาน</strong> (SGLT2i, GLP-1)</label>
+                        <label><input type="checkbox" class="mr-1"> กิน<strong>ยาจิตเวช/พาร์กินสัน/ยากันชัก</strong></label>
+                        <label><input type="checkbox" class="mr-1"> <strong>ยากดภูมิ/รูมาตอยด์</strong> (DMARDs)</label>
+                        <label><input type="checkbox" class="mr-1"> กิน<strong>ยาคุมกำเนิด/ฮอร์โมน</strong></label>
+                    </div>
+                </div>
+
+                <div class="bg-cyan-100 hover:bg-cyan-200 transition border border-cyan-300 rounded-lg p-4 text-center cursor-pointer shadow-sm" onclick="openCapriniModal()">
+                    <h3 class="text-cyan-800 font-bold m-0"><i class="fa-solid fa-calculator"></i> ประเมินความเสี่ยง VTE (Caprini Score) คลิก!</h3>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">1. ข้อมูลการผ่าตัด (Surgery Info)</h3>
+                    
+                    <div class="mb-4 bg-gray-50 p-2 rounded flex justify-center">
+                        <img src="risk.png" alt="ตารางความเสี่ยงรวม" class="rounded max-w-full h-auto cursor-zoom-in shadow-sm" style="max-height: 150px;" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                    </div>
+
+                    <div class="mb-4 relative">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            ค้นหาหัตถการ <i class="fa-solid fa-circle-info text-blue-500 cursor-pointer ml-1" onclick="toggleInfo('bleed-risk-info')" title="คลิกดูตาราง"></i>
+                        </label>
+                        <input type="text" id="procedureSearch" class="w-full rounded-lg border-gray-300 border px-3 py-2 pl-10" placeholder="พิมพ์ชื่อหัตถการ..." autocomplete="off">
+                        <i class="fa-solid fa-search absolute left-3 top-9 text-gray-400"></i>
+                        <div id="procedureListContainer" class="drug-list-container hidden"></div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ความเสี่ยงเลือดออก (Bleeding Risk)</label>
+                        <select id="bleedingRisk" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" onchange="generateOutput()">
+                            <option value="" disabled selected>-- เลือกความเสี่ยง --</option>
+                            <option value="minimal">Minimal Risk (เสี่ยงน้อยมาก)</option>
+                            <option value="low-mod">Low/Moderate Risk (เสี่ยงปานกลาง)</option>
+                            <option value="high">High Risk (เสี่ยงสูง)</option>
+                            <option value="neuro-spine">Neuroaxial/Critical Site (ห้ามเลือดออกเด็ดขาด)</option>
+                        </select>
+                        
+                        <div id="bleed-risk-info" class="info-box hidden mt-2">
+                            <h4 class="font-bold mb-2">Procedural Bleeding Risk</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="risk-category-group">
+                                    <h5 class="risk-title minimal">Minimal Risk</h5>
+                                    <ul class="risk-list"><li>Cataract</li><li>Minor dental</li><li>Minor excisions</li></ul>
+                                </div>
+                                <div class="risk-category-group">
+                                    <h5 class="risk-title low-mod">Low/Moderate Risk</h5>
+                                    <ul class="risk-list"><li>Laparoscopic Chole.</li><li>Hernia Repair</li><li>Endoscopy + biopsy</li></ul>
+                                </div>
+                                <div class="risk-category-group">
+                                    <h5 class="risk-title high">High Risk</h5>
+                                    <ul class="risk-list"><li>Major Abdominal</li><li>Major Ortho</li><li>CABG</li></ul>
+                                </div>
+                                <div class="risk-category-group">
+                                    <h5 class="risk-title critical">Critical Site</h5>
+                                    <ul class="risk-list"><li>Intracranial</li><li>Spinal</li><li>Posterior eye</li></ul>
+                                </div>
+                            </div>
+                            <img src="table_bleeding_risk.png" class="mt-2 w-full rounded cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">การทำงานของไต (CrCl) <span class="text-red-500 text-xs">*สำคัญ</span></label>
+                            <input type="number" id="renalFunction" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="ml/min (Default 90)" oninput="processResults()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">วันที่ผ่าตัด</label>
+                            <input type="text" id="surgeryDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">2. ยาที่ผู้ป่วยใช้ (Current Meds)</h3>
+                    <div class="relative mb-3">
+                        <input type="text" id="drugSearch" class="w-full rounded-lg border-gray-300 border px-3 py-2 pl-10" placeholder="พิมพ์ค้นหายา (เช่น Warfarin, Aspirin)" autocomplete="off">
+                        <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400"></i>
+                        <div id="drugListContainer" class="drug-list-container hidden"></div>
+                    </div>
+                    <div id="selectedDrugsArea" class="hidden bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <div id="selectedTags" class="flex flex-wrap"></div>
+                    </div>
+                </div>
+
+                <div id="step-3" class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hidden">
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">3. ข้อมูลยาเพิ่มเติม</h3>
+                    <div id="dynamicQuestions" class="space-y-4"></div>
+                </div>
+
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-100" onclick="toggleInfo('risk-advice-content')">
+                    <h3 class="font-medium text-sm text-gray-700"><i class="fa-solid fa-heart-pulse"></i> ข้อมูลเพิ่มเติม: RCRI Score <i class="fa-solid fa-chevron-down ml-1"></i></h3>
+                    <div id="risk-advice-content" class="hidden mt-3 text-xs text-gray-600">
+                        <img src="rcri.png" alt="RCRI Score" class="w-full max-w-sm rounded mt-2 cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก Pre-OP</label>
+                    <input type="text" id="preopPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                </div>
+
+                <!-- ไม่ต้องมีปุ่มประมวลผลแยก เพราะเดี๋ยวจะให้รัน Auto เข้า PMK Note เลย -->
+                <div id="resultContent" class="hidden"></div>
+            </div>
+
             <!-- 3. ADR Form -->
             <div id="form-ADR" class="space-y-4 hidden">
+                <!-- เนื้อหาเดิม ADR -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ป่วยรับยาจาก</label>
@@ -142,8 +285,7 @@
 
             <!-- 4. HIV Form -->
             <div id="form-HIV" class="space-y-6 hidden">
-                
-                <!-- CD4 & VL -->
+                <!-- เนื้อหาเดิม HIV -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
                         <label class="block text-sm font-medium text-gray-700 mb-2">CD4 (%CD4)</label>
@@ -173,11 +315,9 @@
                     </div>
                 </div>
 
-                <!-- Labs -->
                 <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-2">
                         <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab</label>
-                        
                         <div class="flex items-center text-sm bg-white px-2 py-1.5 rounded border border-indigo-200">
                             <span class="mr-2 text-gray-600">วันที่ Lab หลัก:</span>
                             <select id="hivLabDateRef" class="border-none text-indigo-700 focus:ring-0 cursor-pointer font-medium" onchange="toggleLabDateCustom(); generateOutput()">
@@ -220,23 +360,18 @@
                             </select>
                             <input type="text" id="labValue" placeholder="ผลเลือด" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/4" onkeypress="if(event.key === 'Enter') addLab()">
                             <input type="text" id="labSpecificDate" placeholder="วันที่เจาะ (เว้นว่างเพื่อใช้วันที่หลัก)" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/3 text-sm" onkeypress="if(event.key === 'Enter') addLab()">
-                            
                             <button onclick="addLab()" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 whitespace-nowrap font-medium shadow-sm">เพิ่ม</button>
                         </div>
                         <div id="labTags" class="flex flex-wrap gap-2 mt-3"></div>
                     </div>
-                    
                     <div class="mt-3">
                         <input type="text" id="hivLabsText" placeholder="หรือพิมพ์ Lab อื่นๆ แบบอิสระเต็มประโยคที่นี่..." class="w-full text-sm rounded-lg border-gray-300 border px-3 py-2 bg-white" oninput="generateOutput()">
                     </div>
                 </div>
 
-                <!-- ข้อมูลยา HIV -->
                 <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
                     <label class="block text-sm font-semibold text-blue-900 mb-3">ข้อมูลยา & การคำนวณ % Adherence</label>
-                    
                     <div id="hivDrugsContainer" class="space-y-3 mb-3"></div>
-                    
                     <button onclick="addHivDrugRow()" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center mb-4 border border-blue-200">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         เพิ่มรายการยา HIV
@@ -247,30 +382,18 @@
                             <input type="checkbox" id="hivCalcAdherence" class="form-checkbox text-blue-600 rounded mr-2" onchange="toggleAdherence(); generateOutput()">
                             ให้ระบบคำนวณ % Adherence อัตโนมัติ
                         </label>
-                        
                         <div id="adherenceManualContainer" class="mb-2">
                             <label class="block text-xs text-gray-600 mb-1">Adherence (%) - พิมพ์เอง</label>
                             <input type="text" id="hivManualAdherence" value="100%" class="w-full md:w-1/3 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                         </div>
-
                         <div id="adherenceAutoContainer" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-3 rounded-lg border border-blue-100">
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">นัดกี่วัน?</label>
-                                <input type="number" id="hivDays" placeholder="เช่น 180" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-500 mb-1">ทานรวมกี่มื้อต่อวัน?</label>
-                                <input type="number" id="hivDoses" placeholder="เช่น 1" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-red-500 mb-1">ลืมไปกี่มื้อ?</label>
-                                <input type="number" id="hivMissed" placeholder="เช่น 0" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
-                            </div>
+                            <div><label class="block text-xs text-gray-500 mb-1">นัดกี่วัน?</label><input type="number" id="hivDays" placeholder="เช่น 180" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
+                            <div><label class="block text-xs text-gray-500 mb-1">ทานรวมกี่มื้อต่อวัน?</label><input type="number" id="hivDoses" placeholder="เช่น 1" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
+                            <div><label class="block text-xs text-red-500 mb-1">ลืมไปกี่มื้อ?</label><input type="number" id="hivMissed" placeholder="เช่น 0" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- การตัดสินใจ -->
                 <div class="bg-yellow-50 p-4 border border-yellow-200 rounded-xl">
                     <label class="block text-sm font-semibold text-yellow-900 mb-3">การจัดการ / แผนการรักษา</label>
                     <div class="flex gap-4 border-b border-yellow-200 pb-3 mb-4">
@@ -284,17 +407,10 @@
                         </label>
                     </div>
 
-                    <!-- Section: เติมยาให้แพทย์ (Refill) -->
                     <div id="hivRefillSection" class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">RM วันที่</label>
-                                <input type="text" id="hivRmDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">จำนวน (เดือน)</label>
-                                <input type="text" id="hivRmMonths" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น 6" oninput="generateOutput()">
-                            </div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">RM วันที่</label><input type="text" id="hivRmDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()"></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">จำนวน (เดือน)</label><input type="text" id="hivRmMonths" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น 6" oninput="generateOutput()"></div>
                         </div>
                         <div class="mb-3">
                             <label class="block text-sm font-medium text-gray-700 mb-1">การเจาะ Lab ครั้งหน้า</label>
@@ -313,34 +429,15 @@
                         </div>
                     </div>
 
-                    <!-- Section: ส่งพบแพทย์ (Refer) -->
                     <div id="hivReferSection" class="hidden bg-red-50 p-4 rounded-lg border border-red-200 shadow-sm">
                         <label class="block text-sm font-medium text-red-800 mb-3">ปรึกษาแพทย์เรื่องมีความผิดปกติของ (ติ๊กเลือกเพื่อกรอกรายละเอียด)</label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="inline-flex items-center mb-1"><input type="checkbox" id="chkHt" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Ht'); generateOutput()"><span class="ml-2 font-medium">Ht (ความดัน)</span></label>
-                                <input type="text" id="txtHt" placeholder="เช่น BP 150/90" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
-                            </div>
-                            <div>
-                                <label class="inline-flex items-center mb-1"><input type="checkbox" id="chkDm" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Dm'); generateOutput()"><span class="ml-2 font-medium">DM (เบาหวาน)</span></label>
-                                <input type="text" id="txtDm" placeholder="เช่น FBS สูง" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
-                            </div>
-                            <div>
-                                <label class="inline-flex items-center mb-1"><input type="checkbox" id="chkDlp" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Dlp'); generateOutput()"><span class="ml-2 font-medium">DLP (ไขมัน)</span></label>
-                                <input type="text" id="txtDlp" placeholder="เช่น LDL สูง" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
-                            </div>
-                            <div>
-                                <label class="inline-flex items-center mb-1"><input type="checkbox" id="chkLiver" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Liver'); generateOutput()"><span class="ml-2 font-medium">Liver (ตับ)</span></label>
-                                <input type="text" id="txtLiver" placeholder="เช่น AST, ALT ผิดปกติ" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
-                            </div>
-                            <div>
-                                <label class="inline-flex items-center mb-1"><input type="checkbox" id="chkCkd" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Ckd'); generateOutput()"><span class="ml-2 font-medium">CKD (ไต)</span></label>
-                                <input type="text" id="txtCkd" placeholder="เช่น Scr พุ่ง" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
-                            </div>
-                            <div>
-                                <label class="inline-flex items-center mb-1"><input type="checkbox" id="chkAnemia" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Anemia'); generateOutput()"><span class="ml-2 font-medium">CBC / Anemia</span></label>
-                                <input type="text" id="txtAnemia" placeholder="เช่น Hct ต่ำ" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()">
-                            </div>
+                            <div><label class="inline-flex items-center mb-1"><input type="checkbox" id="chkHt" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Ht'); generateOutput()"><span class="ml-2 font-medium">Ht (ความดัน)</span></label><input type="text" id="txtHt" placeholder="เช่น BP 150/90" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()"></div>
+                            <div><label class="inline-flex items-center mb-1"><input type="checkbox" id="chkDm" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Dm'); generateOutput()"><span class="ml-2 font-medium">DM (เบาหวาน)</span></label><input type="text" id="txtDm" placeholder="เช่น FBS สูง" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()"></div>
+                            <div><label class="inline-flex items-center mb-1"><input type="checkbox" id="chkDlp" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Dlp'); generateOutput()"><span class="ml-2 font-medium">DLP (ไขมัน)</span></label><input type="text" id="txtDlp" placeholder="เช่น LDL สูง" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()"></div>
+                            <div><label class="inline-flex items-center mb-1"><input type="checkbox" id="chkLiver" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Liver'); generateOutput()"><span class="ml-2 font-medium">Liver (ตับ)</span></label><input type="text" id="txtLiver" placeholder="เช่น AST, ALT ผิดปกติ" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()"></div>
+                            <div><label class="inline-flex items-center mb-1"><input type="checkbox" id="chkCkd" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Ckd'); generateOutput()"><span class="ml-2 font-medium">CKD (ไต)</span></label><input type="text" id="txtCkd" placeholder="เช่น Scr พุ่ง" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()"></div>
+                            <div><label class="inline-flex items-center mb-1"><input type="checkbox" id="chkAnemia" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('Anemia'); generateOutput()"><span class="ml-2 font-medium">CBC / Anemia</span></label><input type="text" id="txtAnemia" placeholder="เช่น Hct ต่ำ" class="w-full text-sm rounded border-gray-300 px-2 py-1 hidden" oninput="generateOutput()"></div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ส่งปรึกษา</label>
@@ -348,11 +445,11 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+
         </div>
 
-        <!-- Output & Actions -->
+        <!-- Output & Actions (ใช้ร่วมกันทุก Tab) -->
         <div class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK)</label>
             <textarea id="outputPmk" rows="12" class="w-full rounded-lg border-gray-300 border px-4 py-3 bg-white font-mono text-sm mb-4 leading-relaxed shadow-inner" readonly placeholder="ข้อความ Pharmacist Note จะค่อยๆ ปรากฏขึ้นที่นี่"></textarea>
@@ -374,31 +471,381 @@
         </div>
     </div>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-        คัดลอกข้อมูลเรียบร้อยแล้ว!
+    <!-- Modals (Caprini, CHADs2, Images) -->
+    <div id="imageModal" class="modal-overlay" onclick="closeModal()">
+        <span class="modal-close" style="position:absolute; top:20px; right:30px; font-size:40px; color:white; cursor:pointer;">&times;</span>
+        <img class="modal-content rounded-lg max-w-full max-h-full" id="img01">
     </div>
+
+    <div id="chadModal" class="modal-overlay">
+        <div class="modal-content-card">
+            <div class="modal-header">
+                <h3>🧮 CHA2DS2-VASc</h3>
+                <span class="modal-close-btn" onclick="closeChadModal()">&times;</span>
+            </div>
+            <div class="modal-body space-y-2">
+                <label class="block"><input type="checkbox" id="c_chf" value="1"> Congestive Heart Failure (+1)</label>
+                <label class="block"><input type="checkbox" id="c_ht" value="1"> Hypertension (+1)</label>
+                <div>
+                    <label class="font-bold text-sm">Age (อายุ):</label>
+                    <select id="c_age" class="w-full border rounded p-1">
+                        <option value="0">< 65 ปี (0)</option><option value="1">65 - 74 ปี (+1)</option><option value="2">≥ 75 ปี (+2)</option>
+                    </select>
+                </div>
+                <label class="block"><input type="checkbox" id="c_dm" value="1"> Diabetes Mellitus (+1)</label>
+                <label class="block"><input type="checkbox" id="c_stroke" value="2"> Stroke/TIA/Thromboembolism (+2)</label>
+                <label class="block"><input type="checkbox" id="c_vasc" value="1"> Vascular Disease (MI, PAD) (+1)</label>
+                <div>
+                    <label class="font-bold text-sm">Sex:</label>
+                    <select id="c_sex" class="w-full border rounded p-1">
+                        <option value="0">Male (0)</option><option value="1">Female (+1)</option>
+                    </select>
+                </div>
+                <hr>
+                <div class="text-center font-bold text-xl text-blue-600">Score: <span id="chadScoreTotal">0</span></div>
+                <p id="chadAdvice" class="text-center text-sm text-gray-500">ความเสี่ยง: Low</p>
+            </div>
+            <div class="modal-footer"><button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="applyChadScore()">ยืนยัน (Apply)</button></div>
+        </div>
+    </div>
+
+    <div id="capriniModal" class="modal-overlay">
+        <div class="modal-content-card" style="max-width: 500px;">
+            <div class="modal-header" style="background-color: #0891b2;">
+                <h3>🩸 Caprini VTE Risk Score</h3>
+                <span class="modal-close-btn" onclick="closeCapriniModal()">&times;</span>
+            </div>
+            <div class="modal-body space-y-4">
+                <div><label class="text-red-500 font-bold">1 คะแนน</label>
+                    <div class="ml-4 text-sm space-y-1">
+                        <label class="block"><input type="checkbox" class="caprini-1"> อายุ 41-60 ปี</label>
+                        <label class="block"><input type="checkbox" class="caprini-1"> ผ่าตัดเล็ก (< 45 นาที)</label>
+                        <label class="block"><input type="checkbox" class="caprini-1"> BMI ≥ 25</label>
+                        <label class="block"><input type="checkbox" class="caprini-1"> ขาบวม/เส้นเลือดขอด</label>
+                        <label class="block"><input type="checkbox" class="caprini-1"> ตั้งครรภ์/คลอด/แท้ง</label>
+                        <label class="block"><input type="checkbox" class="caprini-1"> หัวใจล้มเหลว (CHF)/ปอดอักเสบ</label>
+                    </div>
+                </div>
+                <hr>
+                <div><label class="text-red-500 font-bold">2 คะแนน</label>
+                    <div class="ml-4 text-sm space-y-1">
+                        <label class="block"><input type="checkbox" class="caprini-2"> อายุ 61-74 ปี</label>
+                        <label class="block"><input type="checkbox" class="caprini-2"> ผ่าตัดใหญ่ (> 45 นาที)</label>
+                        <label class="block"><input type="checkbox" class="caprini-2"> ติดเตียง > 72 ชม.</label>
+                        <label class="block"><input type="checkbox" class="caprini-2"> ใส่เฝือกขา / Central venous</label>
+                    </div>
+                </div>
+                <hr>
+                <div><label class="text-red-500 font-bold">3 คะแนน</label>
+                    <div class="ml-4 text-sm space-y-1">
+                        <label class="block"><input type="checkbox" class="caprini-3"> อายุ ≥ 75 ปี</label>
+                        <label class="block"><input type="checkbox" class="caprini-3"> ประวัติ DVT/PE</label>
+                        <label class="block"><input type="checkbox" class="caprini-3"> Thrombophilia</label>
+                    </div>
+                </div>
+                <hr>
+                <div><label class="text-red-500 font-bold">5 คะแนน</label>
+                    <div class="ml-4 text-sm space-y-1">
+                        <label class="block"><input type="checkbox" class="caprini-5"> เปลี่ยนข้อเข่า/ข้อสะโพก</label>
+                        <label class="block"><input type="checkbox" class="caprini-5"> เชิงกราน/ต้นขาหัก</label>
+                        <label class="block"><input type="checkbox" class="caprini-5"> Stroke/ไขสันหลังบาดเจ็บ</label>
+                        <label class="block"><input type="checkbox" class="caprini-5"> Multiple trauma</label>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-center font-bold text-2xl text-cyan-600">Score: <span id="capriniScoreTotal">0</span></div>
+                <p id="capriniAdvice" class="text-center text-sm text-gray-500">Low Risk</p>
+            </div>
+            <div class="modal-footer"><button class="bg-cyan-600 text-white px-4 py-2 rounded" onclick="closeCapriniModal()">ปิด</button></div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
 
     <script>
         // === ตั้งค่า URL ของ Web App ตรงนี้ ===
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec'; 
-        // ===================================
 
+        // --- PREOP DATABASES ---
+        const drugDatabase = [
+            { id: 'warfarin', name: 'Warfarin (Coumadin)', category: 'anticoagulant' }, { id: 'apixaban', name: 'Apixaban (Eliquis)', category: 'doac' }, { id: 'rivaroxaban', name: 'Rivaroxaban (Xarelto)', category: 'doac' }, { id: 'dabigatran', name: 'Dabigatran (Pradaxa)', category: 'doac_dabi' }, { id: 'edoxaban', name: 'Edoxaban (Lixiana)', category: 'doac' },
+            { id: 'aspirin', name: 'Aspirin (ASA)', category: 'antiplatelet' }, { id: 'clopidogrel', name: 'Clopidogrel (Plavix)', category: 'antiplatelet' }, { id: 'ticagrelor', name: 'Ticagrelor (Brilinta)', category: 'antiplatelet' }, { id: 'prasugrel', name: 'Prasugrel (Effient)', category: 'antiplatelet' }, { id: 'cilostazol', name: 'Cilostazol (Pletaal)', category: 'antiplatelet' },
+            { id: 'dapagliflozin', name: 'Dapagliflozin (Forxiga)', category: 'sglt2' }, { id: 'empagliflozin', name: 'Empagliflozin (Jardiance)', category: 'sglt2' }, { id: 'canagliflozin', name: 'Canagliflozin (Invokana)', category: 'sglt2' }, { id: 'ertugliflozin', name: 'Ertugliflozin (Steglatro)', category: 'sglt2_4d' }, { id: 'semaglutide_inj', name: 'Semaglutide Inj. (Ozempic/Wegovy)', category: 'glp1_weekly' }, { id: 'dulaglutide', name: 'Dulaglutide (Trulicity)', category: 'glp1_weekly' }, { id: 'tirzepatide', name: 'Tirzepatide (Mounjaro)', category: 'glp1_weekly' }, { id: 'liraglutide', name: 'Liraglutide (Victoza/Saxenda)', category: 'glp1_daily' }, { id: 'metformin', name: 'Metformin', category: 'dm_oral' }, { id: 'sulfonylurea', name: 'Sulfonylureas (Glipizide/Glibenclamide)', category: 'dm_oral' },
+            { id: 'acei', name: 'ACE Inhibitors (Enalapril/Lisinopril)', category: 'raas_inhibitor' }, { id: 'arb', name: 'ARBs (Losartan/Valsartan)', category: 'raas_inhibitor' }, { id: 'betablocker', name: 'Beta-blockers (Atenolol/Bisoprolol)', category: 'betablocker' }, { id: 'diuretic', name: 'Diuretics (Furosemide/HCTZ)', category: 'diuretic' }, { id: 'statin', name: 'Statins (Atorvastatin/Simvastatin)', category: 'statin' },
+            { id: 'nsaid_short', name: 'Ibuprofen / Diclofenac', category: 'nsaid_short' }, { id: 'nsaid_med', name: 'Naproxen / Meloxicam', category: 'nsaid_med' }, { id: 'nsaid_long', name: 'Piroxicam', category: 'nsaid_long' }, { id: 'cox2', name: 'Celecoxib / Etoricoxib', category: 'nsaid_cox2' },
+            { id: 'herb_bleed', name: 'Fish Oil / Ginkgo / Garlic', category: 'herbal_bleed' }, { id: 'herb_cns', name: 'Kava / Valerian / St. John\'s Wort', category: 'herbal_cns' }, { id: 'herb_thai', name: 'กระชายดำ / ขมิ้นชัน / ฟ้าทะลายโจร', category: 'herbal_thai' },
+            { id: 'maoi', name: 'MAOIs (Phenelzine)', category: 'maoi' }, { id: 'selegiline', name: 'Selegiline (< 10 mg/day)', category: 'selegiline' }, { id: 'lithium', name: 'Lithium', category: 'lithium' }, { id: 'parkinson', name: 'Levodopa / Amantadine', category: 'parkinson' }, { id: 'ssri_tca', name: 'SSRIs / TCAs', category: 'ssri_tca' },
+            { id: 'dmard_conv', name: 'csDMARDs (Methotrexate/Sulfasalazine)', category: 'dmard_conv' }, { id: 'biologic_eta', name: 'Etanercept (Enbrel)', category: 'biologic_1_2w' }, { id: 'biologic_ada', name: 'Adalimumab (Humira)', category: 'biologic_2_3w' }, { id: 'jak_inhibitor', name: 'JAK Inhibitors', category: 'jak_inhibitor' },
+            { id: 'chc_hrt', name: 'ยาคุมกำเนิด / ฮอร์โมนทดแทน', category: 'hormone' }, { id: 'hiv_art', name: 'ยารักษา HIV (ART)', category: 'hiv' }, { id: 'thyroid', name: 'Levothyroxine (Thyroid)', category: 'thyroid' }, { id: 'pde5', name: 'Sildenafil / Tadalafil (PDE5i)', category: 'pde5' }
+        ];
+
+        const procedureDatabase = [
+            { name: "Cataract surgery / Glaucoma intervention", risk: "minimal", riskLabel: "Minimal Risk" }, { name: "Minor dermatologic excision", risk: "minimal", riskLabel: "Minimal Risk" }, { name: "Pacemaker / ICD implant", risk: "minimal", riskLabel: "Minimal Risk" }, { name: "Joint injections / Arthrocentesis", risk: "minimal", riskLabel: "Minimal Risk" }, { name: "Endoscopy without surgery/biopsy", risk: "minimal", riskLabel: "Minimal Risk" },
+            { name: "Arthroscopy", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Cutaneous / Lymph node biopsy", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Gastroscopy / Colonoscopy + biopsy", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Abdominal hysterectomy / D&C", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Laparoscopic Cholecystectomy", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Hernia repair", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Dental extraction ≥ 3 teeth", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Major surgery / Cancer surgery", risk: "high", riskLabel: "High Risk" }, { name: "Major orthopedic (Hip/Knee)", risk: "high", riskLabel: "High Risk" }, { name: "Major thoracic / Vascular surgery", risk: "high", riskLabel: "High Risk" }, { name: "TURP / Nephrectomy", risk: "high", riskLabel: "High Risk" }, { name: "Bowel resection", risk: "high", riskLabel: "High Risk" }, { name: "Cardiac surgery / CABG", risk: "high", riskLabel: "High Risk" },
+            { name: "Intracranial surgery / Craniotomy", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" }, { name: "Spinal surgery", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" }, { name: "Neuraxial anesthesia (บล็อกหลัง)", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" }, { name: "Posterior eye surgery", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" }
+        ];
+
+        let selectedPreopDrugs = [];
+        let preopCalculatedNotes = [];
+
+        // --- Core Application State ---
         let currentTab = 'MR';
         let mrSources = [ { place: '', date: '', drugs: [""] } ];
         let selectedLabs = []; 
         let hivDrugs = [ { name: '', usage: '', time: '' } ]; 
 
+        // --- Initializers ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup Pre-OP Search Listeners
+            const drugInput = document.getElementById('drugSearch');
+            if(drugInput) {
+                drugInput.addEventListener('focus', () => filterPreopDrugs(true));
+                drugInput.addEventListener('click', () => filterPreopDrugs(true));
+                drugInput.addEventListener('keyup', () => filterPreopDrugs(false));
+            }
+            const procInput = document.getElementById('procedureSearch');
+            if(procInput) {
+                procInput.addEventListener('focus', () => filterPreopProcedures(true));
+                procInput.addEventListener('click', () => filterPreopProcedures(true));
+                procInput.addEventListener('keyup', () => filterPreopProcedures(false));
+            }
+            document.addEventListener('click', (e) => {
+                if(drugInput && !document.getElementById('drugListContainer').contains(e.target) && e.target !== drugInput) { document.getElementById('drugListContainer').classList.add('hidden'); }
+                if(procInput && !document.getElementById('procedureListContainer').contains(e.target) && e.target !== procInput) { document.getElementById('procedureListContainer').classList.add('hidden'); }
+            });
+
+            // Handle Pre-OP Modal Checkboxes (Auto calculate)
+            document.querySelectorAll('#chadModal input, #chadModal select').forEach(i => i.addEventListener('change', calculateChad));
+            document.querySelectorAll('#capriniModal input').forEach(i => i.addEventListener('change', calculateCaprini));
+        });
+
+        // --- Tabs ---
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`tab-${tab}`).classList.add('active');
-            ['MR', 'ADR', 'HIV'].forEach(t => { document.getElementById(`form-${t}`).classList.add('hidden'); });
+            ['MR', 'PREOP', 'ADR', 'HIV'].forEach(t => { document.getElementById(`form-${t}`).classList.add('hidden'); });
             document.getElementById(`form-${tab}`).classList.remove('hidden');
             generateOutput();
         }
 
-        // --- MR ---
+        function toggleInfo(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        // ==========================================
+        //         PRE-OP SPECIFIC FUNCTIONS
+        // ==========================================
+        
+        function filterPreopProcedures(showAll=false) {
+            const input = document.getElementById('procedureSearch').value.toLowerCase();
+            const list = document.getElementById('procedureListContainer');
+            list.innerHTML = ''; list.classList.remove('hidden');
+            const filtered = showAll && input === '' ? procedureDatabase : procedureDatabase.filter(p => p.name.toLowerCase().includes(input));
+            if(filtered.length===0){ list.innerHTML='<div class="drug-item text-gray-400">ไม่พบหัตถการ เลือกจากเมนูด้านล่างแทน</div>'; return; }
+            filtered.forEach(p => {
+                const div = document.createElement('div'); div.className = 'drug-item';
+                let c = p.risk==='minimal'?'#16a34a':p.risk==='low-mod'?'#ea580c':p.risk==='high'?'#dc2626':'#991b1b';
+                div.innerHTML = `<strong>${p.name}</strong><br><span style="color:${c}; font-size:0.75rem;"><i class="fa-solid fa-flag"></i> ${p.riskLabel}</span>`;
+                div.onclick = () => {
+                    document.getElementById('procedureSearch').value = p.name;
+                    document.getElementById('bleedingRisk').value = p.risk;
+                    list.classList.add('hidden');
+                    processResults();
+                };
+                list.appendChild(div);
+            });
+        }
+
+        function filterPreopDrugs(showAll=false) {
+            const input = document.getElementById('drugSearch').value.toLowerCase();
+            const list = document.getElementById('drugListContainer');
+            list.innerHTML = ''; list.classList.remove('hidden');
+            const filtered = showAll && input === '' ? drugDatabase : drugDatabase.filter(d => d.name.toLowerCase().includes(input));
+            if(filtered.length===0){ list.innerHTML='<div class="drug-item text-gray-400">ไม่พบชื่อยา</div>'; return; }
+            filtered.forEach(d => {
+                const div = document.createElement('div'); div.className = 'drug-item'; div.innerText = d.name;
+                div.onclick = () => {
+                    if(!selectedPreopDrugs.find(x => x.id === d.id)){
+                        selectedPreopDrugs.push(d);
+                        renderSelectedPreopDrugs();
+                        checkPreopSpecificQuestions();
+                        processResults();
+                    }
+                    document.getElementById('drugSearch').value = '';
+                    list.classList.add('hidden');
+                };
+                list.appendChild(div);
+            });
+        }
+
+        function removePreopDrug(id) {
+            selectedPreopDrugs = selectedPreopDrugs.filter(d => d.id !== id);
+            renderSelectedPreopDrugs();
+            checkPreopSpecificQuestions();
+            processResults();
+        }
+
+        function renderSelectedPreopDrugs() {
+            const c = document.getElementById('selectedTags');
+            const a = document.getElementById('selectedDrugsArea');
+            c.innerHTML = '';
+            if(selectedPreopDrugs.length > 0) a.classList.remove('hidden'); else a.classList.add('hidden');
+            selectedPreopDrugs.forEach(d => {
+                c.innerHTML += `<div class="tag">${d.name} <i class="fa-solid fa-times" onclick="removePreopDrug('${d.id}')"></i></div>`;
+            });
+        }
+
+        function checkPreopSpecificQuestions() {
+            const c = document.getElementById('dynamicQuestions');
+            const sec = document.getElementById('step-3');
+            c.innerHTML = ''; let show = false;
+
+            if(selectedPreopDrugs.find(d => d.id === 'warfarin')){
+                show = true;
+                c.innerHTML += `
+                    <div class="bg-red-50 border border-red-200 p-4 rounded-lg">
+                        <h4 class="font-bold text-red-800 mb-2"><i class="fa-solid fa-heart-crack"></i> Warfarin: Thrombotic Risk</h4>
+                        <div class="text-sm space-y-1 mb-2">
+                            <label class="font-bold text-red-600 block">Mechanical Heart Valve:</label>
+                            <label><input type="checkbox" id="war_mech_mitral" onchange="processResults()"> ลิ้นหัวใจเทียมตำแหน่ง Mitral</label><br>
+                            <label><input type="checkbox" id="war_mech_aortic" onchange="processResults()"> ลิ้นหัวใจเทียมตำแหน่ง Aortic รุ่นเก่า</label><br>
+                            <label><input type="checkbox" id="war_mech_stroke" onchange="processResults()"> เคยมี Stroke/TIA ภายใน 6 เดือน</label>
+                        </div>
+                        <div class="text-sm space-y-1 mb-2">
+                            <label class="font-bold text-red-600 block">AF <button class="ml-2 bg-cyan-600 text-white px-2 py-0.5 rounded text-xs" onclick="openChadModal()"><i class="fa-solid fa-calculator"></i> คำนวณ</button></label>
+                            <label><input type="checkbox" id="war_af_high" onchange="processResults()"> CHA2DS2-VASc score ≥ 7</label><br>
+                            <label><input type="checkbox" id="war_af_stroke" onchange="processResults()"> เคยมี Stroke/TIA ภายใน 3 เดือน</label><br>
+                            <label><input type="checkbox" id="war_af_rheumatic" onchange="processResults()"> เป็น Rheumatic Heart Disease</label>
+                        </div>
+                        <div class="text-sm space-y-1">
+                            <label class="font-bold text-red-600 block">VTE (DVT/PE)</label>
+                            <label><input type="checkbox" id="war_vte_recent" onchange="processResults()"> เพิ่งเป็น VTE ภายใน 3 เดือน</label><br>
+                            <label><input type="checkbox" id="war_vte_severe" onchange="processResults()"> มีภาวะ Severe Thrombophilia</label>
+                        </div>
+                    </div>
+                `;
+            }
+            if(selectedPreopDrugs.find(d => d.category === 'raas_inhibitor')){
+                show = true;
+                c.innerHTML += `<div class="bg-yellow-50 border border-yellow-200 p-3 rounded"><h4 class="font-bold mb-1">ACEI/ARB: ข้อบ่งใช้หลัก</h4><select id="raas_indication" class="w-full rounded border-gray-300 p-1" onchange="processResults()"><option value="ht">ความดันโลหิตสูง</option><option value="hf">หัวใจล้มเหลว (HFrEF)</option></select></div>`;
+            }
+            if(selectedPreopDrugs.some(d => d.category === 'antiplatelet')){
+                show = true;
+                c.innerHTML += `<div class="bg-blue-50 border border-blue-200 p-3 rounded"><h4 class="font-bold mb-1">Antiplatelet: ประวัติ Stent</h4><select id="stent_status" class="w-full rounded border-gray-300 p-1" onchange="processResults()"><option value="no">ไม่เคย / นานแล้ว (> 1 ปี)</option><option value="yes">เคยใส่ (ภายใน 1 ปี)</option></select></div>`;
+            }
+            if(selectedPreopDrugs.find(d => d.category === 'glp1_weekly')){
+                show = true;
+                c.innerHTML += `<div class="bg-purple-50 border border-purple-200 p-3 rounded"><h4 class="font-bold mb-1">GLP-1 Weekly: ฉีดมื้อล่าสุด</h4><input type="date" id="glp1_last_date" class="w-full rounded border-gray-300 p-1" onchange="processResults()"></div>`;
+            }
+
+            if(show) sec.classList.remove('hidden'); else sec.classList.add('hidden');
+        }
+
+        // PRE-OP Calculator Core
+        function processResults() {
+            const bleedRisk = document.getElementById('bleedingRisk').value;
+            const crclInput = document.getElementById('renalFunction').value;
+            const crcl = crclInput ? parseInt(crclInput) : 90;
+            const surgDate = document.getElementById('surgeryDate').value;
+            
+            preopCalculatedNotes = [];
+            
+            if(!bleedRisk) {
+                generateOutput();
+                return;
+            }
+
+            selectedPreopDrugs.forEach(drug => {
+                let note = "";
+                
+                if (drug.id === 'warfarin') {
+                    if (bleedRisk === 'minimal') note = `${drug.name}: ไม่ต้องหยุดยา (Continue) เช็ค INR ก่อนทำ 1-2 วัน`;
+                    else {
+                        note = `${drug.name}: หยุดยา 5 วันก่อนผ่าตัด`;
+                        const bridge = document.getElementById('war_mech_mitral')?.checked || document.getElementById('war_mech_aortic')?.checked || document.getElementById('war_mech_stroke')?.checked || document.getElementById('war_af_high')?.checked || document.getElementById('war_af_stroke')?.checked || document.getElementById('war_af_rheumatic')?.checked || document.getElementById('war_vte_recent')?.checked || document.getElementById('war_vte_severe')?.checked;
+                        if(bridge) note += ` [⚠️ ต้อง Bridging (High Risk)]`;
+                    }
+                }
+                else if (drug.category === 'doac' || drug.category === 'doac_dabi') {
+                    let d = 0;
+                    if(drug.category==='doac_dabi'){ d = crcl>=50 ? (bleedRisk==='low-mod'?1:2) : (bleedRisk==='low-mod'?2:4); }
+                    else { d = bleedRisk==='low-mod'?1:(bleedRisk==='neuro-spine'?3:2); }
+                    
+                    if(bleedRisk==='minimal') note = `${drug.name}: พิจารณาไม่หยุดยา (หรือหยุด 1 วัน)`;
+                    else note = `${drug.name}: หยุดยา ${d} วันก่อนผ่าตัด`;
+                }
+                else if (drug.category === 'antiplatelet') {
+                    if(drug.id === 'aspirin') note = bleedRisk==='neuro-spine' ? `${drug.name}: หยุดยา 7 วัน` : `${drug.name}: ไม่ต้องหยุดยา (Continue)`;
+                    else {
+                        let d = 5; if(drug.id==='ticagrelor'||drug.id==='cilostazol') d=3; if(drug.id==='prasugrel') d=7;
+                        note = `${drug.name}: หยุดยา ${d} วันก่อนผ่าตัด`;
+                    }
+                    if(document.getElementById('stent_status')?.value === 'yes') note += ` [⚠️ เพิ่งใส่ Stent ปรึกษา Cardio ก่อนหยุด]`;
+                }
+                else if (drug.category.startsWith('sglt2')) note = `${drug.name}: หยุดยา ${drug.category==='sglt2_4d'?'4':'3'} วัน`;
+                else if (drug.category === 'glp1_weekly') note = `${drug.name}: หยุดยา 1 สัปดาห์`;
+                else if (drug.category === 'glp1_daily' || drug.category === 'dm_oral') note = `${drug.name}: หยุดยาเช้าวันผ่าตัด`;
+                else if (drug.category === 'raas_inhibitor') note = document.getElementById('raas_indication')?.value==='hf' ? `${drug.name}: ให้ยาต่อ (Continue)` : `${drug.name}: หยุดยาล่วงหน้า 24 ชั่วโมง`;
+                else if (drug.category === 'betablocker' || drug.category === 'statin') note = `${drug.name}: รับประทานยาต่อเนื่อง (Continue)`;
+                else if (drug.category === 'diuretic') note = `${drug.name}: หยุดยาเช้าวันผ่าตัด`;
+                else if (drug.category.startsWith('nsaid')) {
+                    if(drug.category==='nsaid_short') note=`${drug.name}: หยุดยา 1 วัน`; else if(drug.category==='nsaid_med') note=`${drug.name}: หยุดยา 3-4 วัน`; else if(drug.category==='nsaid_long') note=`${drug.name}: หยุดยา 10 วัน`; else note=`${drug.name}: หยุดยา 2-3 วัน`;
+                }
+                else if (drug.category.startsWith('herbal')) note = `${drug.name}: งดใช้ 1-2 สัปดาห์`;
+                else if (drug.category === 'maoi') note = `${drug.name}: หยุดยาล่วงหน้า 14 วัน`;
+                else if (drug.category === 'lithium') note = `${drug.name}: หยุดยา 72 ชั่วโมงก่อนผ่าตัด`;
+                else if (drug.category === 'parkinson') note = `${drug.name}: ห้ามหยุดยาเด็ดขาด (Continue)`;
+                else if (drug.category === 'biologic_1_2w') note = `${drug.name}: หยุดยาล่วงหน้า 1-2 สัปดาห์`;
+                else if (drug.category === 'biologic_2_3w') note = `${drug.name}: หยุดยาล่วงหน้า 2-3 สัปดาห์`;
+                else if (drug.category === 'jak_inhibitor') note = `${drug.name}: หยุดยาล่วงหน้า 3-4 วัน`;
+                else if (drug.category === 'pde5') note = `${drug.name}: หยุดล่วงหน้า 1-2 วัน`;
+                else note = `${drug.name}: แพทย์ประเมินเป็นรายกรณี`;
+
+                preopCalculatedNotes.push(note);
+            });
+            generateOutput();
+        }
+
+        // Modals Logic
+        function openModal(src) { 
+            document.getElementById('img01').src = src; 
+            document.getElementById('imageModal').style.display='flex'; 
+        }
+        function closeModal() { document.getElementById('imageModal').style.display='none'; }
+        
+        function openChadModal() { document.getElementById('chadModal').style.display='flex'; calculateChad(); }
+        function closeChadModal() { document.getElementById('chadModal').style.display='none'; }
+        function calculateChad() {
+            let s=0; 
+            if(document.getElementById('c_chf').checked) s+=1; if(document.getElementById('c_ht').checked) s+=1;
+            if(document.getElementById('c_dm').checked) s+=1; if(document.getElementById('c_stroke').checked) s+=2;
+            if(document.getElementById('c_vasc').checked) s+=1; 
+            s+=parseInt(document.getElementById('c_age').value); s+=parseInt(document.getElementById('c_sex').value);
+            document.getElementById('chadScoreTotal').innerText=s;
+            document.getElementById('chadAdvice').innerHTML = s>=7?`<span class="text-red-500 font-bold">High Risk</span> -> ต้อง Bridge!` : `<span class="text-green-500">Low/Moderate Risk</span>`;
+        }
+        function applyChadScore() {
+            const s=parseInt(document.getElementById('chadScoreTotal').innerText);
+            if(s>=7) document.getElementById('war_af_high').checked=true;
+            closeChadModal(); processResults();
+        }
+
+        function openCapriniModal() { document.getElementById('capriniModal').style.display='flex'; calculateCaprini(); }
+        function closeCapriniModal() { document.getElementById('capriniModal').style.display='none'; }
+        function calculateCaprini() {
+            let s=0;
+            document.querySelectorAll('.caprini-1:checked').forEach(()=>s+=1); document.querySelectorAll('.caprini-2:checked').forEach(()=>s+=2);
+            document.querySelectorAll('.caprini-3:checked').forEach(()=>s+=3); document.querySelectorAll('.caprini-5:checked').forEach(()=>s+=5);
+            document.getElementById('capriniScoreTotal').innerText=s;
+        }
+
+        // ==========================================
+        //         EXISTING MR / ADR / HIV 
+        // ==========================================
+        
         function renderMrSources() {
             const container = document.getElementById('mrSourcesContainer');
             container.innerHTML = '';
@@ -414,18 +861,10 @@
                 container.innerHTML += `
                     <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm relative">
                         ${mrSources.length > 1 ? `<button onclick="removeMrSource(${srcIndex})" class="absolute top-2 right-2 text-red-500 hover:bg-red-50 p-1 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>` : ''}
-                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3 pr-8">
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1">สถานที่รับยา</label>
-                                <input type="text" value="${src.place}" oninput="updateMrSource(${srcIndex}, 'place', this.value)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น รพ. A">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-500 mb-1">วันที่รับยา</label>
-                                <input type="text" value="${src.date}" oninput="updateMrSource(${srcIndex}, 'date', this.value)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 18/09/69">
-                            </div>
+                            <div><label class="block text-xs font-medium text-gray-500 mb-1">สถานที่รับยา</label><input type="text" value="${src.place}" oninput="updateMrSource(${srcIndex}, 'place', this.value)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
+                            <div><label class="block text-xs font-medium text-gray-500 mb-1">วันที่รับยา</label><input type="text" value="${src.date}" oninput="updateMrSource(${srcIndex}, 'date', this.value)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
                         </div>
-                        
                         <div class="mt-3">
                             <label class="block text-xs font-medium text-gray-700 mb-2 bg-gray-100 px-2 py-1 rounded inline-block">รายการยา</label>
                             ${drugInputs}
@@ -441,191 +880,73 @@
         function updateMrSource(idx, field, val) { mrSources[idx][field] = val; generateOutput(); }
         function addMrDrug(srcIdx) { mrSources[srcIdx].drugs.push(""); renderMrSources(); }
         function updateMrDrug(srcIdx, drugIdx, val) { mrSources[srcIdx].drugs[drugIdx] = val; generateOutput(); }
-        function removeMrDrug(srcIdx, drugIdx) { 
-            mrSources[srcIdx].drugs.splice(drugIdx, 1); 
-            if(mrSources[srcIdx].drugs.length === 0) mrSources[srcIdx].drugs.push("");
-            renderMrSources(); 
-        }
-        function toggleAllergyInput() {
-            const input = document.getElementById('mrAllergyDetail');
-            document.getElementById('mrAllergyCheck').checked ? input.classList.remove('hidden') : input.classList.add('hidden');
-        }
+        function removeMrDrug(srcIdx, drugIdx) { mrSources[srcIdx].drugs.splice(drugIdx, 1); if(mrSources[srcIdx].drugs.length === 0) mrSources[srcIdx].drugs.push(""); renderMrSources(); }
+        function toggleAllergyInput() { document.getElementById('mrAllergyCheck').checked ? document.getElementById('mrAllergyDetail').classList.remove('hidden') : document.getElementById('mrAllergyDetail').classList.add('hidden'); }
 
         // --- HIV ---
         function renderHivDrugs() {
-            const container = document.getElementById('hivDrugsContainer');
-            container.innerHTML = '';
+            const container = document.getElementById('hivDrugsContainer'); container.innerHTML = '';
             hivDrugs.forEach((drug, index) => {
                 container.innerHTML += `
                     <div class="flex flex-col md:flex-row gap-2 items-center bg-white p-2 rounded-lg border border-gray-200">
                         <span class="font-bold text-blue-500 w-4 text-center text-sm">${index+1}.</span>
-                        <input type="text" value="${drug.name}" oninput="updateHivDrug(${index}, 'name', this.value)" placeholder="ชื่อยา (เช่น TDF)" class="w-full md:w-2/5 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
-                        <input type="text" value="${drug.usage}" oninput="updateHivDrug(${index}, 'usage', this.value)" placeholder="วิธีใช้ (เช่น 1x1 po)" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
-                        <input type="text" value="${drug.time}" oninput="updateHivDrug(${index}, 'time', this.value)" placeholder="เวลา (เช่น 20.00)" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
+                        <input type="text" value="${drug.name}" oninput="updateHivDrug(${index}, 'name', this.value)" placeholder="ชื่อยา" class="w-full md:w-2/5 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
+                        <input type="text" value="${drug.usage}" oninput="updateHivDrug(${index}, 'usage', this.value)" placeholder="วิธีใช้" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
+                        <input type="text" value="${drug.time}" oninput="updateHivDrug(${index}, 'time', this.value)" placeholder="เวลา" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
                         <button onclick="removeHivDrug(${index})" class="text-red-400 hover:text-red-600 p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
-                    </div>
-                `;
+                    </div>`;
             });
             generateOutput();
         }
         function addHivDrugRow() { hivDrugs.push({name:'', usage:'', time:''}); renderHivDrugs(); }
         function updateHivDrug(idx, field, val) { hivDrugs[idx][field] = val; generateOutput(); }
-        function removeHivDrug(idx) { 
-            hivDrugs.splice(idx, 1); 
-            if(hivDrugs.length===0) hivDrugs.push({name:'', usage:'', time:''}); 
-            renderHivDrugs(); 
-        }
-
-        function toggleAdherence() {
-            const isAuto = document.getElementById('hivCalcAdherence').checked;
-            if(isAuto) {
-                document.getElementById('adherenceAutoContainer').classList.remove('hidden');
-                document.getElementById('adherenceManualContainer').classList.add('hidden');
-            } else {
-                document.getElementById('adherenceAutoContainer').classList.add('hidden');
-                document.getElementById('adherenceManualContainer').classList.remove('hidden');
-            }
-        }
-
-        function toggleHivType() {
-            const isRefill = document.querySelector('input[name="hivType"]:checked').value === 'refill';
-            if (isRefill) {
-                document.getElementById('hivRefillSection').classList.remove('hidden');
-                document.getElementById('hivReferSection').classList.add('hidden');
-            } else {
-                document.getElementById('hivRefillSection').classList.add('hidden');
-                document.getElementById('hivReferSection').classList.remove('hidden');
-            }
-        }
-        
-        function toggleVlInput() {
-            const select = document.getElementById('hivVlSelect');
-            const custom = document.getElementById('hivVlCustomContainer');
-            if(select.value === 'other') { custom.classList.remove('hidden'); custom.classList.add('flex'); select.classList.remove('flex-grow'); } 
-            else { custom.classList.add('hidden'); custom.classList.remove('flex'); select.classList.add('flex-grow'); }
-        }
-
-        function toggleNextLabInput() {
-            const select = document.getElementById('hivNextLabSelect');
-            const custom = document.getElementById('hivNextLabCustom');
-            if(select.value === 'other') { custom.classList.remove('hidden'); } 
-            else { custom.classList.add('hidden'); }
-        }
-        
-        function toggleLabDateCustom() {
-            const select = document.getElementById('hivLabDateRef').value;
-            const container = document.getElementById('hivLabDateCustomContainer');
-            if(select === 'custom') { container.classList.remove('hidden'); }
-            else { container.classList.add('hidden'); }
-        }
-
-        function toggleReferInput(id) {
-            const input = document.getElementById(`txt${id}`);
-            document.getElementById(`chk${id}`).checked ? input.classList.remove('hidden') : input.classList.add('hidden');
-        }
-
-        function addLab() {
-            const select = document.getElementById('labSelect');
-            const labName = select.options[select.selectedIndex].value;
-            const labVal = document.getElementById('labValue').value;
-            const labDate = document.getElementById('labSpecificDate').value;
-            
-            if (labName && labVal) {
-                selectedLabs.push({ name: labName, val: labVal, date: labDate });
-                document.getElementById('labValue').value = '';
-                document.getElementById('labSpecificDate').value = '';
-                select.selectedIndex = 0;
-                renderLabTags();
-                generateOutput();
-            }
-        }
-
-        function removeLab(index) {
-            selectedLabs.splice(index, 1);
-            renderLabTags();
-            generateOutput();
-        }
-
-        function renderLabTags() {
-            const container = document.getElementById('labTags');
-            container.innerHTML = '';
-            selectedLabs.forEach((lab, index) => {
-                let text = `${lab.name} ${lab.val}`;
-                if(lab.date) text += ` (วันที่ ${lab.date})`;
-                container.innerHTML += `
-                    <span class="inline-flex items-center gap-1 bg-white border border-indigo-200 text-indigo-800 text-sm font-medium px-2.5 py-1.5 rounded-full shadow-sm">
-                        ${text}
-                        <button onclick="removeLab(${index})" class="text-indigo-400 hover:text-red-500 font-bold ml-1">&times;</button>
-                    </span>
-                `;
-            });
-        }
-
-        function resetForm() {
-            if(confirm('ต้องการล้างข้อมูลคนไข้ทั้งหมดหรือไม่?')) {
-                document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => el.value = '');
-                document.querySelectorAll('input[type="checkbox"]').forEach(el => { el.checked = false; });
-                
-                document.getElementById('hivManualAdherence').value = '100%';
-                document.getElementById('hivLabDateRef').value = 'cd4';
-                
-                document.querySelector('input[name="mrType"][value="phone"]').checked = false;
-                document.querySelector('input[name="mrType"][value="patient"]').checked = false;
-                document.querySelector('input[name="hivType"][value="refill"]').checked = true;
-                document.getElementById('hivVlSelect').selectedIndex = 0;
-                document.getElementById('hivNextLabSelect').selectedIndex = 0;
-                
-                toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
-                
-                mrSources = [ { place: '', date: '', drugs: [""] } ];
-                selectedLabs = []; 
-                hivDrugs = [ { name: '', usage: '', time: '' } ];
-                
-                renderLabTags(); renderMrSources(); renderHivDrugs(); toggleHivType(); generateOutput();
-            }
-        }
+        function removeHivDrug(idx) { hivDrugs.splice(idx, 1); if(hivDrugs.length===0) hivDrugs.push({name:'', usage:'', time:''}); renderHivDrugs(); }
+        function toggleAdherence() { document.getElementById('hivCalcAdherence').checked ? (document.getElementById('adherenceAutoContainer').classList.remove('hidden'), document.getElementById('adherenceManualContainer').classList.add('hidden')) : (document.getElementById('adherenceAutoContainer').classList.add('hidden'), document.getElementById('adherenceManualContainer').classList.remove('hidden')); }
+        function toggleHivType() { document.querySelector('input[name="hivType"]:checked').value === 'refill' ? (document.getElementById('hivRefillSection').classList.remove('hidden'), document.getElementById('hivReferSection').classList.add('hidden')) : (document.getElementById('hivRefillSection').classList.add('hidden'), document.getElementById('hivReferSection').classList.remove('hidden')); }
+        function toggleVlInput() { document.getElementById('hivVlSelect').value === 'other' ? (document.getElementById('hivVlCustomContainer').classList.remove('hidden'), document.getElementById('hivVlCustomContainer').classList.add('flex'), document.getElementById('hivVlSelect').classList.remove('flex-grow')) : (document.getElementById('hivVlCustomContainer').classList.add('hidden'), document.getElementById('hivVlCustomContainer').classList.remove('flex'), document.getElementById('hivVlSelect').classList.add('flex-grow')); }
+        function toggleNextLabInput() { document.getElementById('hivNextLabSelect').value === 'other' ? document.getElementById('hivNextLabCustom').classList.remove('hidden') : document.getElementById('hivNextLabCustom').classList.add('hidden'); }
+        function toggleLabDateCustom() { document.getElementById('hivLabDateRef').value === 'custom' ? document.getElementById('hivLabDateCustomContainer').classList.remove('hidden') : document.getElementById('hivLabDateCustomContainer').classList.add('hidden'); }
+        function toggleReferInput(id) { document.getElementById(`chk${id}`).checked ? document.getElementById(`txt${id}`).classList.remove('hidden') : document.getElementById(`txt${id}`).classList.add('hidden'); }
+        function addLab() { const s=document.getElementById('labSelect'); const n=s.value; const v=document.getElementById('labValue').value; const d=document.getElementById('labSpecificDate').value; if(n&&v){ selectedLabs.push({name:n,val:v,date:d}); document.getElementById('labValue').value=''; document.getElementById('labSpecificDate').value=''; s.selectedIndex=0; renderLabTags(); generateOutput(); } }
+        function removeLab(index) { selectedLabs.splice(index, 1); renderLabTags(); generateOutput(); }
+        function renderLabTags() { const c=document.getElementById('labTags'); c.innerHTML=''; selectedLabs.forEach((l,i)=>{ let t=`${l.name} ${l.val}`; if(l.date) t+=` (วันที่ ${l.date})`; c.innerHTML+=`<span class="inline-flex items-center gap-1 bg-white border border-indigo-200 text-indigo-800 text-sm font-medium px-2.5 py-1.5 rounded-full shadow-sm">${t}<button onclick="removeLab(${i})" class="text-indigo-400 hover:text-red-500 font-bold ml-1">&times;</button></span>`; }); }
 
         function formatTime(timeStr) {
             if(!timeStr) return "";
             timeStr = timeStr.trim();
-            if (timeStr.match(/^[0-9:\.]+$/) && !timeStr.includes('น.')) {
-                return `${timeStr} น.`;
-            }
+            if (timeStr.match(/^[0-9:\.]+$/) && !timeStr.includes('น.')) return `${timeStr} น.`;
             return timeStr;
         }
 
         function groupLabsByDate(mainDate, labPrefix, scr, egfr, customLabsArray, extraLabText) {
             let grouped = {};
-            
-            if (scr || egfr) {
-                if (!grouped[mainDate]) grouped[mainDate] = [];
-                if (scr) grouped[mainDate].push(`Scr ${scr}`);
-                if (egfr) grouped[mainDate].push(`eGFR ${egfr}`);
-            }
-
-            customLabsArray.forEach(lab => {
-                let lDate = lab.date ? lab.date : mainDate;
-                if (!grouped[lDate]) grouped[lDate] = [];
-                grouped[lDate].push(`${lab.name} ${lab.val}`);
-            });
-
+            if (scr || egfr) { if (!grouped[mainDate]) grouped[mainDate] = []; if (scr) grouped[mainDate].push(`Scr ${scr}`); if (egfr) grouped[mainDate].push(`eGFR ${egfr}`); }
+            customLabsArray.forEach(lab => { let lDate = lab.date ? lab.date : mainDate; if (!grouped[lDate]) grouped[lDate] = []; grouped[lDate].push(`${lab.name} ${lab.val}`); });
             let groupStrings = [];
-            for (const [dateKey, labList] of Object.entries(grouped)) {
-                if (labList.length > 0) {
-                    let groupStr = labList.join(', ');
-                    if (dateKey) groupStr += ` (วันที่ ${dateKey})`;
-                    groupStrings.push(groupStr);
-                }
-            }
+            for (const [dateKey, labList] of Object.entries(grouped)) { if (labList.length > 0) { let groupStr = labList.join(', '); if (dateKey) groupStr += ` (วันที่ ${dateKey})`; groupStrings.push(groupStr); } }
+            if (extraLabText) groupStrings.push(extraLabText);
+            return groupStrings.length > 0 ? `${labPrefix}: ${groupStrings.join(', ')}` : "";
+        }
 
-            if (extraLabText) {
-                groupStrings.push(extraLabText);
-            }
+        // ==========================================
+        //         OUTPUT GENERATOR
+        // ==========================================
 
-            if (groupStrings.length > 0) {
-                return `${labPrefix}: ${groupStrings.join(', ')}`;
+        function resetForm() {
+            if(confirm('ต้องการล้างข้อมูลคนไข้ทั้งหมดหรือไม่?')) {
+                document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="date"]').forEach(el => el.value = '');
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+                
+                document.getElementById('hivManualAdherence').value = '100%'; document.getElementById('hivLabDateRef').value = 'cd4';
+                document.querySelector('input[name="hivType"][value="refill"]').checked = true;
+                
+                toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
+                
+                mrSources = [ { place: '', date: '', drugs: [""] } ]; selectedLabs = []; hivDrugs = [ { name: '', usage: '', time: '' } ];
+                selectedPreopDrugs = []; preopCalculatedNotes = [];
+                
+                renderLabTags(); renderMrSources(); renderHivDrugs(); renderSelectedPreopDrugs(); checkPreopSpecificQuestions(); toggleHivType(); generateOutput();
             }
-            return "";
         }
 
         function generateOutput() {
@@ -636,52 +957,50 @@
                 const herb = document.getElementById('mrHerb').value;
                 const extraNote = document.getElementById('mrExtraNote').value;
                 const pharmName = document.getElementById('mrPharmName').value;
-
                 let hasAnyData = mrSources.some(s => s.place || s.date || s.drugs.some(d => d.trim())) || hasAllergy || herb || pharmName;
 
                 if (hasAnyData) {
                     notes.push("pharmacist note");
-                    
                     mrSources.forEach((src) => {
                         let validDrugs = src.drugs.filter(d => d.trim() !== '');
                         if (src.place || src.date || validDrugs.length > 0) {
-                            let line = [];
-                            if(src.place) line.push(`ผู้ป่วยรับยาจาก ${src.place}`);
-                            if(src.date) line.push(`วันที่ ${src.date}`);
+                            let line = []; if(src.place) line.push(`ผู้ป่วยรับยาจาก ${src.place}`); if(src.date) line.push(`วันที่ ${src.date}`);
                             if(line.length > 0) notes.push(`- ${line.join(' ')}`);
-                            
-                            if (validDrugs.length > 0) {
-                                notes.push("รายการยา");
-                                validDrugs.forEach((d, i) => { notes.push(`  ${i + 1}. ${d}`); });
-                            }
+                            if (validDrugs.length > 0) { notes.push("รายการยา"); validDrugs.forEach((d, i) => notes.push(`  ${i + 1}. ${d}`)); }
                         }
                     });
-
                     let allergyText = hasAllergy ? `แพ้ยา/แพ้อาหาร: ${document.getElementById('mrAllergyDetail').value || 'ไม่ระบุ'}` : `แพ้ยา/แพ้อาหาร: ปฏิเสธ`;
                     let herbText = herb ? `สมุนไพร/อาหารเสริม: ${herb}` : `สมุนไพร/อาหารเสริม: -`;
                     notes.push(`${allergyText} | ${herbText}`);
-                    
                     if (extraNote) notes.push(extraNote);
                     if (pharmName) notes.push(`/${pharmName}`);
                 }
             } 
+            else if (currentTab === 'PREOP') {
+                const sDate = document.getElementById('surgeryDate').value;
+                const bRisk = document.getElementById('bleedingRisk').options[document.getElementById('bleedingRisk').selectedIndex]?.text;
+                const pharm = document.getElementById('preopPharmName').value;
+                
+                if (preopCalculatedNotes.length > 0 || sDate || bRisk !== '-- เลือกความเสี่ยง --') {
+                    notes.push("pharmacist note");
+                    notes.push(`[Pre-OP Assessment]`);
+                    if(sDate) notes.push(`วันที่ผ่าตัด: ${sDate}`);
+                    if(bRisk && bRisk !== '-- เลือกความเสี่ยง --') notes.push(`Bleeding Risk: ${bRisk}`);
+                    
+                    if(preopCalculatedNotes.length > 0) {
+                        notes.push(`รายการยาและคำแนะนำ:`);
+                        preopCalculatedNotes.forEach((n, i) => notes.push(`  ${i+1}. ${n}`));
+                    }
+                    if (pharm) notes.push(`/${pharm}`);
+                }
+            }
             else if (currentTab === 'ADR') {
-                const place = document.getElementById('adrPlace').value;
-                const date = document.getElementById('adrDate').value;
-                const drug = document.getElementById('adrDrug').value;
-                const assess = document.getElementById('adrAssessment').value;
-                const pharmName = document.getElementById('adrPharmName').value;
-
+                const place = document.getElementById('adrPlace').value; const date = document.getElementById('adrDate').value; const drug = document.getElementById('adrDrug').value; const assess = document.getElementById('adrAssessment').value; const pharmName = document.getElementById('adrPharmName').value;
                 if (place || date || drug || assess || pharmName) {
                     notes.push("pharmacist note");
-                    let line1 = [];
-                    if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
-                    if (date) line1.push(`วันที่ ${date}`);
+                    let line1 = []; if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`); if (date) line1.push(`วันที่ ${date}`);
                     if (line1.length > 0) notes.push(line1.join(' '));
-
-                    let line2 = [];
-                    if (drug) line2.push(`รายการยา ${drug}`);
-                    if (assess) line2.push(`${assess}`); 
+                    let line2 = []; if (drug) line2.push(`รายการยา ${drug}`); if (assess) line2.push(`${assess}`); 
                     if (line2.length > 0) notes.push(line2.join(' '));
                     if (pharmName) notes.push(`/${pharmName}`);
                 }
@@ -689,121 +1008,55 @@
             else if (currentTab === 'HIV') {
                 notes.push("pharmacist note");
                 
-                // CD4
-                const cd4Val = document.getElementById('hivCd4Val').value;
-                const cd4Per = document.getElementById('hivCd4Percent').value;
-                const cd4Date = document.getElementById('hivCd4Date').value;
+                const cd4Val = document.getElementById('hivCd4Val').value; const cd4Per = document.getElementById('hivCd4Percent').value; const cd4Date = document.getElementById('hivCd4Date').value;
                 let cd4Str = '';
-                if(cd4Val && cd4Per) cd4Str = `CD4 = ${cd4Val}(${cd4Per}%)`;
-                else if (cd4Val) cd4Str = `CD4 = ${cd4Val}`;
-                else if (cd4Per) cd4Str = `CD4 = (${cd4Per}%)`;
+                if(cd4Val && cd4Per) cd4Str = `CD4 = ${cd4Val}(${cd4Per}%)`; else if (cd4Val) cd4Str = `CD4 = ${cd4Val}`; else if (cd4Per) cd4Str = `CD4 = (${cd4Per}%)`;
                 if (cd4Str && cd4Date) cd4Str += ` วันที่ ${cd4Date}`;
 
-                // VL
-                const vlSel = document.getElementById('hivVlSelect').value;
-                const vlVal = document.getElementById('hivVlVal').value;
-                const vlLog = document.getElementById('hivVlLog').value;
-                const vlDate = document.getElementById('hivVlDate').value;
-                let vlStr = '';
-                let finalVl = "";
-                if (vlSel === 'other') {
-                    if(vlVal && vlLog) finalVl = `${vlVal}log${vlLog}`;
-                    else if(vlVal) finalVl = vlVal;
-                } else {
-                    finalVl = vlSel;
-                }
-                if(finalVl) vlStr = `VL load ${finalVl}`;
-                if(vlStr && vlDate) vlStr += ` วันที่ ${vlDate}`;
+                const vlSel = document.getElementById('hivVlSelect').value; const vlVal = document.getElementById('hivVlVal').value; const vlLog = document.getElementById('hivVlLog').value; const vlDate = document.getElementById('hivVlDate').value;
+                let vlStr = ''; let finalVl = vlSel === 'other' ? (vlVal && vlLog ? `${vlVal}log${vlLog}` : vlVal) : vlSel;
+                if(finalVl) vlStr = `VL load ${finalVl}`; if(vlStr && vlDate) vlStr += ` วันที่ ${vlDate}`;
 
-                let cd4vlLine = [];
-                if(cd4Str) cd4vlLine.push(cd4Str);
-                if(vlStr) cd4vlLine.push(vlStr);
+                let cd4vlLine = []; if(cd4Str) cd4vlLine.push(cd4Str); if(vlStr) cd4vlLine.push(vlStr);
                 if (cd4vlLine.length > 0) notes.push(cd4vlLine.join(' '));
 
-                // Labs Grouping
                 const type = document.querySelector('input[name="hivType"]:checked').value;
                 const labPrefix = type === 'refill' ? 'Lab' : 'Lab ที่มีปัญหา';
-                
                 const labDateRef = document.getElementById('hivLabDateRef').value;
-                let mainLabDate = "";
-                if (labDateRef === 'cd4') mainLabDate = cd4Date;
-                else if (labDateRef === 'vl') mainLabDate = vlDate;
-                else if (labDateRef === 'custom') mainLabDate = document.getElementById('hivLabDate').value;
+                let mainLabDate = labDateRef === 'cd4' ? cd4Date : (labDateRef === 'vl' ? vlDate : document.getElementById('hivLabDate').value);
 
-                let scrVal = document.getElementById('hivScr').value;
-                let egfrVal = document.getElementById('hivEgfr').value;
-                let extraLabs = document.getElementById('hivLabsText').value;
-
-                let finalLabOutput = groupLabsByDate(mainLabDate, labPrefix, scrVal, egfrVal, selectedLabs, extraLabs);
+                let finalLabOutput = groupLabsByDate(mainLabDate, labPrefix, document.getElementById('hivScr').value, document.getElementById('hivEgfr').value, selectedLabs, document.getElementById('hivLabsText').value);
                 if (finalLabOutput) notes.push(finalLabOutput);
 
-                // Drug & Adherence
                 let drugLines = [];
-                hivDrugs.forEach(d => {
-                    let parts = [];
-                    if(d.name) parts.push(d.name);
-                    if(d.usage) parts.push(d.usage);
-                    if(d.time) parts.push(formatTime(d.time));
-                    if(parts.length > 0) drugLines.push(parts.join(' '));
-                });
-                
+                hivDrugs.forEach(d => { let parts = []; if(d.name) parts.push(d.name); if(d.usage) parts.push(d.usage); if(d.time) parts.push(formatTime(d.time)); if(parts.length > 0) drugLines.push(parts.join(' ')); });
                 let drugLineOutput = drugLines.length > 0 ? `on ${drugLines.join(', ')}` : "";
 
                 const isAutoCalc = document.getElementById('hivCalcAdherence').checked;
                 let adherenceStr = "";
-
                 if (isAutoCalc) {
-                    const days = parseFloat(document.getElementById('hivDays').value);
-                    const doses = parseFloat(document.getElementById('hivDoses').value);
+                    const days = parseFloat(document.getElementById('hivDays').value); const doses = parseFloat(document.getElementById('hivDoses').value);
                     if (days && doses) {
-                        const missed = parseFloat(document.getElementById('hivMissed').value) || 0;
-                        const totalM = days * doses;
-                        const taken = totalM - missed;
-                        const adPercent = totalM > 0 ? ((taken/totalM)*100).toFixed(2) : 0;
-                        
+                        const missed = parseFloat(document.getElementById('hivMissed').value) || 0; const totalM = days * doses; const taken = totalM - missed; const adPercent = totalM > 0 ? ((taken/totalM)*100).toFixed(2) : 0;
                         adherenceStr = `adherence ${adPercent}%`;
-                        if(drugLineOutput) {
-                            notes.push(`${drugLineOutput} ${adherenceStr}`);
-                        }
+                        if(drugLineOutput) notes.push(`${drugLineOutput} ${adherenceStr}`);
                         notes.push(`นัด ${days}วัน ลืมไป ${missed} มื้อ (${taken}/${totalM}*100 = ${adPercent}%)`);
-                    } else if (drugLineOutput) {
-                        notes.push(drugLineOutput);
-                    }
+                    } else if (drugLineOutput) notes.push(drugLineOutput);
                 } else {
                     const manualAdh = document.getElementById('hivManualAdherence').value;
                     if(manualAdh) adherenceStr = `adherence ${manualAdh}`;
-                    if(drugLineOutput) {
-                        notes.push(adherenceStr ? `${drugLineOutput} ${adherenceStr}` : drugLineOutput);
-                    }
+                    if(drugLineOutput) notes.push(adherenceStr ? `${drugLineOutput} ${adherenceStr}` : drugLineOutput);
                 }
 
                 if (type === 'refill') {
-                    const rmDate = document.getElementById('hivRmDate').value;
-                    const rmMonths = document.getElementById('hivRmMonths').value;
-                    const nextLabSel = document.getElementById('hivNextLabSelect').value;
-                    const nextLabCust = document.getElementById('hivNextLabCustom').value;
-                    const nextLab = nextLabSel === 'other' ? nextLabCust : nextLabSel;
-                    const pharmName = document.getElementById('hivPharmName').value;
-                    
-                    let rmLine = [];
-                    if (rmDate) rmLine.push(`RM ${rmDate}`);
-                    if (rmMonths) rmLine.push(`จำนวน ${rmMonths} เดือน`);
-                    if (nextLab) rmLine.push(`+ Lab ${nextLab}`);
+                    const rmDate = document.getElementById('hivRmDate').value; const rmMonths = document.getElementById('hivRmMonths').value; const nextLabSel = document.getElementById('hivNextLabSelect').value; const nextLab = nextLabSel === 'other' ? document.getElementById('hivNextLabCustom').value : nextLabSel; const pharmName = document.getElementById('hivPharmName').value;
+                    let rmLine = []; if (rmDate) rmLine.push(`RM ${rmDate}`); if (rmMonths) rmLine.push(`จำนวน ${rmMonths} เดือน`); if (nextLab) rmLine.push(`+ Lab ${nextLab}`);
                     if (rmLine.length > 0) notes.push(rmLine.join(' '));
-                    
                     if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmName}`);
-                    
                 } else {
                     let issues = [];
-                    ['Ht', 'Dm', 'Dlp', 'Liver', 'Ckd', 'Anemia'].forEach(id => {
-                        if(document.getElementById(`chk${id}`).checked) {
-                            let label = document.querySelector(`label[for="chk${id}"]`)?.innerText.split(' ')[0] || id; 
-                            let val = document.getElementById(`txt${id}`).value;
-                            issues.push(val ? `${label} (มี ${val})` : label);
-                        }
-                    });
+                    ['Ht', 'Dm', 'Dlp', 'Liver', 'Ckd', 'Anemia'].forEach(id => { if(document.getElementById(`chk${id}`).checked) { let label = document.querySelector(`label[for="chk${id}"]`)?.innerText.split(' ')[0] || id; let val = document.getElementById(`txt${id}`).value; issues.push(val ? `${label} (มี ${val})` : label); } });
                     if (issues.length > 0) notes.push(`ปรึกษาแพทย์เรื่องมีความผิดปกติของ ${issues.join(' ')}`);
-                    
                     const pharmName = document.getElementById('hivPharmNameRefer').value;
                     if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmName}`);
                 }
@@ -812,35 +1065,31 @@
             document.getElementById('outputPmk').value = notes.join('\n');
         }
 
-        // === ส่วนจัดเตรียมข้อมูลสำหรับลง Sheet ===
+        // ==========================================
+        //         GOOGLE SHEET INTEGRATION
+        // ==========================================
+
         function getRowDataArray() {
             let rowData = Array(18).fill('');
             rowData[0] = document.getElementById('hn').value;       // Col B
-            
-            // ปกปิดชื่อผู้ป่วยในคลินิก HIV (ส่งชื่อไปเฉพาะ MR และ ADR)
-            if (currentTab !== 'HIV') {
-                rowData[1] = document.getElementById('ptName').value;   // Col C
-            }
+            if (currentTab !== 'HIV') rowData[1] = document.getElementById('ptName').value; // Col C (ยกเว้น HIV)
 
             if (currentTab === 'MR') {
                 const mrType = document.querySelector('input[name="mrType"]:checked')?.value;
                 if(mrType === 'phone') rowData[3] = '1';
                 if(mrType === 'patient') rowData[4] = '1';
-                if(document.getElementById('mrAllergyCheck').checked) {
-                    rowData[6] = '1'; 
-                    rowData[9] = document.getElementById('mrAllergyDetail').value;
-                }
-                
-                let allPlaces = mrSources.map(s => s.place).filter(p => p).join(', ');
-                let allDrugs = [];
-                mrSources.forEach(s => { s.drugs.filter(d => d.trim() !== '').forEach(d => allDrugs.push(d)); });
-                
-                rowData[10] = allPlaces; 
+                if(document.getElementById('mrAllergyCheck').checked) { rowData[6] = '1'; rowData[9] = document.getElementById('mrAllergyDetail').value; }
+                rowData[10] = mrSources.map(s => s.place).filter(p => p).join(', '); 
+                let allDrugs = []; mrSources.forEach(s => { s.drugs.filter(d => d.trim() !== '').forEach(d => allDrugs.push(d)); });
                 rowData[11] = allDrugs.join(', ');
             } 
             else if (currentTab === 'ADR') {
-                rowData[7] = '1';
-                rowData[9] = document.getElementById('adrAssessment').value;
+                rowData[7] = '1'; rowData[9] = document.getElementById('adrAssessment').value;
+            }
+            else if (currentTab === 'PREOP') {
+                // สำหรับ Pre-OP โยนคำแนะนำทั้งหมดใส่ Col H และชื่อหัตถการใส่ Col M 
+                rowData[6] = preopCalculatedNotes.join(' | ');
+                rowData[11] = document.getElementById('procedureSearch').value;
             }
             else if (currentTab === 'HIV') {
                 const type = document.querySelector('input[name="hivType"]:checked').value;
@@ -852,7 +1101,6 @@
                     if(document.getElementById('chkLiver').checked) { referDetails.push(`ตับ มี ${document.getElementById('txtLiver').value}`); rowData[15] = '1'; }
                     if(document.getElementById('chkCkd').checked) { referDetails.push(`CKD มี ${document.getElementById('txtCkd').value}`); rowData[16] = '1'; }
                     if(document.getElementById('chkAnemia').checked) { referDetails.push(`CBC มี ${document.getElementById('txtAnemia').value}`); rowData[17] = '1'; }
-                    
                     if(referDetails.length > 0) { rowData[6] = `ส่งพบเรื่อง ${referDetails.join(', ')}`; }
                 }
             }
@@ -870,54 +1118,30 @@
             navigator.clipboard.writeText(tsvString).then(() => { showToast('คัดลอกข้อมูลสำหรับลง Google Sheet เรียบร้อยแล้ว!'); });
         }
 
-        // === ฟังก์ชันส่งข้อมูลเข้า Google Sheet อัตโนมัติ ===
         function sendToGoogleSheet() {
-            if (!SCRIPT_URL || SCRIPT_URL === 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่') {
-                alert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนใช้งานฟังก์ชันนี้ครับ');
-                return;
-            }
-
+            if (!SCRIPT_URL || SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec') { alert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); return; }
             const btn = document.getElementById('btnSendDb');
             const originalHTML = btn.innerHTML;
-            
-            btn.innerHTML = `
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                กำลังบันทึก...
-            `;
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>กำลังบันทึก...`;
             btn.disabled = true;
 
-            const rowDataArray = getRowDataArray();
-            
-            const requestData = {
-                action: "saveOPDNote",
-                clinic: currentTab,
-                payload: rowDataArray
-            };
-
             fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'text/plain', 
-                },
-                body: JSON.stringify(requestData)
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain', },
+                body: JSON.stringify({ action: "saveOPDNote", clinic: currentTab, payload: getRowDataArray() })
             })
-            .then(() => {
-                showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!');
-            })
-            .catch(error => {
-                console.error('Error!', error.message);
-                alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต');
-            })
-            .finally(() => {
-                btn.innerHTML = originalHTML;
-                btn.disabled = false;
-            });
+            .then(() => { showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!'); })
+            .catch(error => { console.error('Error!', error); alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
+            .finally(() => { btn.innerHTML = originalHTML; btn.disabled = false; });
         }
 
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+        }
+
+        // Init Data
         renderMrSources();
         renderHivDrugs();
         generateOutput();
