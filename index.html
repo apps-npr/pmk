@@ -99,7 +99,6 @@
             
             <!-- 1. MR Form -->
             <div id="form-MR" class="space-y-4">
-                <!-- เนื้อหาเดิม MR -->
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทการทำ MR</label>
                     <div class="flex gap-6">
@@ -172,7 +171,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">
                             ค้นหาหัตถการ <i class="fa-solid fa-circle-info text-blue-500 cursor-pointer ml-1" onclick="toggleInfo('bleed-risk-info')" title="คลิกดูตาราง"></i>
                         </label>
-                        <input type="text" id="procedureSearch" class="w-full rounded-lg border-gray-300 border px-3 py-2 pl-10" placeholder="พิมพ์ชื่อหัตถการ..." autocomplete="off">
+                        <input type="text" id="procedureSearch" class="w-full rounded-lg border-gray-300 border px-3 py-2 pl-10" placeholder="พิมพ์ชื่อหัตถการ... (เช่น ต้อกระจก, ส่องกล้อง, ถอนฟัน)" autocomplete="off">
                         <i class="fa-solid fa-search absolute left-3 top-9 text-gray-400"></i>
                         <div id="procedureListContainer" class="drug-list-container hidden"></div>
                     </div>
@@ -252,13 +251,12 @@
                     <input type="text" id="preopPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
                 </div>
 
-                <!-- ไม่ต้องมีปุ่มประมวลผลแยก เพราะเดี๋ยวจะให้รัน Auto เข้า PMK Note เลย -->
+                <!-- ผลลัพธ์จากการประมวลผลซ่อนไว้ แต่จะถูกดึงข้อความไปรวมใน Output -->
                 <div id="resultContent" class="hidden"></div>
             </div>
 
             <!-- 3. ADR Form -->
             <div id="form-ADR" class="space-y-4 hidden">
-                <!-- เนื้อหาเดิม ADR -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ป่วยรับยาจาก</label>
@@ -285,7 +283,7 @@
 
             <!-- 4. HIV Form -->
             <div id="form-HIV" class="space-y-6 hidden">
-                <!-- เนื้อหาเดิม HIV -->
+                <!-- CD4 & VL -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
                         <label class="block text-sm font-medium text-gray-700 mb-2">CD4 (%CD4)</label>
@@ -315,6 +313,7 @@
                     </div>
                 </div>
 
+                <!-- Labs -->
                 <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-2">
                         <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab</label>
@@ -369,6 +368,7 @@
                     </div>
                 </div>
 
+                <!-- ข้อมูลยา HIV -->
                 <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
                     <label class="block text-sm font-semibold text-blue-900 mb-3">ข้อมูลยา & การคำนวณ % Adherence</label>
                     <div id="hivDrugsContainer" class="space-y-3 mb-3"></div>
@@ -394,6 +394,7 @@
                     </div>
                 </div>
 
+                <!-- การตัดสินใจ -->
                 <div class="bg-yellow-50 p-4 border border-yellow-200 rounded-xl">
                     <label class="block text-sm font-semibold text-yellow-900 mb-3">การจัดการ / แผนการรักษา</label>
                     <div class="flex gap-4 border-b border-yellow-200 pb-3 mb-4">
@@ -449,7 +450,7 @@
 
         </div>
 
-        <!-- Output & Actions (ใช้ร่วมกันทุก Tab) -->
+        <!-- Output & Actions -->
         <div class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK)</label>
             <textarea id="outputPmk" rows="12" class="w-full rounded-lg border-gray-300 border px-4 py-3 bg-white font-mono text-sm mb-4 leading-relaxed shadow-inner" readonly placeholder="ข้อความ Pharmacist Note จะค่อยๆ ปรากฏขึ้นที่นี่"></textarea>
@@ -580,11 +581,66 @@
             { id: 'chc_hrt', name: 'ยาคุมกำเนิด / ฮอร์โมนทดแทน', category: 'hormone' }, { id: 'hiv_art', name: 'ยารักษา HIV (ART)', category: 'hiv' }, { id: 'thyroid', name: 'Levothyroxine (Thyroid)', category: 'thyroid' }, { id: 'pde5', name: 'Sildenafil / Tadalafil (PDE5i)', category: 'pde5' }
         ];
 
+        // ฐานข้อมูลรายการหัตถการภาษาไทยฉบับเต็ม
         const procedureDatabase = [
-            { name: "Cataract surgery / Glaucoma intervention", risk: "minimal", riskLabel: "Minimal Risk" }, { name: "Minor dermatologic excision", risk: "minimal", riskLabel: "Minimal Risk" }, { name: "Pacemaker / ICD implant", risk: "minimal", riskLabel: "Minimal Risk" }, { name: "Joint injections / Arthrocentesis", risk: "minimal", riskLabel: "Minimal Risk" }, { name: "Endoscopy without surgery/biopsy", risk: "minimal", riskLabel: "Minimal Risk" },
-            { name: "Arthroscopy", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Cutaneous / Lymph node biopsy", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Gastroscopy / Colonoscopy + biopsy", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Abdominal hysterectomy / D&C", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Laparoscopic Cholecystectomy", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Hernia repair", risk: "low-mod", riskLabel: "Low/Moderate Risk" }, { name: "Dental extraction ≥ 3 teeth", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
-            { name: "Major surgery / Cancer surgery", risk: "high", riskLabel: "High Risk" }, { name: "Major orthopedic (Hip/Knee)", risk: "high", riskLabel: "High Risk" }, { name: "Major thoracic / Vascular surgery", risk: "high", riskLabel: "High Risk" }, { name: "TURP / Nephrectomy", risk: "high", riskLabel: "High Risk" }, { name: "Bowel resection", risk: "high", riskLabel: "High Risk" }, { name: "Cardiac surgery / CABG", risk: "high", riskLabel: "High Risk" },
-            { name: "Intracranial surgery / Craniotomy", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" }, { name: "Spinal surgery", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" }, { name: "Neuraxial anesthesia (บล็อกหลัง)", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" }, { name: "Posterior eye surgery", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" }
+            { name: "Cataract surgery / Glaucoma intervention (ผ่าตัดต้อกระจก, ต้อหิน), ขูดหินปูน, ทำฟันปลอม, รักษารากฟัน, ผ่าตัดเหงือก", risk: "minimal", riskLabel: "Minimal Risk" },
+            { name: "Minor dermatologic excision (ตัดไฝ, หูด, มะเร็งผิวหนังขนาดเล็ก, ผ่าตัดผิวหนังส่วนตื้น)", risk: "minimal", riskLabel: "Minimal Risk" },
+            { name: "Pacemaker / ICD implant (ใส่เครื่องกระตุ้นหัวใจ)", risk: "minimal", riskLabel: "Minimal Risk" },
+            { name: "Myringotomy tube placement (เจาะเยื่อแก้วหูใส่ท่อ)", risk: "minimal", riskLabel: "Minimal Risk" },
+            { name: "Central venous catheter removal / Vascular access / IV port (ถอดสายสวนหลอดเลือดดำใหญ่, แทงเส้นเลือด)", risk: "minimal", riskLabel: "Minimal Risk" },
+            { name: "Joint injections / Arthrocentesis (เจาะน้ำในข้อ, ฉีดยาเข้าข้อ)", risk: "minimal", riskLabel: "Minimal Risk" },
+            { name: "Lumbar puncture (เจาะน้ำไขสันหลัง)", risk: "minimal", riskLabel: "Minimal Risk" },
+            { name: "Incision of abscess (กรีดระบายหนอง)", risk: "minimal", riskLabel: "Minimal Risk" },
+            { name: "Endoscopy without surgery/biopsy (ส่องกล้องทางเดินอาหารแบบไม่ตัดชิ้นเนื้อ)", risk: "minimal", riskLabel: "Minimal Risk" },
+            { name: "Imaging studies: MRI, CT (การตรวจทางภาพถ่ายรังสี)", risk: "minimal", riskLabel: "Minimal Risk" },
+
+            { name: "Arthroscopy (ส่องกล้องข้อเข่า, ข้อไหล่)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Cutaneous / Lymph node biopsy (ตัดชิ้นเนื้อผิวหนัง, ต่อมน้ำเหลือง)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Foot / Hand surgery / Carpal tunnel repair (ผ่าตัดมือ, ผ่าตัดเท้า, ผ่าตัดพังผืดทับเส้นประสาทข้อมือ)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Coronary angiography / Non-coronary angiography (ฉีดสีดูหลอดเลือดหัวใจ หรือหลอดเลือดอื่นๆ)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Gastroscopy / Colonoscopy / Endoscopy + biopsy/tissue removal (ส่องกล้องกระเพาะอาหาร/ลำไส้ใหญ่ และตัดชิ้นเนื้อ)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Abdominal hysterectomy / D&C / Major gynecologic surgery (ตัดมดลูกทางหน้าท้อง, ขูดมดลูก, นรีเวช)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Laparoscopic Cholecystectomy / Open Cholecystectomy (ผ่าตัดถุงน้ำดี)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Abdominal / Inguinal / Hiatal hernia repair (ผ่าตัดไส้เลื่อนหน้าท้อง, ขาหนีบ, กระบังลม)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Hemorrhoidal surgery (ผ่าตัดริดสีดวงทวาร)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Bronchoscopy + biopsy (ส่องกล้องหลอดลมและตัดชิ้นเนื้อ)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "FESS / Endoscopic Sinus Surgery (ผ่าตัดไซนัสผ่านกล้อง)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Dental extraction ≥ 3 teeth (ถอนฟันตั้งแต่ 3 ซี่ขึ้นไป)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Breast surgery (ผ่าตัดเต้านม)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Thyroid / Endocrine surgery (ผ่าตัดต่อมไทรอยด์, ต่อมไร้ท่อ)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Prostate / Bladder biopsy (เจาะชิ้นเนื้อต่อมลูกหมาก, กระเพาะปัสสาวะ)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Hydrocele repair (ผ่าตัดถุงน้ำอัณฑะ)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "EPS / RF ablation for SVT (จี้ไฟฟ้าหัวใจเต้นผิดจังหวะชนิดไม่ซับซ้อน)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Peripheral arterial angioplasty / EVAR (ทำบอลลูนหลอดเลือดส่วนปลาย, ซ่อมหลอดเลือดโป่งพองผ่านสายสวน)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+            { name: "Splenectomy (ผ่าตัดม้าม)", risk: "low-mod", riskLabel: "Low/Moderate Risk" },
+
+            { name: "Major surgery / Extensive tissue injury (ผ่าตัดใหญ่เนื้อเยื่อช้ำมาก)", risk: "high", riskLabel: "High Risk" },
+            { name: "Cancer surgery / Solid tumor (ผ่าตัดมะเร็งก้อนโต เช่น ปอด, ลำไส้, ตับอ่อน, เต้านมแบบลุกลาม)", risk: "high", riskLabel: "High Risk" },
+            { name: "Major orthopedic / Joint replacement (ผ่าตัดเปลี่ยนข้อเข่า, สะโพก, ไหล่)", risk: "high", riskLabel: "High Risk" },
+            { name: "Reconstructive plastic surgery (ศัลยกรรมตกแต่งแก้ไข, ปลูกถ่ายเนื้อเยื่อ)", risk: "high", riskLabel: "High Risk" },
+            { name: "Major thoracic surgery / Pneumonectomy (ผ่าตัดช่องอกใหญ่, ตัดปอด)", risk: "high", riskLabel: "High Risk" },
+            { name: "Urologic / GI anastomosis / Oesophagectomy (ผ่าตัดทางเดินอาหาร/ปัสสาวะที่มีการต่อท่อ, ตัดหลอดอาหาร)", risk: "high", riskLabel: "High Risk" },
+            { name: "TURP / Bladder resection / Total cystectomy (ขูดต่อมลูกหมากผ่านท่อปัสสาวะ, ตัดกระเพาะปัสสาวะ)", risk: "high", riskLabel: "High Risk" },
+            { name: "Nephrectomy / Kidney biopsy (ตัดไต, เจาะชิ้นเนื้อไต)", risk: "high", riskLabel: "High Risk" },
+            { name: "Colonic polyp resection (ส่องกล้องตัดติ่งเนื้อลำไส้ใหญ่)", risk: "high", riskLabel: "High Risk" },
+            { name: "Bowel resection / Subtotal colectomy / Abdominoperineal resection (ตัดต่อลำไส้)", risk: "high", riskLabel: "High Risk" },
+            { name: "PEG placement (เจาะสายให้อาหารทางหน้าท้อง)", risk: "high", riskLabel: "High Risk" },
+            { name: "ERCP (ส่องกล้องท่อน้ำดีและตับอ่อน)", risk: "high", riskLabel: "High Risk" },
+            { name: "Surgery in highly vascular organs / Adrenal resection (ผ่าตัดอวัยวะเลือดออกง่าย เช่น ตับ, ม้าม, ไต, ต่อมหมวกไต)", risk: "high", riskLabel: "High Risk" },
+            { name: "Cardiac surgery / CABG / Heart valve replacement (ผ่าตัดหัวใจ, บายพาส, เปลี่ยนลิ้นหัวใจ)", risk: "high", riskLabel: "High Risk" },
+            { name: "Complex left-sided ablation (จี้ไฟฟ้าหัวใจชนิดซับซ้อน เช่น PVI, VT ablation)", risk: "high", riskLabel: "High Risk" },
+            { name: "Major Vascular surgery / AAA repair / Limb revascularization (ผ่าตัดหลอดเลือดใหญ่, ตัดต่อหลอดเลือดแขนขา)", risk: "high", riskLabel: "High Risk" },
+            { name: "Trauma surgery / Multiple trauma (ผ่าตัดอุบัติเหตุรุนแรง)", risk: "high", riskLabel: "High Risk" },
+            { name: "Any major operation > 45 min (การผ่าตัดที่นานกว่า 45 นาที)", risk: "high", riskLabel: "High Risk" },
+            { name: "Tracheostomy (เจาะคอ) *เสี่ยงอุดกั้นทางเดินหายใจ", risk: "high", riskLabel: "High Risk" },
+            { name: "Cervical/Thoracic/Lumbar epidurals (ฉีดยาบล็อกช่องเหนือไขสันหลัง)", risk: "high", riskLabel: "High Risk" },
+            { name: "Trigeminal / Ophthalmic / Sphenopalatine ganglion blocks (ฉีดยาบล็อกเส้นประสาทใบหน้า)", risk: "high", riskLabel: "High Risk" },
+            { name: "Peripheral nerve stimulation trial/implant (ฝังเครื่องกระตุ้นเส้นประสาท)", risk: "high", riskLabel: "High Risk" },
+
+            { name: "Intracranial surgery / Craniotomy (ผ่าตัดสมอง / เปิดกะโหลกศีรษะ)", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" },
+            { name: "Spinal surgery / Spinal canal procedures (ผ่าตัดกระดูกสันหลัง / ไขสันหลัง)", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" },
+            { name: "Neuraxial anesthesia (บล็อกหลัง, แทงเข็มไขสันหลัง)", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" },
+            { name: "Posterior eye surgery (ผ่าตัดจอประสาทตา, ส่วนหลังลูกตา)", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" }
         ];
 
         let selectedPreopDrugs = [];
@@ -984,7 +1040,15 @@
                 if (preopCalculatedNotes.length > 0 || sDate || bRisk !== '-- เลือกความเสี่ยง --') {
                     notes.push("pharmacist note");
                     notes.push(`[Pre-OP Assessment]`);
-                    if(sDate) notes.push(`วันที่ผ่าตัด: ${sDate}`);
+                    if(sDate) {
+                        const dateParts = sDate.split('-');
+                        if(dateParts.length === 3) {
+                            const thaiYear = parseInt(dateParts[0]) + 543;
+                            notes.push(`วันที่ผ่าตัด: ${dateParts[2]}/${dateParts[1]}/${thaiYear}`);
+                        } else {
+                            notes.push(`วันที่ผ่าตัด: ${sDate}`);
+                        }
+                    }
                     if(bRisk && bRisk !== '-- เลือกความเสี่ยง --') notes.push(`Bleeding Risk: ${bRisk}`);
                     
                     if(preopCalculatedNotes.length > 0) {
@@ -1087,9 +1151,8 @@
                 rowData[7] = '1'; rowData[9] = document.getElementById('adrAssessment').value;
             }
             else if (currentTab === 'PREOP') {
-                // สำหรับ Pre-OP โยนคำแนะนำทั้งหมดใส่ Col H และชื่อหัตถการใส่ Col M 
-                rowData[6] = preopCalculatedNotes.join(' | ');
-                rowData[11] = document.getElementById('procedureSearch').value;
+                rowData[6] = preopCalculatedNotes.join(' | '); // ส่งผลประเมินไปที่ H (Col 6)
+                rowData[11] = document.getElementById('procedureSearch').value; // ส่งชื่อหัตถการไป M (Col 11)
             }
             else if (currentTab === 'HIV') {
                 const type = document.querySelector('input[name="hivType"]:checked').value;
@@ -1119,7 +1182,7 @@
         }
 
         function sendToGoogleSheet() {
-            if (!SCRIPT_URL || SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec') { alert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); return; }
+            if (!SCRIPT_URL || SCRIPT_URL === 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่') { alert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); return; }
             const btn = document.getElementById('btnSendDb');
             const originalHTML = btn.innerHTML;
             btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>กำลังบันทึก...`;
