@@ -2,12 +2,21 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OPD Online - Pharmacist Note</title>
     <!-- Tailwind CSS & Fonts & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Setup for Warfarin -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="OPD Warfarin">
+    <link rel="apple-touch-icon" href="icon_512x512.jpg">
+    <link rel="icon" type="image/jpeg" sizes="512x512" href="icon_512x512.jpg">
     
     <style>
         body { font-family: 'Prompt', sans-serif; }
@@ -23,81 +32,96 @@
         .tag { background-color: #3b82f6; color: white; padding: 5px 12px; border-radius: 9999px; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 8px; margin: 4px; }
         .tag i { cursor: pointer; }
         .tag:hover { background-color: #2563eb; }
-        
         .info-box { background-color: #fefce8; border-left: 4px solid #eab308; padding: 12px; margin-top: 10px; border-radius: 4px; font-size: 0.875rem; }
-        
         .rec-stop { background-color: #fee2e2; border-left: 4px solid #ef4444; }
         .rec-continue { background-color: #dcfce7; border-left: 4px solid #22c55e; }
         .rec-bridge { background-color: #e0f2fe; border-left: 4px solid #0ea5e9; }
         .recommendation-box { border-radius: 0.5rem; padding: 12px; margin-bottom: 12px; font-size: 0.875rem; }
-        
         .modal-overlay { display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
         .modal-content-card { background-color: white; border-radius: 0.75rem; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
         .modal-header { padding: 15px; background-color: #3b82f6; color: white; display: flex; justify-content: space-between; align-items: center; }
         .modal-body { padding: 15px; overflow-y: auto; font-size: 0.875rem; }
         .modal-footer { padding: 15px; border-top: 1px solid #e5e7eb; text-align: right; background-color: #f9fafb;}
-        
-        /* Modal Image Zoom */
         #imageModal .modal-content { max-width: 90%; max-height: 90%; margin: auto; border-radius: 8px; display: block; }
         #imageModal .modal-close { position: absolute; top: 15px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; }
         .image-container img { cursor: zoom-in; }
-
         .risk-category-group { margin-bottom: 10px; border-bottom: 1px dashed #e5e7eb; padding-bottom: 10px; }
         .risk-title { font-weight: 600; margin-bottom: 5px;}
         .risk-title.minimal { color: #16a34a; } .risk-title.low-mod { color: #ea580c; } .risk-title.high { color: #dc2626; } .risk-title.critical { color: #991b1b; }
         .risk-list { list-style-type: disc; padding-left: 20px; margin: 0; font-size: 0.85rem; color: #4b5563;}
 
-        /* --- Print Setup for A5 Landscape --- */
+        /* --- Warfarin CSS Integration --- */
+        .btn-submit { background-color: #28a745; color: white; width: 100%; font-size: 1.2rem; padding: 10px; border-radius: 0.5rem;}
+        .btn-submit:hover { background-color: #218838; }
+        .warfarin-number { font-size: 3rem; font-weight: bold; color: #d9534f; text-align: center; }
+        .loading { display: none; text-align: center; margin-top: 10px; }
+        .wf-nav-tabs { display: flex; border-bottom: 1px solid #dee2e6; margin-bottom: 1rem; }
+        .wf-nav-tabs .wf-nav-link { background: none; border: none; padding: 0.5rem 1rem; font-weight: bold; color: #495057; cursor: pointer; border-bottom: 2px solid transparent; }
+        .wf-nav-tabs .wf-nav-link.active { color: #007bff; border-bottom: 2px solid #007bff; }
+        .wf-nav-tabs .wf-nav-link.text-success { color: #198754; }
+        .wf-nav-tabs .wf-nav-link.text-success.active { border-bottom: 2px solid #198754; }
+        .pending-card { border-left: 5px solid #ffc107; background-color: #fffaf0; border-radius: 0.5rem; }
+        .stickerRow { display:flex; gap:14px; align-items:flex-start; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
+        .qs-panel { display:flex; flex-direction:column; gap:8px; min-width:150px; }
+        .qs-panel .title { font-size:13px; color:#6b7280; text-align: center; font-weight: bold; }
+        
+        .sticker {
+            --w: 8.5cm; --h: 6.0cm; width: var(--w); height: var(--h);
+            background: linear-gradient(135deg, #fff 0%, #fff 50%, #f5fbff 100%);
+            border-radius: 10px; padding: 28px 10px 6px 20px;; color: #111827;
+            position: relative; overflow: hidden; border: 1px solid #dee2e6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); box-sizing: border-box;
+        }
+        .sticker.size-4_5 { --h: 4.5cm; font-size: 16px; }
+        .sticker.size-6_0 { --h: 6.0cm; font-size: 18px; }
+        .sticker .line { display: flex; gap: 6px; margin: 1px 0; align-items: flex-start; }
+        .sticker .field-label { min-width: 110px; font-weight: 700; color: #111; }
+        .sticker .field-value { flex: 1; min-height: 18px; border-bottom: 1px dotted #cbd5e1; outline: none; }
+        .sticker .field-value:focus { background: #fffbe6; border-bottom-color: #f4d35e; }
+        .sticker .extra { margin-top: 4px; min-height: 18px; padding-top: 2px; border-top: 1px dashed #e2e8f0; outline: none;}
+        .sticker .extra:empty:before { content: attr(data-placeholder); color: #9aa3b2; }
+
+        /* Spinner CSS */
+        .spinner-border { display: inline-block; width: 2rem; height: 2rem; vertical-align: text-bottom; border: .25em solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spinner-border .75s linear infinite; }
+        @keyframes spinner-border { to { transform: rotate(360deg); } }
+
+        /* --- Print Setup --- */
         @media print {
             body * { visibility: hidden; }
+            
+            /* Print A5 OPD Card */
             #printArea, #printArea * { visibility: visible; }
-            
-            @page { 
-                size: A5 landscape; 
-                margin: 0; 
-            }
-            
-            body { 
-                margin: 0; padding: 0; background: white; 
-            }
-
             #printArea { 
                 position: absolute; left: 0; top: 0; width: 210mm; height: 148mm; 
                 display: flex; flex-direction: row; background: white;
-                margin: 0; padding: 0; box-sizing: border-box;
-                overflow: hidden; 
+                margin: 0; padding: 0; box-sizing: border-box; overflow: hidden; 
             }
-            
-            .print-left { 
-                width: 48%; 
-                height: 100%; 
-                border-right: 1px dashed #ccc; 
-                box-sizing: border-box;
+            #printArea .print-left { width: 48%; height: 100%; border-right: 1px dashed #ccc; box-sizing: border-box; }
+            #printArea .print-right { 
+                width: 52%; height: 100%; padding: 3mm 5mm 5mm 10mm; box-sizing: border-box; 
+                font-family: 'Prompt', sans-serif; font-size: 11pt; line-height: 1.3;
             }
-            
-            .print-right { 
-                width: 52%; 
-                height: 100%;
-                padding: 3mm 5mm 5mm 10mm; 
-                box-sizing: border-box; 
-                font-family: 'Prompt', sans-serif; 
-                font-size: 11pt; 
-                line-height: 1.3;
-            }
-            
-            .print-right .header {
-                font-weight: bold; 
-                font-size: 13pt; 
-                margin-bottom: 5px; 
-                border-bottom: 1px solid #000; 
-                padding-bottom: 2px;
-            }
-            
-            #printNote {
-                white-space: pre-wrap; 
-                word-wrap: break-word; 
+            #printArea .header { font-weight: bold; font-size: 13pt; margin-bottom: 5px; border-bottom: 1px solid #000; padding-bottom: 2px; }
+            #printNote { white-space: pre-wrap; word-wrap: break-word; }
+
+            /* Print Warfarin Sticker */
+            .stickerTabActive #stickerTabPane, .stickerTabActive #stickerTabPane * { visibility: visible; }
+            .stickerTabActive #stickerTabPane { position: absolute; left: 0; top: 0; width: 100%; }
+            .stickerTabActive .sticker-controls, .stickerTabActive .qs-panel { display: none !important; }
+            .stickerTabActive .stickerRow { margin: 0 !important; justify-content: flex-start !important; }
+            .stickerTabActive .sticker { border: 1px solid #ccc !important; box-shadow: none !important; margin: 0; page-break-inside: avoid; }
+            .stickerTabActive .extra:empty { display: none !important; }
+            .stickerTabActive .extra:empty:before { content: none !important; }
+
+            @page { 
+                /* ถ้าย้าย Tab ไปที่ Warfarin จะใช้ Auto size */
+                size: auto; 
             }
         }
+        
+        /* A5 Page specific for OPD */
+        @page opdPage { size: A5 landscape; margin: 0; }
+        body.printing-opd { page: opdPage; }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen p-4 md:p-8">
@@ -112,18 +136,21 @@
         <option value="ภก.กันตพงศ์ วงศ์เอนกเกษม"></option>
     </datalist>
 
-    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden">
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden" id="mainAppContainer">
         
         <!-- Header -->
         <div class="bg-blue-600 p-6 text-white">
             <div class="flex justify-between items-center mb-4">
-                <h1 class="text-2xl font-semibold">OPD Online (Pharmacist Note)</h1>
+                <div class="flex items-center">
+                    <img src="icon_512x512.jpg" alt="Icon" class="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
+                    <h1 class="text-2xl font-semibold">OPD Online</h1>
+                </div>
                 <button onclick="resetForm()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                    ล้างข้อมูลคนไข้
+                    ล้างข้อมูล
                 </button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div id="mainPatientInfo" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium mb-1">HN</label>
                     <input type="text" id="hn" class="w-full rounded-lg border-none px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-300" placeholder="ระบุ HN" oninput="generateOutput()">
@@ -136,13 +163,15 @@
         </div>
 
         <!-- Clinic Tabs -->
-        <div class="p-6 border-b border-gray-200 bg-gray-50">
-            <h2 class="text-lg font-medium text-gray-700 mb-3">เลือกคลินิก</h2>
-            <div class="flex flex-wrap gap-3">
-                <button onclick="switchTab('MR')" id="tab-MR" class="tab-btn active px-6 py-2 rounded-full font-medium border shadow-sm">1. MR</button>
-                <button onclick="switchTab('PREOP')" id="tab-PREOP" class="tab-btn px-6 py-2 rounded-full font-medium border shadow-sm flex items-center">2. Pre-OP</button>
-                <button onclick="switchTab('ADR')" id="tab-ADR" class="tab-btn px-6 py-2 rounded-full font-medium border shadow-sm">3. ADR/SE</button>
-                <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-6 py-2 rounded-full font-medium border shadow-sm">4. Clinic HIV</button>
+        <div class="p-6 border-b border-gray-200 bg-gray-50 overflow-x-auto">
+            <div class="flex flex-wrap gap-2 min-w-max">
+                <button onclick="switchTab('MR')" id="tab-MR" class="tab-btn active px-5 py-2 rounded-full font-medium border shadow-sm">1. MR</button>
+                <button onclick="switchTab('PREOP')" id="tab-PREOP" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center">2. Pre-OP</button>
+                <button onclick="switchTab('ADR')" id="tab-ADR" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm">3. ADR/SE</button>
+                <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm">4. Clinic HIV</button>
+                <button onclick="switchTab('WARFARIN')" id="tab-WARFARIN" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-red-50 text-red-700 border-red-200 hover:bg-red-100">
+                    <i class="fa-solid fa-capsules mr-1"></i> 5. Warfarin
+                </button>
             </div>
         </div>
 
@@ -483,10 +512,136 @@
                 </div>
             </div>
 
+            <!-- 5. Warfarin Form -->
+            <div id="form-WARFARIN" class="space-y-4 hidden">
+                <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm mb-4">
+                    <h3 class="font-bold text-blue-800 mb-3 border-b pb-2"><i class="fa-solid fa-capsules"></i> เมนูจัดการคิว Warfarin</h3>
+                    <div class="wf-nav-tabs">
+                        <button class="wf-nav-link active" id="wf-manual-tab" onclick="switchWfTab('manual')"><i class="fa-solid fa-pen-to-square"></i> กรอกเอง</button>
+                        <button class="wf-nav-link" id="wf-pending-tab" onclick="switchWfTab('pending'); loadPending();"><i class="fa-solid fa-clock-rotate-left"></i> รออนุมัติ</button>
+                        <button class="wf-nav-link text-success" id="wf-sticker-tab" onclick="switchWfTab('sticker')"><i class="fa-solid fa-print"></i> พิมพ์สติกเกอร์</button>
+                    </div>
+
+                    <!-- Warfarin: กรอกเอง -->
+                    <div id="wf-manual" class="wf-tab-content">
+                        <form id="warfarinForm">
+                            <input type="hidden" name="action" value="manual">
+                            <div class="mb-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">HN (เลขที่โรงพยาบาล)</label>
+                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="hn" required placeholder="เช่น 54961/68" id="wfHnInput">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">เพศ</label>
+                                    <select class="w-full rounded border-gray-300 border px-3 py-2" name="sex" required>
+                                        <option value="1">ชาย (1)</option><option value="2">หญิง (2)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">อายุ (ปี)</label>
+                                    <input type="number" class="w-full rounded border-gray-300 border px-3 py-2" name="age" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ - นามสกุล</label>
+                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="name" required id="wfNameInput">
+                            </div>
+                            <div class="mb-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Indication (ข้อบ่งใช้)</label>
+                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="indication" list="indicationOptions" placeholder="ระบุ หรือเลือกจากรายการ">
+                                <datalist id="indicationOptions"><option value="AF"><option value="DVT"><option value="PE"><option value="MVR"><option value="AVR"><option value="S/P MVR"></datalist>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Goal INR</label>
+                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="goal" list="goalOptions" value="2.0-3.0">
+                                <datalist id="goalOptions"><option value="2.0-3.0"><option value="2.5-3.5"></datalist>
+                            </div>
+                            <button type="submit" class="btn-submit" id="submitBtn">รับเลข Warfarin</button>
+                            <div class="loading text-blue-600 mt-2" id="loadingSpinner"><i class="fa-solid fa-spinner fa-spin mr-2"></i>กำลังบันทึกและรันเลข...</div>
+                        </form>
+                        <div id="resultArea" class="hidden bg-green-50 border border-green-200 text-green-800 p-4 rounded mt-4 text-center">
+                            <h4 class="font-bold mb-1">บันทึกสำเร็จ!</h4>
+                            <p class="mb-1">เลข Warfarin ของคนไข้รายนี้คือ:</p>
+                            <div class="warfarin-number my-2" id="showNumber">----</div>
+                            <button class="bg-white border border-green-500 text-green-700 px-4 py-2 rounded hover:bg-green-100" onclick="document.getElementById('resultArea').classList.add('hidden'); document.getElementById('submitBtn').style.display='block'; document.getElementById('warfarinForm').reset();">ลงรายการต่อไป</button>
+                        </div>
+                    </div>
+
+                    <!-- Warfarin: รออนุมัติ -->
+                    <div id="wf-pending" class="wf-tab-content hidden">
+                        <div class="flex gap-2 mb-4">
+                            <button class="flex-1 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm" onclick="loadPending()">
+                                <i class="fa-solid fa-rotate-right mr-1"></i> โหลดปกติ (ใช้ Cache)
+                            </button>
+                            <button class="flex-1 bg-yellow-400 border border-yellow-500 text-yellow-900 font-bold px-3 py-2 rounded hover:bg-yellow-500 text-sm" onclick="forceRefreshCache()" id="forceRefreshBtn">
+                                <i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้
+                            </button>
+                        </div>
+                        <div id="pendingContainer" class="space-y-3">
+                            <p class="text-center text-gray-500 py-4">กำลังโหลดข้อมูล...</p>
+                        </div>
+                    </div>
+
+                    <!-- Warfarin: พิมพ์สติกเกอร์ -->
+                    <div id="wf-sticker" class="wf-tab-content hidden">
+                        <div class="bg-gray-50 p-4 rounded border border-gray-200 mb-4 sticker-controls">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-500 mb-1">รหัสผ่าน (Access Code)</label>
+                                    <input id="accessCode" type="password" class="w-full rounded border-gray-300 border px-3 py-1.5 text-sm" placeholder="ใส่รหัสเพื่อใช้งาน">
+                                </div>
+                                <div class="flex items-center pt-5">
+                                    <label class="inline-flex items-center mr-3 text-sm text-gray-600">
+                                        <input type="checkbox" id="rememberCode" class="form-checkbox text-blue-600 rounded">
+                                        <span class="ml-2">จำรหัสวันนี้</span>
+                                    </label>
+                                    <small id="gateMsg" class="text-red-500 text-sm">ใส่รหัส</small>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                                <div>
+                                    <label class="block text-sm font-bold text-blue-600 mb-1">ดึงด้วย Warfarin No</label>
+                                    <input id="searchWarfarinNo" type="text" inputmode="numeric" class="w-full rounded border-blue-300 border-2 px-3 py-1.5 focus:ring-blue-500" placeholder="เช่น 4248">
+                                </div>
+                                <div class="flex gap-2">
+                                    <button id="fetchBtn" class="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm" disabled><i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล</button>
+                                    <button id="printBtn" class="bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm"><i class="fa-solid fa-print"></i> พิมพ์สติกเกอร์</button>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-gray-200">
+                                <label class="text-sm font-bold text-gray-500 mr-3">ขนาดสติกเกอร์:</label>
+                                <label class="inline-flex items-center mr-3 text-sm"><input type="radio" name="size" id="size1" value="4_5" class="form-radio text-blue-600"><span class="ml-1">8.5×4.5 ซม.</span></label>
+                                <label class="inline-flex items-center text-sm"><input type="radio" name="size" id="size2" value="6_0" checked class="form-radio text-blue-600"><span class="ml-1">8.5×6.0 ซม.</span></label>
+                            </div>
+                        </div>
+                        
+                        <!-- พื้นที่โชว์สติกเกอร์ -->
+                        <div class="stickerRow" id="stickerTabPane">
+                            <div id="sticker" class="sticker size-6_0">
+                                <div class="line"><span class="field-label">ชื่อ-สกุล:</span><span id="stk-fullName" class="field-value" contenteditable="true">—</span></div>
+                                <div class="line"><span class="field-label">HN:</span><span id="stk-hn" class="field-value" contenteditable="true">—</span></div>
+                                <div class="line"><span class="field-label">Warfarin No:</span><span id="stk-wfno" class="field-value" contenteditable="true">—</span></div>
+                                <div class="line"><span class="field-label">Indication:</span><span id="stk-indication" class="field-value" contenteditable="true">—</span></div>
+                                <div class="line"><span class="field-label">Target INR:</span><span id="stk-inr" class="field-value" contenteditable="true">—</span></div>
+                                <div id="extraArea" class="extra" contenteditable="true" data-placeholder="คลิกเพื่อพิมพ์ข้อความเพิ่มเติมที่นี่…"></div>
+                            </div>
+                            
+                            <aside class="qs-panel">
+                                <div class="title">ปุ่มด่วน (Quick Select)</div>
+                                <button id="btnInr23" class="bg-white border border-gray-300 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100">INR 2–3</button>
+                                <button id="btnInr2535" class="bg-white border border-gray-300 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100">INR 2.5–3.5</button>
+                                <button id="btnAll" class="bg-blue-50 border border-blue-300 text-blue-700 px-2 py-1 rounded text-xs font-bold hover:bg-blue-100">+ ALL (เพิ่มท้าย)</button>
+                            </aside>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
 
-        <!-- Output & Actions -->
-        <div class="bg-gray-100 p-6 border-t border-gray-200">
+        <!-- Output & Actions (ซ่อนใน Tab Warfarin) -->
+        <div id="opdOutputSection" class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK)</label>
             
             <div id="mergeMrOption" class="hidden mb-3 bg-blue-50 border border-blue-200 p-3 rounded-lg">
@@ -538,6 +693,7 @@
 
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec'; 
+        const ACCESS_CODE = "1234";
 
         // --- PREOP DATABASES ---
         const drugDatabase = [
@@ -640,23 +796,50 @@
 
             document.querySelectorAll('#chadModal input, #chadModal select').forEach(i => i.addEventListener('change', calculateChad));
             document.querySelectorAll('#capriniModal input').forEach(i => i.addEventListener('change', calculateCaprini));
+            
+            // Sync HN/Name into Warfarin tab
+            document.getElementById('hn').addEventListener('input', (e) => document.getElementById('wfHnInput').value = e.target.value);
+            document.getElementById('ptName').addEventListener('input', (e) => document.getElementById('wfNameInput').value = e.target.value);
+            
+            // Setup Warfarin Access Code
+            setupWarfarinAccess();
         });
 
         // --- Tabs ---
         function switchTab(tab) {
             currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tab-${tab}`).classList.add('active');
-            ['MR', 'PREOP', 'ADR', 'HIV'].forEach(t => { document.getElementById(`form-${t}`).classList.add('hidden'); });
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50'));
+            const activeBtn = document.getElementById(`tab-${tab}`);
+            activeBtn.classList.add('active');
+            if(tab === 'WARFARIN') { activeBtn.classList.remove('text-red-700', 'bg-red-50'); }
+            
+            ['MR', 'PREOP', 'ADR', 'HIV', 'WARFARIN'].forEach(t => { document.getElementById(`form-${t}`).classList.add('hidden'); });
             document.getElementById(`form-${tab}`).classList.remove('hidden');
             
-            if (tab === 'PREOP') {
-                document.getElementById('mergeMrOption').classList.remove('hidden');
-            } else {
-                document.getElementById('mergeMrOption').classList.add('hidden');
-            }
+            if (tab === 'PREOP') document.getElementById('mergeMrOption').classList.remove('hidden');
+            else document.getElementById('mergeMrOption').classList.add('hidden');
             
-            generateOutput();
+            if (tab === 'WARFARIN') {
+                document.getElementById('opdOutputSection').classList.add('hidden');
+                document.getElementById('mainPatientInfo').classList.add('hidden');
+                document.body.classList.add('stickerTabActive'); 
+            } else {
+                document.getElementById('opdOutputSection').classList.remove('hidden');
+                document.getElementById('mainPatientInfo').classList.remove('hidden');
+                document.body.classList.remove('stickerTabActive');
+                generateOutput();
+            }
+        }
+        
+        function switchWfTab(wftab) {
+            document.querySelectorAll('.wf-nav-link').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`wf-${wftab}-tab`);
+            activeBtn.classList.add('active');
+            ['manual', 'pending', 'sticker'].forEach(t => { document.getElementById(`wf-${t}`).classList.add('hidden'); });
+            document.getElementById(`wf-${wftab}`).classList.remove('hidden');
+            
+            if(wftab === 'sticker') document.body.classList.add('stickerTabActive');
+            else document.body.classList.remove('stickerTabActive');
         }
 
         function toggleInfo(id) { document.getElementById(id).classList.toggle('hidden'); }
@@ -1048,7 +1231,6 @@
                     if(bRisk && bRisk !== '-- เลือกความเสี่ยง --') metaLines.push(`Bleeding Risk: ${bRisk}`);
                     
                     if (metaLines.length > 0) {
-                        // ถ้ารวมข้อมูล ให้ใส่ต่อท้ายบรรทัดแพ้ยาเลย ไม่ต้องเว้นบรรทัดใหม่
                         if(isMerge && notes.length > 0 && notes[notes.length-1].includes("แพ้ยา")) {
                              notes[notes.length-1] += ` | ${metaLines.join(' | ')}`;
                         } else {
@@ -1159,6 +1341,200 @@
             }
             
             document.getElementById('outputPmk').value = notes.join('\n');
+        }
+
+        // ==========================================
+        //         WARFARIN SYSTEM LOGIC
+        // ==========================================
+        function setupWarfarinAccess() {
+            const codeInput = document.getElementById('accessCode');
+            const remCheck = document.getElementById('rememberCode');
+            const msg = document.getElementById('gateMsg');
+            const fetchBtn = document.getElementById('fetchBtn');
+
+            function checkAccess() {
+                const ok = (codeInput.value.trim() === ACCESS_CODE);
+                fetchBtn.disabled = !ok;
+                if(ok) {
+                    msg.innerHTML = '<i class="fa-solid fa-circle-check"></i> พร้อมดึงข้อมูล';
+                    msg.className = 'text-green-600 text-sm ml-3 font-bold';
+                    if(remCheck.checked) sessionStorage.setItem('access_ok','1');
+                } else {
+                    msg.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> รหัสไม่ถูกต้อง';
+                    msg.className = 'text-red-500 text-sm ml-3 font-bold';
+                    sessionStorage.removeItem('access_ok');
+                }
+                return ok;
+            }
+
+            if(sessionStorage.getItem('access_ok') === '1') {
+                codeInput.value = ACCESS_CODE;
+                remCheck.checked = true;
+                checkAccess();
+            }
+
+            codeInput.addEventListener('input', checkAccess);
+            remCheck.addEventListener('change', checkAccess);
+
+            document.getElementById('fetchBtn').addEventListener('click', doFetch);
+            document.getElementById('searchWarfarinNo').addEventListener('keydown', e => { if(e.key === 'Enter') doFetch(); });
+            document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+            document.querySelectorAll('input[name="size"]').forEach(r => {
+                r.addEventListener('change', () => {
+                    const box = document.getElementById('sticker');
+                    box.classList.remove('size-4_5', 'size-6_0');
+                    box.classList.add('size-' + r.value);
+                });
+            });
+
+            document.getElementById('btnInr23').addEventListener('click', () => document.getElementById('stk-inr').textContent='2-3');
+            document.getElementById('btnInr2535').addEventListener('click', () => document.getElementById('stk-inr').textContent='2.5-3.5');
+            document.getElementById('btnAll').addEventListener('click', () => {
+                const ex = document.getElementById('extraArea');
+                const t = ex.textContent.trim();
+                ex.textContent = t ? (t + ' ALL:') : 'ALL:';
+                const sel = window.getSelection(); const range = document.createRange();
+                range.selectNodeContents(ex); range.collapse(false);
+                sel.removeAllRanges(); sel.addRange(range); ex.focus();
+            });
+            
+            // Warfarin Form Submission
+            const wfForm = document.getElementById('warfarinForm');
+            wfForm.addEventListener('submit', e => {
+                e.preventDefault();
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementById('loadingSpinner').style.display = 'block';
+                const data = Object.fromEntries(new FormData(wfForm).entries());
+                fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data), headers: {"Content-Type": "text/plain"} })
+                .then(res => res.json())
+                .then(res => {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    if (res.result === 'success') {
+                        document.getElementById('resultArea').classList.remove('hidden');
+                        document.getElementById('showNumber').innerText = res.warfarinId;
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + res.error);
+                        document.getElementById('submitBtn').style.display = 'block';
+                    }
+                }).catch(err => {
+                    alert('การเชื่อมต่อขัดข้อง');
+                    document.getElementById('submitBtn').style.display = 'block';
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                });
+            });
+        }
+
+        async function fetchByAppsScript(no) {
+            const url = new URL(SCRIPT_URL); 
+            url.searchParams.set('warfarin', String(no).trim());
+            const res = await fetch(url.toString(), {cache:'no-store'});
+            if(!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            if(!data || (!data.warfarinNo && !data.fullName)) throw new Error('ไม่พบข้อมูล');
+            return data;
+        }
+
+        async function doFetch() {
+            const wnoInput = document.getElementById('searchWarfarinNo');
+            const btn = document.getElementById('fetchBtn');
+            const no = wnoInput.value.trim();
+            if(!no) { alert('กรุณาใส่เลข Warfarin No'); return; }
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังดึง...'; 
+            btn.disabled = true;
+            
+            try { 
+                const d = await fetchByAppsScript(no); 
+                document.getElementById('stk-fullName').textContent = d.fullName || '—';
+                document.getElementById('stk-hn').textContent = d.hn || '—';
+                document.getElementById('stk-wfno').textContent = d.warfarinNo || '—';
+                document.getElementById('stk-indication').textContent = d.indication || '—';
+                document.getElementById('stk-inr').textContent = d.inr || '—';
+            } catch(e) { 
+                alert('ดึงข้อมูลไม่สำเร็จ: ' + e.message); 
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล'; 
+                btn.disabled = false;
+            }
+        }
+
+        // Warfarin Pending logic
+        function loadPending() {
+            const container = document.getElementById('pendingContainer');
+            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-blue-500"></i></div>';
+            fetch(SCRIPT_URL + "?action=getPending")
+            .then(res => res.json())
+            .then(data => renderPendingCards(data))
+            .catch(err => container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded">โหลดข้อมูลผิดพลาด</div>');
+        }
+
+        function forceRefreshCache() {
+            const btn = document.getElementById('forceRefreshBtn');
+            const container = document.getElementById('pendingContainer');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังอัปเดต...'; btn.disabled = true;
+            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-yellow-500"></i><p class="mt-2 text-sm text-yellow-700">กำลังซิงค์ข้อมูลตรงจากระบบ...</p></div>';
+
+            fetch(SCRIPT_URL + "?action=forceRefreshCache")
+            .then(res => res.json())
+            .then(res => {
+                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; btn.disabled = false;
+                if(res.result === 'success') renderPendingCards(res.data);
+            }).catch(err => {
+                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; btn.disabled = false;
+                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded">โหลดข้อมูลผิดพลาด โปรดลองใหม่</div>';
+            });
+        }
+
+        function renderPendingCards(data) {
+            const container = document.getElementById('pendingContainer');
+            container.innerHTML = '';
+            if(data.length === 0) {
+                container.innerHTML = '<div class="bg-white border border-gray-200 text-center py-8 text-gray-500 rounded-lg">ไม่มีคิวรออนุมัติจาก LINE ครับ</div>';
+                return;
+            }
+            data.forEach(item => {
+                const card = `
+                <div class="pending-card p-4 shadow-sm border border-yellow-200" id="card-${item.id}">
+                    <form id="form-${item.id}">
+                        <input type="hidden" name="id" value="${item.id}">
+                        <div class="grid grid-cols-2 gap-3 mb-2">
+                            <div><label class="block text-xs font-bold text-gray-600">HN</label><input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="hn" value="${item.hn}"></div>
+                            <div><label class="block text-xs font-bold text-gray-600">เพศ</label><select class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="sex"><option value="1" ${item.sex=='1'?'selected':''}>ชาย</option><option value="2" ${item.sex=='2'?'selected':''}>หญิง</option></select></div>
+                        </div>
+                        <div class="mb-2"><label class="block text-xs font-bold text-gray-600">ชื่อ-นามสกุล</label><input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="name" value="${item.name}"></div>
+                        <div class="grid grid-cols-3 gap-3 mb-3">
+                            <div><label class="block text-xs font-bold text-gray-600">อายุ</label><input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="age" value="${item.age}"></div>
+                            <div><label class="block text-xs font-bold text-gray-600">Indication</label><input type="text" class="w-full rounded border-blue-300 border-2 px-2 py-1 text-sm font-bold text-blue-700" name="indication" value="${item.indication}"></div>
+                            <div><label class="block text-xs font-bold text-gray-600">Goal</label><input type="text" class="w-full rounded border-red-300 border-2 px-2 py-1 text-sm font-bold text-red-700" name="goal" value="${item.goal}"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" class="flex-1 bg-white border border-red-300 text-red-600 px-3 py-1.5 rounded hover:bg-red-50 text-sm font-bold" onclick="actionPending('${item.id}', 'reject')"><i class="fa-solid fa-xmark mr-1"></i> ทิ้ง</button>
+                            <button type="button" class="flex-1 bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm font-bold" onclick="actionPending('${item.id}', 'approve')"><i class="fa-solid fa-check mr-1"></i> อนุมัติ</button>
+                        </div>
+                    </form>
+                    <div id="res-${item.id}" class="hidden bg-green-100 text-green-800 text-center font-bold p-2 mt-3 rounded"></div>
+                </div>`;
+                container.innerHTML += card;
+            });
+        }
+
+        function actionPending(id, actionType) {
+            const form = document.getElementById('form-' + id);
+            const data = Object.fromEntries(new FormData(form).entries());
+            data.action = actionType;
+            form.style.opacity = '0.4'; form.style.pointerEvents = 'none';
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data), headers: {"Content-Type": "text/plain"} })
+            .then(res => res.json())
+            .then(res => {
+                if(res.result === 'success') {
+                    if(actionType === 'approve') {
+                        document.getElementById('res-' + id).classList.remove('hidden');
+                        document.getElementById('res-' + id).innerText = "ออกเลข: " + res.warfarinId;
+                        setTimeout(() => document.getElementById('card-' + id).remove(), 3000);
+                    } else { document.getElementById('card-' + id).remove(); }
+                } else { alert('Error: ' + res.error); form.style.opacity = '1'; form.style.pointerEvents = 'auto'; }
+            });
         }
 
         // ==========================================
