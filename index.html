@@ -47,17 +47,56 @@
         .risk-title.minimal { color: #16a34a; } .risk-title.low-mod { color: #ea580c; } .risk-title.high { color: #dc2626; } .risk-title.critical { color: #991b1b; }
         .risk-list { list-style-type: disc; padding-left: 20px; margin: 0; font-size: 0.85rem; color: #4b5563;}
 
-        /* --- Print Setup for A5 Landscape (Right Side) --- */
+        /* --- Print Setup for A5 Landscape (Right Side) - Adjusted to prevent cutoff --- */
         @media print {
             body * { visibility: hidden; }
             #printArea, #printArea * { visibility: visible; }
-            #printArea { 
-                position: fixed; left: 0; top: 0; width: 100%; height: 100%; 
-                display: flex; flex-direction: row; background: white;
+            
+            @page { 
+                size: A5 landscape; 
+                margin: 5mm; 
             }
-            .print-left { width: 50%; border-right: 1px dashed #ccc; height: 100%; }
-            .print-right { width: 50%; padding: 20px; box-sizing: border-box; font-family: 'Prompt', sans-serif; }
-            @page { size: A5 landscape; margin: 5mm; }
+            
+            body { 
+                margin: 0; padding: 0; background: white; 
+            }
+
+            #printArea { 
+                position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; 
+                display: flex; flex-direction: row; background: white;
+                margin: 0; padding: 0;
+                overflow: hidden; /* Prevent scrolling/extra pages */
+            }
+            
+            /* แบ่งครึ่งหน้ากระดาษ A5 (148 x 210 mm) แนวนอน */
+            .print-left { 
+                width: 48%; /* ลดขนาดลงนิดนึงกันตกขอบ */
+                height: 100%; 
+                border-right: 1px dashed #ccc; 
+            }
+            
+            .print-right { 
+                width: 52%; /* ฝั่งขวาใหญ่ขึ้นเล็กน้อย */
+                height: 100%;
+                padding: 10mm 5mm 5mm 10mm; /* จัดระยะขอบให้พอดี (บน ขวา ล่าง ซ้าย) */
+                box-sizing: border-box; 
+                font-family: 'Prompt', sans-serif; 
+                font-size: 11pt; /* ลดขนาดตัวอักษรให้อยู่ในหน้า */
+                line-height: 1.3;
+            }
+            
+            .print-right .header {
+                font-weight: bold; 
+                font-size: 14pt; /* ย่อจาก 16pt ให้สมดุล */
+                margin-bottom: 8px; 
+                border-bottom: 1.5px solid #000; 
+                padding-bottom: 4px;
+            }
+            
+            #printNote {
+                white-space: pre-wrap; 
+                word-wrap: break-word; /* กันคำยาวตกขอบ */
+            }
         }
     </style>
 </head>
@@ -189,6 +228,12 @@
                         <div id="procedureListContainer" class="drug-list-container hidden"></div>
                     </div>
 
+                    <!-- ช่องหัตถการที่ทำ (เอาไว้พิมพ์เองหรือรับค่าจากการค้นหา) -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">หัตถการที่ทำ</label>
+                        <input type="text" id="procedureManual" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" placeholder="ระบุชื่อหัตถการที่ผู้ป่วยทำ" oninput="generateOutput()">
+                    </div>
+
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">ความเสี่ยงเลือดออก (Bleeding Risk)</label>
                         <select id="bleedingRisk" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" onchange="generateOutput()">
@@ -202,22 +247,10 @@
                         <div id="bleed-risk-info" class="info-box hidden mt-2">
                             <h4 class="font-bold mb-2">Procedural Bleeding Risk</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="risk-category-group">
-                                    <h5 class="risk-title minimal">Minimal Risk</h5>
-                                    <ul class="risk-list"><li>Cataract</li><li>Minor dental</li><li>Minor excisions</li></ul>
-                                </div>
-                                <div class="risk-category-group">
-                                    <h5 class="risk-title low-mod">Low/Moderate Risk</h5>
-                                    <ul class="risk-list"><li>Laparoscopic Chole.</li><li>Hernia Repair</li><li>Endoscopy + biopsy</li></ul>
-                                </div>
-                                <div class="risk-category-group">
-                                    <h5 class="risk-title high">High Risk</h5>
-                                    <ul class="risk-list"><li>Major Abdominal</li><li>Major Ortho</li><li>CABG</li></ul>
-                                </div>
-                                <div class="risk-category-group">
-                                    <h5 class="risk-title critical">Critical Site</h5>
-                                    <ul class="risk-list"><li>Intracranial</li><li>Spinal</li><li>Posterior eye</li></ul>
-                                </div>
+                                <div class="risk-category-group"><h5 class="risk-title minimal">Minimal Risk</h5><ul class="risk-list"><li>Cataract</li><li>Minor dental</li><li>Minor excisions</li></ul></div>
+                                <div class="risk-category-group"><h5 class="risk-title low-mod">Low/Moderate Risk</h5><ul class="risk-list"><li>Laparoscopic Chole.</li><li>Hernia Repair</li><li>Endoscopy + biopsy</li></ul></div>
+                                <div class="risk-category-group"><h5 class="risk-title high">High Risk</h5><ul class="risk-list"><li>Major Abdominal</li><li>Major Ortho</li><li>CABG</li></ul></div>
+                                <div class="risk-category-group"><h5 class="risk-title critical">Critical Site</h5><ul class="risk-list"><li>Intracranial</li><li>Spinal</li><li>Posterior eye</li></ul></div>
                             </div>
                             <img src="table_bleeding_risk.png" class="mt-2 w-full rounded cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'">
                         </div>
@@ -442,7 +475,6 @@
         <div class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK)</label>
             
-            <!-- Checkbox ดึงข้อมูล MR สำหรับ Pre-OP -->
             <div id="mergeMrOption" class="hidden mb-3 bg-blue-50 border border-blue-200 p-3 rounded-lg">
                 <label class="inline-flex items-center cursor-pointer">
                     <input type="checkbox" id="chkMergeMr" class="form-checkbox text-blue-600 h-5 w-5 rounded" onchange="generateOutput()">
@@ -459,13 +491,12 @@
                 </button>
                 <button onclick="copyToSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    2. คัดลอกลง Google Sheet (Manual Ctrl+Shift+V)
+                    2. คัดลอกลง Google Sheet (Manual)
                 </button>
                 <button onclick="sendToGoogleSheet()" id="btnSendDb" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                     3. บันทึกลง Sheet อัตโนมัติ
                 </button>
-                <!-- ปุ่มพิมพ์ OPD Card -->
                 <button onclick="printOpdCard()" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     4. พิมพ์ OPD Card (A5)
@@ -474,107 +505,22 @@
         </div>
     </div>
 
-    <!-- Layout สำหรับการ Print OPD Card A5 -->
+    <!-- A5 Print Area -->
     <div id="printArea" class="hidden">
         <div class="print-left"></div>
         <div class="print-right">
-            <div style="font-weight: bold; font-size: 16pt; margin-bottom: 10px; border-bottom: 2px solid #000; padding-bottom: 5px;">
+            <div class="header">
                 ชื่อ-นามสกุล: <span id="printName"></span><br>
                 HN: <span id="printHn"></span>
             </div>
-            <div id="printNote" style="white-space: pre-wrap;"></div>
+            <div id="printNote"></div>
         </div>
     </div>
 
-    <!-- Modals (Caprini, CHADs2, Images) -->
-    <div id="imageModal" class="modal-overlay" onclick="closeModal()">
-        <span class="modal-close" style="position:absolute; top:20px; right:30px; font-size:40px; color:white; cursor:pointer;">&times;</span>
-        <img class="modal-content rounded-lg max-w-full max-h-full" id="img01">
-    </div>
-
-    <div id="chadModal" class="modal-overlay">
-        <div class="modal-content-card">
-            <div class="modal-header">
-                <h3>🧮 CHA2DS2-VASc</h3>
-                <span class="modal-close-btn" onclick="closeChadModal()">&times;</span>
-            </div>
-            <div class="modal-body space-y-2">
-                <label class="block"><input type="checkbox" id="c_chf" value="1"> Congestive Heart Failure (+1)</label>
-                <label class="block"><input type="checkbox" id="c_ht" value="1"> Hypertension (+1)</label>
-                <div>
-                    <label class="font-bold text-sm">Age (อายุ):</label>
-                    <select id="c_age" class="w-full border rounded p-1">
-                        <option value="0">< 65 ปี (0)</option><option value="1">65 - 74 ปี (+1)</option><option value="2">≥ 75 ปี (+2)</option>
-                    </select>
-                </div>
-                <label class="block"><input type="checkbox" id="c_dm" value="1"> Diabetes Mellitus (+1)</label>
-                <label class="block"><input type="checkbox" id="c_stroke" value="2"> Stroke/TIA/Thromboembolism (+2)</label>
-                <label class="block"><input type="checkbox" id="c_vasc" value="1"> Vascular Disease (MI, PAD) (+1)</label>
-                <div>
-                    <label class="font-bold text-sm">Sex:</label>
-                    <select id="c_sex" class="w-full border rounded p-1">
-                        <option value="0">Male (0)</option><option value="1">Female (+1)</option>
-                    </select>
-                </div>
-                <hr>
-                <div class="text-center font-bold text-xl text-blue-600">Score: <span id="chadScoreTotal">0</span></div>
-                <p id="chadAdvice" class="text-center text-sm text-gray-500">ความเสี่ยง: Low</p>
-            </div>
-            <div class="modal-footer"><button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="applyChadScore()">ยืนยัน (Apply)</button></div>
-        </div>
-    </div>
-
-    <div id="capriniModal" class="modal-overlay">
-        <div class="modal-content-card" style="max-width: 500px;">
-            <div class="modal-header" style="background-color: #0891b2;">
-                <h3>🩸 Caprini VTE Risk Score</h3>
-                <span class="modal-close-btn" onclick="closeCapriniModal()">&times;</span>
-            </div>
-            <div class="modal-body space-y-4">
-                <div><label class="text-red-500 font-bold">1 คะแนน</label>
-                    <div class="ml-4 text-sm space-y-1">
-                        <label class="block"><input type="checkbox" class="caprini-1"> อายุ 41-60 ปี</label>
-                        <label class="block"><input type="checkbox" class="caprini-1"> ผ่าตัดเล็ก (< 45 นาที)</label>
-                        <label class="block"><input type="checkbox" class="caprini-1"> BMI ≥ 25</label>
-                        <label class="block"><input type="checkbox" class="caprini-1"> ขาบวม/เส้นเลือดขอด</label>
-                        <label class="block"><input type="checkbox" class="caprini-1"> ตั้งครรภ์/คลอด/แท้ง</label>
-                        <label class="block"><input type="checkbox" class="caprini-1"> หัวใจล้มเหลว (CHF)/ปอดอักเสบ</label>
-                    </div>
-                </div>
-                <hr>
-                <div><label class="text-red-500 font-bold">2 คะแนน</label>
-                    <div class="ml-4 text-sm space-y-1">
-                        <label class="block"><input type="checkbox" class="caprini-2"> อายุ 61-74 ปี</label>
-                        <label class="block"><input type="checkbox" class="caprini-2"> ผ่าตัดใหญ่ (> 45 นาที)</label>
-                        <label class="block"><input type="checkbox" class="caprini-2"> ติดเตียง > 72 ชม.</label>
-                        <label class="block"><input type="checkbox" class="caprini-2"> ใส่เฝือกขา / Central venous</label>
-                    </div>
-                </div>
-                <hr>
-                <div><label class="text-red-500 font-bold">3 คะแนน</label>
-                    <div class="ml-4 text-sm space-y-1">
-                        <label class="block"><input type="checkbox" class="caprini-3"> อายุ ≥ 75 ปี</label>
-                        <label class="block"><input type="checkbox" class="caprini-3"> ประวัติ DVT/PE</label>
-                        <label class="block"><input type="checkbox" class="caprini-3"> Thrombophilia</label>
-                    </div>
-                </div>
-                <hr>
-                <div><label class="text-red-500 font-bold">5 คะแนน</label>
-                    <div class="ml-4 text-sm space-y-1">
-                        <label class="block"><input type="checkbox" class="caprini-5"> เปลี่ยนข้อเข่า/ข้อสะโพก</label>
-                        <label class="block"><input type="checkbox" class="caprini-5"> เชิงกราน/ต้นขาหัก</label>
-                        <label class="block"><input type="checkbox" class="caprini-5"> Stroke/ไขสันหลังบาดเจ็บ</label>
-                        <label class="block"><input type="checkbox" class="caprini-5"> Multiple trauma</label>
-                    </div>
-                </div>
-                <hr>
-                <div class="text-center font-bold text-2xl text-cyan-600">Score: <span id="capriniScoreTotal">0</span></div>
-                <p id="capriniAdvice" class="text-center text-sm text-gray-500">Low Risk</p>
-            </div>
-            <div class="modal-footer"><button class="bg-cyan-600 text-white px-4 py-2 rounded" onclick="closeCapriniModal()">ปิด</button></div>
-        </div>
-    </div>
-
+    <!-- Modals -->
+    <div id="imageModal" class="modal-overlay" onclick="closeModal()"><span class="modal-close">&times;</span><img class="modal-content" id="img01"></div>
+    <div id="chadModal" class="modal-overlay"><div class="modal-content-card"><div class="modal-header"><h3>🧮 CHA2DS2-VASc</h3><span class="modal-close-btn" onclick="closeChadModal()">&times;</span></div><div class="modal-body space-y-2"><label class="block"><input type="checkbox" id="c_chf" value="1"> Congestive Heart Failure (+1)</label><label class="block"><input type="checkbox" id="c_ht" value="1"> Hypertension (+1)</label><div><label class="font-bold text-sm">Age (อายุ):</label><select id="c_age" class="w-full border rounded p-1"><option value="0">< 65 ปี (0)</option><option value="1">65 - 74 ปี (+1)</option><option value="2">≥ 75 ปี (+2)</option></select></div><label class="block"><input type="checkbox" id="c_dm" value="1"> Diabetes Mellitus (+1)</label><label class="block"><input type="checkbox" id="c_stroke" value="2"> Stroke/TIA/Thromboembolism (+2)</label><label class="block"><input type="checkbox" id="c_vasc" value="1"> Vascular Disease (MI, PAD) (+1)</label><div><label class="font-bold text-sm">Sex:</label><select id="c_sex" class="w-full border rounded p-1"><option value="0">Male (0)</option><option value="1">Female (+1)</option></select></div><hr><div class="text-center font-bold text-xl text-blue-600">Score: <span id="chadScoreTotal">0</span></div><p id="chadAdvice" class="text-center text-sm text-gray-500">ความเสี่ยง: Low</p></div><div class="modal-footer"><button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="applyChadScore()">ยืนยัน (Apply)</button></div></div></div>
+    <div id="capriniModal" class="modal-overlay"><div class="modal-content-card" style="max-width: 500px;"><div class="modal-header" style="background-color: #0891b2;"><h3>🩸 Caprini VTE Risk Score</h3><span class="modal-close-btn" onclick="closeCapriniModal()">&times;</span></div><div class="modal-body space-y-4"><div><label class="text-red-500 font-bold">1 คะแนน</label><div class="ml-4 text-sm space-y-1"><label class="block"><input type="checkbox" class="caprini-1"> อายุ 41-60 ปี</label><label class="block"><input type="checkbox" class="caprini-1"> ผ่าตัดเล็ก (< 45 นาที)</label><label class="block"><input type="checkbox" class="caprini-1"> BMI ≥ 25</label><label class="block"><input type="checkbox" class="caprini-1"> ขาบวม/เส้นเลือดขอด</label><label class="block"><input type="checkbox" class="caprini-1"> ตั้งครรภ์/คลอด/แท้ง</label><label class="block"><input type="checkbox" class="caprini-1"> หัวใจล้มเหลว (CHF)/ปอดอักเสบ</label></div></div><hr><div><label class="text-red-500 font-bold">2 คะแนน</label><div class="ml-4 text-sm space-y-1"><label class="block"><input type="checkbox" class="caprini-2"> อายุ 61-74 ปี</label><label class="block"><input type="checkbox" class="caprini-2"> ผ่าตัดใหญ่ (> 45 นาที)</label><label class="block"><input type="checkbox" class="caprini-2"> ติดเตียง > 72 ชม.</label><label class="block"><input type="checkbox" class="caprini-2"> ใส่เฝือกขา / Central venous</label></div></div><hr><div><label class="text-red-500 font-bold">3 คะแนน</label><div class="ml-4 text-sm space-y-1"><label class="block"><input type="checkbox" class="caprini-3"> อายุ ≥ 75 ปี</label><label class="block"><input type="checkbox" class="caprini-3"> ประวัติ DVT/PE</label><label class="block"><input type="checkbox" class="caprini-3"> Thrombophilia</label></div></div><hr><div><label class="text-red-500 font-bold">5 คะแนน</label><div class="ml-4 text-sm space-y-1"><label class="block"><input type="checkbox" class="caprini-5"> เปลี่ยนข้อเข่า/ข้อสะโพก</label><label class="block"><input type="checkbox" class="caprini-5"> เชิงกราน/ต้นขาหัก</label><label class="block"><input type="checkbox" class="caprini-5"> Stroke/ไขสันหลังบาดเจ็บ</label><label class="block"><input type="checkbox" class="caprini-5"> Multiple trauma</label></div></div><hr><div class="text-center font-bold text-2xl text-cyan-600">Score: <span id="capriniScoreTotal">0</span></div><p id="capriniAdvice" class="text-center text-sm text-gray-500">Low Risk</p></div><div class="modal-footer"><button class="bg-cyan-600 text-white px-4 py-2 rounded" onclick="closeCapriniModal()">ปิด</button></div></div></div>
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
 
     <script>
@@ -691,7 +637,6 @@
             ['MR', 'PREOP', 'ADR', 'HIV'].forEach(t => { document.getElementById(`form-${t}`).classList.add('hidden'); });
             document.getElementById(`form-${tab}`).classList.remove('hidden');
             
-            // Show/Hide MR Merge Checkbox in Pre-OP Tab
             if (tab === 'PREOP') {
                 document.getElementById('mergeMrOption').classList.remove('hidden');
             } else {
@@ -719,6 +664,7 @@
                 div.innerHTML = `<strong>${p.name}</strong><br><span style="color:${c}; font-size:0.75rem;"><i class="fa-solid fa-flag"></i> ${p.riskLabel}</span>`;
                 div.onclick = () => {
                     document.getElementById('procedureSearch').value = p.name;
+                    document.getElementById('procedureManual').value = p.name.split(' (')[0]; // Auto-fill ช่องหัตถการที่ทำ
                     document.getElementById('bleedingRisk').value = p.risk;
                     list.classList.add('hidden');
                     processResults();
@@ -1011,7 +957,6 @@
             }
         }
 
-        // ฟังก์ชันช่วยดึง Note ของ MR (ใช้ร่วมกันได้ตอน Merge)
         function getMrNoteArray(excludeSignature = false) {
             let notes = [];
             const hasAllergy = document.getElementById('mrAllergyCheck').checked;
@@ -1051,41 +996,43 @@
             } 
             else if (currentTab === 'PREOP') {
                 const isMerge = document.getElementById('chkMergeMr') && document.getElementById('chkMergeMr').checked;
+                const sDate = document.getElementById('surgeryDate').value;
+                const bRisk = document.getElementById('bleedingRisk').options[document.getElementById('bleedingRisk').selectedIndex]?.text;
+                const pManual = document.getElementById('procedureManual').value;
+                const pharm = document.getElementById('preopPharmName').value;
                 
                 if (isMerge) {
-                    let mrNotes = getMrNoteArray(true); // ดึงข้อมูล MR แต่ซ่อนลายเซ็นไว้ก่อน
+                    let mrNotes = getMrNoteArray(true);
                     if (mrNotes.length > 0) {
                         notes = notes.concat(mrNotes);
-                        notes.push(""); // เคาะบรรทัดว่าง 1 บรรทัด
                     }
                 }
 
-                const sDate = document.getElementById('surgeryDate').value;
-                const bRisk = document.getElementById('bleedingRisk').options[document.getElementById('bleedingRisk').selectedIndex]?.text;
-                const pharm = document.getElementById('preopPharmName').value;
-                
-                let preopHasData = preopCalculatedNotes.length > 0 || sDate || (bRisk && bRisk !== '-- เลือกความเสี่ยง --');
+                let preopHasData = preopCalculatedNotes.length > 0 || sDate || (bRisk && bRisk !== '-- เลือกความเสี่ยง --') || pManual;
                 
                 if (preopHasData) {
-                    notes.push(`[Pre-OP Assessment]`);
+                    let metaLines = [];
                     if(sDate) {
                         const dateParts = sDate.split('-');
                         if(dateParts.length === 3) {
                             const thaiYear = parseInt(dateParts[0]) + 543;
-                            notes.push(`วันที่ผ่าตัด: ${dateParts[2]}/${dateParts[1]}/${thaiYear}`);
+                            metaLines.push(`วันผ่าตัด: ${dateParts[2]}/${dateParts[1]}/${thaiYear}`);
                         } else {
-                            notes.push(`วันที่ผ่าตัด: ${sDate}`);
+                            metaLines.push(`วันผ่าตัด: ${sDate}`);
                         }
                     }
-                    if(bRisk && bRisk !== '-- เลือกความเสี่ยง --') notes.push(`Bleeding Risk: ${bRisk}`);
+                    if(pManual) metaLines.push(`หัตถการ: ${pManual}`);
+                    if(bRisk && bRisk !== '-- เลือกความเสี่ยง --') metaLines.push(`Bleeding Risk: ${bRisk}`);
+                    
+                    if (metaLines.length > 0) {
+                        notes.push(metaLines.join(' | '));
+                    }
                     
                     if(preopCalculatedNotes.length > 0) {
-                        notes.push(`รายการยาและคำแนะนำ:`);
-                        preopCalculatedNotes.forEach((n, i) => notes.push(`  ${i+1}. ${n}`));
+                        preopCalculatedNotes.forEach((n, i) => notes.push(`${i+1}. ${n}`));
                     }
                 }
 
-                // ใส่ลายเซ็นปิดท้าย
                 if (pharm) {
                     notes.push(`/${pharm}`);
                 } else if (isMerge && document.getElementById('mrPharmName').value) {
@@ -1173,8 +1120,8 @@
 
         function getRowDataArray() {
             let rowData = Array(18).fill('');
-            rowData[0] = document.getElementById('hn').value;       // Col B
-            if (currentTab !== 'HIV') rowData[1] = document.getElementById('ptName').value; // Col C (ยกเว้น HIV)
+            rowData[0] = document.getElementById('hn').value;       
+            if (currentTab !== 'HIV') rowData[1] = document.getElementById('ptName').value; 
 
             if (currentTab === 'MR') {
                 const mrType = document.querySelector('input[name="mrType"]:checked')?.value;
@@ -1189,9 +1136,9 @@
                 rowData[7] = '1'; rowData[9] = document.getElementById('adrAssessment').value;
             }
             else if (currentTab === 'PREOP') {
-                rowData[5] = '1'; // Col G = 1
-                rowData[9] = preopCalculatedNotes.join(' | '); // ย้ายรายละเอียดไป Col K
-                rowData[11] = document.getElementById('procedureSearch').value; // ใส่ชื่อหัตถการไป M (Col 11)
+                rowData[5] = '1'; 
+                rowData[9] = preopCalculatedNotes.join(' | '); 
+                rowData[11] = document.getElementById('procedureManual').value; 
             }
             else if (currentTab === 'HIV') {
                 const type = document.querySelector('input[name="hivType"]:checked').value;
@@ -1236,9 +1183,6 @@
             .finally(() => { btn.innerHTML = originalHTML; btn.disabled = false; });
         }
 
-        // ==========================================
-        //         PRINT OPD CARD (A5)
-        // ==========================================
         function printOpdCard() {
             document.getElementById('printName').innerText = document.getElementById('ptName').value || '-';
             document.getElementById('printHn').innerText = document.getElementById('hn').value || '-';
