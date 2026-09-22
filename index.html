@@ -26,7 +26,7 @@
         .tab-btn:not(.active) { background-color: #f3f4f6; color: #4b5563; }
         .tab-btn:not(.active):hover { background-color: #e5e7eb; }
 
-        /* --- PRE-OP Styles --- */
+        /* --- PRE-OP Styles Converted for Tailwind Compatibility --- */
         .drug-list-container { max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; margin-top: 5px; background: white; position: absolute; z-index: 10; width: 100%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .drug-item { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f9fafb; transition: background 0.2s; font-size: 0.875rem; }
         .drug-item:hover { background-color: #eff6ff; }
@@ -51,7 +51,7 @@
         .risk-title.minimal { color: #16a34a; } .risk-title.low-mod { color: #ea580c; } .risk-title.high { color: #dc2626; } .risk-title.critical { color: #991b1b; }
         .risk-list { list-style-type: disc; padding-left: 20px; margin: 0; font-size: 0.85rem; color: #4b5563;}
 
-        /* --- Warfarin Styles (ต้นฉบับ) --- */
+        /* --- Warfarin CSS Integration --- */
         .btn-submit { background-color: #28a745; color: white; width: 100%; font-size: 1.2rem; padding: 10px; border-radius: 0.5rem; transition: background 0.3s;}
         .btn-submit:hover { background-color: #218838; }
         .warfarin-number { font-size: 3rem; font-weight: bold; color: #d9534f; text-align: center; }
@@ -62,7 +62,6 @@
         .wf-nav-tabs .wf-nav-link.text-success { color: #198754; }
         .wf-nav-tabs .wf-nav-link.text-success.active { border-bottom: 2px solid #198754; }
         .pending-card { border-left: 5px solid #ffc107; background-color: #fffaf0; border-radius: 0.5rem; }
-        
         .stickerRow { display:flex; gap:14px; align-items:flex-start; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
         .qs-panel { display:flex; flex-direction:column; gap:8px; min-width:150px; }
         .qs-panel .title { font-size:13px; color:#6b7280; text-align: center; font-weight: bold; }
@@ -84,23 +83,9 @@
         .sticker .extra { margin-top: 4px; min-height: 18px; padding-top: 2px; border-top: 1px dashed #e2e8f0; outline: none;}
         .sticker .extra:empty:before { content: attr(data-placeholder); color: #9aa3b2; }
 
+        /* Spinner CSS */
         .spinner-border { display: inline-block; width: 2rem; height: 2rem; vertical-align: text-bottom; border: .25em solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spinner-border .75s linear infinite; }
         @keyframes spinner-border { to { transform: rotate(360deg); } }
-
-        /* --- Heart Failure Styles --- */
-        .hf-evidence-box { font-size: 0.9em; color: #2c3e50; background-color: #e8f6e9; padding: 15px; border-radius: 5px; border: 1px solid #a5d6a7; margin-bottom: 15px; }
-        .hf-med-row { display: flex; flex-direction: column; margin-bottom: 15px; padding: 15px; background: #f9f9f9; border-radius: 5px; border-left: 4px solid #bdc3c7; }
-        .hf-med-row.danger { border-left-color: #e74c3c; background: #fdf2f2; }
-        .hf-sub-menu { display: none; margin-left: 25px; padding: 10px; background: #fff; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 10px; }
-        .hf-alert-text { color: #e74c3c; font-weight: bold; }
-        .hf-pearl-text { color: #16a085; font-size: 0.95em; display: block; margin-top: 5px; padding-left: 25px;}
-        .hf-action-text { color: #2980b9; font-weight: bold; }
-        .hf-recommendation-list { margin: 0; padding-left: 20px; }
-        .hf-recommendation-list li { margin-bottom: 15px; line-height: 1.6; padding-bottom: 10px; border-bottom: 1px dashed #eee;}
-        .hf-recommendation-list li:last-child { border-bottom: none; }
-        .dose-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
-        .dose-table th, .dose-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .dose-table th { background-color: #f2f2f2; color: #333; }
 
         /* ===================================================
            ระบบการพิมพ์แบบแยกโหมดอิสระ
@@ -201,7 +186,7 @@
                 <button onclick="switchTab('WARFARIN')" id="tab-WARFARIN" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-red-50 text-red-700 border-red-200 hover:bg-red-100">
                     <i class="fa-solid fa-capsules mr-1"></i> 5. Warfarin
                 </button>
-                <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100">
+                <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
                     <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
                 </button>
             </div>
@@ -254,6 +239,7 @@
 
             <!-- 2. Pre-OP Form -->
             <div id="form-PREOP" class="space-y-6 hidden">
+                
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                     <h4 class="font-bold text-yellow-800 mb-2"><i class="fa-solid fa-clipboard-question"></i> Checklist: อย่าลืมถามคนไข้!</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
@@ -417,7 +403,7 @@
 
                 <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-2">
-                        <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab (ค่ามาตรฐาน รพ.)</label>
+                        <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab</label>
                         <div class="flex items-center text-sm bg-white px-2 py-1.5 rounded border border-indigo-200">
                             <span class="mr-2 text-gray-600">วันที่ Lab หลัก:</span>
                             <select id="hivLabDateRef" class="border-none text-indigo-700 focus:ring-0 cursor-pointer font-medium" onchange="toggleLabDateCustom(); generateOutput()">
@@ -910,7 +896,7 @@
         </div>
     </div>
 
-    <!-- OPD Note Sticker Print Area (สำหรับโหมด 3) -->
+    <!-- OPD Note Sticker Print Area -->
     <div id="printStickerArea" class="hidden">
         <div style="font-weight: bold; margin-bottom: 2px; border-bottom: 1px dashed #ccc; padding-bottom: 2px;">
             <span id="stkPrintName"></span> HN: <span id="stkPrintHn"></span>
