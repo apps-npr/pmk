@@ -7,6 +7,7 @@
     <!-- Tailwind CSS & Fonts & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- PWA Setup for Warfarin -->
@@ -66,6 +67,7 @@
         .qs-panel .title { font-size:13px; color:#6b7280; text-align: center; font-weight: bold; }
         
         .sticker {
+            font-family: 'Sarabun', sans-serif;
             --w: 8.5cm; --h: 6.0cm; width: var(--w); height: var(--h);
             background: linear-gradient(135deg, #fff 0%, #fff 50%, #f5fbff 100%);
             border-radius: 10px; padding: 28px 10px 6px 20px;; color: #111827;
@@ -116,7 +118,7 @@
             body.print-mode-warfarin-stk .sticker-controls, 
             body.print-mode-warfarin-stk .qs-panel { display: none !important; }
             body.print-mode-warfarin-stk .stickerRow { margin: 0 !important; justify-content: flex-start !important; }
-            body.print-mode-warfarin-stk .sticker { border: 1px solid #000 !important; box-shadow: none !important; margin: 0; page-break-inside: avoid; }
+            body.print-mode-warfarin-stk .sticker { border: 1px solid #ccc !important; box-shadow: none !important; margin: 0; page-break-inside: avoid; }
             body.print-mode-warfarin-stk .extra:empty { display: none !important; }
             body.print-mode-warfarin-stk .extra:empty:before { content: none !important; }
 
@@ -307,7 +309,7 @@
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
                     <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">2. ยาที่ผู้ป่วยใช้ (Current Meds)</h3>
                     <div class="relative mb-3">
-                        <input type="text" id="drugSearch" class="w-full rounded-lg border-gray-300 border px-3 py-2 pl-10" placeholder="พิมพ์ค้นหายา (เช่น Warfarin, Aspirin)" autocomplete="off">
+                        <input type="text" id="drugSearch" class="w-full rounded-lg border-gray-300 border px-3 py-2 pl-10" placeholder="พิมพ์ค้นหายยา (เช่น Warfarin, Aspirin)" autocomplete="off">
                         <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400"></i>
                         <div id="drugListContainer" class="drug-list-container hidden"></div>
                     </div>
@@ -855,9 +857,11 @@
             if (tab === 'WARFARIN') {
                 document.getElementById('opdOutputSection').classList.add('hidden');
                 document.getElementById('mainPatientInfo').classList.add('hidden');
+                document.body.classList.add('stickerTabActive'); 
             } else {
                 document.getElementById('opdOutputSection').classList.remove('hidden');
                 document.getElementById('mainPatientInfo').classList.remove('hidden');
+                document.body.classList.remove('stickerTabActive');
                 generateOutput();
             }
         }
@@ -868,6 +872,9 @@
             activeBtn.classList.add('active');
             ['manual', 'pending', 'sticker'].forEach(t => { document.getElementById(`wf-${t}`).classList.add('hidden'); });
             document.getElementById(`wf-${wftab}`).classList.remove('hidden');
+            
+            if(wftab === 'sticker') document.body.classList.add('stickerTabActive');
+            else document.body.classList.remove('stickerTabActive');
         }
 
         function toggleInfo(id) { document.getElementById(id).classList.toggle('hidden'); }
@@ -1463,9 +1470,6 @@
             .finally(() => { btn.innerHTML = originalHTML; btn.disabled = false; });
         }
 
-        // ==========================================
-        //         PRINTING SYSTEM
-        // ==========================================
         function printOpdCard() {
             const ptName = document.getElementById('ptName').value || '-';
             const ptHn = document.getElementById('hn').value || '-';
@@ -1492,7 +1496,6 @@
             document.getElementById('stkPrintName').innerText = `${ptName} HN: ${ptHn}`;
             document.getElementById('stkPrintNote').innerText = noteText;
 
-            // ตั้งค่า CSS แบบ Inline สำหรับสติกเกอร์
             printArea.style.position = 'absolute';
             printArea.style.left = `${stkX}mm`;
             printArea.style.top = `${stkY}mm`;
@@ -1551,7 +1554,7 @@
             document.getElementById('fetchBtn').addEventListener('click', doFetch);
             document.getElementById('searchWarfarinNo').addEventListener('keydown', e => { if(e.key === 'Enter') doFetch(); });
             
-            // Warfarin Print Sticker (แยกโหมดการปริ้นชัดเจน)
+            // Warfarin Print Sticker
             document.getElementById('printBtn').addEventListener('click', () => {
                 document.body.classList.add('print-mode-warfarin-stk');
                 window.print();
