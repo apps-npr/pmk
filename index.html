@@ -26,7 +26,7 @@
         .tab-btn:not(.active) { background-color: #f3f4f6; color: #4b5563; }
         .tab-btn:not(.active):hover { background-color: #e5e7eb; }
 
-        /* --- PRE-OP Styles Converted for Tailwind Compatibility --- */
+        /* --- PRE-OP Styles --- */
         .drug-list-container { max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; margin-top: 5px; background: white; position: absolute; z-index: 10; width: 100%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .drug-item { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f9fafb; transition: background 0.2s; font-size: 0.875rem; }
         .drug-item:hover { background-color: #eff6ff; }
@@ -51,7 +51,7 @@
         .risk-title.minimal { color: #16a34a; } .risk-title.low-mod { color: #ea580c; } .risk-title.high { color: #dc2626; } .risk-title.critical { color: #991b1b; }
         .risk-list { list-style-type: disc; padding-left: 20px; margin: 0; font-size: 0.85rem; color: #4b5563;}
 
-        /* --- Warfarin CSS Integration --- */
+        /* --- Warfarin Styles (ต้นฉบับ) --- */
         .btn-submit { background-color: #28a745; color: white; width: 100%; font-size: 1.2rem; padding: 10px; border-radius: 0.5rem; transition: background 0.3s;}
         .btn-submit:hover { background-color: #218838; }
         .warfarin-number { font-size: 3rem; font-weight: bold; color: #d9534f; text-align: center; }
@@ -62,6 +62,7 @@
         .wf-nav-tabs .wf-nav-link.text-success { color: #198754; }
         .wf-nav-tabs .wf-nav-link.text-success.active { border-bottom: 2px solid #198754; }
         .pending-card { border-left: 5px solid #ffc107; background-color: #fffaf0; border-radius: 0.5rem; }
+        
         .stickerRow { display:flex; gap:14px; align-items:flex-start; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
         .qs-panel { display:flex; flex-direction:column; gap:8px; min-width:150px; }
         .qs-panel .title { font-size:13px; color:#6b7280; text-align: center; font-weight: bold; }
@@ -83,9 +84,23 @@
         .sticker .extra { margin-top: 4px; min-height: 18px; padding-top: 2px; border-top: 1px dashed #e2e8f0; outline: none;}
         .sticker .extra:empty:before { content: attr(data-placeholder); color: #9aa3b2; }
 
-        /* Spinner CSS */
         .spinner-border { display: inline-block; width: 2rem; height: 2rem; vertical-align: text-bottom; border: .25em solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spinner-border .75s linear infinite; }
         @keyframes spinner-border { to { transform: rotate(360deg); } }
+
+        /* --- Heart Failure Styles --- */
+        .hf-evidence-box { font-size: 0.9em; color: #2c3e50; background-color: #e8f6e9; padding: 15px; border-radius: 5px; border: 1px solid #a5d6a7; margin-bottom: 15px; }
+        .hf-med-row { display: flex; flex-direction: column; margin-bottom: 15px; padding: 15px; background: #f9f9f9; border-radius: 5px; border-left: 4px solid #bdc3c7; }
+        .hf-med-row.danger { border-left-color: #e74c3c; background: #fdf2f2; }
+        .hf-sub-menu { display: none; margin-left: 25px; padding: 10px; background: #fff; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 10px; }
+        .hf-alert-text { color: #e74c3c; font-weight: bold; }
+        .hf-pearl-text { color: #16a085; font-size: 0.95em; display: block; margin-top: 5px; padding-left: 25px;}
+        .hf-action-text { color: #2980b9; font-weight: bold; }
+        .hf-recommendation-list { margin: 0; padding-left: 20px; }
+        .hf-recommendation-list li { margin-bottom: 15px; line-height: 1.6; padding-bottom: 10px; border-bottom: 1px dashed #eee;}
+        .hf-recommendation-list li:last-child { border-bottom: none; }
+        .dose-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        .dose-table th, .dose-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .dose-table th { background-color: #f2f2f2; color: #333; }
 
         /* ===================================================
            ระบบการพิมพ์แบบแยกโหมดอิสระ
@@ -150,7 +165,7 @@
         <option value="ภก.กันตพงศ์ วงศ์เอนกเกษม"></option>
     </datalist>
 
-    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden" id="mainAppContainer">
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden" id="mainAppContainer">
         
         <!-- Header -->
         <div class="bg-blue-600 p-6 text-white">
@@ -185,6 +200,9 @@
                 <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm">4. Clinic HIV</button>
                 <button onclick="switchTab('WARFARIN')" id="tab-WARFARIN" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-red-50 text-red-700 border-red-200 hover:bg-red-100">
                     <i class="fa-solid fa-capsules mr-1"></i> 5. Warfarin
+                </button>
+                <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100">
+                    <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
                 </button>
             </div>
         </div>
@@ -236,7 +254,6 @@
 
             <!-- 2. Pre-OP Form -->
             <div id="form-PREOP" class="space-y-6 hidden">
-                
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                     <h4 class="font-bold text-yellow-800 mb-2"><i class="fa-solid fa-clipboard-question"></i> Checklist: อย่าลืมถามคนไข้!</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
@@ -651,10 +668,176 @@
 
                 </div>
             </div>
+            
+            <!-- 6. HF Clinic Form -->
+            <div id="form-HF" class="space-y-6 hidden">
+                
+                <div class="bg-green-50 p-4 border border-green-200 rounded-xl mb-4 text-sm">
+                    <h3 class="font-bold text-green-800 mb-2"><i class="fa-solid fa-star text-yellow-500"></i> เป้าหมายการรักษา HFrEF: The Quadruple Therapy</h3>
+                    <p class="text-green-700">การให้ยาหลักครบทั้ง 4 กลุ่ม ร่วมกันตั้งแต่แรก <strong>ลดอัตราการเสียชีวิต (All-cause mortality) ได้ถึง 73%</strong> แนะนำให้เริ่มยาให้ครบโดยเร็ว และปรับยา (Titration) ทุก 1-2 สัปดาห์จนถึง Target dose</p>
+                </div>
+                
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">1. ข้อมูลทางคลินิก (Clinical Parameters)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div><label class="block text-xs font-medium text-gray-600 mb-1">LVEF (%)</label><input type="number" id="hfLvef" placeholder="เช่น 35" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">NYHA Class</label>
+                            <select id="hfNyha" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50">
+                                <option value="">-- เลือก --</option><option value="1">Class I</option><option value="2">Class II</option><option value="3">Class III</option><option value="4">Class IV</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">BP (SBP / DBP mmHg)</label>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="hfSbp" placeholder="SBP" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm">
+                                <span class="font-bold text-gray-500">/</span>
+                                <input type="number" id="hfDbp" placeholder="DBP" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm">
+                            </div>
+                        </div>
+                        <div><label class="block text-xs font-medium text-gray-600 mb-1">Heart Rate (bpm)</label><input type="number" id="hfHr" placeholder="ขณะพัก (Target < 70)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
+                        <div><label class="block text-xs font-medium text-gray-600 mb-1">eGFR (ล่าสุด)</label><input type="number" id="hfEgfr" placeholder="mL/min" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
+                        <div><label class="block text-xs font-medium text-gray-600 mb-1">Potassium (ล่าสุด)</label><input type="number" id="hfK" step="0.1" placeholder="mEq/L" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-4 mt-2">
+                        <label class="inline-flex items-center"><input type="checkbox" id="hfCongestion" class="form-checkbox text-blue-600 rounded"><span class="ml-2 font-medium text-sm text-gray-700">มีภาวะคั่งน้ำ (Congestion / Edema)</span></label>
+                        <label class="inline-flex items-center"><input type="checkbox" id="hfIronDef" class="form-checkbox text-blue-600 rounded"><span class="ml-2 font-medium text-sm text-gray-700">ภาวะขาดธาตุเหล็ก (Ferritin &lt; 100)</span></label>
+                        <label class="inline-flex items-center"><input type="checkbox" id="hfPregnant" class="form-checkbox text-red-600 rounded"><span class="ml-2 font-bold text-sm text-red-600">ตั้งครรภ์ หรือ วางแผนตั้งครรภ์</span></label>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">2. รายการยาที่ใช้อยู่ (Medication)</h3>
+                    
+                    <!-- 1. RAASi -->
+                    <div class="bg-gray-50 p-4 border-l-4 border-blue-400 rounded mb-3">
+                        <label class="inline-flex items-center font-bold text-gray-700"><input type="checkbox" id="chk_raasi" class="form-checkbox text-blue-600 rounded mr-2" onchange="toggleHfSub('chk_raasi', 'div_raasi')"> 1. RAASi Group</label>
+                        <div id="div_raasi" class="hidden mt-2 ml-6">
+                            <select id="sel_raasi_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_raasi_drug', 'sel_raasi_dose')">
+                                <option value="">-- เลือกตัวยา --</option>
+                                <option value="arni">Entresto FTC 100mg (49/51)</option>
+                                <option value="enalapril">Enalapril 5mg, 20mg</option>
+                                <option value="losartan">Losartan 50mg</option>
+                            </select>
+                            <div id="wrap_raasi_dose" class="hidden">
+                                <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
+                                <select id="sel_raasi_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Beta Blocker -->
+                    <div class="bg-gray-50 p-4 border-l-4 border-green-400 rounded mb-3">
+                        <label class="inline-flex items-center font-bold text-gray-700"><input type="checkbox" id="chk_bb" class="form-checkbox text-green-600 rounded mr-2" onchange="toggleHfSub('chk_bb', 'div_bb')"> 2. Beta Blocker</label>
+                        <div id="div_bb" class="hidden mt-2 ml-6">
+                            <select id="sel_bb_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_bb_drug', 'sel_bb_dose')">
+                                <option value="">-- เลือกตัวยา --</option>
+                                <option value="bisoprolol">Bisoprolol 5mg</option>
+                                <option value="carvedilol">Carvedilol 6.25mg, 25mg</option>
+                                <option value="metoprolol">Metoprolol tartrate 100mg (อนุโลมใช้)</option>
+                            </select>
+                            <div id="wrap_bb_dose" class="hidden">
+                                <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
+                                <select id="sel_bb_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. MRA -->
+                    <div class="bg-gray-50 p-4 border-l-4 border-purple-400 rounded mb-3">
+                        <label class="inline-flex items-center font-bold text-gray-700"><input type="checkbox" id="chk_mra" class="form-checkbox text-purple-600 rounded mr-2" onchange="toggleHfSub('chk_mra', 'div_mra')"> 3. MRA (Spironolactone)</label>
+                        <div id="div_mra" class="hidden mt-2 ml-6">
+                            <select id="sel_mra_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_mra_drug', 'sel_mra_dose')">
+                                <option value="">-- เลือกตัวยา --</option>
+                                <option value="spironolactone">Spironolactone 25mg, 100mg</option>
+                            </select>
+                            <div id="wrap_mra_dose" class="hidden">
+                                <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
+                                <select id="sel_mra_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. SGLT2i & Others -->
+                    <div class="bg-gray-50 p-4 border-l-4 border-yellow-400 rounded mb-3">
+                        <label class="block font-bold text-gray-700 mb-2">4. ยาอื่นๆ (Other GDMT & Diuretics)</label>
+                        <div class="ml-6 space-y-2">
+                            <label class="flex items-center"><input type="checkbox" id="chk_sglt2i" class="form-checkbox text-yellow-600 rounded mr-2"><span class="text-sm">Empagliflozin 10mg (1 tab QD)</span></label>
+                            
+                            <div>
+                                <label class="flex items-center"><input type="checkbox" id="chk_iva" class="form-checkbox text-yellow-600 rounded mr-2" onchange="toggleHfSub('chk_iva', 'div_iva')"><span class="text-sm">Ivabradine 5mg</span></label>
+                                <div id="div_iva" class="hidden mt-1 ml-6">
+                                    <select id="sel_iva_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white">
+                                        <option value="none">-- ระบุระดับขนาดยา --</option>
+                                        <option value="vlow">Sub-low: 1/2 เม็ด 5mg OD (2.5 mg/day)</option>
+                                        <option value="start">Low: 1/2 เม็ด 5mg BID (5 mg/day)</option>
+                                        <option value="mid">Mid: 1 เม็ด 5mg BID (10 mg/day)</option>
+                                        <option value="target">Target: 1.5 เม็ด 5mg BID (15 mg/day)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="flex items-center mt-2"><input type="checkbox" id="chk_loop" class="form-checkbox text-yellow-600 rounded mr-2" onchange="toggleHfSub('chk_loop', 'div_loop')"><span class="text-sm">Furosemide (40mg, 500mg)</span></label>
+                                <div id="div_loop" class="hidden mt-1 ml-6">
+                                    <input type="text" id="loop_detail" placeholder="ระบุขนาดยา (เช่น 40mg 1 tab OD)" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danger Meds -->
+                    <div class="bg-red-50 p-4 border-l-4 border-red-500 rounded">
+                        <label class="block font-bold text-red-700 mb-2">⛔ ยา/อาหารเสริมที่ต้องระวัง (Deprescribing Check)</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 ml-6 text-sm text-gray-700">
+                            <label class="inline-flex items-center"><input type="checkbox" id="hfNsaid" class="form-checkbox text-red-600 rounded mr-2">NSAIDs / COX-2</label>
+                            <label class="inline-flex items-center"><input type="checkbox" id="hfNdhp" class="form-checkbox text-red-600 rounded mr-2">Diltiazem / Verapamil</label>
+                            <label class="inline-flex items-center"><input type="checkbox" id="hfTzd" class="form-checkbox text-red-600 rounded mr-2">TZDs (Pioglitazone) / Saxagliptin</label>
+                            <label class="inline-flex items-center"><input type="checkbox" id="hfVitE" class="form-checkbox text-red-600 rounded mr-2">Vitamin E / สมุนไพรกระตุ้นหัวใจ</label>
+                            <label class="inline-flex items-center"><input type="checkbox" id="hfCoQ10" class="form-checkbox text-red-600 rounded mr-2">CoQ10</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">3. การให้ความรู้ผู้ป่วยและวัคซีน</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                            <label class="block font-bold text-gray-700 mb-2">📌 Sick Day Rules & Lifestyle</label>
+                            <div class="space-y-2 text-sm text-gray-600 ml-2">
+                                <label class="flex items-center"><input type="checkbox" id="ed_sickday" class="form-checkbox text-blue-600 rounded mr-2">หยุดยาเมื่อท้องเสีย/ขาดน้ำ</label>
+                                <label class="flex items-center"><input type="checkbox" id="ed_weight" class="form-checkbox text-blue-600 rounded mr-2">สอนชั่งน้ำหนักทุกเช้า/ดูอาการบวม</label>
+                                <label class="flex items-center"><input type="checkbox" id="ed_sodium" class="form-checkbox text-blue-600 rounded mr-2">จำกัดโซเดียม &lt; 2-3 กรัม/วัน</label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                            <label class="block font-bold text-gray-700 mb-2">💉 ประวัติวัคซีน</label>
+                            <div class="space-y-2 text-sm text-gray-600 ml-2">
+                                <label class="flex items-center"><input type="checkbox" id="flu_vaccine" class="form-checkbox text-blue-600 rounded mr-2">ไข้หวัดใหญ่ (Influenza)</label>
+                                <label class="flex items-center"><input type="checkbox" id="pneumo_vaccine" class="form-checkbox text-blue-600 rounded mr-2">ปอดอักเสบ (Pneumococcal)</label>
+                                <label class="flex items-center"><input type="checkbox" id="covid_vaccine" class="form-checkbox text-blue-600 rounded mr-2">โควิด-19 / RSV</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="generateHfRecommendations()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-rotate mr-2"></i> ประมวลผลข้อเสนอแนะทางคลินิก (HF)
+                </button>
+                
+                <div id="hfResultArea" class="hidden mt-6 bg-white border-2 border-green-500 rounded-lg p-6 shadow-sm">
+                    <h2 class="text-xl font-bold text-green-700 text-center mb-4"><i class="fa-solid fa-clipboard-list mr-1"></i> รายงานและแผนการดูแล (Pharmacist Intervention Plan)</h2>
+                    <button onclick="copyHfToPmkNote()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow mb-4 transition">
+                        <i class="fa-solid fa-arrow-down mr-1"></i> นำข้อมูลส่งลงกล่อง Pharmacist Note (ด้านล่าง)
+                    </button>
+                    <div id="hfRecContent" class="text-sm"></div>
+                </div>
+            </div>
 
         </div>
 
-        <!-- Output & Actions (สำหรับคลินิก 1-4) -->
+        <!-- Output & Actions (สำหรับคลินิก 1-4, 6) -->
         <div id="opdOutputSection" class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK)</label>
             
@@ -745,19 +928,361 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec'; 
         const ACCESS_CODE = "1234";
 
-        // --- PREOP DATABASES ---
-        const drugDatabase = [
-            { id: 'warfarin', name: 'Warfarin (Coumadin)', category: 'anticoagulant' }, { id: 'apixaban', name: 'Apixaban (Eliquis)', category: 'doac' }, { id: 'rivaroxaban', name: 'Rivaroxaban (Xarelto)', category: 'doac' }, { id: 'dabigatran', name: 'Dabigatran (Pradaxa)', category: 'doac_dabi' }, { id: 'edoxaban', name: 'Edoxaban (Lixiana)', category: 'doac' },
-            { id: 'aspirin', name: 'Aspirin (ASA)', category: 'antiplatelet' }, { id: 'clopidogrel', name: 'Clopidogrel (Plavix)', category: 'antiplatelet' }, { id: 'ticagrelor', name: 'Ticagrelor (Brilinta)', category: 'antiplatelet' }, { id: 'prasugrel', name: 'Prasugrel (Effient)', category: 'antiplatelet' }, { id: 'cilostazol', name: 'Cilostazol (Pletaal)', category: 'antiplatelet' },
-            { id: 'dapagliflozin', name: 'Dapagliflozin (Forxiga)', category: 'sglt2' }, { id: 'empagliflozin', name: 'Empagliflozin (Jardiance)', category: 'sglt2' }, { id: 'canagliflozin', name: 'Canagliflozin (Invokana)', category: 'sglt2' }, { id: 'ertugliflozin', name: 'Ertugliflozin (Steglatro)', category: 'sglt2_4d' }, { id: 'semaglutide_inj', name: 'Semaglutide Inj. (Ozempic/Wegovy)', category: 'glp1_weekly' }, { id: 'dulaglutide', name: 'Dulaglutide (Trulicity)', category: 'glp1_weekly' }, { id: 'tirzepatide', name: 'Tirzepatide (Mounjaro)', category: 'glp1_weekly' }, { id: 'liraglutide', name: 'Liraglutide (Victoza/Saxenda)', category: 'glp1_daily' }, { id: 'metformin', name: 'Metformin', category: 'dm_oral' }, { id: 'sulfonylurea', name: 'Sulfonylureas (Glipizide/Glibenclamide)', category: 'dm_oral' },
-            { id: 'acei', name: 'ACE Inhibitors (Enalapril/Lisinopril)', category: 'raas_inhibitor' }, { id: 'arb', name: 'ARBs (Losartan/Valsartan)', category: 'raas_inhibitor' }, { id: 'betablocker', name: 'Beta-blockers (Atenolol/Bisoprolol)', category: 'betablocker' }, { id: 'diuretic', name: 'Diuretics (Furosemide/HCTZ)', category: 'diuretic' }, { id: 'statin', name: 'Statins (Atorvastatin/Simvastatin)', category: 'statin' },
-            { id: 'nsaid_short', name: 'Ibuprofen / Diclofenac', category: 'nsaid_short' }, { id: 'nsaid_med', name: 'Naproxen / Meloxicam', category: 'nsaid_med' }, { id: 'nsaid_long', name: 'Piroxicam', category: 'nsaid_long' }, { id: 'cox2', name: 'Celecoxib / Etoricoxib', category: 'nsaid_cox2' },
-            { id: 'herb_bleed', name: 'Fish Oil / Ginkgo / Garlic', category: 'herbal_bleed' }, { id: 'herb_cns', name: 'Kava / Valerian / St. John\'s Wort', category: 'herbal_cns' }, { id: 'herb_thai', name: 'กระชายดำ / ขมิ้นชัน / ฟ้าทะลายโจร', category: 'herbal_thai' },
-            { id: 'maoi', name: 'MAOIs (Phenelzine)', category: 'maoi' }, { id: 'selegiline', name: 'Selegiline (< 10 mg/day)', category: 'selegiline' }, { id: 'lithium', name: 'Lithium', category: 'lithium' }, { id: 'parkinson', name: 'Levodopa / Amantadine', category: 'parkinson' }, { id: 'ssri_tca', name: 'SSRIs / TCAs', category: 'ssri_tca' },
-            { id: 'dmard_conv', name: 'csDMARDs (Methotrexate/Sulfasalazine)', category: 'dmard_conv' }, { id: 'biologic_eta', name: 'Etanercept (Enbrel)', category: 'biologic_1_2w' }, { id: 'biologic_ada', name: 'Adalimumab (Humira)', category: 'biologic_2_3w' }, { id: 'jak_inhibitor', name: 'JAK Inhibitors', category: 'jak_inhibitor' },
-            { id: 'chc_hrt', name: 'ยาคุมกำเนิด / ฮอร์โมนทดแทน', category: 'hormone' }, { id: 'hiv_art', name: 'ยารักษา HIV (ART)', category: 'hiv' }, { id: 'thyroid', name: 'Levothyroxine (Thyroid)', category: 'thyroid' }, { id: 'pde5', name: 'Sildenafil / Tadalafil (PDE5i)', category: 'pde5' }
-        ];
+        // ==========================================
+        //         HF CLINIC DATA & LOGIC
+        // ==========================================
+        const doseSteps = {
+            arni: [
+                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 100mg BID (50 mg/day)', next: '1/2 เม็ด 100mg BID (100 mg/day)'},
+                {val: 'start', text: 'Low: 1/2 เม็ด 100mg BID (100 mg/day)', next: '1 เม็ด 100mg BID (200 mg/day)'},
+                {val: 'mid', text: 'Mid: 1 เม็ด 100mg BID (200 mg/day)', next: '2 เม็ด 100mg BID (Target 400 mg/day)'},
+                {val: 'target', text: 'Target: 2 เม็ด 100mg BID (400 mg/day)', next: null}
+            ],
+            enalapril: [
+                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 5mg OD (2.5 mg/day)', next: '1/2 เม็ด 5mg BID หรือ 1 เม็ด 5mg OD'},
+                {val: 'start', text: 'Low: 1/2 เม็ด 5mg BID (5 mg/day)', next: '1 เม็ด 5mg BID (10 mg/day)'},
+                {val: 'mid', text: 'Mid: 1 เม็ด 5mg BID (10 mg/day)', next: '1/2 - 1 เม็ด 20mg BID (Target)'},
+                {val: 'target', text: 'Target: 1/2 - 1 เม็ด 20mg BID', next: null}
+            ],
+            losartan: [
+                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 50mg OD (12.5 mg/day)', next: '1/2 เม็ด 50mg OD (25 mg/day)'},
+                {val: 'start', text: 'Low: 1/2 เม็ด 50mg OD (25 mg/day)', next: '1 เม็ด 50mg OD (50 mg/day)'},
+                {val: 'mid', text: 'Mid: 1 เม็ด 50mg OD (50 mg/day)', next: '2-3 เม็ด 50mg OD (Target 100-150 mg/day)'},
+                {val: 'target', text: 'Target: 2-3 เม็ด 50mg OD', next: null}
+            ],
+            bisoprolol: [
+                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 5mg OD (1.25 mg/day)', next: '1/2 เม็ด 5mg OD (2.5 mg/day)'},
+                {val: 'start', text: 'Low: 1/2 เม็ด 5mg OD (2.5 mg/day)', next: '1 เม็ด 5mg OD (5 mg/day)'},
+                {val: 'mid', text: 'Mid: 1 เม็ด 5mg OD (5 mg/day)', next: '2 เม็ด 5mg OD (Target 10 mg/day)'},
+                {val: 'target', text: 'Target: 2 เม็ด 5mg OD', next: null}
+            ],
+            carvedilol: [
+                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 6.25mg BID (6.25 mg/day)', next: '1 เม็ด 6.25mg BID (12.5 mg/day)'},
+                {val: 'start', text: 'Low: 1 เม็ด 6.25mg BID (12.5 mg/day)', next: '2 เม็ด 6.25mg BID หรือ 1/2 เม็ด 25mg BID (25 mg/day)'},
+                {val: 'mid', text: 'Mid: 2 เม็ด 6.25mg BID (25 mg/day)', next: '1 เม็ด 25mg BID (Target 50 mg/day)'},
+                {val: 'target', text: 'Target: 1 เม็ด 25mg BID', next: null}
+            ],
+            metoprolol: [
+                {val: 'vlow', text: 'Sub-low: 12.5 mg BID', next: '1/4 เม็ด 100mg BID (50 mg/day)'},
+                {val: 'start', text: 'Low: 1/4 เม็ด 100mg BID (50 mg/day)', next: '1/2 เม็ด 100mg BID (100 mg/day)'},
+                {val: 'mid', text: 'Mid: 1/2 เม็ด 100mg BID (100 mg/day)', next: '1 เม็ด 100mg BID (Target 200 mg/day)'},
+                {val: 'target', text: 'Target: 1 เม็ด 100mg BID', next: null}
+            ],
+            spironolactone: [
+                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 25mg วันเว้นวัน', next: '1/2 เม็ด 25mg OD (12.5 mg/day)'},
+                {val: 'start', text: 'Low: 1/2 เม็ด 25mg OD (12.5 mg/day)', next: '1 เม็ด 25mg OD (25 mg/day - Target)'},
+                {val: 'mid', text: 'Mid: 1 เม็ด 25mg OD (25 mg/day - Target)', next: '2 เม็ด 25mg OD (Target 50 mg/day)'},
+                {val: 'target', text: 'Target: 1-2 เม็ด 25mg OD', next: null}
+            ]
+        };
 
+        function toggleHfSub(chkId, divId) {
+            const isChecked = document.getElementById(chkId).checked;
+            const div = document.getElementById(divId);
+            if(isChecked) div.classList.remove('hidden');
+            else div.classList.add('hidden');
+        }
+
+        function updateHfDose(selDrugId, selDoseId) {
+            const drug = document.getElementById(selDrugId).value;
+            const doseSel = document.getElementById(selDoseId);
+            const wrapDose = doseSel.parentElement;
+            
+            doseSel.innerHTML = '<option value="none">-- ระบุระดับขนาดยา --</option>'; 
+            if(drug && (selDrugId === 'sel_raasi_drug')) {
+                doseSel.innerHTML += '<option value="naive">ไม่เคยได้รับยาในกลุ่มนี้มาก่อน</option>';
+            }
+
+            if (drug && doseSteps[drug]) {
+                doseSteps[drug].forEach(opt => {
+                    let option = document.createElement("option");
+                    option.value = opt.val;
+                    option.text = opt.text;
+                    doseSel.add(option);
+                });
+                wrapDose.classList.remove('hidden');
+            } else {
+                wrapDose.classList.add('hidden');
+            }
+        }
+
+        function getHfNextStep(drug, currentVal) {
+            if (!doseSteps[drug]) return 'Target dose';
+            const steps = doseSteps[drug];
+            const idx = steps.findIndex(s => s.val === currentVal);
+            if (idx !== -1 && steps[idx].next) return steps[idx].next;
+            return 'Target dose (หรือขนาดสูงสุดที่ผู้ป่วยทนได้)';
+        }
+
+        function generateHfRecommendations() {
+            const lvef = parseFloat(document.getElementById('hfLvef').value);
+            const nyha = parseInt(document.getElementById('hfNyha').value);
+            const sbp = parseFloat(document.getElementById('hfSbp').value);
+            const hr = parseFloat(document.getElementById('hfHr').value);
+            const egfr = parseFloat(document.getElementById('hfEgfr').value);
+            const potassium = parseFloat(document.getElementById('hfK').value);
+            
+            const congestion = document.getElementById('hfCongestion').checked;
+            const ironDef = document.getElementById('hfIronDef').checked;
+            const pregnant = document.getElementById('hfPregnant').checked;
+
+            const hasRAASi = document.getElementById('chk_raasi').checked;
+            const raasiDrug = document.getElementById('sel_raasi_drug').value;
+            const raasiDose = document.getElementById('sel_raasi_dose').value;
+
+            const hasBB = document.getElementById('chk_bb').checked;
+            const bbDrug = document.getElementById('sel_bb_drug').value;
+            const bbDose = document.getElementById('sel_bb_dose').value;
+
+            const hasMRA = document.getElementById('chk_mra').checked;
+            const mraDrug = document.getElementById('sel_mra_drug').value;
+            const mraDose = document.getElementById('sel_mra_dose').value;
+
+            const hasSGLT2i = document.getElementById('chk_sglt2i').checked;
+            const hasIva = document.getElementById('chk_iva').checked;
+            const ivaDose = document.getElementById('sel_iva_dose').value;
+            const hasLoop = document.getElementById('chk_loop').checked;
+
+            const onNSAID = document.getElementById('hfNsaid').checked;
+            const onNDHP = document.getElementById('hfNdhp').checked;
+            const onTZD = document.getElementById('hfTzd').checked;
+            const onVitE = document.getElementById('hfVitE').checked;
+            const onCoQ10 = document.getElementById('hfCoQ10').checked;
+
+            const edSickDay = document.getElementById('ed_sickday').checked;
+            const edWeight = document.getElementById('ed_weight').checked;
+            const edSodium = document.getElementById('ed_sodium').checked;
+            const fluVaccine = document.getElementById('flu_vaccine').checked;
+            const pneumoVaccine = document.getElementById('pneumo_vaccine').checked;
+            const covidVaccine = document.getElementById('covid_vaccine').checked;
+
+            let alerts = []; let volumeMgt = []; let gdmt = []; let education = []; let vaccines = [];
+
+            // 1. PREGNANCY CHECK
+            if (pregnant) {
+                let pregContra = [];
+                if (hasRAASi) pregContra.push("RAASi"); if (hasMRA) pregContra.push("MRA"); if (hasSGLT2i) pregContra.push("SGLT2i"); if (hasIva) pregContra.push("Ivabradine");
+                alerts.push(`<strong>[Class 3: Harm] ผู้ป่วยตั้งครรภ์/วางแผนตั้งครรภ์</strong>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ${pregContra.length>0 ? 'พบการใช้ยาอันตราย <u>'+pregContra.join(', ')+'</u> <b>ให้แพทย์หยุดยาทันที</b>' : '<b>ห้ามเริ่มยา</b> กลุ่ม RAASi, MRA, SGLT2i, Ivabradine โดยเด็ดขาด'}</span>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Rationale:</em> ยามีผลทำให้ทารกวิรูป (Teratogenic) พิจารณาเปลี่ยนเป็น Metoprolol succinate และ Hydralazine + Nitrates แทน</span>`);
+            }
+
+            // 2. DEPRESCRIBING
+            let harmfulMeds = [];
+            if (onNSAID) harmfulMeds.push("NSAIDs/COX-2 (คั่งน้ำ/ไตวาย)");
+            if (onNDHP) harmfulMeds.push("Non-DHP CCB (กดการบีบตัวหัวใจ)");
+            if (onTZD) harmfulMeds.push("TZDs / Saxagliptin (เสี่ยง HF กำเริบ)");
+            if (onVitE) harmfulMeds.push("Vitamin E / สมุนไพรกระตุ้น (พิษต่อหัวใจ)");
+            
+            if (harmfulMeds.length > 0) {
+                alerts.push(`<strong>[Class 3: Harm] พบการใช้ยาที่ทำให้อาการหัวใจล้มเหลวแย่ลง</strong>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>แนะนำให้หยุดยาทันที (Deprescribing)</b></span>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Meds:</em> ${harmfulMeds.join(', ')}</span>`);
+            }
+            if (onCoQ10) {
+                alerts.push(`<strong>[No Benefit] การใช้อาหารเสริม Coenzyme Q10</strong>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Rationale:</em> แนวทางเวชปฏิบัติระบุชัดเจนว่า ไม่มีประโยชน์ในการรักษา HF ไม่แนะนำให้ทาน</span>`);
+            }
+
+            // 3. VOLUME MANAGEMENT
+            if (congestion) {
+                volumeMgt.push(`<strong>พบภาวะคั่งน้ำ (Congestion / Edema)</strong>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา ${hasLoop ? '<b>ปรับเพิ่มขนาดยา</b>' : '<b>เริ่มยา</b>'} <b>Loop Diuretic (Furosemide 40mg/500mg)</b> เพื่อบรรเทาอาการทันที</span>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Monitoring:</em> ประเมิน Urine output ที่ 6 ชม. หากไม่ตอบสนองให้ปรับเพิ่มขนาดยาเป็น 2 เท่า</span>`);
+            } else if (hasLoop && sbp < 100) {
+                volumeMgt.push(`<strong>ผู้ป่วยไม่มีภาวะคั่งน้ำ (Euvolemic) และ SBP < 100</strong>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>พิจารณาลดขนาดยา Furosemide ลง</b></span>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Rationale:</em> เพื่อยกระดับความดันโลหิต เปิดทางให้สามารถปรับเพิ่มยา GDMT ได้มากขึ้น</span>`);
+            }
+
+            // 4. GDMT OPTIMIZATION
+            if (isNaN(lvef)) {
+                gdmt.push("<i>⚠️ กรุณาระบุค่า LVEF เพื่อประเมิน GDMT</i>");
+            } else if (lvef <= 40) {
+                let gdmtCount = (hasRAASi ? 1 : 0) + (hasBB ? 1 : 0) + (hasMRA ? 1 : 0) + (hasSGLT2i ? 1 : 0);
+                if (!pregnant && gdmtCount < 4) {
+                    gdmt.push(`<strong>⚠️ ผู้ป่วยยังได้รับยา Quadruple Therapy ไม่ครบ (ได้ ${gdmtCount}/4 กลุ่ม)</strong>
+                        <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> แนะนำให้พิจารณาเริ่มยากลุ่มที่ขาด <b>โดยไม่จำเป็นต้องรอให้ยาตัวแรกถึง Target Dose</b> (การได้ยาครบช่วยลด Mortality 73%)</span>`);
+                }
+
+                if (!pregnant) {
+                    if (!hasSGLT2i) {
+                        if (egfr > 20 || isNaN(egfr)) {
+                            gdmt.push(`<strong>• SGLT2 Inhibitor</strong>
+                            <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>เริ่มยา Empagliflozin 10 mg/วัน (1 เม็ด OD)</b></span>
+                            <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ยานี้ไม่ต้องไทเทรต ลดการนอน รพ. ได้ 30% ใช้ได้ไม่ว่าจะเป็นเบาหวานหรือไม่</span>`);
+                        } else {
+                            gdmt.push(`<strong>• SGLT2 Inhibitor</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <b>ไม่แนะนำให้เริ่มยา</b> เนื่องจาก eGFR <= 20</span>`);
+                        }
+                    }
+
+                    if (!hasRAASi) {
+                        let arniDose = (egfr < 30) ? '1/4 เม็ด 100mg BID (เนื่องจาก eGFR<30)' : '1/2 เม็ด 100mg BID';
+                        gdmt.push(`<strong>• RAASi Group</strong>
+                            <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> แนะนำ <b>เริ่มยา ARNi (Entresto) ${arniDose}</b> เป็นตัวเลือกแรก</span>`);
+                    } else {
+                        if (raasiDrug === 'enalapril' || raasiDrug === 'losartan') {
+                            if (nyha === 2 || nyha === 3) {
+                                gdmt.push(`<strong>• RAASi Group (กิน ${raasiDrug.toUpperCase()} อยู่)</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา <b>เปลี่ยนยาเดิมเป็น ARNi (Entresto)</b> เพื่อลดอัตราเสียชีวิตเพิ่มเติม</span>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Safety:</em> หากเปลี่ยนจาก ACEI <b>ต้องหยุดยาเดิม 36 ชม.</b> ก่อนให้ ARNi เพื่อป้องกัน Angioedema</span>`);
+                            }
+                        }
+                        if (raasiDose === 'vlow' || raasiDose === 'start' || raasiDose === 'mid') {
+                            if (sbp >= 100 || isNaN(sbp)) {
+                                let nextStep = getHfNextStep(raasiDrug, raasiDose);
+                                gdmt.push(`<strong>• RAASi Titration</strong>
+                                    <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ขนาดยายังไม่ถึงเป้า แนะนำให้ <b>ปรับเพิ่มเป็น ${nextStep}</b> เพื่อประสิทธิภาพสูงสุด</span>`);
+                            } else {
+                                gdmt.push(`<strong>• RAASi Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม (Hold titration)</u> เนื่องจากความดัน SBP < 100</span>`);
+                            }
+                        }
+                    }
+
+                    if (!hasBB) {
+                        if (!congestion) {
+                            gdmt.push(`<strong>• Beta-blocker</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> น้ำไม่เกินแล้ว <b>แนะนำเริ่มยา Bisoprolol หรือ Carvedilol</b></span>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ห้ามเริ่มขณะคนไข้บวมน้ำเด็ดขาด ส่วน Metoprolol tartrate มีผลการศึกษารองรับน้อยกว่าตัวอื่น (อนุโลมใช้ถ้าจำเป็น)</span>`);
+                        } else {
+                            gdmt.push(`<strong>• Beta-blocker</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการเริ่มยาไว้ก่อน</u> เนื่องจากผู้ป่วยยังมีภาวะคั่งน้ำ (Congestion) อาจทำให้หัวใจบีบตัวลดลงฉับพลัน</span>`);
+                        }
+                    } else if (bbDose === 'vlow' || bbDose === 'start' || bbDose === 'mid') {
+                        if (congestion) {
+                            gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ห้ามปรับเพิ่มยา (Hold titration)</u> เนื่องจากยังมีภาวะคั่งน้ำ ต้องรอให้ Euvolemic ก่อน</span>`);
+                        } else if (hr >= 60 || isNaN(hr)) {
+                            let nextStep = getHfNextStep(bbDrug, bbDose);
+                            gdmt.push(`<strong>• Beta-blocker Titration</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> HR รับได้ แนะนำ <b>ปรับเพิ่มยาเป็น ${nextStep}</b> เพื่อเพิ่ม LVEF และลดอัตราตาย</span>`);
+                        } else {
+                            gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม (Hold titration)</u> เนื่องจาก HR < 60</span>`);
+                        }
+                    }
+
+                    if (!hasMRA) {
+                        if (egfr > 30 && potassium < 5.0) {
+                            gdmt.push(`<strong>• MRA (Spironolactone)</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> แนะนำ <b>เริ่มยา 12.5 mg/day (1/2 เม็ด 25mg)</b></span>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ยานี้ช่วยลดการตายกะทันหัน (Sudden Cardiac Death) และ Cardiac fibrosis</span>`);
+                        } else if (egfr <= 30 || potassium >= 5.0) {
+                            gdmt.push(`<strong>• MRA</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ห้ามเริ่มยา</u> เนื่องจากผู้ป่วยมี eGFR <= 30 หรือ K >= 5.0 เสี่ยงอันตรายจาก Hyperkalemia</span>`);
+                        }
+                    } else {
+                        if (potassium >= 5.5) {
+                            alerts.push(`<strong>[Critical Alert] การใช้ MRA ร่วมกับภาวะ Hyperkalemia</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> Potassium ล่าสุด >= 5.5 <b>ต้องสั่งหยุดยา MRA ทันที</b></span>`);
+                        } else if ((mraDose === 'vlow' || mraDose === 'start' || mraDose === 'mid') && potassium < 5.0 && egfr > 30) {
+                            let nextStep = getHfNextStep(mraDrug, mraDose);
+                            gdmt.push(`<strong>• MRA Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา <b>ปรับเพิ่มเป็น ${nextStep}</b> ค่าไตและเกลือแร่อยู่ในเกณฑ์ปลอดภัย</span>`);
+                        }
+                    }
+
+                    if (hasBB && bbDose === 'target' && hr >= 70 && (nyha === 2 || nyha === 3)) {
+                        if(!hasIva) {
+                            gdmt.push(`<strong>• Ivabradine</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ได้ BB Max dose แต่ HR ยังสูง พิจารณา <b>เริ่ม Ivabradine 1/2 เม็ด 5mg BID</b> (ต้องเป็น Sinus Rhythm)</span>`);
+                        } else if (ivaDose === 'vlow' || ivaDose === 'start' || ivaDose === 'mid') {
+                            let nextIva = '';
+                            if (ivaDose === 'vlow') nextIva = '1/2 เม็ด 5mg BID (5 mg/day)';
+                            if (ivaDose === 'start') nextIva = '1 เม็ด 5mg BID (10 mg/day)';
+                            if (ivaDose === 'mid') nextIva = '1.5 เม็ด 5mg BID (15 mg/day - Target)';
+
+                            gdmt.push(`<strong>• Ivabradine Titration</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> HR ยัง >= 70 พิจารณา <b>ปรับเพิ่มเป็น ${nextIva}</b></span>`);
+                        }
+                    }
+                }
+            } else {
+                gdmt.push(`<strong>Diagnosis: HFpEF หรือ HFmrEF (LVEF >= 41%)</strong>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Treatment Goal:</em> การรักษาหลักคือการให้ <b>SGLT2i (Empagliflozin 10mg)</b> เพื่อลดการนอน รพ. ร่วมกับ Diuretics เพื่อลดบวม</span>`);
+            }
+
+            if (ironDef) {
+                gdmt.push(`<strong>• ภาวะขาดธาตุเหล็ก (Iron Deficiency)</strong>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณาให้ <b>ธาตุเหล็กแบบฉีดเข้าเส้น (IV Iron)</b></span>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ธาตุเหล็กแบบกินมักไม่ได้ผลในโรค HF เนื่องจากลำไส้บวมน้ำ ยาฉีดช่วยเพิ่ม Quality of life ได้ชัดเจน</span>`);
+            }
+
+            if (!edSickDay) education.push(`<strong>• กฎเมื่อเจ็บป่วย (Sick Day Rules)</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 สอนผู้ป่วยให้ <b>หยุด Furosemide และ SGLT2i ชั่วคราว</b> หากท้องเสีย อาเจียน หรือขาดน้ำ ป้องกันไตวายเฉียบพลัน</span>`);
+            if (!edWeight) education.push(`<strong>• การประเมินตนเอง (Self-Monitoring)</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 แนะนำชั่งน้ำหนักหลังตื่นนอนทุกเช้า ถ้าน้ำหนักขึ้น > 2 กก. ใน 3 วัน ให้รีบมาก่อนวันนัด</span>`);
+            if (!edSodium) education.push(`<strong>• การบริโภคอาหาร (Diet)</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 แนะนำ <b>จำกัดโซเดียม < 2-3 กรัม/วัน</b> (จำกัดน้ำเฉพาะรายที่บวมมากหรือ Hyponatremia เท่านั้น)</span>`);
+            if (education.length === 0) education.push(`✅ <b>ได้รับการประเมินและให้คำแนะนำผู้ป่วย (5 ส) ครบถ้วนแล้ว</b>`);
+
+            if (!fluVaccine) vaccines.push(`<strong>• วัคซีนไข้หวัดใหญ่ (Influenza)</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 แนะนำให้ฉีดปีละ 1 ครั้ง</span>`);
+            if (!pneumoVaccine) vaccines.push(`<strong>• วัคซีนปอดอักเสบ (Pneumococcal)</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 แนะนำให้วัคซีนชนิด PCV20 1 เข็ม (หรือ PCV15 แล้วตามด้วย PPSV23)</span>`);
+            if (!covidVaccine) vaccines.push(`<strong>• วัคซีนโควิด-19 / RSV</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 แนะนำให้อัปเดตตามฤดูกาล</span>`);
+            if (vaccines.length === 0) vaccines.push(`✅ <b>ได้รับวัคซีนครบถ้วน (ลดโอกาสกำเริบและลดอัตราตาย)</b>`);
+
+            let htmlContent = "";
+            if (alerts.length > 0) { htmlContent += `<h3 class="font-bold text-red-600 mb-2 border-b pb-1">🚨 ข้อห้ามและยาอันตราย</h3><ul class="list-disc pl-5 mb-4 text-gray-700 space-y-2">`; alerts.forEach(i => htmlContent += `<li>${i}</li>`); htmlContent += `</ul>`; }
+            
+            htmlContent += `<h3 class="font-bold text-blue-600 mb-2 border-b pb-1">💊 การปรับยา 4 เสาหลัก (GDMT)</h3><ul class="list-disc pl-5 mb-4 text-gray-700 space-y-2">`;
+            if (gdmt.length > 0) gdmt.forEach(i => htmlContent += `<li>${i}</li>`); else htmlContent += `<li>ไม่มีข้อเสนอแนะเพิ่มเติมสำหรับการปรับยา GDMT ในรอบนี้</li>`;
+            htmlContent += `</ul>`;
+
+            if (volumeMgt.length > 0) { htmlContent += `<h3 class="font-bold text-cyan-600 mb-2 border-b pb-1">💧 การจัดการสารน้ำ</h3><ul class="list-disc pl-5 mb-4 text-gray-700 space-y-2">`; volumeMgt.forEach(i => htmlContent += `<li>${i}</li>`); htmlContent += `</ul>`; }
+            
+            htmlContent += `<h3 class="font-bold text-orange-500 mb-2 border-b pb-1">🗣️ การให้ความรู้ผู้ป่วย</h3><ul class="list-disc pl-5 mb-4 text-gray-700 space-y-2">`; education.forEach(i => htmlContent += `<li>${i}</li>`); htmlContent += `</ul>`;
+            htmlContent += `<h3 class="font-bold text-purple-600 mb-2 border-b pb-1">💉 วัคซีนลดความรุนแรง</h3><ul class="list-disc pl-5 mb-4 text-gray-700 space-y-2">`; vaccines.forEach(i => htmlContent += `<li>${i}</li>`); htmlContent += `</ul>`;
+
+            document.getElementById('hfRecContent').innerHTML = htmlContent;
+            document.getElementById('hfResultArea').classList.remove('hidden');
+        }
+
+        function copyHfToPmkNote() {
+            const recContent = document.getElementById('hfRecContent');
+            if (!recContent || recContent.innerHTML.trim() === '') { alert('กรุณากด "ประมวลผลข้อเสนอแนะทางคลินิก" ก่อนครับ'); return; }
+
+            const lvef = document.getElementById('hfLvef').value || '-';
+            let nyha = document.getElementById('hfNyha').options[document.getElementById('hfNyha').selectedIndex].text; nyha = nyha === '-- เลือก --' ? '-' : nyha;
+            const sbp = document.getElementById('hfSbp').value || '-'; const dbp = document.getElementById('hfDbp').value || '-';
+            const hr = document.getElementById('hfHr').value || '-'; const egfr = document.getElementById('hfEgfr').value || '-'; const potassium = document.getElementById('hfK').value || '-';
+
+            let shortMeds = [];
+            if(document.getElementById('chk_raasi').checked) {
+                let val = document.getElementById('sel_raasi_drug').value;
+                if(val === 'arni') shortMeds.push('Entresto'); else if(val === 'enalapril') shortMeds.push('Enalapril'); else if(val === 'losartan') shortMeds.push('Losartan');
+            }
+            if(document.getElementById('chk_bb').checked) {
+                let val = document.getElementById('sel_bb_drug').value;
+                if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); else if(val === 'carvedilol') shortMeds.push('Carvedilol'); else if(val === 'metoprolol') shortMeds.push('Metoprolol');
+            }
+            if(document.getElementById('chk_mra').checked) { if(document.getElementById('sel_mra_drug').value === 'spironolactone') shortMeds.push('Spironolactone'); }
+            if(document.getElementById('chk_sglt2i').checked) shortMeds.push('Empagliflozin');
+            if(document.getElementById('chk_iva').checked) shortMeds.push('Ivabradine');
+            if(document.getElementById('chk_loop').checked) shortMeds.push('Furosemide');
+
+            let medsString = shortMeds.length > 0 ? shortMeds.join(',') : '-';
+
+            let interventionText = '';
+            let h3s = Array.from(recContent.querySelectorAll('h3'));
+            let gdmtH3 = h3s.find(h3 => h3.innerText.includes('การปรับยา 4 เสาหลัก'));
+            if (gdmtH3) {
+                let ul = gdmtH3.nextElementSibling;
+                if (ul && ul.tagName === 'UL') {
+                    let items = Array.from(ul.querySelectorAll('li strong'));
+                    let actions = items.map(strong => strong.innerText.trim()).filter(text => text.startsWith('•'));
+                    if (actions.length > 0) interventionText = '\n💊 Intervention ปรับยา: ' + actions.join(' ');
+                }
+            }
+
+            let summary = `[HF Clinic]\nLVEF: ${lvef !== '-' ? lvef + '%' : '-'} | NYHA: ${nyha} | BP: ${sbp}/${dbp} mmHg | HR: ${hr} bpm | eGFR: ${egfr} | K: ${potassium}\nMeds: ${medsString}${interventionText}`;
+            summary = summary.replace(/\s+/g, ' ').replace(/ \n /g, '\n').replace(/ \n/g, '\n').replace(/\n /g, '\n');
+
+            let currentNote = document.getElementById('outputPmk').value;
+            if(currentNote) document.getElementById('outputPmk').value = currentNote + '\n\n' + summary;
+            else document.getElementById('outputPmk').value = "pharmacist note\n" + summary;
+            
+            updateOpdStickerPreview();
+            
+            // Scroll down to the output area
+            document.getElementById('opdOutputSection').scrollIntoView({ behavior: 'smooth' });
+            showToast('คัดลอกข้อมูล HF ลงกล่อง Pharmacist Note สำเร็จแล้ว!');
+        }
+
+        // ==========================================
+        //         PRE-OP SPECIFIC FUNCTIONS
+        // ==========================================
         const procedureDatabase = [
             { name: "Cataract surgery / Glaucoma intervention (ผ่าตัดต้อกระจก, ต้อหิน), ขูดหินปูน, ทำฟันปลอม, รักษารากฟัน, ผ่าตัดเหงือก", risk: "minimal", riskLabel: "Minimal Risk" },
             { name: "Minor dermatologic excision (ตัดไฝ, หูด, มะเร็งผิวหนังขนาดเล็ก, ผ่าตัดผิวหนังส่วนตื้น)", risk: "minimal", riskLabel: "Minimal Risk" },
@@ -816,97 +1341,6 @@
             { name: "Posterior eye surgery (ผ่าตัดจอประสาทตา, ส่วนหลังลูกตา)", risk: "neuro-spine", riskLabel: "Neuroaxial/Critical Site" }
         ];
 
-        let selectedPreopDrugs = [];
-        let preopCalculatedNotes = [];
-
-        // --- Core Application State ---
-        let currentTab = 'MR';
-        let mrSources = [ { place: '', date: '', drugs: [""] } ];
-        let selectedLabs = []; 
-        let hivDrugs = [ { name: '', usage: '', time: '' } ]; 
-
-        // --- Initializers ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const drugInput = document.getElementById('drugSearch');
-            if(drugInput) {
-                drugInput.addEventListener('focus', () => filterPreopDrugs(true));
-                drugInput.addEventListener('click', () => filterPreopDrugs(true));
-                drugInput.addEventListener('keyup', () => filterPreopDrugs(false));
-            }
-            const procInput = document.getElementById('procedureSearch');
-            if(procInput) {
-                procInput.addEventListener('focus', () => filterPreopProcedures(true));
-                procInput.addEventListener('click', () => filterPreopProcedures(true));
-                procInput.addEventListener('keyup', () => filterPreopProcedures(false));
-            }
-            document.addEventListener('click', (e) => {
-                if(drugInput && !document.getElementById('drugListContainer').contains(e.target) && e.target !== drugInput) { document.getElementById('drugListContainer').classList.add('hidden'); }
-                if(procInput && !document.getElementById('procedureListContainer').contains(e.target) && e.target !== procInput) { document.getElementById('procedureListContainer').classList.add('hidden'); }
-            });
-
-            document.querySelectorAll('#chadModal input, #chadModal select').forEach(i => i.addEventListener('change', calculateChad));
-            document.querySelectorAll('#capriniModal input').forEach(i => i.addEventListener('change', calculateCaprini));
-            
-            // Sync HN/Name into Warfarin tab
-            document.getElementById('hn').addEventListener('input', (e) => {
-                document.getElementById('wfHnInput').value = e.target.value;
-                updateOpdStickerPreview();
-            });
-            document.getElementById('ptName').addEventListener('input', (e) => {
-                document.getElementById('wfNameInput').value = e.target.value;
-                updateOpdStickerPreview();
-            });
-            
-            // Setup Warfarin Access Code
-            setupWarfarinAccess();
-        });
-
-        // --- Tabs ---
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50'));
-            const activeBtn = document.getElementById(`tab-${tab}`);
-            activeBtn.classList.add('active');
-            if(tab === 'WARFARIN') { activeBtn.classList.remove('text-red-700', 'bg-red-50'); }
-            
-            ['MR', 'PREOP', 'ADR', 'HIV', 'WARFARIN'].forEach(t => { document.getElementById(`form-${t}`).classList.add('hidden'); });
-            document.getElementById(`form-${tab}`).classList.remove('hidden');
-            
-            if (tab === 'PREOP') document.getElementById('mergeMrOption').classList.remove('hidden');
-            else document.getElementById('mergeMrOption').classList.add('hidden');
-            
-            if (tab === 'WARFARIN') {
-                document.getElementById('opdOutputSection').classList.add('hidden');
-                document.getElementById('mainPatientInfo').classList.add('hidden');
-            } else {
-                document.getElementById('opdOutputSection').classList.remove('hidden');
-                document.getElementById('mainPatientInfo').classList.remove('hidden');
-                generateOutput();
-            }
-        }
-        
-        function switchWfTab(wftab) {
-            document.querySelectorAll('.wf-nav-link').forEach(btn => btn.classList.remove('active'));
-            const activeBtn = document.getElementById(`wf-${wftab}-tab`);
-            activeBtn.classList.add('active');
-            ['manual', 'pending', 'sticker'].forEach(t => { document.getElementById(`wf-${t}`).classList.add('hidden'); });
-            document.getElementById(`wf-${wftab}`).classList.remove('hidden');
-        }
-
-        function toggleInfo(id) { document.getElementById(id).classList.toggle('hidden'); }
-        
-        function toggleOpdStickerSettings() { 
-            const panel = document.getElementById('opdStickerSettings');
-            panel.classList.toggle('hidden'); 
-            if(!panel.classList.contains('hidden')) {
-                updateOpdStickerPreview();
-            }
-        }
-
-        // ==========================================
-        //         PRE-OP SPECIFIC FUNCTIONS
-        // ==========================================
-        
         function filterPreopProcedures(showAll=false) {
             const input = document.getElementById('procedureSearch').value.toLowerCase();
             const list = document.getElementById('procedureListContainer');
@@ -1181,6 +1615,7 @@
             return timeStr;
         }
 
+        // --- HF / Labs Grouping ---
         function groupLabsByDate(mainDate, labPrefix, mainItemsArray, customLabsArray, extraLabText) {
             let grouped = {};
             if (mainItemsArray && mainItemsArray.length > 0) {
@@ -1209,12 +1644,26 @@
 
         function resetForm() {
             if(confirm('ต้องการล้างข้อมูลคนไข้ทั้งหมดหรือไม่?')) {
-                document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="date"]').forEach(el => el.value = '');
+                document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="date"], select').forEach(el => {
+                    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                    else el.value = '';
+                });
                 document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
                 
-                document.getElementById('hivManualAdherence').value = '100%'; document.getElementById('hivLabDateRef').value = 'cd4';
-                document.querySelector('input[name="hivType"][value="refill"]').checked = true;
+                document.getElementById('hivManualAdherence').value = '100%'; 
+                document.getElementById('hivLabDateRef').value = 'cd4';
+                if(document.querySelector('input[name="hivType"][value="refill"]')) {
+                    document.querySelector('input[name="hivType"][value="refill"]').checked = true;
+                }
                 
+                if(document.getElementById('hfNyha')) document.getElementById('hfNyha').selectedIndex = 0;
+                if(document.getElementById('hivUa')) document.getElementById('hivUa').selectedIndex = 0;
+                
+                // Hide dynamic HF divs
+                ['div_raasi', 'div_bb', 'div_mra', 'div_iva', 'div_loop', 'wrap_raasi_dose', 'wrap_bb_dose', 'wrap_mra_dose', 'hfResultArea'].forEach(id => {
+                    if(document.getElementById(id)) document.getElementById(id).classList.add('hidden');
+                });
+
                 toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
                 
                 mrSources = [ { place: '', date: '', drugs: [""] } ]; selectedLabs = []; hivDrugs = [ { name: '', usage: '', time: '' } ];
@@ -1398,9 +1847,13 @@
                     if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmName}`);
                 }
             }
+            // Tab HF Clinic จะไม่สร้าง Output ทับตรงนี้ เพราะ HF มีปุ่มคัดลอกลง Note ต่างหาก
             
-            document.getElementById('outputPmk').value = notes.join('\n');
-            updateOpdStickerPreview(); 
+            // Only update output if it's not HF (since HF has a manual inject button)
+            if (currentTab !== 'HF') {
+                document.getElementById('outputPmk').value = notes.join('\n');
+                updateOpdStickerPreview();
+            }
         }
 
         // ==========================================
@@ -1464,6 +1917,12 @@
                     if(referDetails.length > 0) { rowData[6] = `ส่งพบเรื่อง ${referDetails.join(', ')}`; }
                 }
             }
+            else if (currentTab === 'HF') {
+                // HF ส่งข้อมูลเฉพาะลงใน Sheet NCD 
+                // ใช้ข้อมูลจากที่ประมวลผลแล้วในกล่อง PMK
+                rowData[8] = '1'; // สมมติ Col I คือ HF 
+                rowData[9] = document.getElementById('outputPmk').value;
+            }
             return rowData;
         }
 
@@ -1504,14 +1963,9 @@
             document.getElementById('printName').innerText = `${ptName} HN: ${ptHn}`;
             document.getElementById('printNote').innerText = document.getElementById('outputPmk').value || 'ไม่มีข้อมูล';
             
-            const printDiv = document.getElementById('printArea');
-            printDiv.classList.remove('hidden');
             document.body.classList.add('print-mode-opd-a5');
-            
             window.print();
-            
             document.body.classList.remove('print-mode-opd-a5');
-            printDiv.classList.add('hidden');
         }
 
         function updateOpdStickerPreview() {
@@ -1555,13 +2009,9 @@
             printArea.style.color = "black";
             printArea.style.lineHeight = "1.3";
             
-            printArea.classList.remove('hidden'); // แสดงตอนพิมพ์
             document.body.classList.add('print-mode-opd-stk');
-            
             window.print();
-            
             document.body.classList.remove('print-mode-opd-stk');
-            printArea.classList.add('hidden'); // ซ่อนหลังพิมพ์เสร็จ
         }
 
         function showToast(msg) {
