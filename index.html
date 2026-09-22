@@ -403,7 +403,7 @@
 
                 <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-2">
-                        <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab</label>
+                        <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab (ค่ามาตรฐาน รพ.)</label>
                         <div class="flex items-center text-sm bg-white px-2 py-1.5 rounded border border-indigo-200">
                             <span class="mr-2 text-gray-600">วันที่ Lab หลัก:</span>
                             <select id="hivLabDateRef" class="border-none text-indigo-700 focus:ring-0 cursor-pointer font-medium" onchange="toggleLabDateCustom(); generateOutput()">
@@ -1266,9 +1266,19 @@
             showToast('คัดลอกข้อมูล HF ลงกล่อง Pharmacist Note สำเร็จแล้ว!');
         }
 
-        // ==========================================
-        //         PRE-OP SPECIFIC FUNCTIONS
-        // ==========================================
+        // --- PREOP DATABASES ---
+        const drugDatabase = [
+            { id: 'warfarin', name: 'Warfarin (Coumadin)', category: 'anticoagulant' }, { id: 'apixaban', name: 'Apixaban (Eliquis)', category: 'doac' }, { id: 'rivaroxaban', name: 'Rivaroxaban (Xarelto)', category: 'doac' }, { id: 'dabigatran', name: 'Dabigatran (Pradaxa)', category: 'doac_dabi' }, { id: 'edoxaban', name: 'Edoxaban (Lixiana)', category: 'doac' },
+            { id: 'aspirin', name: 'Aspirin (ASA)', category: 'antiplatelet' }, { id: 'clopidogrel', name: 'Clopidogrel (Plavix)', category: 'antiplatelet' }, { id: 'ticagrelor', name: 'Ticagrelor (Brilinta)', category: 'antiplatelet' }, { id: 'prasugrel', name: 'Prasugrel (Effient)', category: 'antiplatelet' }, { id: 'cilostazol', name: 'Cilostazol (Pletaal)', category: 'antiplatelet' },
+            { id: 'dapagliflozin', name: 'Dapagliflozin (Forxiga)', category: 'sglt2' }, { id: 'empagliflozin', name: 'Empagliflozin (Jardiance)', category: 'sglt2' }, { id: 'canagliflozin', name: 'Canagliflozin (Invokana)', category: 'sglt2' }, { id: 'ertugliflozin', name: 'Ertugliflozin (Steglatro)', category: 'sglt2_4d' }, { id: 'semaglutide_inj', name: 'Semaglutide Inj. (Ozempic/Wegovy)', category: 'glp1_weekly' }, { id: 'dulaglutide', name: 'Dulaglutide (Trulicity)', category: 'glp1_weekly' }, { id: 'tirzepatide', name: 'Tirzepatide (Mounjaro)', category: 'glp1_weekly' }, { id: 'liraglutide', name: 'Liraglutide (Victoza/Saxenda)', category: 'glp1_daily' }, { id: 'metformin', name: 'Metformin', category: 'dm_oral' }, { id: 'sulfonylurea', name: 'Sulfonylureas (Glipizide/Glibenclamide)', category: 'dm_oral' },
+            { id: 'acei', name: 'ACE Inhibitors (Enalapril/Lisinopril)', category: 'raas_inhibitor' }, { id: 'arb', name: 'ARBs (Losartan/Valsartan)', category: 'raas_inhibitor' }, { id: 'betablocker', name: 'Beta-blockers (Atenolol/Bisoprolol)', category: 'betablocker' }, { id: 'diuretic', name: 'Diuretics (Furosemide/HCTZ)', category: 'diuretic' }, { id: 'statin', name: 'Statins (Atorvastatin/Simvastatin)', category: 'statin' },
+            { id: 'nsaid_short', name: 'Ibuprofen / Diclofenac', category: 'nsaid_short' }, { id: 'nsaid_med', name: 'Naproxen / Meloxicam', category: 'nsaid_med' }, { id: 'nsaid_long', name: 'Piroxicam', category: 'nsaid_long' }, { id: 'cox2', name: 'Celecoxib / Etoricoxib', category: 'nsaid_cox2' },
+            { id: 'herb_bleed', name: 'Fish Oil / Ginkgo / Garlic', category: 'herbal_bleed' }, { id: 'herb_cns', name: 'Kava / Valerian / St. John\'s Wort', category: 'herbal_cns' }, { id: 'herb_thai', name: 'กระชายดำ / ขมิ้นชัน / ฟ้าทะลายโจร', category: 'herbal_thai' },
+            { id: 'maoi', name: 'MAOIs (Phenelzine)', category: 'maoi' }, { id: 'selegiline', name: 'Selegiline (< 10 mg/day)', category: 'selegiline' }, { id: 'lithium', name: 'Lithium', category: 'lithium' }, { id: 'parkinson', name: 'Levodopa / Amantadine', category: 'parkinson' }, { id: 'ssri_tca', name: 'SSRIs / TCAs', category: 'ssri_tca' },
+            { id: 'dmard_conv', name: 'csDMARDs (Methotrexate/Sulfasalazine)', category: 'dmard_conv' }, { id: 'biologic_eta', name: 'Etanercept (Enbrel)', category: 'biologic_1_2w' }, { id: 'biologic_ada', name: 'Adalimumab (Humira)', category: 'biologic_2_3w' }, { id: 'jak_inhibitor', name: 'JAK Inhibitors', category: 'jak_inhibitor' },
+            { id: 'chc_hrt', name: 'ยาคุมกำเนิด / ฮอร์โมนทดแทน', category: 'hormone' }, { id: 'hiv_art', name: 'ยารักษา HIV (ART)', category: 'hiv' }, { id: 'thyroid', name: 'Levothyroxine (Thyroid)', category: 'thyroid' }, { id: 'pde5', name: 'Sildenafil / Tadalafil (PDE5i)', category: 'pde5' }
+        ];
+
         const procedureDatabase = [
             { name: "Cataract surgery / Glaucoma intervention (ผ่าตัดต้อกระจก, ต้อหิน), ขูดหินปูน, ทำฟันปลอม, รักษารากฟัน, ผ่าตัดเหงือก", risk: "minimal", riskLabel: "Minimal Risk" },
             { name: "Minor dermatologic excision (ตัดไฝ, หูด, มะเร็งผิวหนังขนาดเล็ก, ผ่าตัดผิวหนังส่วนตื้น)", risk: "minimal", riskLabel: "Minimal Risk" },
@@ -1601,7 +1611,6 @@
             return timeStr;
         }
 
-        // --- HF / Labs Grouping ---
         function groupLabsByDate(mainDate, labPrefix, mainItemsArray, customLabsArray, extraLabText) {
             let grouped = {};
             if (mainItemsArray && mainItemsArray.length > 0) {
@@ -1630,32 +1639,29 @@
 
         function resetForm() {
             if(confirm('ต้องการล้างข้อมูลคนไข้ทั้งหมดหรือไม่?')) {
-                document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="date"], select').forEach(el => {
-                    if (el.tagName === 'SELECT') el.selectedIndex = 0;
-                    else el.value = '';
-                });
+                document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="date"]').forEach(el => el.value = '');
                 document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
                 
-                document.getElementById('hivManualAdherence').value = '100%'; 
-                document.getElementById('hivLabDateRef').value = 'cd4';
-                if(document.querySelector('input[name="hivType"][value="refill"]')) {
+                document.getElementById('hivManualAdherence').value = '100%'; document.getElementById('hivLabDateRef').value = 'cd4';
+                if (document.querySelector('input[name="hivType"][value="refill"]')) {
                     document.querySelector('input[name="hivType"][value="refill"]').checked = true;
                 }
                 
-                if(document.getElementById('hfNyha')) document.getElementById('hfNyha').selectedIndex = 0;
-                if(document.getElementById('hivUa')) document.getElementById('hivUa').selectedIndex = 0;
+                if (document.getElementById('hfNyha')) document.getElementById('hfNyha').selectedIndex = 0;
                 
-                // Hide dynamic HF divs
+                // Hide dynamic HF sections
                 ['div_raasi', 'div_bb', 'div_mra', 'div_iva', 'div_loop', 'wrap_raasi_dose', 'wrap_bb_dose', 'wrap_mra_dose', 'hfResultArea'].forEach(id => {
                     if(document.getElementById(id)) document.getElementById(id).classList.add('hidden');
                 });
-
+                
                 toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
                 
                 mrSources = [ { place: '', date: '', drugs: [""] } ]; selectedLabs = []; hivDrugs = [ { name: '', usage: '', time: '' } ];
                 selectedPreopDrugs = []; preopCalculatedNotes = [];
                 
-                renderLabTags(); renderMrSources(); renderHivDrugs(); renderSelectedPreopDrugs(); checkPreopSpecificQuestions(); toggleHivType(); generateOutput();
+                renderLabTags(); renderMrSources(); renderHivDrugs(); renderSelectedPreopDrugs(); checkPreopSpecificQuestions(); 
+                if(currentTab === 'HIV') toggleHivType(); 
+                generateOutput();
             }
         }
 
@@ -1833,7 +1839,6 @@
                     if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmName}`);
                 }
             }
-            // Tab HF Clinic จะไม่สร้าง Output ทับตรงนี้ เพราะ HF มีปุ่มคัดลอกลง Note ต่างหาก
             
             // Only update output if it's not HF (since HF has a manual inject button)
             if (currentTab !== 'HF') {
@@ -1904,9 +1909,8 @@
                 }
             }
             else if (currentTab === 'HF') {
-                // HF ส่งข้อมูลเฉพาะลงใน Sheet NCD 
-                // ใช้ข้อมูลจากที่ประมวลผลแล้วในกล่อง PMK
-                rowData[8] = '1'; // สมมติ Col I คือ HF 
+                // HF ส่งข้อมูลลง Sheet สมมติใช้ Col 8 (I) เป็นตัวบอกว่ามาจากคลินิก HF
+                rowData[8] = '1'; 
                 rowData[9] = document.getElementById('outputPmk').value;
             }
             return rowData;
@@ -1949,9 +1953,14 @@
             document.getElementById('printName').innerText = `${ptName} HN: ${ptHn}`;
             document.getElementById('printNote').innerText = document.getElementById('outputPmk').value || 'ไม่มีข้อมูล';
             
+            const printDiv = document.getElementById('printArea');
+            printDiv.classList.remove('hidden');
             document.body.classList.add('print-mode-opd-a5');
+            
             window.print();
+            
             document.body.classList.remove('print-mode-opd-a5');
+            printDiv.classList.add('hidden');
         }
 
         function updateOpdStickerPreview() {
@@ -1995,9 +2004,13 @@
             printArea.style.color = "black";
             printArea.style.lineHeight = "1.3";
             
+            printArea.classList.remove('hidden'); // แสดงตอนพิมพ์
             document.body.classList.add('print-mode-opd-stk');
+            
             window.print();
+            
             document.body.classList.remove('print-mode-opd-stk');
+            printArea.classList.add('hidden'); // ซ่อนหลังพิมพ์เสร็จ
         }
 
         function showToast(msg) {
@@ -2005,206 +2018,6 @@
             toast.innerText = msg;
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
-        }
-
-        // ==========================================
-        //         WARFARIN SYSTEM LOGIC
-        // ==========================================
-        function setupWarfarinAccess() {
-            const codeInput = document.getElementById('accessCode');
-            const remCheck = document.getElementById('rememberCode');
-            const msg = document.getElementById('gateMsg');
-            const fetchBtn = document.getElementById('fetchBtn');
-
-            function checkAccess() {
-                const ok = (codeInput.value.trim() === ACCESS_CODE);
-                fetchBtn.disabled = !ok;
-                if(ok) {
-                    msg.innerHTML = '<i class="fa-solid fa-circle-check"></i> พร้อมดึงข้อมูล';
-                    msg.className = 'text-green-600 text-sm ml-3 font-bold';
-                    if(remCheck.checked) sessionStorage.setItem('access_ok','1');
-                } else {
-                    msg.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> รหัสไม่ถูกต้อง';
-                    msg.className = 'text-red-500 text-sm ml-3 font-bold';
-                    sessionStorage.removeItem('access_ok');
-                }
-                return ok;
-            }
-
-            if(sessionStorage.getItem('access_ok') === '1') {
-                codeInput.value = ACCESS_CODE;
-                remCheck.checked = true;
-                checkAccess();
-            }
-
-            codeInput.addEventListener('input', checkAccess);
-            remCheck.addEventListener('change', checkAccess);
-
-            document.getElementById('fetchBtn').addEventListener('click', doFetch);
-            document.getElementById('searchWarfarinNo').addEventListener('keydown', e => { if(e.key === 'Enter') doFetch(); });
-            
-            // Warfarin Print Sticker
-            document.getElementById('printBtn').addEventListener('click', () => {
-                document.body.classList.add('print-mode-warfarin-stk');
-                window.print();
-                document.body.classList.remove('print-mode-warfarin-stk');
-            });
-
-            document.querySelectorAll('input[name="size"]').forEach(r => {
-                r.addEventListener('change', () => {
-                    const box = document.getElementById('sticker');
-                    box.classList.remove('size-4_5', 'size-6_0');
-                    box.classList.add('size-' + r.value);
-                });
-            });
-
-            document.getElementById('btnInr23').addEventListener('click', () => document.getElementById('stk-inr').textContent='2-3');
-            document.getElementById('btnInr2535').addEventListener('click', () => document.getElementById('stk-inr').textContent='2.5-3.5');
-            document.getElementById('btnAll').addEventListener('click', () => {
-                const ex = document.getElementById('extraArea');
-                const t = ex.textContent.trim();
-                ex.textContent = t ? (t + ' ALL:') : 'ALL:';
-                const sel = window.getSelection(); const range = document.createRange();
-                range.selectNodeContents(ex); range.collapse(false);
-                sel.removeAllRanges(); sel.addRange(range); ex.focus();
-            });
-            
-            // Warfarin Form Submission
-            const wfForm = document.getElementById('warfarinForm');
-            wfForm.addEventListener('submit', e => {
-                e.preventDefault();
-                document.getElementById('submitBtn').style.display = 'none';
-                document.getElementById('loadingSpinner').style.display = 'block';
-                const data = Object.fromEntries(new FormData(wfForm).entries());
-                fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data), headers: {"Content-Type": "text/plain"} })
-                .then(res => res.json())
-                .then(res => {
-                    document.getElementById('loadingSpinner').style.display = 'none';
-                    if (res.result === 'success') {
-                        document.getElementById('resultArea').classList.remove('hidden');
-                        document.getElementById('showNumber').innerText = res.warfarinId;
-                    } else {
-                        alert('เกิดข้อผิดพลาด: ' + res.error);
-                        document.getElementById('submitBtn').style.display = 'block';
-                    }
-                }).catch(err => {
-                    alert('การเชื่อมต่อขัดข้อง');
-                    document.getElementById('submitBtn').style.display = 'block';
-                    document.getElementById('loadingSpinner').style.display = 'none';
-                });
-            });
-        }
-
-        async function fetchByAppsScript(no) {
-            const url = new URL(SCRIPT_URL); 
-            url.searchParams.set('warfarin', String(no).trim());
-            const res = await fetch(url.toString(), {cache:'no-store'});
-            if(!res.ok) throw new Error('HTTP ' + res.status);
-            const data = await res.json();
-            if(!data || (!data.warfarinNo && !data.fullName)) throw new Error('ไม่พบข้อมูล');
-            return data;
-        }
-
-        async function doFetch() {
-            const wnoInput = document.getElementById('searchWarfarinNo');
-            const btn = document.getElementById('fetchBtn');
-            const no = wnoInput.value.trim();
-            if(!no) { alert('กรุณาใส่เลข Warfarin No'); return; }
-            
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังดึง...'; 
-            btn.disabled = true;
-            
-            try { 
-                const d = await fetchByAppsScript(no); 
-                document.getElementById('stk-fullName').textContent = d.fullName || '—';
-                document.getElementById('stk-hn').textContent = d.hn || '—';
-                document.getElementById('stk-wfno').textContent = d.warfarinNo || '—';
-                document.getElementById('stk-indication').textContent = d.indication || '—';
-                document.getElementById('stk-inr').textContent = d.inr || '—';
-            } catch(e) { 
-                alert('ดึงข้อมูลไม่สำเร็จ: ' + e.message); 
-            } finally {
-                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล'; 
-                btn.disabled = false;
-            }
-        }
-
-        // Warfarin Pending logic
-        function loadPending() {
-            const container = document.getElementById('pendingContainer');
-            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-blue-500"></i></div>';
-            fetch(SCRIPT_URL + "?action=getPending")
-            .then(res => res.json())
-            .then(data => renderPendingCards(data))
-            .catch(err => container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded">โหลดข้อมูลผิดพลาด</div>');
-        }
-
-        function forceRefreshCache() {
-            const btn = document.getElementById('forceRefreshBtn');
-            const container = document.getElementById('pendingContainer');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังอัปเดต...'; btn.disabled = true;
-            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-yellow-500"></i><p class="mt-2 text-sm text-yellow-700">กำลังซิงค์ข้อมูลตรงจากระบบ...</p></div>';
-
-            fetch(SCRIPT_URL + "?action=forceRefreshCache")
-            .then(res => res.json())
-            .then(res => {
-                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; btn.disabled = false;
-                if(res.result === 'success') renderPendingCards(res.data);
-            }).catch(err => {
-                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; btn.disabled = false;
-                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded">โหลดข้อมูลผิดพลาด โปรดลองใหม่</div>';
-            });
-        }
-
-        function renderPendingCards(data) {
-            const container = document.getElementById('pendingContainer');
-            container.innerHTML = '';
-            if(data.length === 0) {
-                container.innerHTML = '<div class="bg-white border border-gray-200 text-center py-8 text-gray-500 rounded-lg">ไม่มีคิวรออนุมัติจาก LINE ครับ</div>';
-                return;
-            }
-            data.forEach(item => {
-                const card = `
-                <div class="pending-card p-4 shadow-sm border border-yellow-200" id="card-${item.id}">
-                    <form id="form-${item.id}">
-                        <input type="hidden" name="id" value="${item.id}">
-                        <div class="grid grid-cols-2 gap-3 mb-2">
-                            <div><label class="block text-xs font-bold text-gray-600">HN</label><input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="hn" value="${item.hn}"></div>
-                            <div><label class="block text-xs font-bold text-gray-600">เพศ</label><select class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="sex"><option value="1" ${item.sex=='1'?'selected':''}>ชาย</option><option value="2" ${item.sex=='2'?'selected':''}>หญิง</option></select></div>
-                        </div>
-                        <div class="mb-2"><label class="block text-xs font-bold text-gray-600">ชื่อ-นามสกุล</label><input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="name" value="${item.name}"></div>
-                        <div class="grid grid-cols-3 gap-3 mb-3">
-                            <div><label class="block text-xs font-bold text-gray-600">อายุ</label><input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="age" value="${item.age}"></div>
-                            <div><label class="block text-xs font-bold text-gray-600">Indication</label><input type="text" class="w-full rounded border-blue-300 border-2 px-2 py-1 text-sm font-bold text-blue-700" name="indication" value="${item.indication}"></div>
-                            <div><label class="block text-xs font-bold text-gray-600">Goal</label><input type="text" class="w-full rounded border-red-300 border-2 px-2 py-1 text-sm font-bold text-red-700" name="goal" value="${item.goal}"></div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button type="button" class="flex-1 bg-white border border-red-300 text-red-600 px-3 py-1.5 rounded hover:bg-red-50 text-sm font-bold" onclick="actionPending('${item.id}', 'reject')"><i class="fa-solid fa-xmark mr-1"></i> ทิ้ง</button>
-                            <button type="button" class="flex-1 bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm font-bold" onclick="actionPending('${item.id}', 'approve')"><i class="fa-solid fa-check mr-1"></i> อนุมัติ</button>
-                        </div>
-                    </form>
-                    <div id="res-${item.id}" class="hidden bg-green-100 text-green-800 text-center font-bold p-2 mt-3 rounded"></div>
-                </div>`;
-                container.innerHTML += card;
-            });
-        }
-
-        function actionPending(id, actionType) {
-            const form = document.getElementById('form-' + id);
-            const data = Object.fromEntries(new FormData(form).entries());
-            data.action = actionType;
-            form.style.opacity = '0.4'; form.style.pointerEvents = 'none';
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data), headers: {"Content-Type": "text/plain"} })
-            .then(res => res.json())
-            .then(res => {
-                if(res.result === 'success') {
-                    if(actionType === 'approve') {
-                        document.getElementById('res-' + id).classList.remove('hidden');
-                        document.getElementById('res-' + id).innerText = "ออกเลข: " + res.warfarinId;
-                        setTimeout(() => document.getElementById('card-' + id).remove(), 3000);
-                    } else { document.getElementById('card-' + id).remove(); }
-                } else { alert('Error: ' + res.error); form.style.opacity = '1'; form.style.pointerEvents = 'auto'; }
-            });
         }
 
         // Init Data
