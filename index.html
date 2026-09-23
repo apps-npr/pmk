@@ -21,6 +21,7 @@
     
     <style>
         body { font-family: 'Prompt', sans-serif; }
+        html { scroll-behavior: smooth; }
         .tab-btn { transition: all 0.2s ease; }
         .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
         .tab-btn:not(.active) { background-color: #f3f4f6; color: #4b5563; }
@@ -138,7 +139,7 @@
         body.print-mode-opd-a5 { page: opdPageA5; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen p-4 md:p-8">
+<body class="bg-slate-100 min-h-screen p-4 md:p-8 relative">
     
     <datalist id="pharmList">
         <option value="ภญ.นิตยา ภาพสมุทร"></option>
@@ -148,6 +149,27 @@
         <option value="ภญ.อาทิตยา วงศาโรจน์"></option>
         <option value="ภญ.จุติพร ร่วมใจ"></option>
         <option value="ภก.กันตพงศ์ วงศ์เอนกเกษม"></option>
+    </datalist>
+
+    <datalist id="hivDrugOptions">
+        <option value="TLD (TDF 300mg+3TC 300mg+DTG 50mg)"></option>
+        <option value="TEDAVIR (TAF 25mg+FTC 200mg+DTG 50mg)"></option>
+        <option value="TDF/FTC (TDF 300mg+FTC 200mg)"></option>
+        <option value="ALACOVIR (ABC 600mg+3TC 300 mg)"></option>
+        <option value="Zilavir (AZT 300mg+3TC 150mg)"></option>
+        <option value="ATV/r (Atazanavir 300mg/Ritonavir 100mg)"></option>
+        <option value="LPV/r (LPV 200mg+Ritonavir 50mg)"></option>
+        <option value="DRV/r (Darunavir 600mg/Ritonavir 100mg)"></option>
+        <option value="TDF 300mg"></option>
+        <option value="TAF 25mg"></option>
+        <option value="3TC 150mg"></option>
+        <option value="3TC 300mg"></option>
+        <option value="DTG 50mg"></option>
+        <option value="AZT 100mg"></option>
+        <option value="AZT 300mg"></option>
+        <option value="ABC 300mg"></option>
+        <option value="Ritonavir 100mg"></option>
+        <option value="RPV 25mg"></option>
     </datalist>
 
     <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden" id="mainAppContainer">
@@ -370,6 +392,12 @@
 
             <!-- 4. HIV Form -->
             <div id="form-HIV" class="space-y-6 hidden">
+                
+                <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm mb-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">BP (ความดันโลหิต)</label>
+                    <input type="text" id="hivBp" placeholder="เช่น 120/80" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
                         <label class="block text-sm font-medium text-gray-700 mb-2">CD4 (%CD4)</label>
@@ -415,15 +443,15 @@
                         <input type="text" id="hivLabDate" placeholder="วันที่เจาะ Lab หลัก (วว/ดด/พศ)" class="w-full md:w-1/3 rounded-lg border-gray-300 border px-3 py-2 text-sm shadow-sm" oninput="generateOutput()">
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 bg-white p-4 rounded-lg border border-indigo-200 shadow-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-white p-4 rounded-lg border border-indigo-200 shadow-sm">
                         <div><label class="block text-xs font-medium text-gray-600 mb-1">Scr</label><input type="text" id="hivScr" placeholder="ระบุค่า Scr" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
                         <div><label class="block text-xs font-medium text-gray-600 mb-1">eGFR (CKD-EPI)</label><input type="text" id="hivEgfr" placeholder="ระบุค่า eGFR" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">BP (ความดัน)</label><input type="text" id="hivBp" placeholder="เช่น 120/80" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">UA protein</label>
                             <select id="hivUa" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" onchange="generateOutput()">
                                 <option value="">-- เลือก --</option>
                                 <option value="Negative">Negative</option>
+                                <option value="Trace">Trace</option>
                                 <option value="+1">+1</option>
                                 <option value="+2">+2</option>
                                 <option value="+3">+3</option>
@@ -656,7 +684,7 @@
 
         <!-- Output & Actions (สำหรับคลินิก 1-4) -->
         <div id="opdOutputSection" class="bg-gray-100 p-6 border-t border-gray-200">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK)</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK) <span class="text-xs text-red-500 font-normal">(แก้ไขข้อมูลเองได้หลังใส่ข้อมูลในช่องครบถ้วนแล้ว)</span></label>
             
             <div id="mergeMrOption" class="hidden mb-3 bg-blue-50 border border-blue-200 p-3 rounded-lg">
                 <label class="inline-flex items-center cursor-pointer">
@@ -715,6 +743,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Floating Back to Top Button -->
+    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-20 right-5 bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-xl transition-transform hover:scale-110 z-40 print:hidden" title="กลับขึ้นด้านบน">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
 
     <!-- A5 Print Area -->
     <div id="printArea" class="hidden">
@@ -1153,7 +1186,7 @@
                 container.innerHTML += `
                     <div class="flex flex-col md:flex-row gap-2 items-center bg-white p-2 rounded-lg border border-gray-200">
                         <span class="font-bold text-blue-500 w-4 text-center text-sm">${index+1}.</span>
-                        <input type="text" value="${drug.name}" oninput="updateHivDrug(${index}, 'name', this.value)" placeholder="ชื่อยา" class="w-full md:w-2/5 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
+                        <input type="text" list="hivDrugOptions" value="${drug.name}" oninput="updateHivDrug(${index}, 'name', this.value)" placeholder="ชื่อยา" class="w-full md:w-2/5 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
                         <input type="text" value="${drug.usage}" oninput="updateHivDrug(${index}, 'usage', this.value)" placeholder="วิธีใช้" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
                         <input type="text" value="${drug.time}" oninput="updateHivDrug(${index}, 'time', this.value)" placeholder="เวลา" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
                         <button onclick="removeHivDrug(${index})" class="text-red-400 hover:text-red-600 p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
@@ -1210,17 +1243,20 @@
         function resetForm() {
             if(confirm('ต้องการล้างข้อมูลคนไข้ทั้งหมดหรือไม่?')) {
                 document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="date"]').forEach(el => el.value = '');
-                document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+                document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
+                document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
                 
                 document.getElementById('hivManualAdherence').value = '100%'; document.getElementById('hivLabDateRef').value = 'cd4';
-                document.querySelector('input[name="hivType"][value="refill"]').checked = true;
+                if(document.querySelector('input[name="hivType"][value="refill"]')) document.querySelector('input[name="hivType"][value="refill"]').checked = true;
                 
                 toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
                 
                 mrSources = [ { place: '', date: '', drugs: [""] } ]; selectedLabs = []; hivDrugs = [ { name: '', usage: '', time: '' } ];
                 selectedPreopDrugs = []; preopCalculatedNotes = [];
                 
-                renderLabTags(); renderMrSources(); renderHivDrugs(); renderSelectedPreopDrugs(); checkPreopSpecificQuestions(); toggleHivType(); generateOutput();
+                renderLabTags(); renderMrSources(); renderHivDrugs(); renderSelectedPreopDrugs(); checkPreopSpecificQuestions();
+                if(currentTab === 'HIV') toggleHivType();
+                generateOutput();
             }
         }
 
@@ -1395,7 +1431,7 @@
                     });
                     if (issues.length > 0) notes.push(`ปรึกษาแพทย์เรื่องมีความผิดปกติของ ${issues.join(' ')}`);
                     const pharmName = document.getElementById('hivPharmNameRefer').value;
-                    if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmName}`);
+                    if (pharmName) notes.push(`/${pharmName}`);
                 }
             }
             
@@ -1461,7 +1497,13 @@
                     if(document.getElementById('chkLiver').checked) { referDetails.push(`ตับ มี ${document.getElementById('txtLiver').value}`); rowData[15] = '1'; }
                     if(document.getElementById('chkCkd').checked) { referDetails.push(`CKD มี ${document.getElementById('txtCkd').value}`); rowData[16] = '1'; }
                     if(document.getElementById('chkAnemia').checked) { referDetails.push(`CBC มี ${document.getElementById('txtAnemia').value}`); rowData[17] = '1'; }
-                    if(referDetails.length > 0) { rowData[6] = `ส่งพบเรื่อง ${referDetails.join(', ')}`; }
+                    
+                    if(document.getElementById('chkOtherRefer').checked) {
+                        let otherVal = document.getElementById('txtOtherRefer').value;
+                        if(otherVal) rowData[7] = otherVal;
+                    }
+
+                    if(referDetails.length > 0) { rowData[6] = referDetails.join(', '); }
                 }
             }
             return rowData;
@@ -1555,13 +1597,13 @@
             printArea.style.color = "black";
             printArea.style.lineHeight = "1.3";
             
-            printArea.classList.remove('hidden'); // แสดงตอนพิมพ์
+            printArea.classList.remove('hidden'); 
             document.body.classList.add('print-mode-opd-stk');
             
             window.print();
             
             document.body.classList.remove('print-mode-opd-stk');
-            printArea.classList.add('hidden'); // ซ่อนหลังพิมพ์เสร็จ
+            printArea.classList.add('hidden'); 
         }
 
         function showToast(msg) {
