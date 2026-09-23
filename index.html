@@ -208,7 +208,6 @@
                 <button onclick="switchTab('WARFARIN')" id="tab-WARFARIN" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-red-50 text-red-700 border-red-200 hover:bg-red-100">
                     <i class="fa-solid fa-capsules mr-1"></i> 5. Warfarin
                 </button>
-                <!-- ป้องกันปัญหาซ่อนทับด้วยปุ่ม HF ที่ถูกต้อง -->
                 <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
                     <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
                 </button>
@@ -555,132 +554,6 @@
                             <input type="text" id="hivPharmNameRefer" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 bg-white" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- 5. Warfarin Form -->
-            <div id="form-WARFARIN" class="space-y-4 hidden">
-                <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm mb-4">
-                    <h3 class="font-bold text-blue-800 mb-3 border-b pb-2"><i class="fa-solid fa-capsules"></i> เมนูจัดการคิว Warfarin</h3>
-                    <div class="wf-nav-tabs">
-                        <button class="wf-nav-link active" id="wf-manual-tab" onclick="switchWfTab('manual')"><i class="fa-solid fa-pen-to-square"></i> กรอกเอง</button>
-                        <button class="wf-nav-link" id="wf-pending-tab" onclick="switchWfTab('pending'); loadPending();"><i class="fa-solid fa-clock-rotate-left"></i> รออนุมัติ</button>
-                        <button class="wf-nav-link text-success" id="wf-sticker-tab" onclick="switchWfTab('sticker')"><i class="fa-solid fa-print"></i> พิมพ์สติกเกอร์</button>
-                    </div>
-
-                    <!-- Warfarin: กรอกเอง -->
-                    <div id="wf-manual" class="wf-tab-content">
-                        <form id="warfarinForm">
-                            <input type="hidden" name="action" value="manual">
-                            <div class="mb-3">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">HN (เลขที่โรงพยาบาล)</label>
-                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="hn" required placeholder="เช่น 54961/68" id="wfHnInput">
-                            </div>
-                            <div class="grid grid-cols-2 gap-4 mb-3">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">เพศ</label>
-                                    <select class="w-full rounded border-gray-300 border px-3 py-2" name="sex" required>
-                                        <option value="1">ชาย (1)</option><option value="2">หญิง (2)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">อายุ (ปี)</label>
-                                    <input type="number" class="w-full rounded border-gray-300 border px-3 py-2" name="age" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ - นามสกุล</label>
-                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="name" required id="wfNameInput">
-                            </div>
-                            <div class="mb-3">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Indication (ข้อบ่งใช้)</label>
-                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="indication" list="indicationOptions" placeholder="ระบุ หรือเลือกจากรายการ">
-                                <datalist id="indicationOptions"><option value="AF"><option value="DVT"><option value="PE"><option value="MVR"><option value="AVR"><option value="S/P MVR"></datalist>
-                            </div>
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Goal INR</label>
-                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="goal" list="goalOptions" value="2.0-3.0">
-                                <datalist id="goalOptions"><option value="2.0-3.0"><option value="2.5-3.5"></datalist>
-                            </div>
-                            <button type="submit" class="btn-submit" id="submitBtn">รับเลข Warfarin</button>
-                            <div class="loading text-blue-600 mt-2" id="loadingSpinner"><i class="fa-solid fa-spinner fa-spin mr-2"></i>กำลังบันทึกและรันเลข...</div>
-                        </form>
-                        <div id="resultArea" class="hidden bg-green-50 border border-green-200 text-green-800 p-4 rounded mt-4 text-center">
-                            <h4 class="font-bold mb-1">บันทึกสำเร็จ!</h4>
-                            <p class="mb-1">เลข Warfarin ของคนไข้รายนี้คือ:</p>
-                            <div class="warfarin-number my-2" id="showNumber">----</div>
-                            <button class="bg-white border border-green-500 text-green-700 px-4 py-2 rounded hover:bg-green-100" onclick="document.getElementById('resultArea').classList.add('hidden'); document.getElementById('submitBtn').style.display='block'; document.getElementById('warfarinForm').reset();">ลงรายการต่อไป</button>
-                        </div>
-                    </div>
-
-                    <!-- Warfarin: รออนุมัติ -->
-                    <div id="wf-pending" class="wf-tab-content hidden">
-                        <div class="flex gap-2 mb-4">
-                            <button class="flex-1 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm" onclick="loadPending()">
-                                <i class="fa-solid fa-rotate-right mr-1"></i> โหลดปกติ (ใช้ Cache)
-                            </button>
-                            <button class="flex-1 bg-yellow-400 border border-yellow-500 text-yellow-900 font-bold px-3 py-2 rounded hover:bg-yellow-500 text-sm" onclick="forceRefreshCache()" id="forceRefreshBtn">
-                                <i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้
-                            </button>
-                        </div>
-                        <div id="pendingContainer" class="space-y-3">
-                            <p class="text-center text-gray-500 py-4">กำลังโหลดข้อมูล...</p>
-                        </div>
-                    </div>
-
-                    <!-- Warfarin: พิมพ์สติกเกอร์ -->
-                    <div id="wf-sticker" class="wf-tab-content hidden">
-                        <div class="bg-gray-50 p-4 rounded border border-gray-200 mb-4 sticker-controls">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-500 mb-1">รหัสผ่าน (Access Code)</label>
-                                    <input id="accessCode" type="password" class="w-full rounded border-gray-300 border px-3 py-1.5 text-sm" placeholder="ใส่รหัสเพื่อใช้งาน">
-                                </div>
-                                <div class="flex items-center pt-5">
-                                    <label class="inline-flex items-center mr-3 text-sm text-gray-600">
-                                        <input type="checkbox" id="rememberCode" class="form-checkbox text-blue-600 rounded">
-                                        <span class="ml-2">จำรหัสวันนี้</span>
-                                    </label>
-                                    <small id="gateMsg" class="text-red-500 text-sm">ใส่รหัส</small>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                                <div>
-                                    <label class="block text-sm font-bold text-blue-600 mb-1">ดึงด้วย Warfarin No</label>
-                                    <input id="searchWarfarinNo" type="text" inputmode="numeric" class="w-full rounded border-blue-300 border-2 px-3 py-1.5 focus:ring-blue-500" placeholder="เช่น 4248">
-                                </div>
-                                <div class="flex gap-2">
-                                    <button id="fetchBtn" class="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm" disabled><i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล</button>
-                                    <button id="printBtn" class="bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm"><i class="fa-solid fa-print"></i> พิมพ์สติกเกอร์</button>
-                                </div>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-gray-200">
-                                <label class="text-sm font-bold text-gray-500 mr-3">ขนาดสติกเกอร์:</label>
-                                <label class="inline-flex items-center mr-3 text-sm"><input type="radio" name="size" id="size1" value="4_5" class="form-radio text-blue-600"><span class="ml-1">8.5×4.5 ซม.</span></label>
-                                <label class="inline-flex items-center text-sm"><input type="radio" name="size" id="size2" value="6_0" checked class="form-radio text-blue-600"><span class="ml-1">8.5×6.0 ซม.</span></label>
-                            </div>
-                        </div>
-                        
-                        <!-- พื้นที่โชว์สติกเกอร์ Warfarin -->
-                        <div class="stickerRow" id="stickerTabPane">
-                            <div id="sticker" class="sticker size-6_0">
-                                <div class="line"><span class="field-label">ชื่อ-สกุล:</span><span id="stk-fullName" class="field-value" contenteditable="true">—</span></div>
-                                <div class="line"><span class="field-label">HN:</span><span id="stk-hn" class="field-value" contenteditable="true">—</span></div>
-                                <div class="line"><span class="field-label">Warfarin No:</span><span id="stk-wfno" class="field-value" contenteditable="true">—</span></div>
-                                <div class="line"><span class="field-label">Indication:</span><span id="stk-indication" class="field-value" contenteditable="true">—</span></div>
-                                <div class="line"><span class="field-label">Target INR:</span><span id="stk-inr" class="field-value" contenteditable="true">—</span></div>
-                                <div id="extraArea" class="extra" contenteditable="true" data-placeholder="คลิกเพื่อพิมพ์ข้อความเพิ่มเติมที่นี่…"></div>
-                            </div>
-                            
-                            <aside class="qs-panel">
-                                <div class="title">ปุ่มด่วน (Quick Select)</div>
-                                <button id="btnInr23" class="bg-white border border-gray-300 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100">INR 2–3</button>
-                                <button id="btnInr2535" class="bg-white border border-gray-300 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100">INR 2.5–3.5</button>
-                                <button id="btnAll" class="bg-blue-50 border border-blue-300 text-blue-700 px-2 py-1 rounded text-xs font-bold hover:bg-blue-100">+ ALL (เพิ่มท้าย)</button>
-                            </aside>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
@@ -2043,8 +1916,65 @@
                 }
             }
             else if (currentTab === 'HF') {
-                rowData[8] = '1'; 
-                rowData[9] = document.getElementById('outputPmk').value;
+                const lvef = document.getElementById('hfLvef').value;
+                rowData[2] = lvef ? lvef : ''; // Col D
+                
+                const hasRaasi = document.getElementById('chk_hf_raasi').checked;
+                const hasBb = document.getElementById('chk_hf_bb').checked;
+                const hasMra = document.getElementById('chk_hf_mra').checked;
+                const hasSglt2i = document.getElementById('chk_hf_sglt2i').checked;
+                
+                let gdmtCount = 0;
+                let missingGdmt = [];
+                if (hasRaasi) gdmtCount++; else missingGdmt.push('RAASi');
+                if (hasBb) gdmtCount++; else missingGdmt.push('Beta-blocker');
+                if (hasMra) gdmtCount++; else missingGdmt.push('MRA');
+                if (hasSglt2i) gdmtCount++; else missingGdmt.push('SGLT2i');
+                
+                rowData[3] = gdmtCount; // Col E
+                rowData[4] = missingGdmt.length > 0 ? missingGdmt.join(', ') : '-'; // Col F
+                
+                let nyha = document.getElementById('hfNyha').options[document.getElementById('hfNyha').selectedIndex].text;
+                nyha = nyha === '-- เลือก --' ? '-' : nyha;
+                const sbp = document.getElementById('hfSbp').value || '-';
+                const dbp = document.getElementById('hfDbp').value || '-';
+                const hr = document.getElementById('hfHr').value || '-';
+                const egfr = document.getElementById('hfEgfr').value || '-';
+                const potassium = document.getElementById('hfK').value || '-';
+
+                let shortMeds = [];
+                if(hasRaasi) {
+                    let val = document.getElementById('sel_hf_raasi_drug').value;
+                    if(val === 'arni') shortMeds.push('Entresto'); else if(val === 'enalapril') shortMeds.push('Enalapril'); else if(val === 'losartan') shortMeds.push('Losartan');
+                }
+                if(hasBb) {
+                    let val = document.getElementById('sel_hf_bb_drug').value;
+                    if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); else if(val === 'carvedilol') shortMeds.push('Carvedilol'); else if(val === 'metoprolol') shortMeds.push('Metoprolol');
+                }
+                if(hasMra) { if(document.getElementById('sel_hf_mra_drug').value === 'spironolactone') shortMeds.push('Spironolactone'); }
+                if(hasSglt2i) shortMeds.push('Empagliflozin');
+                if(document.getElementById('chk_hf_iva').checked) shortMeds.push('Ivabradine');
+                if(document.getElementById('chk_hf_loop').checked) shortMeds.push('Furosemide');
+
+                let medsString = shortMeds.length > 0 ? shortMeds.join(',') : '-';
+
+                let interventionText = '';
+                const recContent = document.getElementById('hfRecContent');
+                if (recContent) {
+                    let h3s = Array.from(recContent.querySelectorAll('h3'));
+                    let gdmtH3 = h3s.find(h3 => h3.innerText.includes('การปรับยา 4 เสาหลัก'));
+                    if (gdmtH3) {
+                        let ul = gdmtH3.nextElementSibling;
+                        if (ul && ul.tagName === 'UL') {
+                            let items = Array.from(ul.querySelectorAll('li strong'));
+                            let actions = items.map(strong => strong.innerText.trim()).filter(text => text.startsWith('•'));
+                            if (actions.length > 0) interventionText = ' | 💊 Intervention ปรับยา ' + actions.join(' ');
+                        }
+                    }
+                }
+
+                let summary = `LVEF: ${lvef ? lvef + '%' : '-'} | NYHA: ${nyha} | BP: ${sbp}/${dbp} mmHg | HR: ${hr} bpm | eGFR: ${egfr} | K: ${potassium} | Meds: ${medsString}${interventionText}`;
+                rowData[6] = summary.replace(/\s+/g, ' ').trim(); // Col H
             }
             return rowData;
         }
