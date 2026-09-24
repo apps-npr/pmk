@@ -211,9 +211,6 @@
                 <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
                     <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
                 </button>
-                <button onclick="switchTab('ASTHMA')" id="tab-ASTHMA" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100">
-                    <i class="fa-solid fa-lungs mr-1"></i> 7. Asthma/COPD
-                </button>
             </div>
         </div>
 
@@ -682,6 +679,7 @@
                             </aside>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -851,83 +849,9 @@
                 </div>
             </div>
 
-            <!-- 7. Asthma/COPD Clinic Form -->
-            <div id="form-ASTHMA" class="space-y-6 hidden">
-                <div class="bg-cyan-50 p-4 border border-cyan-200 rounded-xl mb-4 text-sm">
-                    <h3 class="font-bold text-cyan-800 mb-2"><i class="fa-solid fa-lungs"></i> คลินิกหอบหืดและปอดอุดกั้นเรื้อรัง (Asthma & COPD)</h3>
-                    <p class="text-cyan-700">ประเมินการควบคุมอาการ และทบทวนเทคนิคการพ่นยา (Inhaler Technique) อย่างละเอียด</p>
-                </div>
-                
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">1. ข้อมูลทั่วไปและการประเมิน (General & Assessment)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">Indication</label>
-                            <div class="flex gap-4 p-2 bg-gray-50 rounded border border-gray-200">
-                                <label class="inline-flex items-center"><input type="radio" name="resp_indication" value="Asthma" class="form-radio text-cyan-600"><span class="ml-2 text-sm">Asthma</span></label>
-                                <label class="inline-flex items-center"><input type="radio" name="resp_indication" value="COPD" class="form-radio text-cyan-600"><span class="ml-2 text-sm">COPD</span></label>
-                            </div>
-                        </div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">ประวัติเข้า ER (ครั้ง/ปี)</label><input type="number" id="resp_er" placeholder="จำนวนครั้ง" class="w-full rounded border-gray-300 p-2 text-sm"></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">ประวัติ Admit (ครั้ง/ปี)</label><input type="number" id="resp_admit" placeholder="จำนวนครั้ง" class="w-full rounded border-gray-300 p-2 text-sm"></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">สถานะผู้ป่วย</label><label class="inline-flex items-center p-2"><input type="checkbox" id="resp_new_case" class="form-checkbox text-cyan-600 rounded mr-2"><span class="text-sm font-bold text-gray-700">ผู้ป่วยใหม่ (เพิ่งเข้าคลินิกครั้งแรก)</span></label></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">Score (ACT / CAT)</label><input type="number" id="resp_score" placeholder="คะแนน" class="w-full rounded border-gray-300 p-2 text-sm"></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">DRPs / หมายเหตุ</label><input type="text" id="resp_drp" placeholder="ปัญหาการใช้ยาที่พบ" class="w-full rounded border-gray-300 p-2 text-sm"></div>
-                    </div>
-
-                    <h4 class="font-bold text-gray-700 mb-2 mt-4"><i class="fa-solid fa-stethoscope"></i> อาการในรอบ 1 เดือน (Symptom Control)</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-red-50 p-4 rounded border border-red-100 text-sm">
-                        <label class="flex items-center"><input type="checkbox" id="resp_symp_reliever" class="form-checkbox text-red-500 rounded mr-2">ใช้ยาพ่นฉุกเฉิน > 2 ครั้ง/สัปดาห์</label>
-                        <label class="flex items-center"><input type="checkbox" id="resp_symp_exac" class="form-checkbox text-red-500 rounded mr-2">หอบกำเริบ > 2 ครั้ง/สัปดาห์</label>
-                        <label class="flex items-center"><input type="checkbox" id="resp_symp_night" class="form-checkbox text-red-500 rounded mr-2">หอบกำเริบกลางคืน > 2 ครั้ง/เดือน</label>
-                        <label class="flex items-center"><input type="checkbox" id="resp_symp_limit" class="form-checkbox text-red-500 rounded mr-2">จำกัดการใช้ชีวิตประจำวัน</label>
-                    </div>
-                </div>
-
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">2. ประเมินเทคนิคการพ่นยา (Inhaler Technique)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">เลือกอุปกรณ์ (Device)</label>
-                            <select id="resp_device_select" class="w-full rounded border-gray-300 p-2 text-sm bg-gray-50" onchange="renderRespSteps()">
-                                <option value="">-- เลือกอุปกรณ์ --</option>
-                                <option value="mdi">MDI</option>
-                                <option value="accuhaler">ACCUHALER</option>
-                                <option value="handihaler">HANDIHALER</option>
-                                <option value="duoresp">DuoResp Spiromax</option>
-                                <option value="spiolto">Spiolto Respimat</option>
-                                <option value="anoro">Anoro Ellipta</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">วิธีการพ่น (Regimen)</label>
-                            <select id="resp_puff_type" class="w-full rounded border-gray-300 p-2 text-sm bg-gray-50" onchange="calculateRespScore()">
-                                <option value="1">พ่น 1 ครั้ง (1 Puff)</option>
-                                <option value="multi">พ่น > 1 ครั้ง (Multi Puffs)</option>
-                                <option value="prn">PRN (พ่นฉุกเฉิน)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="resp_device_container" class="hidden">
-                        <div class="flex justify-between items-end mb-2">
-                            <h4 class="font-bold text-gray-700" id="resp_device_title">Checklist</h4>
-                            <div class="text-lg font-bold text-cyan-700 bg-cyan-100 px-3 py-1 rounded-full" id="resp_score_badge" data-val="0">0%</div>
-                        </div>
-                        <div id="resp_steps_container" class="space-y-2 bg-gray-50 p-4 rounded border border-gray-200 text-sm">
-                            <!-- JS จะสร้าง Checkbox ของแต่ละ Device ตรงนี้ -->
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="generateRespNote()" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition flex items-center justify-center text-lg">
-                    <i class="fa-solid fa-arrow-down mr-2"></i> สรุปข้อมูล Asthma/COPD ลงกล่อง Pharmacist Note
-                </button>
-            </div>
-
         </div>
 
-        <!-- Output & Actions (สำหรับคลินิก 1-4, 6, 7) -->
+        <!-- Output & Actions (สำหรับคลินิก 1-4, 6) -->
         <div id="opdOutputSection" class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK) <span class="text-xs text-red-500 font-normal">(แก้ไขข้อมูลเองได้หลังใส่ข้อมูลในช่องครบถ้วนแล้ว)</span></label>
             
@@ -941,7 +865,7 @@
             <!-- เปิดให้ผู้ใช้สามารถคลิกและแก้ไขข้อความในกล่องนี้ได้ -->
             <textarea id="outputPmk" rows="12" class="w-full rounded-lg border-gray-300 border px-4 py-3 bg-white font-mono text-sm mb-4 leading-relaxed shadow-inner" placeholder="ข้อความ Pharmacist Note จะค่อยๆ ปรากฏขึ้นที่นี่ (ท่านสามารถคลิกเพื่อแก้ไข/พิมพ์เพิ่มเองได้)" oninput="updateOpdStickerPreview()"></textarea>
             
-            <!-- แผงตั้งค่าการพิมพ์สติกเกอร์ -->
+            <!-- แผงตั้งค่าการพิมพ์สติกเกอร์ (ซ่อนอยู่ จะโชว์เมื่อกดปุ่ม "5. พิมพ์สติกเกอร์") -->
             <div id="opdStickerSettings" class="hidden bg-indigo-50 border border-indigo-200 p-4 rounded-lg mb-4">
                 <h4 class="font-bold text-indigo-800 mb-2"><i class="fa-solid fa-gear"></i> พรีวิว & ตั้งค่าหน้ากระดาษสติกเกอร์ (หน่วย mm)</h4>
                 
@@ -1022,207 +946,6 @@
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec'; 
         const ACCESS_CODE = "1234";
-
-        // ==========================================
-        //         ASTHMA / COPD DATA & LOGIC
-        // ==========================================
-        const respInhalerData = {
-            mdi: {
-                name: "MDI",
-                steps: [
-                    "ถือหลอดพ่นในแนวตั้ง เปิดฝาครอบ เขย่าขวดในแนวตั้ง 3-4 ครั้ง",
-                    "เตรียมลมหายใจโดยพ่นลมหายใจออกให้เต็มที่",
-                    "ริมฝีปากอมรอบปากขวดยาให้สนิท",
-                    "หายใจเข้าช้าๆ ลึกๆ ทางปากพร้อมกับกดพ่นยา 1 ครั้ง",
-                    "เอาขวดยาออก ปิดปากสนิท กลั้นหายใจอย่างน้อย 10 วินาที",
-                    "ผ่อนลมหายใจออกทางปาก/จมูกช้าๆ",
-                    "หลังใช้เสร็จกลั้วปากและคอด้วยน้ำสะอาด",
-                    "ทำความสะอาดอุปกรณ์พลาสติก ผึ่งให้แห้งในที่ร่ม",
-                    "กรณีพ่น 2 ครั้ง ให้เว้นระยะ 1-2 นาที"
-                ],
-                multiStepIndex: 8 
-            },
-            accuhaler: {
-                name: "ACCUHALER",
-                steps: [
-                    "วางเครื่องแนวราบ เปิดโดยดันออกจนสุด",
-                    "ดันแกนเลื่อนด้านในจนได้ยินเสียง 'คลิก' เพื่อบรรจุยา",
-                    "หายใจออกให้เต็มที่ (อย่าพ่นลมเข้าเครื่อง)",
-                    "อมปากกระบอก สูดลมหายใจเข้าทางปาก เร็ว แรง และลึก",
-                    "กลั้นหายใจ 10 วินาที แล้วผ่อนลมหายใจออกช้าๆ",
-                    "ดันปิดเครื่องกลับที่เดิมจนได้ยินเสียง 'คลิก'",
-                    "หลังพ่นยา กลั้วปากและคอด้วยน้ำสะอาด",
-                    "ทำความสะอาดปากกระบอกด้วยผ้า/กระดาษแห้ง",
-                    "กรณีพ่น 2 ครั้ง ให้เว้นระยะ 1-2 นาที"
-                ],
-                multiStepIndex: 8
-            },
-            handihaler: {
-                name: "HANDIHALER",
-                steps: [
-                    "ดึงฝาเปิดขึ้น แล้วเปิดปากกระบอก",
-                    "ใส่แคปซูลยาลงในช่อง",
-                    "ปิดปากกระบอกจนได้ยินเสียง 'คลิก'",
-                    "หันปากกระบอกขึ้น กดปุ่มด้านข้างเพื่อเจาะยา (ครั้งเดียว)",
-                    "หายใจออกให้เต็มที่ (อย่าพ่นลมเข้าเครื่อง)",
-                    "อมปากกระบอก สูดลมหายใจ เร็ว แรง และลึก",
-                    "ผ่อนลมหายใจออกช้าๆ",
-                    "เปิดปากกระบอก เคาะแคปซูลทิ้ง",
-                    "ปิดปากกระบอกและฝาให้สนิท",
-                    "ทำความสะอาดปากขวดยาพ่นซับให้แห้ง"
-                ],
-                multiStepIndex: -1 
-            },
-            duoresp: {
-                name: "DuoResp Spiromax",
-                steps: [
-                    "ถือกระบอกในแนวตั้ง (ปากอยู่ล่าง) ไม่เขย่า",
-                    "เปิดฝาจนสุดได้ยินเสียง 'คลิก'",
-                    "หายใจออกให้เต็มที่ (อย่าพ่นลมเข้ากระบอก)",
-                    "อมปากกระบอก สูดลมหายใจเข้า เร็ว แรง ลึก",
-                    "เอากระบอกออก งับปาก กลั้นใจ 10 วินาที ผ่อนลมทางจมูกช้าๆ",
-                    "ทำความสะอาดกระบอกซับให้แห้ง ก่อนปิดฝา",
-                    "หลังพ่นยา กลั้วปากและคอด้วยน้ำสะอาด",
-                    "กรณีพ่น 2 ครั้ง ให้เว้น 1-2 นาที"
-                ],
-                multiStepIndex: 7
-            },
-            spiolto: {
-                name: "Spiolto Respimat",
-                steps: [
-                    "หมุนขวดยาตามลูกศรเพื่อบรรจุยาก่อนสูด",
-                    "เตรียมลมโดยหายใจออกให้เต็มที่",
-                    "อมปากกระบอก (ไม่ให้ริมฝีปากปิดช่องระบายอากาศ)",
-                    "กดยาพร้อมกับสูดลมหายใจเข้าช้าๆ ลึกๆ",
-                    "เอากระบอกออก กลั้นหายใจ 10 วินาที ผ่อนลมทางจมูกช้าๆ",
-                    "ทำความสะอาดปากกระบอก ก่อนปิดฝา",
-                    "กรณีพ่น 2 ครั้ง ให้เว้น 1-2 นาที"
-                ],
-                multiStepIndex: 6
-            },
-            anoro: {
-                name: "Anoro Ellipta",
-                steps: [
-                    "เปิดกระบอกยาจนสุด จะมีเสียงดัง 'คลิก'",
-                    "เตรียมลมโดยหายใจออกให้เต็มที่",
-                    "อมปากกระบอก (ไม่ให้ริมฝีปากปิดช่องระบายอากาศ)",
-                    "สูดยาเข้าปอด เร็ว แรง ลึกจนสุด",
-                    "เอากระบอกออก กลั้นหายใจ 10 วินาที ผ่อนลมทางจมูกช้าๆ",
-                    "ทำความสะอาดปากกระบอก ก่อนปิดฝา"
-                ],
-                multiStepIndex: -1
-            }
-        };
-
-        function renderRespSteps() {
-            const device = document.getElementById('resp_device_select').value;
-            const container = document.getElementById('resp_device_container');
-            const stepsDiv = document.getElementById('resp_steps_container');
-            const title = document.getElementById('resp_device_title');
-            
-            stepsDiv.innerHTML = '';
-            
-            if(!device) {
-                container.classList.add('hidden');
-                document.getElementById('resp_score_badge').innerText = '0%';
-                return;
-            }
-            
-            container.classList.remove('hidden');
-            const data = respInhalerData[device];
-            title.innerText = `Checklist ขั้นตอนการพ่นยา: ${data.name}`;
-            
-            data.steps.forEach((step, idx) => {
-                stepsDiv.innerHTML += `
-                    <label class="flex items-start cursor-pointer group p-2 hover:bg-gray-100 rounded transition">
-                        <input type="checkbox" class="resp-step-chk form-checkbox mt-1 text-cyan-600 rounded mr-3" data-idx="${idx}" onchange="calculateRespScore()">
-                        <span class="text-gray-700 leading-tight group-hover:text-cyan-800">${step}</span>
-                    </label>
-                `;
-            });
-            calculateRespScore();
-        }
-
-        function calculateRespScore() {
-            const device = document.getElementById('resp_device_select').value;
-            if(!device) return;
-            
-            const data = respInhalerData[device];
-            const puffType = document.getElementById('resp_puff_type').value;
-            const checkboxes = document.querySelectorAll('.resp-step-chk');
-            
-            let totalSteps = checkboxes.length;
-            let checkedSteps = 0;
-            let excludeIndex = (puffType === '1' || puffType === 'prn') ? data.multiStepIndex : -1;
-            
-            checkboxes.forEach(chk => {
-                let idx = parseInt(chk.getAttribute('data-idx'));
-                if(idx === excludeIndex) {
-                    chk.parentElement.classList.add('opacity-40', 'pointer-events-none');
-                    chk.checked = true;
-                    totalSteps--;
-                } else {
-                    chk.parentElement.classList.remove('opacity-40', 'pointer-events-none');
-                    if(chk.checked) checkedSteps++;
-                }
-            });
-            
-            let percent = totalSteps > 0 ? Math.round((checkedSteps / totalSteps) * 100) : 0;
-            document.getElementById('resp_score_badge').innerText = `${percent}%`;
-            document.getElementById('resp_score_badge').setAttribute('data-val', percent);
-        }
-
-        function generateRespNote() {
-            const indication = document.querySelector('input[name="resp_indication"]:checked')?.value || '-';
-            const er = document.getElementById('resp_er').value || '0';
-            const admit = document.getElementById('resp_admit').value || '0';
-            const isNew = document.getElementById('resp_new_case').checked;
-            const score = document.getElementById('resp_score').value || '-';
-            const drp = document.getElementById('resp_drp').value || '-';
-            
-            let symps = [];
-            if(document.getElementById('resp_symp_reliever').checked) symps.push('ใช้ยาพ่นฉุกเฉิน >2 ครั้ง/wk');
-            if(document.getElementById('resp_symp_exac').checked) symps.push('หอบกำเริบ >2 ครั้ง/wk');
-            if(document.getElementById('resp_symp_night').checked) symps.push('หอบกำเริบกลางคืน >2 ครั้ง/mo');
-            if(document.getElementById('resp_symp_limit').checked) symps.push('จำกัดการใช้ชีวิตประจำวัน');
-            let sympStr = symps.length > 0 ? symps.join(', ') : 'คุมอาการได้ดี (ไม่มีอาการหอบกำเริบ)';
-            
-            let techStr = '';
-            const device = document.getElementById('resp_device_select').value;
-            if(device) {
-                const data = respInhalerData[device];
-                const percent = document.getElementById('resp_score_badge').getAttribute('data-val') || '0';
-                
-                let wrongSteps = [];
-                const checkboxes = document.querySelectorAll('.resp-step-chk');
-                const puffType = document.getElementById('resp_puff_type').value;
-                let excludeIndex = (puffType === '1' || puffType === 'prn') ? data.multiStepIndex : -1;
-                
-                checkboxes.forEach(chk => {
-                    let idx = parseInt(chk.getAttribute('data-idx'));
-                    if(idx !== excludeIndex && !chk.checked) {
-                        wrongSteps.push(data.steps[idx].split(' ')[0].substring(0,20) + "..");
-                    }
-                });
-                
-                techStr = `\nDevice: ${data.name} | Technique: ${percent}%`;
-                if(wrongSteps.length > 0) techStr += ` (สิ่งที่พลาด: ${wrongSteps.join(', ')})`;
-            }
-
-            let summary = `[Asthma/COPD Clinic]\nIndication: ${indication} | Score (ACT/CAT): ${score}\nประวัติ ER: ${er} ครั้ง/ปี | Admit: ${admit} ครั้ง/ปี | New Case: ${isNew ? 'Yes' : 'No'}\nอาการ: ${sympStr}${techStr}\nDRP/หมายเหตุ: ${drp}`;
-            
-            let currentNote = document.getElementById('outputPmk').value;
-            if(currentNote && !currentNote.includes('[Asthma/COPD Clinic]')) {
-                document.getElementById('outputPmk').value = currentNote + '\n\n' + summary;
-            } else {
-                document.getElementById('outputPmk').value = "pharmacist note\n" + summary;
-            }
-            
-            updateOpdStickerPreview();
-            document.getElementById('opdOutputSection').scrollIntoView({ behavior: 'smooth' });
-            showToast('คัดลอกข้อมูล Asthma/COPD ลงกล่อง Pharmacist Note สำเร็จแล้ว!');
-        }
-
 
         // ==========================================
         //         HF CLINIC DATA & LOGIC
@@ -1580,7 +1303,7 @@
         //         GOOGLE SHEET INTEGRATION
         // ==========================================
         function getRowDataArray() {
-            let rowData = Array(20).fill('');
+            let rowData = Array(18).fill('');
             rowData[0] = document.getElementById('hn').value;       
             if (currentTab !== 'HIV') rowData[1] = document.getElementById('ptName').value; 
 
@@ -1598,12 +1321,15 @@
             }
             else if (currentTab === 'PREOP') {
                 const isMerge = document.getElementById('chkMergeMr') && document.getElementById('chkMergeMr').checked;
+                
                 if(isMerge) {
                     const mrType = document.querySelector('input[name="mrType"]:checked')?.value;
-                    if(mrType === 'phone') rowData[3] = '1'; if(mrType === 'patient') rowData[4] = '1';
+                    if(mrType === 'phone') rowData[3] = '1';
+                    if(mrType === 'patient') rowData[4] = '1';
                     let allergyNote = "";
                     if(document.getElementById('mrAllergyCheck').checked) {
-                        rowData[6] = '1'; allergyNote = "แพ้: " + document.getElementById('mrAllergyDetail').value;
+                        rowData[6] = '1';
+                        allergyNote = "แพ้: " + document.getElementById('mrAllergyDetail').value;
                     }
                     rowData[10] = mrSources.map(s => s.place).filter(p => p).join(', ');
                     let allDrugs = []; mrSources.forEach(s => { s.drugs.filter(d => d.trim() !== '').forEach(d => allDrugs.push(d)); });
@@ -1615,7 +1341,9 @@
                     let procStr = document.getElementById('procedureManual').value;
                     rowData[11] = mrDrugsStr ? (mrDrugsStr + " | หัตถการ: " + procStr) : procStr;
                 } else {
-                    rowData[5] = '1'; rowData[9] = preopCalculatedNotes.join(' | '); rowData[11] = document.getElementById('procedureManual').value; 
+                    rowData[5] = '1'; 
+                    rowData[9] = preopCalculatedNotes.join(' | '); 
+                    rowData[11] = document.getElementById('procedureManual').value; 
                 }
             }
             else if (currentTab === 'HIV') {
@@ -1628,7 +1356,12 @@
                     if(document.getElementById('chkLiver').checked) { referDetails.push(`ตับ มี ${document.getElementById('txtLiver').value}`); rowData[15] = '1'; }
                     if(document.getElementById('chkCkd').checked) { referDetails.push(`CKD มี ${document.getElementById('txtCkd').value}`); rowData[16] = '1'; }
                     if(document.getElementById('chkAnemia').checked) { referDetails.push(`CBC มี ${document.getElementById('txtAnemia').value}`); rowData[17] = '1'; }
-                    if(document.getElementById('chkOtherRefer').checked) { let otherVal = document.getElementById('txtOtherRefer').value; if(otherVal) rowData[7] = otherVal; }
+                    
+                    if(document.getElementById('chkOtherRefer').checked) {
+                        let otherVal = document.getElementById('txtOtherRefer').value;
+                        if(otherVal) rowData[7] = otherVal;
+                    }
+
                     if(referDetails.length > 0) { rowData[6] = referDetails.join(', '); }
                 }
             }
@@ -1636,10 +1369,13 @@
                 const lvef = document.getElementById('hfLvef').value;
                 rowData[2] = lvef ? lvef : ''; // Col D
                 
-                const hasRaasi = document.getElementById('chk_hf_raasi').checked; const hasBb = document.getElementById('chk_hf_bb').checked;
-                const hasMra = document.getElementById('chk_hf_mra').checked; const hasSglt2i = document.getElementById('chk_hf_sglt2i').checked;
+                const hasRaasi = document.getElementById('chk_hf_raasi').checked;
+                const hasBb = document.getElementById('chk_hf_bb').checked;
+                const hasMra = document.getElementById('chk_hf_mra').checked;
+                const hasSglt2i = document.getElementById('chk_hf_sglt2i').checked;
                 
-                let gdmtCount = 0; let missingGdmt = [];
+                let gdmtCount = 0;
+                let missingGdmt = [];
                 if (hasRaasi) gdmtCount++; else missingGdmt.push('RAASi');
                 if (hasBb) gdmtCount++; else missingGdmt.push('Beta-blocker');
                 if (hasMra) gdmtCount++; else missingGdmt.push('MRA');
@@ -1648,13 +1384,23 @@
                 rowData[3] = gdmtCount; // Col E
                 rowData[4] = missingGdmt.length > 0 ? missingGdmt.join(', ') : '-'; // Col F
                 
-                let nyha = document.getElementById('hfNyha').options[document.getElementById('hfNyha').selectedIndex].text; nyha = nyha === '-- เลือก --' ? '-' : nyha;
-                const sbp = document.getElementById('hfSbp').value || '-'; const dbp = document.getElementById('hfDbp').value || '-';
-                const hr = document.getElementById('hfHr').value || '-'; const egfr = document.getElementById('hfEgfr').value || '-'; const potassium = document.getElementById('hfK').value || '-';
+                let nyha = document.getElementById('hfNyha').options[document.getElementById('hfNyha').selectedIndex].text;
+                nyha = nyha === '-- เลือก --' ? '-' : nyha;
+                const sbp = document.getElementById('hfSbp').value || '-';
+                const dbp = document.getElementById('hfDbp').value || '-';
+                const hr = document.getElementById('hfHr').value || '-';
+                const egfr = document.getElementById('hfEgfr').value || '-';
+                const potassium = document.getElementById('hfK').value || '-';
 
                 let shortMeds = [];
-                if(hasRaasi) { let val = document.getElementById('sel_hf_raasi_drug').value; if(val === 'arni') shortMeds.push('Entresto'); else if(val === 'enalapril') shortMeds.push('Enalapril'); else if(val === 'losartan') shortMeds.push('Losartan'); }
-                if(hasBb) { let val = document.getElementById('sel_hf_bb_drug').value; if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); else if(val === 'carvedilol') shortMeds.push('Carvedilol'); else if(val === 'metoprolol') shortMeds.push('Metoprolol'); }
+                if(hasRaasi) {
+                    let val = document.getElementById('sel_hf_raasi_drug').value;
+                    if(val === 'arni') shortMeds.push('Entresto'); else if(val === 'enalapril') shortMeds.push('Enalapril'); else if(val === 'losartan') shortMeds.push('Losartan');
+                }
+                if(hasBb) {
+                    let val = document.getElementById('sel_hf_bb_drug').value;
+                    if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); else if(val === 'carvedilol') shortMeds.push('Carvedilol'); else if(val === 'metoprolol') shortMeds.push('Metoprolol');
+                }
                 if(hasMra) { if(document.getElementById('sel_hf_mra_drug').value === 'spironolactone') shortMeds.push('Spironolactone'); }
                 if(hasSglt2i) shortMeds.push('Empagliflozin');
                 if(document.getElementById('chk_hf_iva').checked) shortMeds.push('Ivabradine');
@@ -1680,22 +1426,6 @@
                 let summary = `LVEF: ${lvef ? lvef + '%' : '-'} | NYHA: ${nyha} | BP: ${sbp}/${dbp} mmHg | HR: ${hr} bpm | eGFR: ${egfr} | K: ${potassium} | Meds: ${medsString}${interventionText}`;
                 rowData[6] = summary.replace(/\s+/g, ' ').trim(); // Col H
             }
-            else if (currentTab === 'ASTHMA') {
-                rowData[2] = document.querySelector('input[name="resp_indication"]:checked')?.value || ''; // D: Indication
-                rowData[3] = document.getElementById('resp_er').value; // E: ER
-                rowData[4] = document.getElementById('resp_admit').value; // F: Admit
-                rowData[5] = document.getElementById('resp_new_case').checked ? '1' : '0'; // G: New Case
-                rowData[6] = document.getElementById('resp_drp').value; // H: DRP
-                rowData[7] = document.getElementById('resp_score').value; // I: Score
-                rowData[8] = document.getElementById('resp_symp_reliever').checked ? '1' : '0'; // J
-                rowData[9] = document.getElementById('resp_symp_exac').checked ? '1' : '0'; // K
-                rowData[10] = document.getElementById('resp_symp_night').checked ? '1' : '0'; // L
-                rowData[11] = document.getElementById('resp_symp_limit').checked ? '1' : '0'; // M
-                let devSel = document.getElementById('resp_device_select');
-                rowData[12] = devSel.selectedIndex > 0 ? devSel.options[devSel.selectedIndex].text : ''; // N: Device Name
-                rowData[13] = document.getElementById('resp_score_badge').innerText; // O: % Technique
-                rowData[14] = document.getElementById('outputPmk').value; // Full note for reference
-            }
             return rowData;
         }
 
@@ -1718,8 +1448,9 @@
             btn.disabled = true;
 
             let targetClinicName = currentTab;
-            if (currentTab === 'HF') targetClinicName = 'HF clinic';
-            else if (currentTab === 'ASTHMA') targetClinicName = 'Asthma COPD';
+            if (currentTab === 'HF') {
+                targetClinicName = 'HF clinic'; // ระบุชื่อแท็บชีทปลายทางให้ตรงเป๊ะ
+            }
 
             fetch(SCRIPT_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain', },
@@ -1736,13 +1467,18 @@
         function printOpdCard() {
             const ptName = document.getElementById('ptName').value || '-';
             const ptHn = document.getElementById('hn').value || '-';
+            
             document.getElementById('printName').innerText = `${ptName} HN: ${ptHn}`;
             document.getElementById('printNote').innerText = document.getElementById('outputPmk').value || 'ไม่มีข้อมูล';
             
             const printDiv = document.getElementById('printArea');
-            printDiv.classList.remove('hidden'); document.body.classList.add('print-mode-opd-a5');
+            printDiv.classList.remove('hidden');
+            document.body.classList.add('print-mode-opd-a5');
+            
             window.print();
-            document.body.classList.remove('print-mode-opd-a5'); printDiv.classList.add('hidden');
+            
+            document.body.classList.remove('print-mode-opd-a5');
+            printDiv.classList.add('hidden');
         }
 
         function updateOpdStickerPreview() {
@@ -1758,7 +1494,8 @@
             document.getElementById('prevStkNote').innerText = noteText;
 
             const previewBox = document.getElementById('opdStickerPreview');
-            previewBox.style.width = `${stkW}mm`; previewBox.style.fontSize = `${stkPt}pt`;
+            previewBox.style.width = `${stkW}mm`;
+            previewBox.style.fontSize = `${stkPt}pt`;
         }
 
         function executePrintOpdSticker() {
@@ -1766,25 +1503,239 @@
             const ptHn = document.getElementById('hn').value || '-';
             const noteText = document.getElementById('outputPmk').value || 'ไม่มีข้อมูล';
 
-            const stkX = document.getElementById('stkX').value || 0; const stkY = document.getElementById('stkY').value || 0;
-            const stkW = document.getElementById('stkW').value || 80; const stkPt = document.getElementById('stkPt').value || 11;
+            const stkX = document.getElementById('stkX').value || 0;
+            const stkY = document.getElementById('stkY').value || 0;
+            const stkW = document.getElementById('stkW').value || 80;
+            const stkPt = document.getElementById('stkPt').value || 11;
 
             const printArea = document.getElementById('printStickerArea');
-            document.getElementById('stkPrintName').innerText = `${ptName}`; document.getElementById('stkPrintHn').innerText = `${ptHn}`; document.getElementById('stkPrintNote').innerText = noteText;
+            document.getElementById('stkPrintName').innerText = `${ptName}`;
+            document.getElementById('stkPrintHn').innerText = `${ptHn}`;
+            document.getElementById('stkPrintNote').innerText = noteText;
 
-            printArea.style.position = 'absolute'; printArea.style.left = `${stkX}mm`; printArea.style.top = `${stkY}mm`;
-            printArea.style.width = `${stkW}mm`; printArea.style.fontSize = `${stkPt}pt`;
-            printArea.style.fontFamily = "'Prompt', sans-serif"; printArea.style.color = "black"; printArea.style.lineHeight = "1.3";
+            printArea.style.position = 'absolute';
+            printArea.style.left = `${stkX}mm`;
+            printArea.style.top = `${stkY}mm`;
+            printArea.style.width = `${stkW}mm`;
+            printArea.style.fontSize = `${stkPt}pt`;
+            printArea.style.fontFamily = "'Prompt', sans-serif";
+            printArea.style.color = "black";
+            printArea.style.lineHeight = "1.3";
             
-            printArea.classList.remove('hidden'); document.body.classList.add('print-mode-opd-stk');
+            printArea.classList.remove('hidden'); 
+            document.body.classList.add('print-mode-opd-stk');
+            
             window.print();
-            document.body.classList.remove('print-mode-opd-stk'); printArea.classList.add('hidden'); 
+            
+            document.body.classList.remove('print-mode-opd-stk');
+            printArea.classList.add('hidden'); 
         }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
-            toast.innerText = msg; toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+        }
+
+        // ==========================================
+        //         WARFARIN SYSTEM LOGIC
+        // ==========================================
+        function setupWarfarinAccess() {
+            const codeInput = document.getElementById('accessCode');
+            const remCheck = document.getElementById('rememberCode');
+            const msg = document.getElementById('gateMsg');
+            const fetchBtn = document.getElementById('fetchBtn');
+
+            function checkAccess() {
+                const ok = (codeInput.value.trim() === ACCESS_CODE);
+                fetchBtn.disabled = !ok;
+                if(ok) {
+                    msg.innerHTML = '<i class="fa-solid fa-circle-check"></i> พร้อมดึงข้อมูล';
+                    msg.className = 'text-green-600 text-sm ml-3 font-bold';
+                    if(remCheck.checked) sessionStorage.setItem('access_ok','1');
+                } else {
+                    msg.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> รหัสไม่ถูกต้อง';
+                    msg.className = 'text-red-500 text-sm ml-3 font-bold';
+                    sessionStorage.removeItem('access_ok');
+                }
+                return ok;
+            }
+
+            if(sessionStorage.getItem('access_ok') === '1') {
+                codeInput.value = ACCESS_CODE;
+                remCheck.checked = true;
+                checkAccess();
+            }
+
+            codeInput.addEventListener('input', checkAccess);
+            remCheck.addEventListener('change', checkAccess);
+
+            document.getElementById('fetchBtn').addEventListener('click', doFetch);
+            document.getElementById('searchWarfarinNo').addEventListener('keydown', e => { if(e.key === 'Enter') doFetch(); });
+            
+            // Warfarin Print Sticker
+            document.getElementById('printBtn').addEventListener('click', () => {
+                document.body.classList.add('print-mode-warfarin-stk');
+                window.print();
+                document.body.classList.remove('print-mode-warfarin-stk');
+            });
+
+            document.querySelectorAll('input[name="size"]').forEach(r => {
+                r.addEventListener('change', () => {
+                    const box = document.getElementById('sticker');
+                    box.classList.remove('size-4_5', 'size-6_0');
+                    box.classList.add('size-' + r.value);
+                });
+            });
+
+            document.getElementById('btnInr23').addEventListener('click', () => document.getElementById('stk-inr').textContent='2-3');
+            document.getElementById('btnInr2535').addEventListener('click', () => document.getElementById('stk-inr').textContent='2.5-3.5');
+            document.getElementById('btnAll').addEventListener('click', () => {
+                const ex = document.getElementById('extraArea');
+                const t = ex.textContent.trim();
+                ex.textContent = t ? (t + ' ALL:') : 'ALL:';
+                const sel = window.getSelection(); const range = document.createRange();
+                range.selectNodeContents(ex); range.collapse(false);
+                sel.removeAllRanges(); sel.addRange(range); ex.focus();
+            });
+            
+            // Warfarin Form Submission
+            const wfForm = document.getElementById('warfarinForm');
+            wfForm.addEventListener('submit', e => {
+                e.preventDefault();
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementById('loadingSpinner').style.display = 'block';
+                const data = Object.fromEntries(new FormData(wfForm).entries());
+                fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data), headers: {"Content-Type": "text/plain"} })
+                .then(res => res.json())
+                .then(res => {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    if (res.result === 'success') {
+                        document.getElementById('resultArea').classList.remove('hidden');
+                        document.getElementById('showNumber').innerText = res.warfarinId;
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + res.error);
+                        document.getElementById('submitBtn').style.display = 'block';
+                    }
+                }).catch(err => {
+                    alert('การเชื่อมต่อขัดข้อง');
+                    document.getElementById('submitBtn').style.display = 'block';
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                });
+            });
+        }
+
+        async function fetchByAppsScript(no) {
+            const url = new URL(SCRIPT_URL); 
+            url.searchParams.set('warfarin', String(no).trim());
+            const res = await fetch(url.toString(), {cache:'no-store'});
+            if(!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            if(!data || (!data.warfarinNo && !data.fullName)) throw new Error('ไม่พบข้อมูล');
+            return data;
+        }
+
+        async function doFetch() {
+            const wnoInput = document.getElementById('searchWarfarinNo');
+            const btn = document.getElementById('fetchBtn');
+            const no = wnoInput.value.trim();
+            if(!no) { alert('กรุณาใส่เลข Warfarin No'); return; }
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังดึง...'; 
+            btn.disabled = true;
+            
+            try { 
+                const d = await fetchByAppsScript(no); 
+                document.getElementById('stk-fullName').textContent = d.fullName || '—';
+                document.getElementById('stk-hn').textContent = d.hn || '—';
+                document.getElementById('stk-wfno').textContent = d.warfarinNo || '—';
+                document.getElementById('stk-indication').textContent = d.indication || '—';
+                document.getElementById('stk-inr').textContent = d.inr || '—';
+            } catch(e) { 
+                alert('ดึงข้อมูลไม่สำเร็จ: ' + e.message); 
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล'; 
+                btn.disabled = false;
+            }
+        }
+
+        // Warfarin Pending logic
+        function loadPending() {
+            const container = document.getElementById('pendingContainer');
+            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-blue-500"></i></div>';
+            fetch(SCRIPT_URL + "?action=getPending")
+            .then(res => res.json())
+            .then(data => renderPendingCards(data))
+            .catch(err => container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded">โหลดข้อมูลผิดพลาด</div>');
+        }
+
+        function forceRefreshCache() {
+            const btn = document.getElementById('forceRefreshBtn');
+            const container = document.getElementById('pendingContainer');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังอัปเดต...'; btn.disabled = true;
+            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-yellow-500"></i><p class="mt-2 text-sm text-yellow-700">กำลังซิงค์ข้อมูลตรงจากระบบ...</p></div>';
+
+            fetch(SCRIPT_URL + "?action=forceRefreshCache")
+            .then(res => res.json())
+            .then(res => {
+                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; btn.disabled = false;
+                if(res.result === 'success') renderPendingCards(res.data);
+            }).catch(err => {
+                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; btn.disabled = false;
+                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded">โหลดข้อมูลผิดพลาด โปรดลองใหม่</div>';
+            });
+        }
+
+        function renderPendingCards(data) {
+            const container = document.getElementById('pendingContainer');
+            container.innerHTML = '';
+            if(data.length === 0) {
+                container.innerHTML = '<div class="bg-white border border-gray-200 text-center py-8 text-gray-500 rounded-lg">ไม่มีคิวรออนุมัติจาก LINE ครับ</div>';
+                return;
+            }
+            data.forEach(item => {
+                const card = `
+                <div class="pending-card p-4 shadow-sm border border-yellow-200" id="card-${item.id}">
+                    <form id="form-${item.id}">
+                        <input type="hidden" name="id" value="${item.id}">
+                        <div class="grid grid-cols-2 gap-3 mb-2">
+                            <div><label class="block text-xs font-bold text-gray-600">HN</label><input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="hn" value="${item.hn}"></div>
+                            <div><label class="block text-xs font-bold text-gray-600">เพศ</label><select class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="sex"><option value="1" ${item.sex=='1'?'selected':''}>ชาย</option><option value="2" ${item.sex=='2'?'selected':''}>หญิง</option></select></div>
+                        </div>
+                        <div class="mb-2"><label class="block text-xs font-bold text-gray-600">ชื่อ-นามสกุล</label><input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="name" value="${item.name}"></div>
+                        <div class="grid grid-cols-3 gap-3 mb-3">
+                            <div><label class="block text-xs font-bold text-gray-600">อายุ</label><input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="age" value="${item.age}"></div>
+                            <div><label class="block text-xs font-bold text-gray-600">Indication</label><input type="text" class="w-full rounded border-blue-300 border-2 px-2 py-1 text-sm font-bold text-blue-700" name="indication" value="${item.indication}"></div>
+                            <div><label class="block text-xs font-bold text-gray-600">Goal</label><input type="text" class="w-full rounded border-red-300 border-2 px-2 py-1 text-sm font-bold text-red-700" name="goal" value="${item.goal}"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" class="flex-1 bg-white border border-red-300 text-red-600 px-3 py-1.5 rounded hover:bg-red-50 text-sm font-bold" onclick="actionPending('${item.id}', 'reject')"><i class="fa-solid fa-xmark mr-1"></i> ทิ้ง</button>
+                            <button type="button" class="flex-1 bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm font-bold" onclick="actionPending('${item.id}', 'approve')"><i class="fa-solid fa-check mr-1"></i> อนุมัติ</button>
+                        </div>
+                    </form>
+                    <div id="res-${item.id}" class="hidden bg-green-100 text-green-800 text-center font-bold p-2 mt-3 rounded"></div>
+                </div>`;
+                container.innerHTML += card;
+            });
+        }
+
+        function actionPending(id, actionType) {
+            const form = document.getElementById('form-' + id);
+            const data = Object.fromEntries(new FormData(form).entries());
+            data.action = actionType;
+            form.style.opacity = '0.4'; form.style.pointerEvents = 'none';
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data), headers: {"Content-Type": "text/plain"} })
+            .then(res => res.json())
+            .then(res => {
+                if(res.result === 'success') {
+                    if(actionType === 'approve') {
+                        document.getElementById('res-' + id).classList.remove('hidden');
+                        document.getElementById('res-' + id).innerText = "ออกเลข: " + res.warfarinId;
+                        setTimeout(() => document.getElementById('card-' + id).remove(), 3000);
+                    } else { document.getElementById('card-' + id).remove(); }
+                } else { alert('Error: ' + res.error); form.style.opacity = '1'; form.style.pointerEvents = 'auto'; }
+            });
         }
 
         // Init Data
