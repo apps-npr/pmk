@@ -84,6 +84,7 @@
         .sticker .extra { margin-top: 4px; min-height: 18px; padding-top: 2px; border-top: 1px dashed #e2e8f0; outline: none;}
         .sticker .extra:empty:before { content: attr(data-placeholder); color: #9aa3b2; }
 
+        /* Spinner CSS */
         .spinner-border { display: inline-block; width: 2rem; height: 2rem; vertical-align: text-bottom; border: .25em solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spinner-border .75s linear infinite; }
         @keyframes spinner-border { to { transform: rotate(360deg); } }
 
@@ -132,6 +133,7 @@
             body.print-mode-opd-stk #printStickerArea { display: block !important; }
         }
         
+        /* ตั้งค่าหน้ากระดาษ */
         @page { size: auto; margin: 0; }
         @page opdPageA5 { size: A5 landscape; margin: 0; }
         body.print-mode-opd-a5 { page: opdPageA5; }
@@ -158,11 +160,16 @@
         <option value="ATV/r (Atazanavir 300mg/Ritonavir 100mg)"></option>
         <option value="LPV/r (LPV 200mg+Ritonavir 50mg)"></option>
         <option value="DRV/r (Darunavir 600mg/Ritonavir 100mg)"></option>
-        <option value="TDF 300mg"></option><option value="TAF 25mg"></option>
-        <option value="3TC 150mg"></option><option value="3TC 300mg"></option>
-        <option value="DTG 50mg"></option><option value="AZT 100mg"></option>
-        <option value="AZT 300mg"></option><option value="ABC 300mg"></option>
-        <option value="Ritonavir 100mg"></option><option value="RPV 25mg"></option>
+        <option value="TDF 300mg"></option>
+        <option value="TAF 25mg"></option>
+        <option value="3TC 150mg"></option>
+        <option value="3TC 300mg"></option>
+        <option value="DTG 50mg"></option>
+        <option value="AZT 100mg"></option>
+        <option value="AZT 300mg"></option>
+        <option value="ABC 300mg"></option>
+        <option value="Ritonavir 100mg"></option>
+        <option value="RPV 25mg"></option>
     </datalist>
 
     <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden" id="mainAppContainer">
@@ -198,9 +205,16 @@
                 <button onclick="switchTab('PREOP')" id="tab-PREOP" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center">2. Pre-OP</button>
                 <button onclick="switchTab('ADR')" id="tab-ADR" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm">3. ADR/SE</button>
                 <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm">4. Clinic HIV</button>
-                <button onclick="switchTab('WARFARIN')" id="tab-WARFARIN" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-red-50 text-red-700 border-red-200 hover:bg-red-100"><i class="fa-solid fa-capsules mr-1"></i> 5. Warfarin</button>
-                <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100"><i class="fa-solid fa-heart-pulse mr-1"></i> 6. HF</button>
-                <button onclick="switchTab('ASTHMA')" id="tab-ASTHMA" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100"><i class="fa-solid fa-lungs mr-1"></i> 7. Asthma/COPD</button>
+                
+                <button onclick="switchTab('WARFARIN')" id="tab-WARFARIN" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-red-50 text-red-700 border-red-200 hover:bg-red-100">
+                    <i class="fa-solid fa-capsules mr-1"></i> 5. Warfarin
+                </button>
+                <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
+                    <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
+                </button>
+                <button onclick="switchTab('ASTHMA')" id="tab-ASTHMA" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100">
+                    <i class="fa-solid fa-lungs mr-1"></i> 7. Asthma/COPD
+                </button>
             </div>
         </div>
 
@@ -216,21 +230,42 @@
                         <label class="inline-flex items-center"><input type="radio" name="mrType" value="patient" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-2">จากการดูซองยา / สอบถามคนไข้</span></label>
                     </div>
                 </div>
+
                 <div id="mrSourcesContainer" class="space-y-4 mb-2"></div>
-                <button onclick="addMrSource()" class="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center mb-4 w-full justify-center border border-indigo-200 shadow-sm"><svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>เพิ่มสถานที่รับยา (กรณีรับยามาจากหลายที่)</button>
+                
+                <button onclick="addMrSource()" class="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center mb-4 w-full justify-center border border-indigo-200 shadow-sm">
+                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    เพิ่มสถานที่รับยา (กรณีรับยามาจากหลายที่)
+                </button>
+
                 <div class="bg-red-50 p-4 rounded-lg border border-red-100">
-                    <label class="inline-flex items-center mb-2"><input type="checkbox" id="mrAllergyCheck" class="form-checkbox text-red-600 rounded" onchange="toggleAllergyInput(); generateOutput()"><span class="ml-2 font-medium text-red-700">มีประวัติแพ้ยา</span></label>
+                    <label class="inline-flex items-center mb-2">
+                        <input type="checkbox" id="mrAllergyCheck" class="form-checkbox text-red-600 rounded" onchange="toggleAllergyInput(); generateOutput()">
+                        <span class="ml-2 font-medium text-red-700">มีประวัติแพ้ยา</span>
+                    </label>
                     <input type="text" id="mrAllergyDetail" placeholder="ระบุ ชื่อยา/อาการที่แพ้ เช่น Amoxicillin/ผื่นคัน" class="w-full rounded-lg border-gray-300 border px-3 py-2 hidden" oninput="generateOutput()">
                 </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label class="block text-sm font-medium text-gray-700 mb-1">สมุนไพร / อาหารเสริม</label><input type="text" id="mrHerb" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เว้นว่างไว้หากไม่มี" oninput="generateOutput()"></div>
-                    <div><label class="block text-sm font-medium text-gray-700 mb-1">ข้อความเพิ่มเติม (ก่อนลงชื่อ)</label><input type="text" id="mrExtraNote" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="Note อื่นๆ..." oninput="generateOutput()"></div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">สมุนไพร / อาหารเสริม</label>
+                        <input type="text" id="mrHerb" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เว้นว่างไว้หากไม่มี" oninput="generateOutput()">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ข้อความเพิ่มเติม (ก่อนลงชื่อ)</label>
+                        <input type="text" id="mrExtraNote" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="Note อื่นๆ..." oninput="generateOutput()">
+                    </div>
                 </div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก</label><input type="text" id="mrPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()"></div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก</label>
+                    <input type="text" id="mrPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                </div>
             </div>
 
             <!-- 2. Pre-OP Form -->
             <div id="form-PREOP" class="space-y-6 hidden">
+                
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                     <h4 class="font-bold text-yellow-800 mb-2"><i class="fa-solid fa-clipboard-question"></i> Checklist: อย่าลืมถามคนไข้!</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
@@ -251,19 +286,35 @@
 
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
                     <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">1. ข้อมูลการผ่าตัด (Surgery Info)</h3>
-                    <div class="mb-4 bg-gray-50 p-2 rounded flex justify-center"><img src="risk.png" alt="ตารางความเสี่ยงรวม" class="rounded max-w-full h-auto cursor-zoom-in shadow-sm" style="max-height: 150px;" onclick="openModal(this.src)" onerror="this.style.display='none'"></div>
+                    
+                    <div class="mb-4 bg-gray-50 p-2 rounded flex justify-center">
+                        <img src="risk.png" alt="ตารางความเสี่ยงรวม" class="rounded max-w-full h-auto cursor-zoom-in shadow-sm" style="max-height: 150px;" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                    </div>
+
                     <div class="mb-4 relative">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ค้นหาหัตถการ <i class="fa-solid fa-circle-info text-blue-500 cursor-pointer ml-1" onclick="toggleInfo('bleed-risk-info')" title="คลิกดูตาราง"></i></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            ค้นหาหัตถการ <i class="fa-solid fa-circle-info text-blue-500 cursor-pointer ml-1" onclick="toggleInfo('bleed-risk-info')" title="คลิกดูตาราง"></i>
+                        </label>
                         <input type="text" id="procedureSearch" class="w-full rounded-lg border-gray-300 border px-3 py-2 pl-10" placeholder="พิมพ์ชื่อหัตถการ... (เช่น ต้อกระจก, ส่องกล้อง, ถอนฟัน)" autocomplete="off">
                         <i class="fa-solid fa-search absolute left-3 top-9 text-gray-400"></i>
                         <div id="procedureListContainer" class="drug-list-container hidden"></div>
                     </div>
-                    <div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-1">หัตถการที่ทำ (ระบุเพื่อลง PMK)</label><input type="text" id="procedureManual" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" placeholder="ระบุชื่อหัตถการ" oninput="generateOutput()"></div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">หัตถการที่ทำ (ระบุเพื่อลง PMK)</label>
+                        <input type="text" id="procedureManual" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" placeholder="ระบุชื่อหัตถการ" oninput="generateOutput()">
+                    </div>
+
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">ความเสี่ยงเลือดออก (Bleeding Risk)</label>
                         <select id="bleedingRisk" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" onchange="generateOutput()">
-                            <option value="" disabled selected>-- เลือกความเสี่ยง --</option><option value="minimal">Minimal Risk (เสี่ยงน้อยมาก)</option><option value="low-mod">Low/Moderate Risk (เสี่ยงปานกลาง)</option><option value="high">High Risk (เสี่ยงสูง)</option><option value="neuro-spine">Neuroaxial/Critical Site (ห้ามเลือดออกเด็ดขาด)</option>
+                            <option value="" disabled selected>-- เลือกความเสี่ยง --</option>
+                            <option value="minimal">Minimal Risk (เสี่ยงน้อยมาก)</option>
+                            <option value="low-mod">Low/Moderate Risk (เสี่ยงปานกลาง)</option>
+                            <option value="high">High Risk (เสี่ยงสูง)</option>
+                            <option value="neuro-spine">Neuroaxial/Critical Site (ห้ามเลือดออกเด็ดขาด)</option>
                         </select>
+                        
                         <div id="bleed-risk-info" class="info-box hidden mt-2">
                             <h4 class="font-bold mb-2">Procedural Bleeding Risk</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -272,11 +323,19 @@
                                 <div class="risk-category-group"><h5 class="risk-title high">High Risk</h5><ul class="risk-list"><li>Major Abdominal</li><li>Major Ortho</li><li>CABG</li></ul></div>
                                 <div class="risk-category-group"><h5 class="risk-title critical">Critical Site</h5><ul class="risk-list"><li>Intracranial</li><li>Spinal</li><li>Posterior eye</li></ul></div>
                             </div>
+                            <img src="table_bleeding_risk.png" class="mt-2 w-full rounded cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'">
                         </div>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div><label class="block text-sm font-medium text-gray-700 mb-1">การทำงานของไต (CrCl) <span class="text-red-500 text-xs">*สำคัญ</span></label><input type="number" id="renalFunction" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="ml/min (Default 90)" oninput="processResults()"></div>
-                        <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่ผ่าตัด</label><input type="text" id="surgeryDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()"></div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">การทำงานของไต (CrCl) <span class="text-red-500 text-xs">*สำคัญ</span></label>
+                            <input type="number" id="renalFunction" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="ml/min (Default 90)" oninput="processResults()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">วันที่ผ่าตัด</label>
+                            <input type="text" id="surgeryDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()">
+                        </div>
                     </div>
                 </div>
 
@@ -287,7 +346,9 @@
                         <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400"></i>
                         <div id="drugListContainer" class="drug-list-container hidden"></div>
                     </div>
-                    <div id="selectedDrugsArea" class="hidden bg-gray-50 p-3 rounded-lg border border-gray-200"><div id="selectedTags" class="flex flex-wrap"></div></div>
+                    <div id="selectedDrugsArea" class="hidden bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <div id="selectedTags" class="flex flex-wrap"></div>
+                    </div>
                 </div>
 
                 <div id="step-3" class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hidden">
@@ -297,39 +358,76 @@
 
                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-100" onclick="toggleInfo('risk-advice-content')">
                     <h3 class="font-medium text-sm text-gray-700"><i class="fa-solid fa-heart-pulse"></i> ข้อมูลเพิ่มเติม: RCRI Score <i class="fa-solid fa-chevron-down ml-1"></i></h3>
-                    <div id="risk-advice-content" class="hidden mt-3 text-xs text-gray-600"><img src="rcri.png" alt="RCRI Score" class="w-full max-w-sm rounded mt-2 cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'"></div>
+                    <div id="risk-advice-content" class="hidden mt-3 text-xs text-gray-600">
+                        <img src="rcri.png" alt="RCRI Score" class="w-full max-w-sm rounded mt-2 cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                    </div>
                 </div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก Pre-OP</label><input type="text" id="preopPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()"></div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก Pre-OP</label>
+                    <input type="text" id="preopPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                </div>
+                
                 <div id="resultContent" class="hidden"></div>
             </div>
 
             <!-- 3. ADR Form -->
             <div id="form-ADR" class="space-y-4 hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label class="block text-sm font-medium text-gray-700 mb-1">ผู้ป่วยรับยาจาก</label><input type="text" id="adrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น รพ.นพรัตนฯ" oninput="generateOutput()"></div>
-                    <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา</label><input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ เช่น 18/09/69" oninput="generateOutput()"></div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ป่วยรับยาจาก</label>
+                        <input type="text" id="adrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น รพ.นพรัตนฯ" oninput="generateOutput()">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา</label>
+                        <input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ เช่น 18/09/69" oninput="generateOutput()">
+                    </div>
                 </div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1">รายการยา</label><input type="text" id="adrDrug" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น Simvastatin 20mg" oninput="generateOutput()"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1">ประเมินว่าเป็นสาเหตุจากยาไหม (ระบุรายละเอียด)</label><input type="text" id="adrAssessment" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น ปวดกล้ามเนื้อ ตั้งแต่วันที่... ไม่ค่อยสงสัย" oninput="generateOutput()"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-1">ผู้ประเมิน</label><input type="text" id="adrPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()"></div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">รายการยา</label>
+                    <input type="text" id="adrDrug" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น Simvastatin 20mg" oninput="generateOutput()">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ประเมินว่าเป็นสาเหตุจากยาไหม (ระบุรายละเอียด)</label>
+                    <input type="text" id="adrAssessment" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น ปวดกล้ามเนื้อ ตั้งแต่วันที่... ไม่ค่อยสงสัย" oninput="generateOutput()">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ประเมิน</label>
+                    <input type="text" id="adrPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                </div>
             </div>
 
             <!-- 4. HIV Form -->
             <div id="form-HIV" class="space-y-6 hidden">
+                
                 <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm mb-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">BP (ความดันโลหิต)</label><input type="text" id="hivBp" placeholder="เช่น 120/80" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">BP (ความดันโลหิต)</label>
+                    <input type="text" id="hivBp" placeholder="เช่น 120/80" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                 </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
                         <label class="block text-sm font-medium text-gray-700 mb-2">CD4 (%CD4)</label>
-                        <div class="flex gap-2 mb-2"><input type="text" id="hivCd4Val" placeholder="ค่า CD4 (เช่น 200)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"><input type="text" id="hivCd4Percent" placeholder="%CD4 (เช่น 25.2)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
+                        <div class="flex gap-2 mb-2">
+                            <input type="text" id="hivCd4Val" placeholder="ค่า CD4 (เช่น 200)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                            <input type="text" id="hivCd4Percent" placeholder="%CD4 (เช่น 25.2)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        </div>
                         <input type="text" id="hivCd4Date" placeholder="วันที่เจาะ (วว/ดด/พศ)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()">
                     </div>
+                    
                     <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Viral Load</label>
                         <div class="flex gap-2 mb-2">
-                            <select id="hivVlSelect" class="rounded-lg border-gray-300 border px-3 py-2 flex-grow" onchange="toggleVlInput(); generateOutput()"><option value="">-- เลือกค่า VL --</option><option value="<20log<1.3"><20log<1.3</option><option value="other">อื่นๆ (ระบุเอง)</option></select>
-                            <div id="hivVlCustomContainer" class="hidden flex gap-2 w-full md:w-3/5"><input type="text" id="hivVlVal" placeholder="ค่า" class="w-1/2 rounded-lg border-gray-300 border px-2 py-2 text-center" oninput="generateOutput()"><span class="self-center font-semibold text-gray-500">log</span><input type="text" id="hivVlLog" placeholder="log" class="w-1/2 rounded-lg border-gray-300 border px-2 py-2 text-center" oninput="generateOutput()"></div>
+                            <select id="hivVlSelect" class="rounded-lg border-gray-300 border px-3 py-2 flex-grow" onchange="toggleVlInput(); generateOutput()">
+                                <option value="">-- เลือกค่า VL --</option>
+                                <option value="<20log<1.3"><20log<1.3</option>
+                                <option value="other">อื่นๆ (ระบุเอง)</option>
+                            </select>
+                            <div id="hivVlCustomContainer" class="hidden flex gap-2 w-full md:w-3/5">
+                                <input type="text" id="hivVlVal" placeholder="ค่า (เช่น 40)" class="w-1/2 rounded-lg border-gray-300 border px-2 py-2 text-center" oninput="generateOutput()">
+                                <span class="self-center font-semibold text-gray-500">log</span>
+                                <input type="text" id="hivVlLog" placeholder="log (เช่น 1.45)" class="w-1/2 rounded-lg border-gray-300 border px-2 py-2 text-center" oninput="generateOutput()">
+                            </div>
                         </div>
                         <input type="text" id="hivVlDate" placeholder="วันที่เจาะ (วว/ดด/พศ)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()">
                     </div>
@@ -339,21 +437,43 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-2">
                         <label class="block text-sm font-semibold text-indigo-900">เพิ่มผล Lab (ค่ามาตรฐาน รพ.)</label>
                         <div class="flex items-center text-sm bg-white px-2 py-1.5 rounded border border-indigo-200">
-                            <span class="mr-2 text-gray-600">วันที่ Lab หลัก:</span><select id="hivLabDateRef" class="border-none text-indigo-700 focus:ring-0 cursor-pointer font-medium" onchange="toggleLabDateCustom(); generateOutput()"><option value="cd4">ใช้วันที่เดียวกับ CD4</option><option value="vl">ใช้วันที่เดียวกับ VL</option><option value="custom">ระบุวันที่เอง</option></select>
+                            <span class="mr-2 text-gray-600">วันที่ Lab หลัก:</span>
+                            <select id="hivLabDateRef" class="border-none text-indigo-700 focus:ring-0 cursor-pointer font-medium" onchange="toggleLabDateCustom(); generateOutput()">
+                                <option value="cd4">ใช้วันที่เดียวกับ CD4</option>
+                                <option value="vl">ใช้วันที่เดียวกับ VL</option>
+                                <option value="custom">ระบุวันที่เอง</option>
+                            </select>
                         </div>
                     </div>
-                    <div id="hivLabDateCustomContainer" class="mb-3 hidden"><input type="text" id="hivLabDate" placeholder="วันที่เจาะ Lab หลัก (วว/ดด/พศ)" class="w-full md:w-1/3 rounded-lg border-gray-300 border px-3 py-2 text-sm shadow-sm" oninput="generateOutput()"></div>
+                    
+                    <div id="hivLabDateCustomContainer" class="mb-3 hidden">
+                        <input type="text" id="hivLabDate" placeholder="วันที่เจาะ Lab หลัก (วว/ดด/พศ)" class="w-full md:w-1/3 rounded-lg border-gray-300 border px-3 py-2 text-sm shadow-sm" oninput="generateOutput()">
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-white p-4 rounded-lg border border-indigo-200 shadow-sm">
                         <div><label class="block text-xs font-medium text-gray-600 mb-1">Scr</label><input type="text" id="hivScr" placeholder="ระบุค่า Scr" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
                         <div><label class="block text-xs font-medium text-gray-600 mb-1">eGFR (CKD-EPI)</label><input type="text" id="hivEgfr" placeholder="ระบุค่า eGFR" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">UA protein</label>
-                            <select id="hivUa" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" onchange="generateOutput()"><option value="">-- เลือก --</option><option value="Negative">Negative</option><option value="Trace">Trace</option><option value="+1">+1</option><option value="+2">+2</option><option value="+3">+3</option></select>
+                            <select id="hivUa" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" onchange="generateOutput()">
+                                <option value="">-- เลือก --</option>
+                                <option value="Negative">Negative</option>
+                                <option value="Trace">Trace</option>
+                                <option value="+1">+1</option>
+                                <option value="+2">+2</option>
+                                <option value="+3">+3</option>
+                            </select>
                         </div>
                     </div>
+
                     <div class="bg-white p-3 rounded-lg border border-indigo-200">
                         <div class="flex flex-col md:flex-row gap-2">
-                            <select id="labSelect" class="rounded-lg border-gray-300 border px-2 py-2 w-full md:w-1/4 text-sm bg-gray-50"><option value="">-- เลือก Lab --</option><option value="BUN">BUN</option><option value="Glucose">FBS</option><option value="Cholesterol">Cholesterol</option><option value="Triglyceride">TG</option><option value="HDL-C">HDL-C</option><option value="LDL-C">LDL-C</option><option value="AST">AST</option><option value="ALT">ALT</option><option value="Hb">Hb</option><option value="HCT">HCT</option></select>
+                            <select id="labSelect" class="rounded-lg border-gray-300 border px-2 py-2 w-full md:w-1/4 text-sm bg-gray-50">
+                                <option value="">-- เลือก Lab --</option>
+                                <option value="BUN">BUN</option><option value="Glucose">FBS</option><option value="Cholesterol">Cholesterol</option>
+                                <option value="Triglyceride">TG</option><option value="HDL-C">HDL-C</option><option value="LDL-C">LDL-C</option>
+                                <option value="AST">AST</option><option value="ALT">ALT</option><option value="Hb">Hb</option><option value="HCT">HCT</option>
+                            </select>
                             <input type="text" id="labValue" placeholder="ผลเลือด" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/4" onkeypress="if(event.key === 'Enter') addLab()">
                             <input type="text" id="labSpecificDate" placeholder="วันที่เจาะ (ถ้าไม่ใช่วันที่หลัก)" class="rounded-lg border-gray-300 border px-3 py-2 w-full md:w-1/3 text-sm" onkeypress="if(event.key === 'Enter') addLab()">
                             <button onclick="addLab()" class="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 whitespace-nowrap font-medium shadow-sm">เพิ่ม</button>
@@ -366,10 +486,18 @@
                 <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
                     <label class="block text-sm font-semibold text-blue-900 mb-3">ข้อมูลยา & การคำนวณ % Adherence</label>
                     <div id="hivDrugsContainer" class="space-y-3 mb-3"></div>
-                    <button onclick="addHivDrugRow()" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center mb-4 border border-blue-200"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> เพิ่มรายการยา HIV</button>
+                    <button onclick="addHivDrugRow()" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center mb-4 border border-blue-200">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> เพิ่มรายการยา HIV
+                    </button>
+
                     <div class="border-t border-blue-200 pt-3">
-                        <label class="inline-flex items-center text-sm font-medium text-blue-900 mb-3 bg-white px-3 py-1 rounded-full border border-blue-200 shadow-sm cursor-pointer"><input type="checkbox" id="hivCalcAdherence" class="form-checkbox text-blue-600 rounded mr-2" onchange="toggleAdherence(); generateOutput()"> ให้ระบบคำนวณ % Adherence อัตโนมัติ</label>
-                        <div id="adherenceManualContainer" class="mb-2"><label class="block text-xs text-gray-600 mb-1">Adherence (%) - พิมพ์เอง</label><input type="text" id="hivManualAdherence" value="100%" class="w-full md:w-1/3 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
+                        <label class="inline-flex items-center text-sm font-medium text-blue-900 mb-3 bg-white px-3 py-1 rounded-full border border-blue-200 shadow-sm cursor-pointer">
+                            <input type="checkbox" id="hivCalcAdherence" class="form-checkbox text-blue-600 rounded mr-2" onchange="toggleAdherence(); generateOutput()"> ให้ระบบคำนวณ % Adherence อัตโนมัติ
+                        </label>
+                        <div id="adherenceManualContainer" class="mb-2">
+                            <label class="block text-xs text-gray-600 mb-1">Adherence (%) - พิมพ์เอง</label>
+                            <input type="text" id="hivManualAdherence" value="100%" class="w-full md:w-1/3 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                        </div>
                         <div id="adherenceAutoContainer" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-3 rounded-lg border border-blue-100">
                             <div><label class="block text-xs text-gray-500 mb-1">นัดกี่วัน?</label><input type="number" id="hivDays" placeholder="เช่น 180" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
                             <div><label class="block text-xs text-gray-500 mb-1">ทานรวมกี่มื้อต่อวัน?</label><input type="number" id="hivDoses" placeholder="เช่น 1" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
@@ -381,9 +509,16 @@
                 <div class="bg-yellow-50 p-4 border border-yellow-200 rounded-xl">
                     <label class="block text-sm font-semibold text-yellow-900 mb-3">การจัดการ / แผนการรักษา</label>
                     <div class="flex gap-4 border-b border-yellow-200 pb-3 mb-4">
-                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="hivType" value="refill" checked class="form-radio text-blue-600 h-5 w-5" onchange="toggleHivType(); generateOutput()"><span class="ml-2 font-medium text-gray-800">1) เติมยาให้แพทย์ (ผ่าน)</span></label>
-                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="hivType" value="refer" class="form-radio text-red-600 h-5 w-5" onchange="toggleHivType(); generateOutput()"><span class="ml-2 font-medium text-red-700">2) ส่งพบแพทย์ (ปรึกษาความผิดปกติ)</span></label>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="radio" name="hivType" value="refill" checked class="form-radio text-blue-600 h-5 w-5" onchange="toggleHivType(); generateOutput()">
+                            <span class="ml-2 font-medium text-gray-800">1) เติมยาให้แพทย์ (ผ่าน)</span>
+                        </label>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="radio" name="hivType" value="refer" class="form-radio text-red-600 h-5 w-5" onchange="toggleHivType(); generateOutput()">
+                            <span class="ml-2 font-medium text-red-700">2) ส่งพบแพทย์ (ปรึกษาความผิดปกติ)</span>
+                        </label>
                     </div>
+
                     <div id="hivRefillSection" class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                             <div><label class="block text-sm font-medium text-gray-700 mb-1">RM วันที่</label><input type="text" id="hivRmDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()"></div>
@@ -392,11 +527,16 @@
                         <div class="mb-3">
                             <label class="block text-sm font-medium text-gray-700 mb-1">การเจาะ Lab ครั้งหน้า</label>
                             <div class="flex gap-2 w-full md:w-1/2">
-                                <select id="hivNextLabSelect" class="rounded-lg border-gray-300 border px-3 py-2" onchange="toggleNextLabInput(); generateOutput()"><option value="">-- เลือก --</option><option value="M1">M1</option><option value="other">อื่นๆ (ระบุเอง)</option></select>
+                                <select id="hivNextLabSelect" class="rounded-lg border-gray-300 border px-3 py-2" onchange="toggleNextLabInput(); generateOutput()">
+                                    <option value="">-- เลือก --</option><option value="M1">M1</option><option value="other">อื่นๆ (ระบุเอง)</option>
+                                </select>
                                 <input type="text" id="hivNextLabCustom" placeholder="ระบุ Lab เพิ่มเติม" class="w-full rounded-lg border-gray-300 border px-3 py-2 hidden" oninput="generateOutput()">
                             </div>
                         </div>
-                        <div><label class="block text-sm font-medium text-gray-700 mb-1">ผู้จ่ายยา</label><input type="text" id="hivPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()"></div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ผู้จ่ายยา</label>
+                            <input type="text" id="hivPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                        </div>
                     </div>
 
                     <div id="hivReferSection" class="hidden bg-red-50 p-4 rounded-lg border border-red-200 shadow-sm">
@@ -413,7 +553,10 @@
                             <label class="inline-flex items-center mb-1"><input type="checkbox" id="chkOtherRefer" class="form-checkbox text-red-600 rounded" onchange="toggleReferInput('OtherRefer'); generateOutput()"><span class="ml-2 font-medium text-red-700">ส่งพบเรื่องอื่นๆ (ระบุเพิ่มเติม)</span></label>
                             <input type="text" id="txtOtherRefer" placeholder="เช่น มีอาการไอหอบเหนื่อย, มีผื่นตามตัว" class="w-full text-sm rounded border-gray-300 px-2 py-2 hidden mt-1" oninput="generateOutput()">
                         </div>
-                        <div><label class="block text-sm font-medium text-gray-700 mb-1">ผู้ส่งปรึกษา</label><input type="text" id="hivPharmNameRefer" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 bg-white" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()"></div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ส่งปรึกษา</label>
+                            <input type="text" id="hivPharmNameRefer" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 bg-white" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -428,19 +571,42 @@
                         <button class="wf-nav-link text-success" id="wf-sticker-tab" onclick="switchWfTab('sticker')"><i class="fa-solid fa-print"></i> พิมพ์สติกเกอร์</button>
                     </div>
 
+                    <!-- Warfarin: กรอกเอง -->
                     <div id="wf-manual" class="wf-tab-content">
                         <form id="warfarinForm">
                             <input type="hidden" name="action" value="manual">
-                            <div class="mb-3"><label class="block text-sm font-medium text-gray-700 mb-1">HN</label><input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="hn" required placeholder="เช่น 54961/68" id="wfHnInput"></div>
-                            <div class="grid grid-cols-2 gap-4 mb-3">
-                                <div><label class="block text-sm font-medium text-gray-700 mb-1">เพศ</label><select class="w-full rounded border-gray-300 border px-3 py-2" name="sex" required><option value="1">ชาย (1)</option><option value="2">หญิง (2)</option></select></div>
-                                <div><label class="block text-sm font-medium text-gray-700 mb-1">อายุ (ปี)</label><input type="number" class="w-full rounded border-gray-300 border px-3 py-2" name="age" required></div>
+                            <div class="mb-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">HN (เลขที่โรงพยาบาล)</label>
+                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="hn" required placeholder="เช่น 54961/68" id="wfHnInput">
                             </div>
-                            <div class="mb-3"><label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ - นามสกุล</label><input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="name" required id="wfNameInput"></div>
-                            <div class="mb-3"><label class="block text-sm font-medium text-gray-700 mb-1">Indication</label><input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="indication" list="indicationOptions" placeholder="ระบุ หรือเลือก"><datalist id="indicationOptions"><option value="AF"></option><option value="DVT"></option><option value="PE"></option><option value="MVR"></option><option value="AVR"></option><option value="S/P MVR"></option></datalist></div>
-                            <div class="mb-4"><label class="block text-sm font-medium text-gray-700 mb-1">Goal INR</label><input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="goal" list="goalOptions" value="2.0-3.0"><datalist id="goalOptions"><option value="2.0-3.0"></option><option value="2.5-3.5"></option></datalist></div>
+                            <div class="grid grid-cols-2 gap-4 mb-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">เพศ</label>
+                                    <select class="w-full rounded border-gray-300 border px-3 py-2" name="sex" required>
+                                        <option value="1">ชาย (1)</option><option value="2">หญิง (2)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">อายุ (ปี)</label>
+                                    <input type="number" class="w-full rounded border-gray-300 border px-3 py-2" name="age" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ - นามสกุล</label>
+                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="name" required id="wfNameInput">
+                            </div>
+                            <div class="mb-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Indication (ข้อบ่งใช้)</label>
+                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="indication" list="indicationOptions" placeholder="ระบุ หรือเลือกจากรายการ">
+                                <datalist id="indicationOptions"><option value="AF"></option><option value="DVT"></option><option value="PE"></option><option value="MVR"></option><option value="AVR"></option><option value="S/P MVR"></option></datalist>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Goal INR</label>
+                                <input type="text" class="w-full rounded border-gray-300 border px-3 py-2" name="goal" list="goalOptions" value="2.0-3.0">
+                                <datalist id="goalOptions"><option value="2.0-3.0"></option><option value="2.5-3.5"></option></datalist>
+                            </div>
                             <button type="submit" class="btn-submit" id="submitBtn">รับเลข Warfarin</button>
-                            <div class="loading text-blue-600 mt-2" id="loadingSpinner"><i class="fa-solid fa-spinner fa-spin mr-2"></i>กำลังบันทึก...</div>
+                            <div class="loading text-blue-600 mt-2" id="loadingSpinner"><i class="fa-solid fa-spinner fa-spin mr-2"></i>กำลังบันทึกและรันเลข...</div>
                         </form>
                         <div id="resultArea" class="hidden bg-green-50 border border-green-200 text-green-800 p-4 rounded mt-4 text-center">
                             <h4 class="font-bold mb-1">บันทึกสำเร็จ!</h4>
@@ -450,30 +616,55 @@
                         </div>
                     </div>
 
+                    <!-- Warfarin: รออนุมัติ -->
                     <div id="wf-pending" class="wf-tab-content hidden">
                         <div class="flex gap-2 mb-4">
-                            <button class="flex-1 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm" onclick="loadPending()"><i class="fa-solid fa-rotate-right mr-1"></i> โหลด</button>
-                            <button class="flex-1 bg-yellow-400 border border-yellow-500 text-yellow-900 font-bold px-3 py-2 rounded hover:bg-yellow-500 text-sm" onclick="forceRefreshCache()" id="forceRefreshBtn"><i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้</button>
+                            <button class="flex-1 bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded hover:bg-gray-50 text-sm" onclick="loadPending()">
+                                <i class="fa-solid fa-rotate-right mr-1"></i> โหลดปกติ (ใช้ Cache)
+                            </button>
+                            <button class="flex-1 bg-yellow-400 border border-yellow-500 text-yellow-900 font-bold px-3 py-2 rounded hover:bg-yellow-500 text-sm" onclick="forceRefreshCache()" id="forceRefreshBtn">
+                                <i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้
+                            </button>
                         </div>
-                        <div id="pendingContainer" class="space-y-3"><p class="text-center text-gray-500 py-4">กำลังโหลดข้อมูล...</p></div>
+                        <div id="pendingContainer" class="space-y-3">
+                            <p class="text-center text-gray-500 py-4">กำลังโหลดข้อมูล...</p>
+                        </div>
                     </div>
 
+                    <!-- Warfarin: พิมพ์สติกเกอร์ -->
                     <div id="wf-sticker" class="wf-tab-content hidden">
                         <div class="bg-gray-50 p-4 rounded border border-gray-200 mb-4 sticker-controls">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div><label class="block text-sm font-bold text-gray-500 mb-1">รหัสผ่าน (Access Code)</label><input id="accessCode" type="password" class="w-full rounded border-gray-300 border px-3 py-1.5 text-sm" placeholder="ใส่รหัสเพื่อใช้งาน"></div>
-                                <div class="flex items-center pt-5"><label class="inline-flex items-center mr-3 text-sm text-gray-600"><input type="checkbox" id="rememberCode" class="form-checkbox text-blue-600 rounded"><span class="ml-2">จำรหัสวันนี้</span></label><small id="gateMsg" class="text-red-500 text-sm">ใส่รหัส</small></div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-500 mb-1">รหัสผ่าน (Access Code)</label>
+                                    <input id="accessCode" type="password" class="w-full rounded border-gray-300 border px-3 py-1.5 text-sm" placeholder="ใส่รหัสเพื่อใช้งาน">
+                                </div>
+                                <div class="flex items-center pt-5">
+                                    <label class="inline-flex items-center mr-3 text-sm text-gray-600">
+                                        <input type="checkbox" id="rememberCode" class="form-checkbox text-blue-600 rounded">
+                                        <span class="ml-2">จำรหัสวันนี้</span>
+                                    </label>
+                                    <small id="gateMsg" class="text-red-500 text-sm">ใส่รหัส</small>
+                                </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                                <div><label class="block text-sm font-bold text-blue-600 mb-1">ดึงด้วย Warfarin No</label><input id="searchWarfarinNo" type="text" inputmode="numeric" class="w-full rounded border-blue-300 border-2 px-3 py-1.5 focus:ring-blue-500" placeholder="เช่น 4248"></div>
-                                <div class="flex gap-2"><button id="fetchBtn" class="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm" disabled><i class="fa-solid fa-magnifying-glass"></i> ดึง</button><button id="printBtn" class="bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm"><i class="fa-solid fa-print"></i> พิมพ์</button></div>
+                                <div>
+                                    <label class="block text-sm font-bold text-blue-600 mb-1">ดึงด้วย Warfarin No</label>
+                                    <input id="searchWarfarinNo" type="text" inputmode="numeric" class="w-full rounded border-blue-300 border-2 px-3 py-1.5 focus:ring-blue-500" placeholder="เช่น 4248">
+                                </div>
+                                <div class="flex gap-2">
+                                    <button id="fetchBtn" class="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm" disabled><i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล</button>
+                                    <button id="printBtn" class="bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm"><i class="fa-solid fa-print"></i> พิมพ์สติกเกอร์</button>
+                                </div>
                             </div>
                             <div class="mt-4 pt-3 border-t border-gray-200">
-                                <label class="text-sm font-bold text-gray-500 mr-3">ขนาด:</label>
+                                <label class="text-sm font-bold text-gray-500 mr-3">ขนาดสติกเกอร์:</label>
                                 <label class="inline-flex items-center mr-3 text-sm"><input type="radio" name="size" id="size1" value="4_5" class="form-radio text-blue-600"><span class="ml-1">8.5×4.5 ซม.</span></label>
                                 <label class="inline-flex items-center text-sm"><input type="radio" name="size" id="size2" value="6_0" checked class="form-radio text-blue-600"><span class="ml-1">8.5×6.0 ซม.</span></label>
                             </div>
                         </div>
+                        
+                        <!-- พื้นที่โชว์สติกเกอร์ Warfarin -->
                         <div class="stickerRow" id="stickerTabPane">
                             <div id="sticker" class="sticker size-6_0">
                                 <div class="line"><span class="field-label">ชื่อ-สกุล:</span><span id="stk-fullName" class="field-value" contenteditable="true">—</span></div>
@@ -483,33 +674,50 @@
                                 <div class="line"><span class="field-label">Target INR:</span><span id="stk-inr" class="field-value" contenteditable="true">—</span></div>
                                 <div id="extraArea" class="extra" contenteditable="true" data-placeholder="คลิกเพื่อพิมพ์ข้อความเพิ่มเติมที่นี่…"></div>
                             </div>
+                            
                             <aside class="qs-panel">
                                 <div class="title">ปุ่มด่วน (Quick Select)</div>
                                 <button id="btnInr23" class="bg-white border border-gray-300 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100">INR 2–3</button>
                                 <button id="btnInr2535" class="bg-white border border-gray-300 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100">INR 2.5–3.5</button>
-                                <button id="btnAll" class="bg-blue-50 border border-blue-300 text-blue-700 px-2 py-1 rounded text-xs font-bold hover:bg-blue-100">+ ALL</button>
+                                <button id="btnAll" class="bg-blue-50 border border-blue-300 text-blue-700 px-2 py-1 rounded text-xs font-bold hover:bg-blue-100">+ ALL (เพิ่มท้าย)</button>
                             </aside>
                         </div>
                     </div>
+
                 </div>
             </div>
 
             <!-- 6. HF Clinic Form -->
             <div id="form-HF" class="space-y-6 hidden">
+                
                 <div class="bg-green-50 p-4 border border-green-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-green-800 mb-2"><i class="fa-solid fa-star text-yellow-500"></i> เป้าหมายการรักษา HFrEF: The Quadruple Therapy</h3>
-                    <p class="text-green-700">การให้ยาหลักครบทั้ง 4 กลุ่ม ร่วมกันตั้งแต่แรก <strong>ลดอัตราการเสียชีวิต (All-cause mortality) ได้ถึง 73%</strong></p>
+                    <p class="text-green-700">การให้ยาหลักครบทั้ง 4 กลุ่ม ร่วมกันตั้งแต่แรก <strong>ลดอัตราการเสียชีวิต (All-cause mortality) ได้ถึง 73%</strong> แนะนำให้เริ่มยาให้ครบโดยเร็ว และปรับยา (Titration) ทุก 1-2 สัปดาห์จนถึง Target dose</p>
                 </div>
+                
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
                     <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">1. ข้อมูลทางคลินิก (Clinical Parameters)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div><label class="block text-xs font-medium text-gray-600 mb-1">LVEF (%)</label><input type="number" id="hfLvef" placeholder="เช่น 35" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">NYHA Class</label><select id="hfNyha" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50"><option value="">-- เลือก --</option><option value="1">Class I</option><option value="2">Class II</option><option value="3">Class III</option><option value="4">Class IV</option></select></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">BP (SBP / DBP mmHg)</label><div class="flex items-center gap-2"><input type="number" id="hfSbp" placeholder="SBP" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm"><span class="font-bold text-gray-500">/</span><input type="number" id="hfDbp" placeholder="DBP" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm"></div></div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">NYHA Class</label>
+                            <select id="hfNyha" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50">
+                                <option value="">-- เลือก --</option><option value="1">Class I</option><option value="2">Class II</option><option value="3">Class III</option><option value="4">Class IV</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">BP (SBP / DBP mmHg)</label>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="hfSbp" placeholder="SBP" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm">
+                                <span class="font-bold text-gray-500">/</span>
+                                <input type="number" id="hfDbp" placeholder="DBP" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm">
+                            </div>
+                        </div>
                         <div><label class="block text-xs font-medium text-gray-600 mb-1">Heart Rate (bpm)</label><input type="number" id="hfHr" placeholder="ขณะพัก (Target < 70)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
                         <div><label class="block text-xs font-medium text-gray-600 mb-1">eGFR (ล่าสุด)</label><input type="number" id="hfEgfr" placeholder="mL/min" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
                         <div><label class="block text-xs font-medium text-gray-600 mb-1">Potassium (ล่าสุด)</label><input type="number" id="hfK" step="0.1" placeholder="mEq/L" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
                     </div>
+                    
                     <div class="flex flex-wrap gap-4 mt-2">
                         <label class="inline-flex items-center"><input type="checkbox" id="hfCongestion" class="form-checkbox text-blue-600 rounded"><span class="ml-2 font-medium text-sm text-gray-700">มีภาวะคั่งน้ำ (Congestion / Edema)</span></label>
                         <label class="inline-flex items-center"><input type="checkbox" id="hfIronDef" class="form-checkbox text-blue-600 rounded"><span class="ml-2 font-medium text-sm text-gray-700">ภาวะขาดธาตุเหล็ก (Ferritin &lt; 100)</span></label>
@@ -519,59 +727,128 @@
 
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
                     <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">2. รายการยาที่ใช้อยู่ (Medication)</h3>
+                    
+                    <!-- 1. RAASi -->
                     <div class="bg-gray-50 p-4 border-l-4 border-blue-400 rounded mb-3">
                         <label class="inline-flex items-center font-bold text-gray-700"><input type="checkbox" id="chk_hf_raasi" class="form-checkbox text-blue-600 rounded mr-2" onchange="toggleHfSub('chk_hf_raasi', 'div_hf_raasi')"> 1. RAASi Group</label>
                         <div id="div_hf_raasi" class="hidden mt-2 ml-6">
-                            <select id="sel_hf_raasi_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_raasi_drug', 'sel_hf_raasi_dose')"><option value="">-- เลือกตัวยา --</option><option value="arni">Entresto FTC 100mg (49/51)</option><option value="enalapril">Enalapril 5mg, 20mg</option><option value="losartan">Losartan 50mg</option></select>
-                            <div id="wrap_hf_raasi_dose" class="hidden"><label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label><select id="sel_hf_raasi_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select></div>
+                            <select id="sel_hf_raasi_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_raasi_drug', 'sel_hf_raasi_dose')">
+                                <option value="">-- เลือกตัวยา --</option>
+                                <option value="arni">Entresto FTC 100mg (49/51)</option>
+                                <option value="enalapril">Enalapril 5mg, 20mg</option>
+                                <option value="losartan">Losartan 50mg</option>
+                            </select>
+                            <div id="wrap_hf_raasi_dose" class="hidden">
+                                <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
+                                <select id="sel_hf_raasi_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- 2. Beta Blocker -->
                     <div class="bg-gray-50 p-4 border-l-4 border-green-400 rounded mb-3">
                         <label class="inline-flex items-center font-bold text-gray-700"><input type="checkbox" id="chk_hf_bb" class="form-checkbox text-green-600 rounded mr-2" onchange="toggleHfSub('chk_hf_bb', 'div_hf_bb')"> 2. Beta Blocker</label>
                         <div id="div_hf_bb" class="hidden mt-2 ml-6">
-                            <select id="sel_hf_bb_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_bb_drug', 'sel_hf_bb_dose')"><option value="">-- เลือกตัวยา --</option><option value="bisoprolol">Bisoprolol 5mg</option><option value="carvedilol">Carvedilol 6.25mg, 25mg</option><option value="metoprolol">Metoprolol tartrate 100mg (อนุโลมใช้)</option></select>
-                            <div id="wrap_hf_bb_dose" class="hidden"><label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label><select id="sel_hf_bb_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select></div>
+                            <select id="sel_hf_bb_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_bb_drug', 'sel_hf_bb_dose')">
+                                <option value="">-- เลือกตัวยา --</option>
+                                <option value="bisoprolol">Bisoprolol 5mg</option>
+                                <option value="carvedilol">Carvedilol 6.25mg, 25mg</option>
+                                <option value="metoprolol">Metoprolol tartrate 100mg (อนุโลมใช้)</option>
+                            </select>
+                            <div id="wrap_hf_bb_dose" class="hidden">
+                                <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
+                                <select id="sel_hf_bb_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- 3. MRA -->
                     <div class="bg-gray-50 p-4 border-l-4 border-purple-400 rounded mb-3">
                         <label class="inline-flex items-center font-bold text-gray-700"><input type="checkbox" id="chk_hf_mra" class="form-checkbox text-purple-600 rounded mr-2" onchange="toggleHfSub('chk_hf_mra', 'div_hf_mra')"> 3. MRA (Spironolactone)</label>
                         <div id="div_hf_mra" class="hidden mt-2 ml-6">
-                            <select id="sel_hf_mra_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_mra_drug', 'sel_hf_mra_dose')"><option value="">-- เลือกตัวยา --</option><option value="spironolactone">Spironolactone 25mg, 100mg</option></select>
-                            <div id="wrap_hf_mra_dose" class="hidden"><label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label><select id="sel_hf_mra_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select></div>
+                            <select id="sel_hf_mra_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_mra_drug', 'sel_hf_mra_dose')">
+                                <option value="">-- เลือกตัวยา --</option>
+                                <option value="spironolactone">Spironolactone 25mg, 100mg</option>
+                            </select>
+                            <div id="wrap_hf_mra_dose" class="hidden">
+                                <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
+                                <select id="sel_hf_mra_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- 4. SGLT2i & Others -->
                     <div class="bg-gray-50 p-4 border-l-4 border-yellow-400 rounded mb-3">
                         <label class="block font-bold text-gray-700 mb-2">4. ยาอื่นๆ (Other GDMT & Diuretics)</label>
                         <div class="ml-6 space-y-2">
                             <label class="flex items-center"><input type="checkbox" id="chk_hf_sglt2i" class="form-checkbox text-yellow-600 rounded mr-2"><span class="text-sm">Empagliflozin 10mg (1 tab QD)</span></label>
-                            <div><label class="flex items-center"><input type="checkbox" id="chk_hf_iva" class="form-checkbox text-yellow-600 rounded mr-2" onchange="toggleHfSub('chk_hf_iva', 'div_hf_iva')"><span class="text-sm">Ivabradine 5mg</span></label>
-                                <div id="div_hf_iva" class="hidden mt-1 ml-6"><select id="sel_hf_iva_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"><option value="none">-- ระบุระดับขนาดยา --</option><option value="vlow">Sub-low: 1/2 เม็ด 5mg OD (2.5 mg/day)</option><option value="start">Low: 1/2 เม็ด 5mg BID (5 mg/day)</option><option value="mid">Mid: 1 เม็ด 5mg BID (10 mg/day)</option><option value="target">Target: 1.5 เม็ด 5mg BID (15 mg/day)</option></select></div>
+                            
+                            <div>
+                                <label class="flex items-center"><input type="checkbox" id="chk_hf_iva" class="form-checkbox text-yellow-600 rounded mr-2" onchange="toggleHfSub('chk_hf_iva', 'div_hf_iva')"><span class="text-sm">Ivabradine 5mg</span></label>
+                                <div id="div_hf_iva" class="hidden mt-1 ml-6">
+                                    <select id="sel_hf_iva_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white">
+                                        <option value="none">-- ระบุระดับขนาดยา --</option>
+                                        <option value="vlow">Sub-low: 1/2 เม็ด 5mg OD (2.5 mg/day)</option>
+                                        <option value="start">Low: 1/2 เม็ด 5mg BID (5 mg/day)</option>
+                                        <option value="mid">Mid: 1 เม็ด 5mg BID (10 mg/day)</option>
+                                        <option value="target">Target: 1.5 เม็ด 5mg BID (15 mg/day)</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div><label class="flex items-center mt-2"><input type="checkbox" id="chk_hf_loop" class="form-checkbox text-yellow-600 rounded mr-2" onchange="toggleHfSub('chk_hf_loop', 'div_hf_loop')"><span class="text-sm">Furosemide (40mg, 500mg)</span></label>
-                                <div id="div_hf_loop" class="hidden mt-1 ml-6"><input type="text" id="hf_loop_detail" placeholder="ระบุขนาดยา (เช่น 40mg 1 tab OD)" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></div>
+                            
+                            <div>
+                                <label class="flex items-center mt-2"><input type="checkbox" id="chk_hf_loop" class="form-checkbox text-yellow-600 rounded mr-2" onchange="toggleHfSub('chk_hf_loop', 'div_hf_loop')"><span class="text-sm">Furosemide (40mg, 500mg)</span></label>
+                                <div id="div_hf_loop" class="hidden mt-1 ml-6">
+                                    <input type="text" id="hf_loop_detail" placeholder="ระบุขนาดยา (เช่น 40mg 1 tab OD)" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white">
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Danger Meds -->
                     <div class="bg-red-50 p-4 border-l-4 border-red-500 rounded">
-                        <label class="block font-bold text-red-700 mb-2">⛔ ยา/อาหารเสริมที่ต้องระวัง (Deprescribing)</label>
+                        <label class="block font-bold text-red-700 mb-2">⛔ ยา/อาหารเสริมที่ต้องระวัง (Deprescribing Check)</label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 ml-6 text-sm text-gray-700">
-                            <label class="inline-flex items-center"><input type="checkbox" id="hfNsaid" class="form-checkbox text-red-600 rounded mr-2">NSAIDs / COX-2</label><label class="inline-flex items-center"><input type="checkbox" id="hfNdhp" class="form-checkbox text-red-600 rounded mr-2">Diltiazem / Verapamil</label><label class="inline-flex items-center"><input type="checkbox" id="hfTzd" class="form-checkbox text-red-600 rounded mr-2">TZDs / Saxagliptin</label><label class="inline-flex items-center"><input type="checkbox" id="hfVitE" class="form-checkbox text-red-600 rounded mr-2">Vitamin E / สมุนไพร</label><label class="inline-flex items-center"><input type="checkbox" id="hfCoQ10" class="form-checkbox text-red-600 rounded mr-2">CoQ10</label>
+                            <label class="inline-flex items-center"><input type="checkbox" id="hfNsaid" class="form-checkbox text-red-600 rounded mr-2">NSAIDs / COX-2</label>
+                            <label class="inline-flex items-center"><input type="checkbox" id="hfNdhp" class="form-checkbox text-red-600 rounded mr-2">Diltiazem / Verapamil</label>
+                            <label class="inline-flex items-center"><input type="checkbox" id="hfTzd" class="form-checkbox text-red-600 rounded mr-2">TZDs (Pioglitazone) / Saxagliptin</label>
+                            <label class="inline-flex items-center"><input type="checkbox" id="hfVitE" class="form-checkbox text-red-600 rounded mr-2">Vitamin E / สมุนไพรกระตุ้นหัวใจ</label>
+                            <label class="inline-flex items-center"><input type="checkbox" id="hfCoQ10" class="form-checkbox text-red-600 rounded mr-2">CoQ10</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">3. การให้ความรู้และวัคซีน</h3>
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">3. การให้ความรู้ผู้ป่วยและวัคซีน</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-gray-50 p-4 rounded border border-gray-200"><label class="block font-bold text-gray-700 mb-2">📌 Sick Day Rules & Lifestyle</label><div class="space-y-2 text-sm text-gray-600 ml-2"><label class="flex items-center"><input type="checkbox" id="hf_ed_sickday" class="form-checkbox text-blue-600 rounded mr-2">หยุดยาเมื่อท้องเสีย/ขาดน้ำ</label><label class="flex items-center"><input type="checkbox" id="hf_ed_weight" class="form-checkbox text-blue-600 rounded mr-2">สอนชั่งน้ำหนัก/ดูอาการบวม</label><label class="flex items-center"><input type="checkbox" id="hf_ed_sodium" class="form-checkbox text-blue-600 rounded mr-2">จำกัดโซเดียม &lt; 2-3 กรัม/วัน</label></div></div>
-                        <div class="bg-gray-50 p-4 rounded border border-gray-200"><label class="block font-bold text-gray-700 mb-2">💉 ประวัติวัคซีน</label><div class="space-y-2 text-sm text-gray-600 ml-2"><label class="flex items-center"><input type="checkbox" id="hf_flu_vaccine" class="form-checkbox text-blue-600 rounded mr-2">ไข้หวัดใหญ่ (Influenza)</label><label class="flex items-center"><input type="checkbox" id="hf_pneumo_vaccine" class="form-checkbox text-blue-600 rounded mr-2">ปอดอักเสบ (Pneumococcal)</label><label class="flex items-center"><input type="checkbox" id="hf_covid_vaccine" class="form-checkbox text-blue-600 rounded mr-2">โควิด-19 / RSV</label></div></div>
+                        <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                            <label class="block font-bold text-gray-700 mb-2">📌 Sick Day Rules & Lifestyle</label>
+                            <div class="space-y-2 text-sm text-gray-600 ml-2">
+                                <label class="flex items-center"><input type="checkbox" id="hf_ed_sickday" class="form-checkbox text-blue-600 rounded mr-2">หยุดยาเมื่อท้องเสีย/ขาดน้ำ</label>
+                                <label class="flex items-center"><input type="checkbox" id="hf_ed_weight" class="form-checkbox text-blue-600 rounded mr-2">สอนชั่งน้ำหนักทุกเช้า/ดูอาการบวม</label>
+                                <label class="flex items-center"><input type="checkbox" id="hf_ed_sodium" class="form-checkbox text-blue-600 rounded mr-2">จำกัดโซเดียม &lt; 2-3 กรัม/วัน</label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                            <label class="block font-bold text-gray-700 mb-2">💉 ประวัติวัคซีน</label>
+                            <div class="space-y-2 text-sm text-gray-600 ml-2">
+                                <label class="flex items-center"><input type="checkbox" id="hf_flu_vaccine" class="form-checkbox text-blue-600 rounded mr-2">ไข้หวัดใหญ่ (Influenza)</label>
+                                <label class="flex items-center"><input type="checkbox" id="hf_pneumo_vaccine" class="form-checkbox text-blue-600 rounded mr-2">ปอดอักเสบ (Pneumococcal)</label>
+                                <label class="flex items-center"><input type="checkbox" id="hf_covid_vaccine" class="form-checkbox text-blue-600 rounded mr-2">โควิด-19 / RSV</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <button onclick="generateHfRecommendations()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition flex items-center justify-center text-lg"><i class="fa-solid fa-rotate mr-2"></i> ประมวลผลข้อเสนอแนะทางคลินิก (HF)</button>
+                <button onclick="generateHfRecommendations()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-rotate mr-2"></i> ประมวลผลข้อเสนอแนะทางคลินิก (HF)
+                </button>
+                
                 <div id="hfResultArea" class="hidden mt-6 bg-white border-2 border-green-500 rounded-lg p-6 shadow-sm">
-                    <h2 class="text-xl font-bold text-green-700 text-center mb-4"><i class="fa-solid fa-clipboard-list mr-1"></i> รายงานและแผนการดูแล (HF)</h2>
-                    <button onclick="copyHfToPmkNote()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow mb-4 transition"><i class="fa-solid fa-arrow-down mr-1"></i> นำข้อมูลส่งลงกล่อง Pharmacist Note (ด้านล่าง)</button>
+                    <h2 class="text-xl font-bold text-green-700 text-center mb-4"><i class="fa-solid fa-clipboard-list mr-1"></i> รายงานและแผนการดูแล (Pharmacist Intervention Plan)</h2>
+                    <button onclick="copyHfToPmkNote()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow mb-4 transition">
+                        <i class="fa-solid fa-arrow-down mr-1"></i> นำข้อมูลส่งลงกล่อง Pharmacist Note (ด้านล่าง)
+                    </button>
                     <div id="hfRecContent" class="text-sm"></div>
                 </div>
             </div>
@@ -593,11 +870,26 @@
                                 <label class="inline-flex items-center"><input type="radio" name="resp_indication" value="COPD" class="form-radio text-cyan-600"><span class="ml-2 text-sm">COPD</span></label>
                             </div>
                         </div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">ประวัติเข้า ER (ครั้ง/ปี)</label><input type="number" id="resp_er" placeholder="จำนวนครั้ง" class="w-full rounded border-gray-300 p-2 text-sm"></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">ประวัติ Admit (ครั้ง/ปี)</label><input type="number" id="resp_admit" placeholder="จำนวนครั้ง" class="w-full rounded border-gray-300 p-2 text-sm"></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">สถานะผู้ป่วย</label><label class="inline-flex items-center p-2"><input type="checkbox" id="resp_new_case" class="form-checkbox text-cyan-600 rounded mr-2"><span class="text-sm font-bold text-gray-700">ผู้ป่วยใหม่ (เพิ่งเข้าคลินิกครั้งแรก)</span></label></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">Score (ACT / CAT)</label><input type="number" id="resp_score" placeholder="คะแนน" class="w-full rounded border-gray-300 p-2 text-sm"></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">DRPs / หมายเหตุ</label><input type="text" id="resp_drp" placeholder="ปัญหาการใช้ยาที่พบ" class="w-full rounded border-gray-300 p-2 text-sm"></div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ประวัติเข้า ER (ครั้ง/ปี)</label>
+                            <input type="number" id="resp_er" placeholder="จำนวนครั้ง" class="w-full rounded border-gray-300 p-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ประวัติ Admit (ครั้ง/ปี)</label>
+                            <input type="number" id="resp_admit" placeholder="จำนวนครั้ง" class="w-full rounded border-gray-300 p-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">สถานะผู้ป่วย</label>
+                            <label class="inline-flex items-center p-2"><input type="checkbox" id="resp_new_case" class="form-checkbox text-cyan-600 rounded mr-2"><span class="text-sm font-bold text-gray-700">ผู้ป่วยใหม่ (เพิ่งเข้าคลินิกครั้งแรก)</span></label>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Score (ACT / CAT)</label>
+                            <input type="number" id="resp_score" placeholder="คะแนน" class="w-full rounded border-gray-300 p-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">DRPs / หมายเหตุ</label>
+                            <input type="text" id="resp_drp" placeholder="ปัญหาการใช้ยาที่พบ" class="w-full rounded border-gray-300 p-2 text-sm">
+                        </div>
                     </div>
 
                     <h4 class="font-bold text-gray-700 mb-2 mt-4"><i class="fa-solid fa-stethoscope"></i> อาการในรอบ 1 เดือน (Symptom Control)</h4>
@@ -669,12 +961,17 @@
             <!-- แผงตั้งค่าการพิมพ์สติกเกอร์ -->
             <div id="opdStickerSettings" class="hidden bg-indigo-50 border border-indigo-200 p-4 rounded-lg mb-4">
                 <h4 class="font-bold text-indigo-800 mb-2"><i class="fa-solid fa-gear"></i> พรีวิว & ตั้งค่าหน้ากระดาษสติกเกอร์ (หน่วย mm)</h4>
+                
+                <!-- Preview Box -->
                 <div class="mb-4 flex justify-center bg-gray-200 p-4 rounded-lg overflow-auto">
                     <div id="opdStickerPreview" class="bg-white" style="width: 80mm; min-height: 45mm; font-size: 11pt; padding: 5mm; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 4px; font-family: 'Prompt', sans-serif; line-height: 1.3;">
-                        <div style="font-weight: bold; margin-bottom: 2px; border-bottom: 1px dashed #ccc; padding-bottom: 2px;"><span id="prevStkName"></span> HN: <span id="prevStkHn"></span></div>
+                        <div style="font-weight: bold; margin-bottom: 2px; border-bottom: 1px dashed #ccc; padding-bottom: 2px;">
+                            <span id="prevStkName"></span> HN: <span id="prevStkHn"></span>
+                        </div>
                         <div id="prevStkNote" style="white-space: pre-wrap; word-wrap: break-word;"></div>
                     </div>
                 </div>
+
                 <div class="flex flex-wrap gap-4 items-end">
                     <div><label class="block text-xs font-medium text-gray-700 mb-1">แกน X (เลื่อนซ้าย-ขวา)</label><input type="number" id="stkX" value="2" class="w-20 rounded border-gray-300 px-2 py-1 text-sm" oninput="updateOpdStickerPreview()"></div>
                     <div><label class="block text-xs font-medium text-gray-700 mb-1">แกน Y (เลื่อนบน-ล่าง)</label><input type="number" id="stkY" value="2" class="w-20 rounded border-gray-300 px-2 py-1 text-sm" oninput="updateOpdStickerPreview()"></div>
@@ -685,11 +982,26 @@
             </div>
 
             <div class="flex flex-wrap gap-4">
-                <button onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>1. คัดลอกลง PMK</button>
-                <button onclick="copyToSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>2. คัดลอกลง Google Sheet (Manual)</button>
-                <button onclick="sendToGoogleSheet()" id="btnSendDb" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>3. บันทึกลง Sheet อัตโนมัติ</button>
-                <button onclick="printOpdCard()" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>4. พิมพ์ OPD Card (A5)</button>
-                <button onclick="toggleOpdStickerSettings()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10v3H7z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10h14a2 2 0 012 2v4a2 2 0 01-2 2h-1v-4H8v4H7a2 2 0 01-2-2v-4a2 2 0 012-2z"></path></svg>5. พิมพ์สติกเกอร์ (Note)</button>
+                <button onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    1. คัดลอกลง PMK
+                </button>
+                <button onclick="copyToSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    2. คัดลอกลง Google Sheet (Manual)
+                </button>
+                <button onclick="sendToGoogleSheet()" id="btnSendDb" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    3. บันทึกลง Sheet อัตโนมัติ
+                </button>
+                <button onclick="printOpdCard()" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    4. พิมพ์ OPD Card (A5)
+                </button>
+                <button onclick="toggleOpdStickerSettings()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10v3H7z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10h14a2 2 0 012 2v4a2 2 0 01-2 2h-1v-4H8v4H7a2 2 0 01-2-2v-4a2 2 0 012-2z"></path></svg>
+                    5. พิมพ์สติกเกอร์ (Note)
+                </button>
             </div>
         </div>
     </div>
@@ -745,7 +1057,7 @@
                     "ทำความสะอาดอุปกรณ์พลาสติก ผึ่งให้แห้งในที่ร่ม",
                     "กรณีพ่น 2 ครั้ง ให้เว้นระยะ 1-2 นาที"
                 ],
-                multiStepIndex: 8 // index ที่เป็นเงื่อนไขพ่น >1 ครั้ง
+                multiStepIndex: 8 
             },
             accuhaler: {
                 name: "ACCUHALER",
@@ -776,7 +1088,7 @@
                     "ปิดปากกระบอกและฝาให้สนิท",
                     "ทำความสะอาดปากขวดยาพ่นซับให้แห้ง"
                 ],
-                multiStepIndex: -1 // ไม่มีเงื่อนไขเรื่องเว้นระยะใน Excel หลัก
+                multiStepIndex: -1 
             },
             duoresp: {
                 name: "DuoResp Spiromax",
@@ -864,7 +1176,7 @@
                 let idx = parseInt(chk.getAttribute('data-idx'));
                 if(idx === excludeIndex) {
                     chk.parentElement.classList.add('opacity-40', 'pointer-events-none');
-                    chk.checked = true; // Auto-check but don't count visually, or ignore.
+                    chk.checked = true;
                     totalSteps--;
                 } else {
                     chk.parentElement.classList.remove('opacity-40', 'pointer-events-none');
@@ -928,18 +1240,52 @@
             showToast('คัดลอกข้อมูล Asthma/COPD ลงกล่อง Pharmacist Note สำเร็จแล้ว!');
         }
 
-
         // ==========================================
         //         HF CLINIC DATA & LOGIC
         // ==========================================
         const doseSteps = {
-            arni: [{val: 'vlow', text: 'Sub-low: 1/4 เม็ด 100mg BID (50 mg/day)', next: '1/2 เม็ด 100mg BID (100 mg/day)'},{val: 'start', text: 'Low: 1/2 เม็ด 100mg BID (100 mg/day)', next: '1 เม็ด 100mg BID (200 mg/day)'},{val: 'mid', text: 'Mid: 1 เม็ด 100mg BID (200 mg/day)', next: '2 เม็ด 100mg BID (Target 400 mg/day)'},{val: 'target', text: 'Target: 2 เม็ด 100mg BID (400 mg/day)', next: null}],
-            enalapril: [{val: 'vlow', text: 'Sub-low: 1/2 เม็ด 5mg OD (2.5 mg/day)', next: '1/2 เม็ด 5mg BID หรือ 1 เม็ด 5mg OD'},{val: 'start', text: 'Low: 1/2 เม็ด 5mg BID (5 mg/day)', next: '1 เม็ด 5mg BID (10 mg/day)'},{val: 'mid', text: 'Mid: 1 เม็ด 5mg BID (10 mg/day)', next: '1/2 - 1 เม็ด 20mg BID (Target)'},{val: 'target', text: 'Target: 1/2 - 1 เม็ด 20mg BID', next: null}],
-            losartan: [{val: 'vlow', text: 'Sub-low: 1/4 เม็ด 50mg OD (12.5 mg/day)', next: '1/2 เม็ด 50mg OD (25 mg/day)'},{val: 'start', text: 'Low: 1/2 เม็ด 50mg OD (25 mg/day)', next: '1 เม็ด 50mg OD (50 mg/day)'},{val: 'mid', text: 'Mid: 1 เม็ด 50mg OD (50 mg/day)', next: '2-3 เม็ด 50mg OD (Target 100-150 mg/day)'},{val: 'target', text: 'Target: 2-3 เม็ด 50mg OD', next: null}],
-            bisoprolol: [{val: 'vlow', text: 'Sub-low: 1/4 เม็ด 5mg OD (1.25 mg/day)', next: '1/2 เม็ด 5mg OD (2.5 mg/day)'},{val: 'start', text: 'Low: 1/2 เม็ด 5mg OD (2.5 mg/day)', next: '1 เม็ด 5mg OD (5 mg/day)'},{val: 'mid', text: 'Mid: 1 เม็ด 5mg OD (5 mg/day)', next: '2 เม็ด 5mg OD (Target 10 mg/day)'},{val: 'target', text: 'Target: 2 เม็ด 5mg OD', next: null}],
-            carvedilol: [{val: 'vlow', text: 'Sub-low: 1/2 เม็ด 6.25mg BID (6.25 mg/day)', next: '1 เม็ด 6.25mg BID (12.5 mg/day)'},{val: 'start', text: 'Low: 1 เม็ด 6.25mg BID (12.5 mg/day)', next: '2 เม็ด 6.25mg BID หรือ 1/2 เม็ด 25mg BID (25 mg/day)'},{val: 'mid', text: 'Mid: 2 เม็ด 6.25mg BID (25 mg/day)', next: '1 เม็ด 25mg BID (Target 50 mg/day)'},{val: 'target', text: 'Target: 1 เม็ด 25mg BID', next: null}],
-            metoprolol: [{val: 'vlow', text: 'Sub-low: 12.5 mg BID', next: '1/4 เม็ด 100mg BID (50 mg/day)'},{val: 'start', text: 'Low: 1/4 เม็ด 100mg BID (50 mg/day)', next: '1/2 เม็ด 100mg BID (100 mg/day)'},{val: 'mid', text: 'Mid: 1/2 เม็ด 100mg BID (100 mg/day)', next: '1 เม็ด 100mg BID (Target 200 mg/day)'},{val: 'target', text: 'Target: 1 เม็ด 100mg BID', next: null}],
-            spironolactone: [{val: 'vlow', text: 'Sub-low: 1/2 เม็ด 25mg วันเว้นวัน', next: '1/2 เม็ด 25mg OD (12.5 mg/day)'},{val: 'start', text: 'Low: 1/2 เม็ด 25mg OD (12.5 mg/day)', next: '1 เม็ด 25mg OD (25 mg/day - Target)'},{val: 'mid', text: 'Mid: 1 เม็ด 25mg OD (25 mg/day - Target)', next: '2 เม็ด 25mg OD (Target 50 mg/day)'},{val: 'target', text: 'Target: 1-2 เม็ด 25mg OD', next: null}]
+            arni: [
+                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 100mg BID (50 mg/day)', next: '1/2 เม็ด 100mg BID (100 mg/day)'},
+                {val: 'start', text: 'Low: 1/2 เม็ด 100mg BID (100 mg/day)', next: '1 เม็ด 100mg BID (200 mg/day)'},
+                {val: 'mid', text: 'Mid: 1 เม็ด 100mg BID (200 mg/day)', next: '2 เม็ด 100mg BID (Target 400 mg/day)'},
+                {val: 'target', text: 'Target: 2 เม็ด 100mg BID (400 mg/day)', next: null}
+            ],
+            enalapril: [
+                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 5mg OD (2.5 mg/day)', next: '1/2 เม็ด 5mg BID หรือ 1 เม็ด 5mg OD'},
+                {val: 'start', text: 'Low: 1/2 เม็ด 5mg BID (5 mg/day)', next: '1 เม็ด 5mg BID (10 mg/day)'},
+                {val: 'mid', text: 'Mid: 1 เม็ด 5mg BID (10 mg/day)', next: '1/2 - 1 เม็ด 20mg BID (Target)'},
+                {val: 'target', text: 'Target: 1/2 - 1 เม็ด 20mg BID', next: null}
+            ],
+            losartan: [
+                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 50mg OD (12.5 mg/day)', next: '1/2 เม็ด 50mg OD (25 mg/day)'},
+                {val: 'start', text: 'Low: 1/2 เม็ด 50mg OD (25 mg/day)', next: '1 เม็ด 50mg OD (50 mg/day)'},
+                {val: 'mid', text: 'Mid: 1 เม็ด 50mg OD (50 mg/day)', next: '2-3 เม็ด 50mg OD (Target 100-150 mg/day)'},
+                {val: 'target', text: 'Target: 2-3 เม็ด 50mg OD', next: null}
+            ],
+            bisoprolol: [
+                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 5mg OD (1.25 mg/day)', next: '1/2 เม็ด 5mg OD (2.5 mg/day)'},
+                {val: 'start', text: 'Low: 1/2 เม็ด 5mg OD (2.5 mg/day)', next: '1 เม็ด 5mg OD (5 mg/day)'},
+                {val: 'mid', text: 'Mid: 1 เม็ด 5mg OD (5 mg/day)', next: '2 เม็ด 5mg OD (Target 10 mg/day)'},
+                {val: 'target', text: 'Target: 2 เม็ด 5mg OD', next: null}
+            ],
+            carvedilol: [
+                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 6.25mg BID (6.25 mg/day)', next: '1 เม็ด 6.25mg BID (12.5 mg/day)'},
+                {val: 'start', text: 'Low: 1 เม็ด 6.25mg BID (12.5 mg/day)', next: '2 เม็ด 6.25mg BID หรือ 1/2 เม็ด 25mg BID (25 mg/day)'},
+                {val: 'mid', text: 'Mid: 2 เม็ด 6.25mg BID (25 mg/day)', next: '1 เม็ด 25mg BID (Target 50 mg/day)'},
+                {val: 'target', text: 'Target: 1 เม็ด 25mg BID', next: null}
+            ],
+            metoprolol: [
+                {val: 'vlow', text: 'Sub-low: 12.5 mg BID', next: '1/4 เม็ด 100mg BID (50 mg/day)'},
+                {val: 'start', text: 'Low: 1/4 เม็ด 100mg BID (50 mg/day)', next: '1/2 เม็ด 100mg BID (100 mg/day)'},
+                {val: 'mid', text: 'Mid: 1/2 เม็ด 100mg BID (100 mg/day)', next: '1 เม็ด 100mg BID (Target 200 mg/day)'},
+                {val: 'target', text: 'Target: 1 เม็ด 100mg BID', next: null}
+            ],
+            spironolactone: [
+                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 25mg วันเว้นวัน', next: '1/2 เม็ด 25mg OD (12.5 mg/day)'},
+                {val: 'start', text: 'Low: 1/2 เม็ด 25mg OD (12.5 mg/day)', next: '1 เม็ด 25mg OD (25 mg/day - Target)'},
+                {val: 'mid', text: 'Mid: 1 เม็ด 25mg OD (25 mg/day - Target)', next: '2 เม็ด 25mg OD (Target 50 mg/day)'},
+                {val: 'target', text: 'Target: 1-2 เม็ด 25mg OD', next: null}
+            ]
         };
 
         function toggleHfSub(chkId, divId) {
