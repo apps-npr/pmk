@@ -557,7 +557,7 @@
                 </div>
             </div>
 
-            <!-- 5. Warfarin Form (FIXED: Inserted here) -->
+            <!-- 5. Warfarin Form -->
             <div id="form-WARFARIN" class="space-y-4 hidden">
                 <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm mb-4">
                     <h3 class="font-bold text-blue-800 mb-3 border-b pb-2"><i class="fa-solid fa-capsules"></i> เมนูจัดการคิว Warfarin</h3>
@@ -1854,18 +1854,25 @@
 
             const btnInr23 = document.getElementById('btnInr23');
             if(btnInr23) {
-                btnInr23.addEventListener('click', () => document.getElementById('stk-inr').textContent='2-3');
+                btnInr23.addEventListener('click', () => {
+                    const stkInr = document.getElementById('stk-inr');
+                    if(stkInr) stkInr.textContent='2-3';
+                });
             }
             
             const btnInr2535 = document.getElementById('btnInr2535');
             if(btnInr2535) {
-                btnInr2535.addEventListener('click', () => document.getElementById('stk-inr').textContent='2.5-3.5');
+                btnInr2535.addEventListener('click', () => {
+                    const stkInr = document.getElementById('stk-inr');
+                    if(stkInr) stkInr.textContent='2.5-3.5';
+                });
             }
             
             const btnAll = document.getElementById('btnAll');
             if(btnAll) {
                 btnAll.addEventListener('click', () => {
                     const ex = document.getElementById('extraArea');
+                    if(!ex) return;
                     const t = ex.textContent.trim();
                     ex.textContent = t ? (t + ' ALL:') : 'ALL:';
                     const sel = window.getSelection(); 
@@ -1883,8 +1890,10 @@
             if(wfForm) {
                 wfForm.addEventListener('submit', e => {
                     e.preventDefault();
-                    document.getElementById('submitBtn').style.display = 'none';
-                    document.getElementById('loadingSpinner').style.display = 'block';
+                    const submitBtn = document.getElementById('submitBtn');
+                    const loadingSpinner = document.getElementById('loadingSpinner');
+                    if(submitBtn) submitBtn.style.display = 'none';
+                    if(loadingSpinner) loadingSpinner.style.display = 'block';
                     const data = Object.fromEntries(new FormData(wfForm).entries());
                     
                     fetch(SCRIPT_URL, { 
@@ -1894,18 +1903,20 @@
                     })
                     .then(res => res.json())
                     .then(res => {
-                        document.getElementById('loadingSpinner').style.display = 'none';
+                        if(loadingSpinner) loadingSpinner.style.display = 'none';
                         if (res.result === 'success') {
-                            document.getElementById('resultArea').classList.remove('hidden');
-                            document.getElementById('showNumber').innerText = res.warfarinId;
+                            const resultArea = document.getElementById('resultArea');
+                            const showNumber = document.getElementById('showNumber');
+                            if(resultArea) resultArea.classList.remove('hidden');
+                            if(showNumber) showNumber.innerText = res.warfarinId;
                         } else {
                             alert('เกิดข้อผิดพลาด: ' + res.error);
-                            document.getElementById('submitBtn').style.display = 'block';
+                            if(submitBtn) submitBtn.style.display = 'block';
                         }
                     }).catch(err => {
                         alert('การเชื่อมต่อขัดข้อง');
-                        document.getElementById('submitBtn').style.display = 'block';
-                        document.getElementById('loadingSpinner').style.display = 'none';
+                        if(submitBtn) submitBtn.style.display = 'block';
+                        if(loadingSpinner) loadingSpinner.style.display = 'none';
                     });
                 });
             }
@@ -1924,6 +1935,7 @@
         async function doFetch() {
             const wnoInput = document.getElementById('searchWarfarinNo');
             const btn = document.getElementById('fetchBtn');
+            if(!wnoInput || !btn) return;
             const no = wnoInput.value.trim();
             
             if(!no) { 
@@ -1936,15 +1948,21 @@
             
             try { 
                 const d = await fetchByAppsScript(no); 
-                document.getElementById('stk-fullName').textContent = d.fullName || '—';
-                document.getElementById('stk-hn').textContent = d.hn || '—';
-                document.getElementById('stk-wfno').textContent = d.warfarinNo || '—';
-                document.getElementById('stk-indication').textContent = d.indication || '—';
-                document.getElementById('stk-inr').textContent = d.inr || '—';
+                const stkFullName = document.getElementById('stk-fullName');
+                const stkHn = document.getElementById('stk-hn');
+                const stkWfno = document.getElementById('stk-wfno');
+                const stkIndication = document.getElementById('stk-indication');
+                const stkInr = document.getElementById('stk-inr');
+                
+                if(stkFullName) stkFullName.textContent = d.fullName || '—';
+                if(stkHn) stkHn.textContent = d.hn || '—';
+                if(stkWfno) stkWfno.textContent = d.warfarinNo || '—';
+                if(stkIndication) stkIndication.textContent = d.indication || '—';
+                if(stkInr) stkInr.textContent = d.inr || '—';
             } catch(e) { 
                 alert('ดึงข้อมูลไม่สำเร็จ: ' + e.message); 
             } finally {
-                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล'; 
+                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down mr-1"></i> ดึงข้อมูล'; 
                 btn.disabled = false;
             }
         }
@@ -1952,60 +1970,63 @@
         // Warfarin Pending logic
         function loadPending() {
             const container = document.getElementById('pendingContainer');
+            if(!container) return;
             container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-blue-500"></i></div>';
             
             fetch(SCRIPT_URL + "?action=getPending")
             .then(res => res.json())
             .then(data => renderPendingCards(data))
             .catch(err => {
-                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded">โหลดข้อมูลผิดพลาด</div>';
+                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded font-bold">โหลดข้อมูลผิดพลาด โปรดลองใหม่</div>';
             });
         }
 
         function forceRefreshCache() {
             const btn = document.getElementById('forceRefreshBtn');
             const container = document.getElementById('pendingContainer');
+            if(!btn || !container) return;
             
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังอัปเดต...'; 
             btn.disabled = true;
             
-            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-yellow-500"></i><p class="mt-2 text-sm text-yellow-700">กำลังซิงค์ข้อมูลตรงจากระบบ...</p></div>';
+            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-yellow-500"></i><p class="mt-2 text-sm text-yellow-700 font-bold">กำลังดึงข้อมูลสดจากระบบ...</p></div>';
 
             fetch(SCRIPT_URL + "?action=forceRefreshCache")
             .then(res => res.json())
             .then(res => {
-                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; 
+                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดต Data ทันที'; 
                 btn.disabled = false;
                 if(res.result === 'success') {
                     renderPendingCards(res.data);
                 }
             }).catch(err => {
-                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; 
+                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดต Data ทันที'; 
                 btn.disabled = false;
-                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded">โหลดข้อมูลผิดพลาด โปรดลองใหม่</div>';
+                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded font-bold">โหลดข้อมูลผิดพลาด โปรดลองใหม่</div>';
             });
         }
 
         function renderPendingCards(data) {
             const container = document.getElementById('pendingContainer');
+            if(!container) return;
             container.innerHTML = '';
             if(data.length === 0) {
-                container.innerHTML = '<div class="bg-white border border-gray-200 text-center py-8 text-gray-500 rounded-lg">ไม่มีคิวรออนุมัติจาก LINE ครับ</div>';
+                container.innerHTML = '<div class="bg-white border border-gray-200 text-center py-8 text-gray-500 rounded-lg font-bold">ไม่มีคิวรออนุมัติจาก LINE ครับ</div>';
                 return;
             }
             data.forEach(item => {
                 const card = `
-                <div class="pending-card p-4 shadow-sm border border-yellow-200" id="card-${item.id}">
+                <div class="pending-card p-4 shadow-sm border border-yellow-200 bg-white" id="card-${item.id}">
                     <form id="form-${item.id}">
                         <input type="hidden" name="id" value="${item.id}">
                         <div class="grid grid-cols-2 gap-3 mb-2">
                             <div>
                                 <label class="block text-xs font-bold text-gray-600">HN</label>
-                                <input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="hn" value="${item.hn}">
+                                <input type="text" class="w-full rounded border-gray-300 px-2 py-1 text-sm bg-gray-50" name="hn" value="${item.hn}">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-600">เพศ</label>
-                                <select class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="sex">
+                                <select class="w-full rounded border-gray-300 px-2 py-1 text-sm bg-gray-50" name="sex">
                                     <option value="1" ${item.sex=='1'?'selected':''}>ชาย</option>
                                     <option value="2" ${item.sex=='2'?'selected':''}>หญิง</option>
                                 </select>
@@ -2013,32 +2034,32 @@
                         </div>
                         <div class="mb-2">
                             <label class="block text-xs font-bold text-gray-600">ชื่อ-นามสกุล</label>
-                            <input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="name" value="${item.name}">
+                            <input type="text" class="w-full rounded border-gray-300 px-2 py-1 text-sm font-bold text-blue-800" name="name" value="${item.name}">
                         </div>
                         <div class="grid grid-cols-3 gap-3 mb-3">
                             <div>
                                 <label class="block text-xs font-bold text-gray-600">อายุ</label>
-                                <input type="text" class="w-full rounded border-gray-300 border px-2 py-1 text-sm" name="age" value="${item.age}">
+                                <input type="text" class="w-full rounded border-gray-300 px-2 py-1 text-sm bg-gray-50" name="age" value="${item.age}">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-600">Indication</label>
-                                <input type="text" class="w-full rounded border-blue-300 border-2 px-2 py-1 text-sm font-bold text-blue-700" name="indication" value="${item.indication}">
+                                <input type="text" class="w-full rounded border-blue-300 border-2 px-2 py-1 text-sm font-bold text-blue-700 bg-white" name="indication" value="${item.indication}">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-600">Goal</label>
-                                <input type="text" class="w-full rounded border-red-300 border-2 px-2 py-1 text-sm font-bold text-red-700" name="goal" value="${item.goal}">
+                                <input type="text" class="w-full rounded border-red-300 border-2 px-2 py-1 text-sm font-bold text-red-700 bg-white" name="goal" value="${item.goal}">
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <button type="button" class="flex-1 bg-white border border-red-300 text-red-600 px-3 py-1.5 rounded hover:bg-red-50 text-sm font-bold" onclick="actionPending('${item.id}', 'reject')">
+                            <button type="button" class="flex-1 bg-white border border-red-300 text-red-600 px-3 py-1.5 rounded hover:bg-red-50 text-sm font-bold shadow-sm" onclick="actionPending('${item.id}', 'reject')">
                                 <i class="fa-solid fa-xmark mr-1"></i> ทิ้ง
                             </button>
-                            <button type="button" class="flex-1 bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm font-bold" onclick="actionPending('${item.id}', 'approve')">
+                            <button type="button" class="flex-1 bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm font-bold shadow-sm" onclick="actionPending('${item.id}', 'approve')">
                                 <i class="fa-solid fa-check mr-1"></i> อนุมัติ
                             </button>
                         </div>
                     </form>
-                    <div id="res-${item.id}" class="hidden bg-green-100 text-green-800 text-center font-bold p-2 mt-3 rounded"></div>
+                    <div id="res-${item.id}" class="hidden bg-green-100 text-green-800 text-center font-bold p-2 mt-3 rounded border border-green-300"></div>
                 </div>`;
                 container.innerHTML += card;
             });
@@ -2046,6 +2067,7 @@
 
         function actionPending(id, actionType) {
             const form = document.getElementById('form-' + id);
+            if(!form) return;
             const data = Object.fromEntries(new FormData(form).entries());
             data.action = actionType;
             
@@ -2061,11 +2083,18 @@
             .then(res => {
                 if(res.result === 'success') {
                     if(actionType === 'approve') {
-                        document.getElementById('res-' + id).classList.remove('hidden');
-                        document.getElementById('res-' + id).innerText = "ออกเลข: " + res.warfarinId;
-                        setTimeout(() => document.getElementById('card-' + id).remove(), 3000);
+                        const resDiv = document.getElementById('res-' + id);
+                        if(resDiv) {
+                            resDiv.classList.remove('hidden');
+                            resDiv.innerHTML = `<i class="fa-solid fa-check-circle"></i> ออกเลข: ${res.warfarinId}`;
+                        }
+                        setTimeout(() => {
+                            const card = document.getElementById('card-' + id);
+                            if(card) card.remove();
+                        }, 3000);
                     } else { 
-                        document.getElementById('card-' + id).remove(); 
+                        const card = document.getElementById('card-' + id);
+                        if(card) card.remove(); 
                     }
                 } else { 
                     alert('Error: ' + res.error); 
@@ -2076,10 +2105,10 @@
         }
 
         // ==========================================
-        //         INITIALIZATION
+        //         INITIALIZATION (SAFE)
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            
+            // Bind Drug Search
             const drugInput = document.getElementById('drugSearch');
             if(drugInput) {
                 drugInput.addEventListener('focus', () => filterPreopDrugs(true));
@@ -2087,6 +2116,7 @@
                 drugInput.addEventListener('keyup', () => filterPreopDrugs(false));
             }
             
+            // Bind Procedure Search
             const procInput = document.getElementById('procedureSearch');
             if(procInput) {
                 procInput.addEventListener('focus', () => filterPreopProcedures(true));
@@ -2094,10 +2124,10 @@
                 procInput.addEventListener('keyup', () => filterPreopProcedures(false));
             }
             
+            // Bind outside click
             document.addEventListener('click', (e) => {
                 const drugList = document.getElementById('drugListContainer');
                 const procList = document.getElementById('procedureListContainer');
-                
                 if(drugInput && drugList && !drugList.contains(e.target) && e.target !== drugInput) { 
                     drugList.classList.add('hidden'); 
                 }
@@ -2106,13 +2136,13 @@
                 }
             });
 
+            // Bind Modals
             document.querySelectorAll('#chadModal input, #chadModal select').forEach(i => i.addEventListener('change', calculateChad));
             document.querySelectorAll('#capriniModal input').forEach(i => i.addEventListener('change', calculateCaprini));
             
             // Sync HN/Name into Warfarin tab
             const globalHn = document.getElementById('hn');
             const globalName = document.getElementById('ptName');
-            
             if(globalHn) {
                 globalHn.addEventListener('input', (e) => {
                     const wfHn = document.getElementById('wfHnInput');
@@ -2120,7 +2150,6 @@
                     updateOpdStickerPreview();
                 });
             }
-            
             if(globalName) {
                 globalName.addEventListener('input', (e) => {
                     const wfName = document.getElementById('wfNameInput');
@@ -2129,19 +2158,18 @@
                 });
             }
             
-            // Setup Warfarin Access Code
+            // Setup Warfarin
             setupWarfarinAccess();
 
-            // Run initial renders
+            // Setup Data
             renderMrSources();
             renderHivDrugs();
             
-            // Generate output correctly initially avoiding HF/Asthma overrides
-            if (currentTab !== 'HF' && currentTab !== 'ASTHMA') {
+            // Initial UI update
+            if (!['HF', 'ASTHMA', 'CKD'].includes(currentTab)) {
                 generateOutput();
             }
         });
-
     </script>
 </body>
 </html>
