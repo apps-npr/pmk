@@ -1120,6 +1120,84 @@
         let preopCalculatedNotes = [];
 
         // ==========================================
+        //         UI & TABS LOGIC
+        // ==========================================
+        function switchTab(tab) {
+            currentTab = tab;
+            // ซ่อนฟอร์มทั้งหมด
+            document.querySelectorAll('.clinic-form').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            
+            // เอาสีปุ่มกด (Active) ออกทั้งหมด
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50', 'bg-green-50'));
+            
+            // แสดงฟอร์มที่เลือก
+            const targetForm = document.getElementById('form-' + tab);
+            if(targetForm) {
+                targetForm.classList.remove('hidden');
+                targetForm.classList.add('block');
+            }
+            
+            // ทำไฮไลท์ปุ่มที่เลือก
+            const activeBtn = document.getElementById('tab-' + tab);
+            if(activeBtn) activeBtn.classList.add('active');
+            
+            if(tab === 'WARFARIN') activeBtn.classList.remove('text-red-700');
+            if(tab === 'HF') activeBtn.classList.remove('text-green-700');
+
+            // จัดการ Checkbox นำข้อมูล MR มารวม
+            const mergeCheck = document.getElementById('mergeMrOption');
+            if(mergeCheck) {
+                if(tab === 'PREOP') mergeCheck.classList.remove('hidden');
+                else mergeCheck.classList.add('hidden');
+            }
+
+            if (tab === 'WARFARIN') {
+                const opdOut = document.getElementById('opdOutputSection');
+                const mainPat = document.getElementById('mainPatientInfo');
+                if(opdOut) opdOut.classList.add('hidden');
+                if(mainPat) mainPat.classList.add('hidden');
+            } else {
+                const opdOut = document.getElementById('opdOutputSection');
+                const mainPat = document.getElementById('mainPatientInfo');
+                if(opdOut) opdOut.classList.remove('hidden');
+                if(mainPat) mainPat.classList.remove('hidden');
+                
+                if (typeof generateOutput === 'function') {
+                    generateOutput();
+                }
+            }
+        }
+
+        function switchWfTab(wftab) {
+            document.querySelectorAll('.wf-tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.wf-nav-link').forEach(btn => btn.classList.remove('active'));
+            
+            const targetWf = document.getElementById('wf-' + wftab);
+            if(targetWf) targetWf.classList.remove('hidden');
+            
+            const activeBtn = document.getElementById('wf-' + wftab + '-tab');
+            if(activeBtn) activeBtn.classList.add('active');
+        }
+
+        function toggleInfo(id) { 
+            const el = document.getElementById(id);
+            if(el) el.classList.toggle('hidden'); 
+        }
+        
+        function toggleOpdStickerSettings() { 
+            const panel = document.getElementById('opdStickerSettings');
+            if(panel) {
+                panel.classList.toggle('hidden'); 
+                if(!panel.classList.contains('hidden') && typeof updateOpdStickerPreview === 'function') {
+                    updateOpdStickerPreview();
+                }
+            }
+        }
+
+        // ==========================================
         //         HF CLINIC DATA & LOGIC
         // ==========================================
         const doseSteps = {
@@ -1250,16 +1328,25 @@
             const edSickDay = document.getElementById('hf_ed_sickday').checked;
             const edWeight = document.getElementById('hf_ed_weight').checked;
             const edSodium = document.getElementById('hf_ed_sodium').checked;
+            
             const fluVaccine = document.getElementById('hf_flu_vaccine').checked;
             const pneumoVaccine = document.getElementById('hf_pneumo_vaccine').checked;
             const covidVaccine = document.getElementById('hf_covid_vaccine').checked;
 
-            let alerts = []; let volumeMgt = []; let gdmt = []; let education = []; let vaccines = [];
+            let alerts = []; 
+            let volumeMgt = []; 
+            let gdmt = []; 
+            let education = []; 
+            let vaccines = [];
 
             // 1. PREGNANCY CHECK
             if (pregnant) {
                 let pregContra = [];
-                if (hasRAASi) pregContra.push("RAASi"); if (hasMRA) pregContra.push("MRA"); if (hasSGLT2i) pregContra.push("SGLT2i"); if (hasIva) pregContra.push("Ivabradine");
+                if (hasRAASi) pregContra.push("RAASi"); 
+                if (hasMRA) pregContra.push("MRA"); 
+                if (hasSGLT2i) pregContra.push("SGLT2i"); 
+                if (hasIva) pregContra.push("Ivabradine");
+                
                 alerts.push(`<strong>[Class 3: Harm] ผู้ป่วยตั้งครรภ์/วางแผนตั้งครรภ์</strong>
                     <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ${pregContra.length>0 ? 'พบการใช้ยาอันตราย <u>'+pregContra.join(', ')+'</u> <b>ให้แพทย์หยุดยาทันที</b>' : '<b>ห้ามเริ่มยา</b> กลุ่ม RAASi, MRA, SGLT2i, Ivabradine โดยเด็ดขาด'}</span>
                     <span class="block mt-1 pl-4 text-green-700">👉 <em>Rationale:</em> ยามีผลทำให้ทารกวิรูป (Teratogenic) พิจารณาเปลี่ยนเป็น Metoprolol succinate และ Hydralazine + Nitrates แทน</span>`);
@@ -1448,23 +1535,37 @@
 
         function copyHfToPmkNote() {
             const recContent = document.getElementById('hfRecContent');
-            if (!recContent || recContent.innerHTML.trim() === '') { alert('กรุณากด "ประมวลผลข้อเสนอแนะทางคลินิก" ก่อนครับ'); return; }
+            if (!recContent || recContent.innerHTML.trim() === '') { 
+                alert('กรุณากด "ประมวลผลข้อเสนอแนะทางคลินิก" ก่อนครับ'); 
+                return; 
+            }
 
             const lvef = document.getElementById('hfLvef').value || '-';
-            let nyha = document.getElementById('hfNyha').options[document.getElementById('hfNyha').selectedIndex].text; nyha = nyha === '-- เลือก --' ? '-' : nyha;
-            const sbp = document.getElementById('hfSbp').value || '-'; const dbp = document.getElementById('hfDbp').value || '-';
-            const hr = document.getElementById('hfHr').value || '-'; const egfr = document.getElementById('hfEgfr').value || '-'; const potassium = document.getElementById('hfK').value || '-';
+            let nyha = document.getElementById('hfNyha').options[document.getElementById('hfNyha').selectedIndex].text; 
+            nyha = nyha === '-- เลือก --' ? '-' : nyha;
+            
+            const sbp = document.getElementById('hfSbp').value || '-'; 
+            const dbp = document.getElementById('hfDbp').value || '-';
+            const hr = document.getElementById('hfHr').value || '-'; 
+            const egfr = document.getElementById('hfEgfr').value || '-'; 
+            const potassium = document.getElementById('hfK').value || '-';
 
             let shortMeds = [];
             if(document.getElementById('chk_hf_raasi').checked) {
                 let val = document.getElementById('sel_hf_raasi_drug').value;
-                if(val === 'arni') shortMeds.push('Entresto'); else if(val === 'enalapril') shortMeds.push('Enalapril'); else if(val === 'losartan') shortMeds.push('Losartan');
+                if(val === 'arni') shortMeds.push('Entresto'); 
+                else if(val === 'enalapril') shortMeds.push('Enalapril'); 
+                else if(val === 'losartan') shortMeds.push('Losartan');
             }
             if(document.getElementById('chk_hf_bb').checked) {
                 let val = document.getElementById('sel_hf_bb_drug').value;
-                if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); else if(val === 'carvedilol') shortMeds.push('Carvedilol'); else if(val === 'metoprolol') shortMeds.push('Metoprolol');
+                if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); 
+                else if(val === 'carvedilol') shortMeds.push('Carvedilol'); 
+                else if(val === 'metoprolol') shortMeds.push('Metoprolol');
             }
-            if(document.getElementById('chk_hf_mra').checked) { if(document.getElementById('sel_hf_mra_drug').value === 'spironolactone') shortMeds.push('Spironolactone'); }
+            if(document.getElementById('chk_hf_mra').checked) { 
+                if(document.getElementById('sel_hf_mra_drug').value === 'spironolactone') shortMeds.push('Spironolactone'); 
+            }
             if(document.getElementById('chk_hf_sglt2i').checked) shortMeds.push('Empagliflozin');
             if(document.getElementById('chk_hf_iva').checked) shortMeds.push('Ivabradine');
             if(document.getElementById('chk_hf_loop').checked) shortMeds.push('Furosemide');
@@ -1500,7 +1601,9 @@
             showToast('คัดลอกข้อมูล HF ลงกล่อง Pharmacist Note สำเร็จแล้ว!');
         }
 
-        // --- PREOP DATABASES ---
+        // ==========================================
+        //         PREOP DATABASES
+        // ==========================================
         const drugDatabase = [
             { id: 'warfarin', name: 'Warfarin (Coumadin)', category: 'anticoagulant' }, { id: 'apixaban', name: 'Apixaban (Eliquis)', category: 'doac' }, { id: 'rivaroxaban', name: 'Rivaroxaban (Xarelto)', category: 'doac' }, { id: 'dabigatran', name: 'Dabigatran (Pradaxa)', category: 'doac_dabi' }, { id: 'edoxaban', name: 'Edoxaban (Lixiana)', category: 'doac' },
             { id: 'aspirin', name: 'Aspirin (ASA)', category: 'antiplatelet' }, { id: 'clopidogrel', name: 'Clopidogrel (Plavix)', category: 'antiplatelet' }, { id: 'ticagrelor', name: 'Ticagrelor (Brilinta)', category: 'antiplatelet' }, { id: 'prasugrel', name: 'Prasugrel (Effient)', category: 'antiplatelet' }, { id: 'cilostazol', name: 'Cilostazol (Pletaal)', category: 'antiplatelet' },
@@ -1741,7 +1844,9 @@
             generateOutput();
         }
 
-        // Modals Logic
+        // ==========================================
+        //         MODALS LOGIC
+        // ==========================================
         function openModal(src) { 
             const img = document.getElementById('img01');
             const mod = document.getElementById('imageModal');
@@ -3037,6 +3142,41 @@
         //         BOOTSTRAP INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
+            const drugInput = document.getElementById('drugSearch');
+            if(drugInput) {
+                drugInput.addEventListener('focus', () => filterPreopDrugs(true));
+                drugInput.addEventListener('click', () => filterPreopDrugs(true));
+                drugInput.addEventListener('keyup', () => filterPreopDrugs(false));
+            }
+            const procInput = document.getElementById('procedureSearch');
+            if(procInput) {
+                procInput.addEventListener('focus', () => filterPreopProcedures(true));
+                procInput.addEventListener('click', () => filterPreopProcedures(true));
+                procInput.addEventListener('keyup', () => filterPreopProcedures(false));
+            }
+            document.addEventListener('click', (e) => {
+                if(drugInput && !document.getElementById('drugListContainer').contains(e.target) && e.target !== drugInput) { document.getElementById('drugListContainer').classList.add('hidden'); }
+                if(procInput && !document.getElementById('procedureListContainer').contains(e.target) && e.target !== procInput) { document.getElementById('procedureListContainer').classList.add('hidden'); }
+            });
+
+            document.querySelectorAll('#chadModal input, #chadModal select').forEach(i => i.addEventListener('change', calculateChad));
+            document.querySelectorAll('#capriniModal input').forEach(i => i.addEventListener('change', calculateCaprini));
+            
+            // Sync HN/Name into Warfarin tab
+            const hnInp = document.getElementById('hn');
+            if(hnInp) hnInp.addEventListener('input', (e) => {
+                const wfHn = document.getElementById('wfHnInput');
+                if(wfHn) wfHn.value = e.target.value;
+                updateOpdStickerPreview();
+            });
+            const ptNameInp = document.getElementById('ptName');
+            if(ptNameInp) ptNameInp.addEventListener('input', (e) => {
+                const wfName = document.getElementById('wfNameInput');
+                if(wfName) wfName.value = e.target.value;
+                updateOpdStickerPreview();
+            });
+            
+            setupWarfarinAccess();
             renderMrSources();
             renderHivDrugs();
             generateOutput();
