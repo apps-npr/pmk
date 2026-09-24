@@ -4,27 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OPD Online - Pharmacist Note Master</title>
+    
     <!-- Tailwind CSS & Fonts & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- PWA Setup for Warfarin -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="OPD Warfarin">
+    <link rel="apple-touch-icon" href="icon_512x512.jpg">
+    <link rel="icon" type="image/jpeg" sizes="512x512" href="icon_512x512.jpg">
+    
     <style>
         body { font-family: 'Prompt', sans-serif; background-color: #f8fafc; }
         html { scroll-behavior: smooth; }
         
         /* Tab Button Styles */
-        .tab-btn { transition: all 0.2s ease; }
+        .tab-btn { transition: all 0.2s ease; cursor: pointer; white-space: nowrap; }
         .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5); }
         .tab-btn:not(.active) { background-color: #ffffff; color: #4b5563; border-color: #e5e7eb; }
         .tab-btn:not(.active):hover { background-color: #f3f4f6; }
         
         /* Clinic Specific Active Colors */
-        .tab-btn.active[data-target="WARFARIN"] { background-color: #ef4444; border-color: #ef4444; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.5); }
-        .tab-btn.active[data-target="HF"] { background-color: #10b981; border-color: #10b981; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.5); }
-        .tab-btn.active[data-target="ASTHMA"] { background-color: #06b6d4; border-color: #06b6d4; box-shadow: 0 4px 6px -1px rgba(6, 182, 212, 0.5); }
-        .tab-btn.active[data-target="CKD"] { background-color: #8b5cf6; border-color: #8b5cf6; box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.5); }
+        .tab-btn.active[data-target="WARFARIN"] { background-color: #ef4444 !important; border-color: #ef4444 !important; }
+        .tab-btn.active[data-target="HF"] { background-color: #10b981 !important; border-color: #10b981 !important; }
+        .tab-btn.active[data-target="ASTHMA"] { background-color: #06b6d4 !important; border-color: #06b6d4 !important; }
+        .tab-btn.active[data-target="CKD"] { background-color: #8b5cf6 !important; border-color: #8b5cf6 !important; }
 
         /* General Custom UI */
         .drug-list-container { max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; margin-top: 5px; background: white; position: absolute; z-index: 10; width: 100%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
@@ -93,6 +103,12 @@
         @page { size: auto; margin: 0; }
         @page opdPageA5 { size: A5 landscape; margin: 0; }
         body.print-mode-opd-a5 { page: opdPageA5; }
+        
+        .clinic-form { display: none; }
+        .clinic-form.active-form { display: block; }
+        
+        .wf-tab-content { display: none; }
+        .wf-tab-content.active-wf { display: block; }
     </style>
 </head>
 <body class="p-4 md:p-8 relative">
@@ -106,6 +122,27 @@
         <option value="ภญ.อาทิตยา วงศาโรจน์"></option>
         <option value="ภญ.จุติพร ร่วมใจ"></option>
         <option value="ภก.กันตพงศ์ วงศ์เอนกเกษม"></option>
+    </datalist>
+
+    <datalist id="hivDrugOptions">
+        <option value="TLD (TDF 300mg+3TC 300mg+DTG 50mg)"></option>
+        <option value="TEDAVIR (TAF 25mg+FTC 200mg+DTG 50mg)"></option>
+        <option value="TDF/FTC (TDF 300mg+FTC 200mg)"></option>
+        <option value="ALACOVIR (ABC 600mg+3TC 300 mg)"></option>
+        <option value="Zilavir (AZT 300mg+3TC 150mg)"></option>
+        <option value="ATV/r (Atazanavir 300mg/Ritonavir 100mg)"></option>
+        <option value="LPV/r (LPV 200mg+Ritonavir 50mg)"></option>
+        <option value="DRV/r (Darunavir 600mg/Ritonavir 100mg)"></option>
+        <option value="TDF 300mg"></option>
+        <option value="TAF 25mg"></option>
+        <option value="3TC 150mg"></option>
+        <option value="3TC 300mg"></option>
+        <option value="DTG 50mg"></option>
+        <option value="AZT 100mg"></option>
+        <option value="AZT 300mg"></option>
+        <option value="ABC 300mg"></option>
+        <option value="Ritonavir 100mg"></option>
+        <option value="RPV 25mg"></option>
     </datalist>
 
     <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden" id="mainAppContainer">
@@ -151,7 +188,7 @@
         <div class="p-6 min-h-[400px]">
             
             <!-- 1. MR Clinic -->
-            <div id="form-MR" class="clinic-form space-y-4 block">
+            <div id="form-MR" class="clinic-form active-form space-y-4">
                 <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-4">
                     <label class="block text-sm font-bold text-blue-800 mb-2">ประเภทการทำ MR</label>
                     <div class="flex gap-6">
@@ -178,7 +215,7 @@
             </div>
 
             <!-- 2. Pre-OP Clinic -->
-            <div id="form-PREOP" class="clinic-form space-y-6 hidden">
+            <div id="form-PREOP" class="clinic-form space-y-6">
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                     <h4 class="font-bold text-yellow-800 mb-2"><i class="fa-solid fa-clipboard-check mr-1"></i> Checklist ซักประวัติ</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
@@ -231,7 +268,7 @@
             </div>
 
             <!-- 3. ADR Clinic -->
-            <div id="form-ADR" class="clinic-form space-y-4 hidden">
+            <div id="form-ADR" class="clinic-form space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><label class="block text-sm font-medium text-gray-700 mb-1">สถานที่เกิดเหตุ/รับยา</label><input type="text" id="adrPlace" class="w-full rounded border-gray-300 px-3 py-2" placeholder="เช่น รพ.นพรัตนฯ" oninput="generateOutput()"></div>
                     <div><label class="block text-sm font-medium text-gray-700 mb-1">วันที่สงสัย/เกิดอาการ</label><input type="text" id="adrDate" class="w-full rounded border-gray-300 px-3 py-2" placeholder="วว/ดด/พศ" oninput="generateOutput()"></div>
@@ -242,7 +279,7 @@
             </div>
 
             <!-- 4. HIV Clinic -->
-            <div id="form-HIV" class="clinic-form space-y-6 hidden">
+            <div id="form-HIV" class="clinic-form space-y-6">
                 <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm mb-2">
                     <label class="block text-sm font-bold text-gray-700 mb-2">Vital Signs: BP</label>
                     <input type="text" id="hivBp" placeholder="เช่น 120/80" class="w-full md:w-1/2 rounded border-gray-300 px-3 py-2" oninput="generateOutput()">
@@ -344,7 +381,7 @@
             </div>
 
             <!-- 5. Warfarin Clinic -->
-            <div id="form-WARFARIN" class="clinic-form space-y-4 hidden">
+            <div id="form-WARFARIN" class="clinic-form space-y-4">
                 <div class="bg-white p-4 border border-red-200 rounded-xl shadow-sm mb-4">
                     <h3 class="font-bold text-red-700 mb-3 border-b border-red-100 pb-2"><i class="fa-solid fa-capsules"></i> เมนูจัดการคิว Warfarin</h3>
                     
@@ -355,7 +392,7 @@
                     </div>
 
                     <!-- Warfarin: กรอกเอง -->
-                    <div id="wf-manual" class="wf-tab-content block">
+                    <div id="wf-manual" class="wf-tab-content active-wf">
                         <form id="warfarinForm">
                             <input type="hidden" name="action" value="manual">
                             <div class="mb-3">
@@ -443,7 +480,7 @@
             </div>
 
             <!-- 6. HF Clinic Form -->
-            <div id="form-HF" class="clinic-form space-y-6 hidden">
+            <div id="form-HF" class="clinic-form space-y-6">
                 <div class="bg-emerald-50 p-4 border border-emerald-200 rounded-xl mb-4">
                     <h3 class="font-bold text-emerald-800 mb-1"><i class="fa-solid fa-heart-pulse"></i> HF Clinic (HFrEF Quadruple Therapy)</h3>
                     <p class="text-emerald-700 text-xs">วิเคราะห์ Guideline อัตโนมัติ: ปรับยาเพื่อลด Mortality rate</p>
@@ -545,7 +582,7 @@
             </div>
 
             <!-- 7. Asthma/COPD Clinic Form -->
-            <div id="form-ASTHMA" class="clinic-form space-y-6 hidden">
+            <div id="form-ASTHMA" class="clinic-form space-y-6">
                 <div class="bg-cyan-50 p-4 border border-cyan-200 rounded-xl mb-4 text-sm shadow-sm">
                     <h3 class="font-bold text-cyan-800 mb-1"><i class="fa-solid fa-lungs"></i> คลินิกหอบหืดและปอดอุดกั้นเรื้อรัง (Asthma & COPD)</h3>
                     <p class="text-cyan-700 text-xs">ประเมินการควบคุมอาการ และประเมินเทคนิคการใช้ยาพ่น</p>
@@ -619,7 +656,7 @@
             </div>
 
             <!-- 8. CKD Clinic Form -->
-            <div id="form-CKD" class="clinic-form space-y-6 hidden">
+            <div id="form-CKD" class="clinic-form space-y-6">
                 <div class="bg-purple-50 p-4 border border-purple-200 rounded-xl mb-4 text-sm shadow-sm">
                     <h3 class="font-bold text-purple-800 mb-1"><i class="fa-solid fa-kidneys"></i> คลินิกโรคไตเรื้อรัง (CKD Clinic)</h3>
                     <p class="text-purple-700 text-xs">ประเมินและชะลอความเสื่อมของไต (CKD Delay Progression)</p>
@@ -797,17 +834,21 @@
                 activeBtn.classList.add('active');
             }
             
-            // 3. Hide all forms
+            // 3. Hide all forms safely
             tabs.forEach(t => {
                 const el = document.getElementById(`form-${t}`);
-                if(el) el.classList.add('hidden');
-                if(el) el.classList.remove('block');
+                if(el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('active-form');
+                    el.classList.remove('block');
+                }
             });
             
             // 4. Show selected form
             const selectedForm = document.getElementById(`form-${tab}`);
             if(selectedForm) {
                 selectedForm.classList.remove('hidden');
+                selectedForm.classList.add('active-form');
                 selectedForm.classList.add('block');
             }
             
@@ -833,9 +874,30 @@
                 if (!['HF', 'ASTHMA', 'CKD'].includes(tab)) {
                     generateOutput();
                 } else {
-                    // Clear the output to avoid confusion when switching to specific clinics
-                    document.getElementById('outputPmk').value = "";
+                    // Avoid wiping out data entirely, just ensure it's up to date if they switch back
                 }
+            }
+        }
+
+        function switchWfTab(wftab) {
+            document.querySelectorAll('.wf-nav-link').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`wf-${wftab}-tab`);
+            if(activeBtn) activeBtn.classList.add('active');
+            
+            ['manual', 'pending', 'sticker'].forEach(t => { 
+                const el = document.getElementById(`wf-${t}`);
+                if(el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('active-wf');
+                    el.classList.remove('block');
+                }
+            });
+            
+            const targetEl = document.getElementById(`wf-${wftab}`);
+            if(targetEl) {
+                targetEl.classList.remove('hidden');
+                targetEl.classList.add('active-wf');
+                targetEl.classList.add('block');
             }
         }
 
@@ -1609,7 +1671,8 @@
         //         8. CKD LOGIC
         // ==========================================
         function generateCkdNote() {
-            const stage = document.getElementById('ckd_stage')?.options[document.getElementById('ckd_stage').selectedIndex]?.text || '-';
+            const stageEl = document.getElementById('ckd_stage');
+            const stage = stageEl ? stageEl.options[stageEl.selectedIndex]?.text : '-';
             const egfr = document.getElementById('ckd_egfr')?.value || '-';
             const scr = document.getElementById('ckd_scr')?.value || '-';
             const uacr = document.getElementById('ckd_uacr')?.value || '-';
@@ -1871,6 +1934,7 @@
                 });
             }
             
+            // Warfarin Print Sticker
             const printBtn = document.getElementById('printBtn');
             if(printBtn) {
                 printBtn.addEventListener('click', () => {
@@ -1923,6 +1987,7 @@
                 });
             }
             
+            // Warfarin Form Submission
             const wfForm = document.getElementById('warfarinForm');
             if(wfForm) {
                 wfForm.addEventListener('submit', e => {
