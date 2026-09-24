@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OPD Online - Pharmacist Note</title>
-    
     <!-- Tailwind CSS & Fonts & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -21,76 +20,21 @@
     <link rel="icon" type="image/jpeg" sizes="512x512" href="icon_512x512.jpg">
     
     <style>
-        body { 
-            font-family: 'Prompt', sans-serif; 
-        }
-        html { 
-            scroll-behavior: smooth; 
-        }
-        .tab-btn { 
-            transition: all 0.2s ease; 
-        }
-        .tab-btn.active { 
-            background-color: #3b82f6; 
-            color: white; 
-            border-color: #3b82f6; 
-        }
-        .tab-btn:not(.active) { 
-            background-color: #f3f4f6; 
-            color: #4b5563; 
-        }
-        .tab-btn:not(.active):hover { 
-            background-color: #e5e7eb; 
-        }
+        body { font-family: 'Prompt', sans-serif; }
+        html { scroll-behavior: smooth; }
+        .tab-btn { transition: all 0.2s ease; }
+        .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        .tab-btn:not(.active) { background-color: #f3f4f6; color: #4b5563; }
+        .tab-btn:not(.active):hover { background-color: #e5e7eb; }
 
         /* --- PRE-OP Styles Converted for Tailwind Compatibility --- */
-        .drug-list-container { 
-            max-height: 200px; 
-            overflow-y: auto; 
-            border: 1px solid #e5e7eb; 
-            border-radius: 0.5rem; 
-            margin-top: 5px; 
-            background: white; 
-            position: absolute; 
-            z-index: 10; 
-            width: 100%; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
-        }
-        .drug-item { 
-            padding: 10px 15px; 
-            cursor: pointer; 
-            border-bottom: 1px solid #f9fafb; 
-            transition: background 0.2s; 
-            font-size: 0.875rem; 
-        }
-        .drug-item:hover { 
-            background-color: #eff6ff; 
-        }
-        .tag { 
-            background-color: #3b82f6; 
-            color: white; 
-            padding: 5px 12px; 
-            border-radius: 9999px; 
-            font-size: 0.875rem; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 8px; 
-            margin: 4px; 
-        }
-        .tag i { 
-            cursor: pointer; 
-        }
-        .tag:hover { 
-            background-color: #2563eb; 
-        }
-        .info-box { 
-            background-color: #fefce8; 
-            border-left: 4px solid #eab308; 
-            padding: 12px; 
-            margin-top: 10px; 
-            border-radius: 4px; 
-            font-size: 0.875rem; 
-        }
+        .drug-list-container { max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; margin-top: 5px; background: white; position: absolute; z-index: 10; width: 100%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .drug-item { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f9fafb; transition: background 0.2s; font-size: 0.875rem; }
+        .drug-item:hover { background-color: #eff6ff; }
+        .tag { background-color: #3b82f6; color: white; padding: 5px 12px; border-radius: 9999px; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 8px; margin: 4px; }
+        .tag i { cursor: pointer; }
+        .tag:hover { background-color: #2563eb; }
+        .info-box { background-color: #fefce8; border-left: 4px solid #eab308; padding: 12px; margin-top: 10px; border-radius: 4px; font-size: 0.875rem; }
         .rec-stop { background-color: #fee2e2; border-left: 4px solid #ef4444; }
         .rec-continue { background-color: #dcfce7; border-left: 4px solid #22c55e; }
         .rec-bridge { background-color: #e0f2fe; border-left: 4px solid #0ea5e9; }
@@ -292,9 +236,6 @@
                 </button>
                 <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
                     <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
-                </button>
-                <button onclick="switchTab('ASTHMA')" id="tab-ASTHMA" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100">
-                    <i class="fa-solid fa-lungs mr-1"></i> 7. Asthma/COPD
                 </button>
             </div>
         </div>
@@ -1010,14 +951,6 @@
                         <i class="fa-solid fa-arrow-down mr-1"></i> นำข้อมูลส่งลงกล่อง Pharmacist Note (ด้านล่าง)
                     </button>
                     <div id="hfRecContent" class="text-sm"></div>
-                </div>
-            </div>
-
-            <!-- 7. Asthma/COPD Clinic Form (Placeholder for Future) -->
-            <div id="form-ASTHMA" class="space-y-6 hidden">
-                <div class="bg-cyan-50 p-4 border border-cyan-200 rounded-xl mb-4 text-center text-cyan-800">
-                    <h3 class="font-bold mb-2"><i class="fa-solid fa-person-digging"></i> คลินิก 7 (Asthma/COPD) อยู่ระหว่างการพัฒนา</h3>
-                    <p>ระบบจะเปิดให้ใช้งานในเวอร์ชันถัดไปครับ</p>
                 </div>
             </div>
 
