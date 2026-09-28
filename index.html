@@ -172,20 +172,6 @@
         <option value="RPV 25mg"></option>
     </datalist>
 
-    <!-- ตัวเลือก Inhaler สำหรับคลินิก Asthma/COPD -->
-    <datalist id="inhalerList">
-        <option value="MDI"></option>
-        <option value="MDI with Spacer"></option>
-        <option value="Handihaler"></option>
-        <option value="Accuhaler"></option>
-        <option value="Turbuhaler"></option>
-        <option value="Respimat"></option>
-        <option value="Breezhaler"></option>
-        <option value="Ellipta"></option>
-        <option value="Easyhaler"></option>
-        <option value="Spiromax"></option>
-    </datalist>
-
     <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden" id="mainAppContainer">
         
         <!-- Header -->
@@ -225,11 +211,11 @@
                 <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
                     <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
                 </button>
-                <button onclick="switchTab('CLINIC7')" id="tab-CLINIC7" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100">
-                    <i class="fa-solid fa-kidneys mr-1"></i> 7. CKD Clinic
+                <button onclick="switchTab('CLINIC7')" id="tab-CLINIC7" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">
+                    <i class="fa-solid fa-notes-medical mr-1"></i> 7. Clinic 7 (NCD/CKD)
                 </button>
                 <button onclick="switchTab('CLINIC8')" id="tab-CLINIC8" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">
-                    <i class="fa-solid fa-lungs mr-1"></i> 8. Asthma/COPD
+                    <i class="fa-solid fa-lungs mr-1"></i> 8. Clinic 8 (Asthma/COPD)
                 </button>
             </div>
         </div>
@@ -942,10 +928,10 @@
                 </div>
             </div>
 
-            <!-- 7. Clinic 7 (CKD Form) -->
+            <!-- 7. Clinic 7 (NCD / CKD Form) -->
             <div id="form-CLINIC7" class="space-y-6 clinic-form hidden">
                 <div class="bg-orange-50 p-4 border border-orange-200 rounded-xl mb-4 text-sm">
-                    <h3 class="font-bold text-orange-800 mb-2"><i class="fa-solid fa-notes-medical"></i> 7. คลินิกชะลอไตเสื่อม (CKD Clinic)</h3>
+                    <h3 class="font-bold text-orange-800 mb-2"><i class="fa-solid fa-notes-medical"></i> 7. คลินิกโรคเรื้อรังและชะลอไตเสื่อม (NCD / CKD Clinic)</h3>
                     <p class="text-orange-700">การประเมินการทำงานของไต เป้าหมายความดันโลหิต น้ำตาลสะสม และการปรับขนาดยาตามสภาพไต</p>
                 </div>
                 
@@ -1002,17 +988,11 @@
             <div id="form-CLINIC8" class="space-y-6 clinic-form hidden">
                 <div class="bg-teal-50 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-teal-800 mb-2"><i class="fa-solid fa-lungs"></i> 8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD Clinic)</h3>
-                    <p class="text-teal-700">ประเมินเทคนิคการใช้ยาพ่น การควบคุมอาการโรคหืด/ปอดอุดกั้นเรื้อรัง การเกิดผลข้างเคียง และประวัติการเข้าฉุกเฉิน (ER)</p>
+                    <p class="text-teal-700">ประเมินเทคนิคการใช้ยาพ่น การควบคุมอาการโรคหืด/ปอดอุดกั้นเรื้อรัง และการเกิดผลข้างเคียงจากสเตียรอยด์พ่น</p>
                 </div>
                 
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mb-4">
-                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">การประเมินการใช้ยาพ่น (Inhaler Technique & Compliance)</h3>
-                    <div id="asthmaDevicesContainer" class="space-y-3 mb-3"></div>
-                    <button onclick="addAsthmaDevice()" class="text-sm text-teal-600 hover:text-teal-800 font-medium bg-teal-50 px-3 py-1.5 rounded border border-teal-200">+ เพิ่มรายการยาพ่นสูด</button>
-                </div>
-
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">การควบคุมอาการโรค (Disease Control)</h3>
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">การประเมินการควบคุมโรคและเทคนิคการพ่นยา</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">การควบคุมอาการ (Asthma/COPD Control)</label>
@@ -1028,23 +1008,21 @@
                             <input type="text" id="c8Score" placeholder="เช่น ACT 22 หรือ CAT 8" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1 text-red-600">ประวัติ ER / Admit (หอบกำเริบ)</label>
-                            <select id="c8ErAdmit" class="w-full rounded-lg border-red-300 border px-3 py-2 text-sm bg-red-50 text-red-800" onchange="generateOutput()">
-                                <option value="ไม่มี">ไม่มีประวัติเร็วๆนี้</option>
-                                <option value="เข้า ER">มีประวัติเข้า ER</option>
-                                <option value="Admit">มีประวัติ Admit</option>
-                                <option value="เข้า ER และ Admit">มีประวัติทั้ง ER และ Admit</option>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เทคนิคการใช้ยาพ่น (Inhaler Technique)</label>
+                            <select id="c8Technique" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
+                                <option value="">-- เลือก --</option>
+                                <option value="ถูกต้องครบถ้วน">ถูกต้องครบถ้วน (Good technique)</option>
+                                <option value="มีข้อผิดพลาด">มีข้อผิดพลาด ได้รับการสอนซ้ำ (Re-educated)</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">การบ้วนปากหลังพ่นยาสเตียรอยด์ (Gargle)</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">การบ้วนปากหลังพ่นยาสเตียรอยด์</label>
                             <select id="c8Gargle" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
-                                <option value="">-- เลือก --</option>
                                 <option value="บ้วนปากสม่ำเสมอ">บ้วนปากสม่ำเสมอ (ปฏิเสธฝ้าขาว/เสียงแหบ)</option>
-                                <option value="ลืมบ้วนปากบ่อย">ลืมบ้วนปากบ่อย (แนะนำ/ย้ำเตือนแล้ว)</option>
+                                <option value="ลืมบ้วนปากบ่อย">ลืมบ้วนปากบ่อย (แนะนำย้ำเตือน)</option>
                             </select>
                         </div>
                         <div>
@@ -1053,7 +1031,12 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 pt-4 border-t border-gray-200">
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">รายการยาพ่นและอุปกรณ์เสริม (Inhaler Devices)</label>
+                        <input type="text" id="c8Devices" placeholder="เช่น MDI + Spacer, Accuhaler, Turbuhaler" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                    </div>
+
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก</label>
                         <input type="text" id="c8PharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
                     </div>
@@ -1256,42 +1239,6 @@
         let hivDrugs = [ { name: '', usage: '', time: '' } ]; 
         let selectedPreopDrugs = [];
         let preopCalculatedNotes = [];
-        
-        // --- ASTHMA / COPD Devices UI ---
-        let asthmaDevices = [ { name: '', regimen: '', technique: '' } ];
-
-        function renderAsthmaDevices() {
-            const container = document.getElementById('asthmaDevicesContainer');
-            if(!container) return;
-            container.innerHTML = '';
-            asthmaDevices.forEach((dev, idx) => {
-                container.innerHTML += `
-                <div class="flex flex-col md:flex-row gap-3 bg-gray-50 p-3 rounded border border-gray-200 relative">
-                    <div class="flex-1">
-                        <label class="block text-xs font-bold text-gray-500 mb-1">เลือกอุปกรณ์ (Device)</label>
-                        <input type="text" list="inhalerList" value="${dev.name}" oninput="asthmaDevices[${idx}].name=this.value; generateOutput()" placeholder="-- แตะเลือกอุปกรณ์ --" class="w-full rounded border-gray-300 px-2 py-1.5 text-sm bg-white">
-                    </div>
-                    <div class="flex-1">
-                        <label class="block text-xs font-bold text-gray-500 mb-1">วิธีการพ่น (Regimen)</label>
-                        <input type="text" value="${dev.regimen}" oninput="asthmaDevices[${idx}].regimen=this.value; generateOutput()" placeholder="เช่น พ่น 1 ครั้ง (1 Puff)" class="w-full rounded border-gray-300 px-2 py-1.5 text-sm bg-white">
-                    </div>
-                    <div class="flex-1">
-                        <label class="block text-xs font-bold text-gray-500 mb-1">ผลประเมินเทคนิค</label>
-                        <select onchange="asthmaDevices[${idx}].technique=this.value; generateOutput()" class="w-full rounded border-gray-300 px-2 py-1.5 text-sm bg-white">
-                            <option value="" ${dev.technique===''?'selected':''}>- เลือก -</option>
-                            <option value="Correct" ${dev.technique==='Correct'?'selected':''}>ทำถูกต้องครบถ้วน</option>
-                            <option value="Incorrect (Re-edu)" ${dev.technique==='Incorrect (Re-edu)'?'selected':''}>ไม่ถูกต้อง (สอนซ้ำแล้ว)</option>
-                        </select>
-                    </div>
-                    <button onclick="removeAsthmaDevice(${idx})" class="absolute top-2 right-2 md:static md:mt-6 text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
-                </div>
-                `;
-            });
-            generateOutput();
-        }
-        function addAsthmaDevice() { asthmaDevices.push({name:'', regimen:'', technique:''}); renderAsthmaDevices(); }
-        function removeAsthmaDevice(idx) { asthmaDevices.splice(idx, 1); if(asthmaDevices.length===0) asthmaDevices.push({name:'', regimen:'', technique:''}); renderAsthmaDevices(); }
-
 
         // ==========================================
         //         UI & TABS LOGIC
@@ -1305,7 +1252,7 @@
             });
             
             // เอาสีปุ่มกด (Active) ออกทั้งหมด
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50', 'bg-green-50', 'bg-orange-50', 'bg-teal-50', 'bg-purple-50', 'text-purple-700'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50', 'bg-green-50', 'bg-orange-50', 'bg-teal-50'));
             
             // แสดงฟอร์มที่เลือก
             const targetForm = document.getElementById('form-' + tab);
@@ -1320,7 +1267,7 @@
             
             if(tab === 'WARFARIN') activeBtn.classList.remove('text-red-700');
             if(tab === 'HF') activeBtn.classList.remove('text-green-700');
-            if(tab === 'CLINIC7') activeBtn.classList.remove('text-purple-700');
+            if(tab === 'CLINIC7') activeBtn.classList.remove('text-orange-700');
             if(tab === 'CLINIC8') activeBtn.classList.remove('text-teal-700');
 
             // จัดการ Checkbox นำข้อมูล MR มารวม
@@ -2314,9 +2261,6 @@
                 const refillRadio = document.querySelector('input[name="hivType"][value="refill"]');
                 if(refillRadio) refillRadio.checked = true;
                 
-                const erNode = document.getElementById('c8ErAdmit');
-                if(erNode) erNode.value = 'ไม่มี';
-                
                 toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
                 
                 mrSources = [ { place: '', date: '', drugs: [""] } ]; 
@@ -2324,7 +2268,6 @@
                 hivDrugs = [ { name: '', usage: '', time: '' } ];
                 selectedPreopDrugs = []; 
                 preopCalculatedNotes = [];
-                asthmaDevices = [ { name: '', regimen: '', technique: '' } ];
                 
                 // Hide dynamic HF sections safely
                 ['div_hf_raasi', 'div_hf_bb', 'div_hf_mra', 'div_hf_iva', 'div_hf_loop', 'wrap_hf_raasi_dose', 'wrap_hf_bb_dose', 'wrap_hf_mra_dose', 'hfResultArea'].forEach(id => {
@@ -2336,7 +2279,6 @@
                 renderMrSources(); 
                 renderHivDrugs(); 
                 renderSelectedPreopDrugs(); 
-                renderAsthmaDevices();
                 checkPreopSpecificQuestions();
                 toggleHivType();
                 generateOutput();
@@ -2626,77 +2568,46 @@
                 }
             }
             else if (currentTab === 'CLINIC7') {
-                notes.push("pharmacist note [CKD Clinic]");
+                notes.push("pharmacist note");
                 let c7Lines = [];
                 const egfr = document.getElementById('c7Egfr')?.value;
                 const stage = document.getElementById('c7CkdStage')?.value;
-                const scr = document.getElementById('c7Scr')?.value;
-                const uacr = document.getElementById('c7UrineProt')?.value;
-                const k = document.getElementById('c7K')?.value;
-                const hb = document.getElementById('c7Hb')?.value;
+                const a1c = document.getElementById('c7A1c')?.value;
                 const bp = document.getElementById('c7Bp')?.value;
+                const urine = document.getElementById('c7UrineProt')?.value;
+                const k = document.getElementById('c7K')?.value;
+                const drp = document.getElementById('c7Drp')?.value;
+                const pharm = document.getElementById('c7PharmName')?.value;
 
                 if (stage || egfr) c7Lines.push(`CKD: ${stage || '-'} (eGFR: ${egfr || '-'})`);
-                if (scr) c7Lines.push(`Scr: ${scr}`);
-                if (uacr) c7Lines.push(`UrinePro/UACR: ${uacr}`);
-                if (k) c7Lines.push(`K: ${k}`);
-                if (hb) c7Lines.push(`Hb/Hct: ${hb}%`);
                 if (bp) c7Lines.push(`BP: ${bp}`);
+                if (a1c) c7Lines.push(`HbA1c: ${a1c}%`);
+                if (urine) c7Lines.push(`Urine: ${urine}`);
+                if (k) c7Lines.push(`K: ${k}`);
                 
                 if (c7Lines.length > 0) notes.push(c7Lines.join(' | '));
-
-                // Meds Checkbox
-                let meds = [];
-                if(document.getElementById('c7MedAcei')?.checked) meds.push("ACEI/ARB");
-                if(document.getElementById('c7MedSglt2')?.checked) meds.push("SGLT2i");
-                if(document.getElementById('c7MedMra')?.checked) meds.push("MRA");
-                if(document.getElementById('c7MedStatin')?.checked) meds.push("Statin");
-                if (meds.length > 0) notes.push(`Renoprotective Meds: ${meds.join(', ')}`);
-
-                const drp = document.getElementById('c7Drp')?.value;
-                if (drp) notes.push(`Plan/DRP: ${drp}`);
-
-                const pharm = document.getElementById('c7PharmName')?.value;
+                if (drp) notes.push(`DRP/Intervention: ${drp}`);
                 if (pharm) notes.push(`/${pharm}`);
             }
             else if (currentTab === 'CLINIC8') {
-                notes.push("pharmacist note [Asthma/COPD]");
+                notes.push("pharmacist note");
                 let c8Lines = [];
-                
-                const indication = document.querySelector('input[name="c8Indication"]:checked')?.value;
-                const er = document.getElementById('c8Er')?.value;
-                const admit = document.getElementById('c8Admit')?.value;
+                const ctrl = document.getElementById('c8Control')?.value;
                 const score = document.getElementById('c8Score')?.value;
-                const isNew = document.getElementById('c8NewPt')?.checked;
+                const tech = document.getElementById('c8Technique')?.value;
+                const gargle = document.getElementById('c8Gargle')?.value;
+                const reliever = document.getElementById('c8RelieverUse')?.value;
+                const devices = document.getElementById('c8Devices')?.value;
+                const pharm = document.getElementById('c8PharmName')?.value;
 
-                if (isNew) notes.push("⭐ ผู้ป่วยใหม่ (เพิ่งเข้าคลินิกครั้งแรก)");
-                if (indication) c8Lines.push(`Dx: ${indication}`);
+                if (ctrl) c8Lines.push(`Control: ${ctrl}`);
                 if (score) c8Lines.push(`Score: ${score}`);
-                if (er || admit) c8Lines.push(`History: ER ${er||0} ครั้ง/ปี, Admit ${admit||0} ครั้ง/ปี`);
+                if (tech) c8Lines.push(`Technique: ${tech}`);
+                if (gargle) c8Lines.push(`Gargle: ${gargle}`);
+                if (reliever) c8Lines.push(`Reliever: ${reliever}`);
                 
                 if (c8Lines.length > 0) notes.push(c8Lines.join(' | '));
-                
-                // Symptoms
-                let symps = [];
-                document.querySelectorAll('.symp-chk:checked').forEach(cb => symps.push(cb.value));
-                if (symps.length > 0) notes.push(`Symptom Control: มีอาการ ${symps.join(', ')}`);
-
-                // Devices
-                if (typeof asthmaDevices !== 'undefined' && Array.isArray(asthmaDevices)) {
-                    asthmaDevices.forEach((d, idx) => {
-                        if (d.name) {
-                            let devLine = `${idx+1}. ${d.name}`;
-                            if (d.regimen) devLine += ` (${d.regimen})`;
-                            if (d.technique) devLine += ` -> Tech: ${d.technique}`;
-                            notes.push(devLine);
-                        }
-                    });
-                }
-                
-                const drp = document.getElementById('c8Drp')?.value;
-                if (drp) notes.push(`DRP/Note: ${drp}`);
-
-                const pharm = document.getElementById('c8PharmName')?.value;
+                if (devices) notes.push(`Devices: ${devices}`);
                 if (pharm) notes.push(`/${pharm}`);
             }
             
@@ -2716,59 +2627,209 @@
         function getRowDataArray() {
             let rowData = Array(18).fill('');
             const hnNode = document.getElementById('hn');
-            const ptNameNode = document.getElementById('ptName');
             if(hnNode) rowData[0] = hnNode.value;       
-            if(ptNameNode) rowData[1] = ptNameNode.value; 
+            
+            if (currentTab !== 'HIV') {
+                const ptNameNode = document.getElementById('ptName');
+                if(ptNameNode) rowData[1] = ptNameNode.value; 
+            }
 
-            if (currentTab === 'CLINIC7') {
+            if (currentTab === 'MR') {
+                const mrTypeNode = document.querySelector('input[name="mrType"]:checked');
+                const mrType = mrTypeNode ? mrTypeNode.value : null;
+                if(mrType === 'phone') rowData[3] = '1';
+                if(mrType === 'patient') rowData[4] = '1';
+                
+                const mrAllergyNode = document.getElementById('mrAllergyCheck');
+                if(mrAllergyNode && mrAllergyNode.checked) { 
+                    rowData[6] = '1'; 
+                    const mrDetNode = document.getElementById('mrAllergyDetail');
+                    if(mrDetNode) rowData[9] = mrDetNode.value; 
+                }
+                
+                rowData[10] = mrSources.map(s => s.place).filter(p => p).join(', '); 
+                let allDrugs = []; 
+                mrSources.forEach(s => { 
+                    s.drugs.filter(d => d.trim() !== '').forEach(d => allDrugs.push(d)); 
+                });
+                rowData[11] = allDrugs.join(', ');
+            } 
+            else if (currentTab === 'ADR') {
+                rowData[7] = '1'; 
+                const adrAssNode = document.getElementById('adrAssessment');
+                if(adrAssNode) rowData[9] = adrAssNode.value;
+            }
+            else if (currentTab === 'PREOP') {
+                const chkMergeNode = document.getElementById('chkMergeMr');
+                const isMerge = chkMergeNode ? chkMergeNode.checked : false;
+                
+                if(isMerge) {
+                    const mrTypeNode = document.querySelector('input[name="mrType"]:checked');
+                    const mrType = mrTypeNode ? mrTypeNode.value : null;
+                    if(mrType === 'phone') rowData[3] = '1';
+                    if(mrType === 'patient') rowData[4] = '1';
+                    
+                    let allergyNote = "";
+                    const alCheck = document.getElementById('mrAllergyCheck');
+                    if(alCheck && alCheck.checked) {
+                        rowData[6] = '1';
+                        const alDet = document.getElementById('mrAllergyDetail');
+                        allergyNote = "แพ้: " + (alDet ? alDet.value : '');
+                    }
+                    
+                    rowData[10] = mrSources.map(s => s.place).filter(p => p).join(', ');
+                    
+                    let allDrugs = []; 
+                    mrSources.forEach(s => { 
+                        s.drugs.filter(d => d.trim() !== '').forEach(d => allDrugs.push(d)); 
+                    });
+                    let mrDrugsStr = allDrugs.join(', ');
+
+                    rowData[5] = '1'; 
+                    let preopNotesStr = preopCalculatedNotes.join(' | ');
+                    rowData[9] = allergyNote ? (allergyNote + " | " + preopNotesStr) : preopNotesStr;
+                    
+                    const procNode = document.getElementById('procedureManual');
+                    let procStr = procNode ? procNode.value : '';
+                    rowData[11] = mrDrugsStr ? (mrDrugsStr + " | หัตถการ: " + procStr) : procStr;
+                } else {
+                    rowData[5] = '1'; 
+                    rowData[9] = preopCalculatedNotes.join(' | '); 
+                    const procNode = document.getElementById('procedureManual');
+                    if(procNode) rowData[11] = procNode.value; 
+                }
+            }
+            else if (currentTab === 'HIV') {
+                const typeNode = document.querySelector('input[name="hivType"]:checked');
+                if (typeNode && typeNode.value === 'refer') {
+                    let referDetails = [];
+                    const hNode = document.getElementById('chkHt');
+                    const dmNode = document.getElementById('chkDm');
+                    const dlpNode = document.getElementById('chkDlp');
+                    const livNode = document.getElementById('chkLiver');
+                    const ckdNode = document.getElementById('chkCkd');
+                    const aneNode = document.getElementById('chkAnemia');
+                    
+                    if(hNode && hNode.checked) { referDetails.push(`ความดัน มี ${document.getElementById('txtHt')?.value||''}`); rowData[12] = '1'; }
+                    if(dmNode && dmNode.checked) { referDetails.push(`เบาหวาน มี ${document.getElementById('txtDm')?.value||''}`); rowData[13] = '1'; }
+                    if(dlpNode && dlpNode.checked) { referDetails.push(`ไขมัน มี ${document.getElementById('txtDlp')?.value||''}`); rowData[14] = '1'; }
+                    if(livNode && livNode.checked) { referDetails.push(`ตับ มี ${document.getElementById('txtLiver')?.value||''}`); rowData[15] = '1'; }
+                    if(ckdNode && ckdNode.checked) { referDetails.push(`CKD มี ${document.getElementById('txtCkd')?.value||''}`); rowData[16] = '1'; }
+                    if(aneNode && aneNode.checked) { referDetails.push(`CBC มี ${document.getElementById('txtAnemia')?.value||''}`); rowData[17] = '1'; }
+                    
+                    const othNode = document.getElementById('chkOtherRefer');
+                    if(othNode && othNode.checked) {
+                        const txtOth = document.getElementById('txtOtherRefer');
+                        let otherVal = txtOth ? txtOth.value : '';
+                        if(otherVal) rowData[7] = otherVal;
+                    }
+
+                    if(referDetails.length > 0) { 
+                        rowData[6] = referDetails.join(', '); 
+                    }
+                }
+            }
+            else if (currentTab === 'HF') {
+                const hfLvefNode = document.getElementById('hfLvef');
+                const lvef = hfLvefNode ? hfLvefNode.value : '';
+                rowData[2] = lvef ? lvef : ''; 
+                
+                const raasiNode = document.getElementById('chk_hf_raasi');
+                const bbNode = document.getElementById('chk_hf_bb');
+                const mraNode = document.getElementById('chk_hf_mra');
+                const sgltNode = document.getElementById('chk_hf_sglt2i');
+                
+                const hasRaasi = raasiNode ? raasiNode.checked : false;
+                const hasBb = bbNode ? bbNode.checked : false;
+                const hasMra = mraNode ? mraNode.checked : false;
+                const hasSglt2i = sgltNode ? sgltNode.checked : false;
+                
+                let gdmtCount = 0;
+                let missingGdmt = [];
+                if (hasRaasi) gdmtCount++; else missingGdmt.push('RAASi');
+                if (hasBb) gdmtCount++; else missingGdmt.push('Beta-blocker');
+                if (hasMra) gdmtCount++; else missingGdmt.push('MRA');
+                if (hasSglt2i) gdmtCount++; else missingGdmt.push('SGLT2i');
+                
+                rowData[3] = gdmtCount; 
+                rowData[4] = missingGdmt.length > 0 ? missingGdmt.join(', ') : '-'; 
+                
+                const nyhaNode = document.getElementById('hfNyha');
+                let nyha = nyhaNode ? nyhaNode.options[nyhaNode.selectedIndex]?.text : '';
+                nyha = nyha === '-- เลือก --' ? '-' : nyha;
+                
+                const sbpNode = document.getElementById('hfSbp');
+                const dbpNode = document.getElementById('hfDbp');
+                const hrNode = document.getElementById('hfHr');
+                const egfrNode = document.getElementById('hfEgfr');
+                const kNode = document.getElementById('hfK');
+                
+                const sbp = sbpNode ? sbpNode.value || '-' : '-';
+                const dbp = dbpNode ? dbpNode.value || '-' : '-';
+                const hr = hrNode ? hrNode.value || '-' : '-';
+                const egfr = egfrNode ? egfrNode.value || '-' : '-';
+                const potassium = kNode ? kNode.value || '-' : '-';
+
+                let shortMeds = [];
+                if(hasRaasi) {
+                    const sNode = document.getElementById('sel_hf_raasi_drug');
+                    let val = sNode ? sNode.value : '';
+                    if(val === 'arni') shortMeds.push('Entresto'); 
+                    else if(val === 'enalapril') shortMeds.push('Enalapril'); 
+                    else if(val === 'losartan') shortMeds.push('Losartan');
+                }
+                if(hasBb) {
+                    const sNode = document.getElementById('sel_hf_bb_drug');
+                    let val = sNode ? sNode.value : '';
+                    if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); 
+                    else if(val === 'carvedilol') shortMeds.push('Carvedilol'); 
+                    else if(val === 'metoprolol') shortMeds.push('Metoprolol');
+                }
+                if(hasMra) { 
+                    const sNode = document.getElementById('sel_hf_mra_drug');
+                    if(sNode && sNode.value === 'spironolactone') shortMeds.push('Spironolactone'); 
+                }
+                if(hasSglt2i) shortMeds.push('Empagliflozin');
+                
+                const ivaNode = document.getElementById('chk_hf_iva');
+                if(ivaNode && ivaNode.checked) shortMeds.push('Ivabradine');
+                
+                const loopNode = document.getElementById('chk_hf_loop');
+                if(loopNode && loopNode.checked) shortMeds.push('Furosemide');
+
+                let medsString = shortMeds.length > 0 ? shortMeds.join(',') : '-';
+
+                let interventionText = '';
+                const recContent = document.getElementById('hfRecContent');
+                if (recContent) {
+                    let h3s = Array.from(recContent.querySelectorAll('h3'));
+                    let gdmtH3 = h3s.find(h3 => h3.innerText.includes('การปรับยา 4 เสาหลัก'));
+                    if (gdmtH3) {
+                        let ul = gdmtH3.nextElementSibling;
+                        if (ul && ul.tagName === 'UL') {
+                            let items = Array.from(ul.querySelectorAll('li strong'));
+                            let actions = items.map(strong => strong.innerText.trim()).filter(text => text.startsWith('•'));
+                            if (actions.length > 0) interventionText = ' | 💊 Intervention ปรับยา ' + actions.join(' ');
+                        }
+                    }
+                }
+
+                let summary = `LVEF: ${lvef ? lvef + '%' : '-'} | NYHA: ${nyha} | BP: ${sbp}/${dbp} mmHg | HR: ${hr} bpm | eGFR: ${egfr} | K: ${potassium} | Meds: ${medsString}${interventionText}`;
+                rowData[6] = summary.replace(/\s+/g, ' ').trim(); 
+            }
+            else if (currentTab === 'CLINIC7') {
                 rowData[2] = document.getElementById('c7Egfr')?.value || '';
                 rowData[3] = document.getElementById('c7CkdStage')?.value || '';
-                
-                // รวม Lab ไว้ใน Column 4
-                let labs = [];
-                let scr = document.getElementById('c7Scr')?.value;
-                let uacr = document.getElementById('c7UrineProt')?.value;
-                let k = document.getElementById('c7K')?.value;
-                let hb = document.getElementById('c7Hb')?.value;
-                if(scr) labs.push(`Scr:${scr}`);
-                if(uacr) labs.push(`Urine:${uacr}`);
-                if(k) labs.push(`K:${k}`);
-                if(hb) labs.push(`Hb:${hb}%`);
-                rowData[4] = labs.join(', ');
-                
+                rowData[4] = document.getElementById('c7A1c')?.value || '';
                 rowData[5] = document.getElementById('c7Bp')?.value || '';
-                
-                let meds = [];
-                if(document.getElementById('c7MedAcei')?.checked) meds.push("ACEI");
-                if(document.getElementById('c7MedSglt2')?.checked) meds.push("SGLT2i");
-                if(document.getElementById('c7MedMra')?.checked) meds.push("MRA");
-                if(document.getElementById('c7MedStatin')?.checked) meds.push("Statin");
-                rowData[6] = meds.join(', ');
-                
-                rowData[7] = document.getElementById('c7Drp')?.value || '';
+                rowData[6] = document.getElementById('c7Drp')?.value || '';
             }
             else if (currentTab === 'CLINIC8') {
-                rowData[2] = document.querySelector('input[name="c8Indication"]:checked')?.value || '';
-                rowData[3] = document.getElementById('c8NewPt')?.checked ? 'Yes' : 'No';
-                
-                const er = document.getElementById('c8Er')?.value;
-                const admit = document.getElementById('c8Admit')?.value;
-                rowData[4] = document.getElementById('c8Score')?.value || '';
-                rowData[5] = `ER:${er||0} Admit:${admit||0}`;
-                
-                let symps = [];
-                document.querySelectorAll('.symp-chk:checked').forEach(cb => symps.push(cb.value));
-                rowData[6] = symps.join(', ');
-                
-                let devs = [];
-                if (typeof asthmaDevices !== 'undefined' && Array.isArray(asthmaDevices)) {
-                    asthmaDevices.forEach(d => {
-                        if(d.name) devs.push(`${d.name}(${d.regimen})[${d.technique}]`);
-                    });
-                }
-                rowData[7] = devs.join(' | ');
-                
-                rowData[8] = document.getElementById('c8Drp')?.value || '';
+                rowData[2] = document.getElementById('c8Control')?.value || '';
+                rowData[3] = document.getElementById('c8Score')?.value || '';
+                rowData[4] = document.getElementById('c8Technique')?.value || '';
+                rowData[5] = document.getElementById('c8RelieverUse')?.value || '';
+                rowData[6] = document.getElementById('c8Devices')?.value || '';
             }
             return rowData;
         }
@@ -2776,61 +2837,510 @@
         function copyToClipboard(elementId) {
             const el = document.getElementById(elementId);
             if(el && el.value) { 
-                navigator.clipboard.writeText(el.value).then(() => alert('คัดลอกลง PMK เรียบร้อยแล้ว!')); 
+                navigator.clipboard.writeText(el.value).then(() => showToast('คัดลอกลง PMK เรียบร้อยแล้ว!')); 
             }
+        }
+
+        function copyToSheet() {
+            const rowData = getRowDataArray();
+            const tsvString = rowData.join('\t');
+            navigator.clipboard.writeText(tsvString).then(() => { 
+                showToast('คัดลอกข้อมูลสำหรับลง Google Sheet เรียบร้อยแล้ว!'); 
+            });
         }
 
         function sendToGoogleSheet() {
             if (!SCRIPT_URL || SCRIPT_URL === 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่') { 
-                alert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); return; 
+                alert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); 
+                return; 
             }
             const btn = document.getElementById('btnSendDb');
             if(!btn) return;
             
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = `กำลังบันทึก...`;
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>กำลังบันทึก...`;
             btn.disabled = true;
 
             let targetClinicName = currentTab;
-            if (currentTab === 'CLINIC7') targetClinicName = 'CKD';
-            else if (currentTab === 'CLINIC8') targetClinicName = 'Asthma COPD';
+            if (currentTab === 'HF') {
+                targetClinicName = 'HF clinic'; // ระบุชื่อแท็บชีทปลายทางให้ไป HF clinic แน่นอน
+            } else if (currentTab === 'CLINIC7') {
+                targetClinicName = 'NCD';
+            } else if (currentTab === 'CLINIC8') {
+                targetClinicName = 'Asthma-COPD';
+            }
 
             fetch(SCRIPT_URL, {
-                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
+                method: 'POST', 
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'text/plain', },
                 body: JSON.stringify({ action: "saveOPDNote", clinic: targetClinicName, payload: getRowDataArray() })
             })
-            .then(() => alert('ส่งข้อมูลบันทึกลง Google Sheet ' + targetClinicName + ' สำเร็จแล้ว!'))
-            .catch(error => alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'))
-            .finally(() => { btn.innerHTML = originalHTML; btn.disabled = false; });
+            .then(() => { 
+                showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!'); 
+            })
+            .catch(error => { 
+                console.error('Error!', error); 
+                alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); 
+            })
+            .finally(() => { 
+                btn.innerHTML = originalHTML; 
+                btn.disabled = false; 
+            });
         }
 
+        // ==========================================
+        //         PRINTING SYSTEM
+        // ==========================================
+        function printOpdCard() {
+            const ptNameNode = document.getElementById('ptName');
+            const ptHnNode = document.getElementById('hn');
+            const ptName = ptNameNode ? ptNameNode.value || '-' : '-';
+            const ptHn = ptHnNode ? ptHnNode.value || '-' : '-';
+            
+            const pNameEl = document.getElementById('printName');
+            const pNoteEl = document.getElementById('printNote');
+            const outPmkEl = document.getElementById('outputPmk');
+            
+            if(pNameEl) pNameEl.innerText = `${ptName} HN: ${ptHn}`;
+            if(pNoteEl) pNoteEl.innerText = outPmkEl ? outPmkEl.value || 'ไม่มีข้อมูล' : 'ไม่มีข้อมูล';
+            
+            const printDiv = document.getElementById('printArea');
+            if(printDiv) printDiv.classList.remove('hidden');
+            
+            document.body.classList.add('print-mode-opd-a5');
+            window.print();
+            document.body.classList.remove('print-mode-opd-a5');
+            
+            if(printDiv) printDiv.classList.add('hidden');
+        }
+
+        function updateOpdStickerPreview() {
+            const ptNameNode = document.getElementById('ptName');
+            const ptHnNode = document.getElementById('hn');
+            const outPmkNode = document.getElementById('outputPmk');
+            
+            const ptName = ptNameNode ? ptNameNode.value || '-' : '-';
+            const ptHn = ptHnNode ? ptHnNode.value || '-' : '-';
+            const noteText = outPmkNode ? outPmkNode.value || 'ไม่มีข้อมูล' : 'ไม่มีข้อมูล';
+
+            const stkWNode = document.getElementById('stkW');
+            const stkPtNode = document.getElementById('stkPt');
+            const stkW = stkWNode ? stkWNode.value || 80 : 80;
+            const stkPt = stkPtNode ? stkPtNode.value || 11 : 11;
+
+            const prevStkName = document.getElementById('prevStkName');
+            const prevStkHn = document.getElementById('prevStkHn');
+            const prevStkNote = document.getElementById('prevStkNote');
+            const previewBox = document.getElementById('opdStickerPreview');
+
+            if(prevStkName) prevStkName.innerText = ptName;
+            if(prevStkHn) prevStkHn.innerText = ptHn;
+            if(prevStkNote) prevStkNote.innerText = noteText;
+            if(previewBox) {
+                previewBox.style.width = `${stkW}mm`;
+                previewBox.style.fontSize = `${stkPt}pt`;
+            }
+        }
+
+        function executePrintOpdSticker() {
+            const ptNameNode = document.getElementById('ptName');
+            const ptHnNode = document.getElementById('hn');
+            const outPmkNode = document.getElementById('outputPmk');
+            
+            const ptName = ptNameNode ? ptNameNode.value || '-' : '-';
+            const ptHn = ptHnNode ? ptHnNode.value || '-' : '-';
+            const noteText = outPmkNode ? outPmkNode.value || 'ไม่มีข้อมูล' : 'ไม่มีข้อมูล';
+
+            const stkXNode = document.getElementById('stkX');
+            const stkYNode = document.getElementById('stkY');
+            const stkWNode = document.getElementById('stkW');
+            const stkPtNode = document.getElementById('stkPt');
+            
+            const stkX = stkXNode ? stkXNode.value || 0 : 0;
+            const stkY = stkYNode ? stkYNode.value || 0 : 0;
+            const stkW = stkWNode ? stkWNode.value || 80 : 80;
+            const stkPt = stkPtNode ? stkPtNode.value || 11 : 11;
+
+            const printArea = document.getElementById('printStickerArea');
+            const stkPrintName = document.getElementById('stkPrintName');
+            const stkPrintHn = document.getElementById('stkPrintHn');
+            const stkPrintNote = document.getElementById('stkPrintNote');
+
+            if(stkPrintName) stkPrintName.innerText = `${ptName}`;
+            if(stkPrintHn) stkPrintHn.innerText = `${ptHn}`;
+            if(stkPrintNote) stkPrintNote.innerText = noteText;
+
+            if(printArea) {
+                printArea.style.position = 'absolute';
+                printArea.style.left = `${stkX}mm`;
+                printArea.style.top = `${stkY}mm`;
+                printArea.style.width = `${stkW}mm`;
+                printArea.style.fontSize = `${stkPt}pt`;
+                printArea.style.fontFamily = "'Prompt', sans-serif";
+                printArea.style.color = "black";
+                printArea.style.lineHeight = "1.3";
+                printArea.classList.remove('hidden'); 
+            }
+            
+            document.body.classList.add('print-mode-opd-stk');
+            window.print();
+            document.body.classList.remove('print-mode-opd-stk');
+            
+            if(printArea) printArea.classList.add('hidden'); 
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            if(toast) {
+                toast.innerText = msg;
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+            }
+        }
+
+        // ==========================================
+        //         WARFARIN SYSTEM LOGIC
+        // ==========================================
+        function setupWarfarinAccess() {
+            const codeInput = document.getElementById('accessCode');
+            const remCheck = document.getElementById('rememberCode');
+            const msg = document.getElementById('gateMsg');
+            const fetchBtn = document.getElementById('fetchBtn');
+
+            if(!codeInput || !remCheck || !msg || !fetchBtn) return;
+
+            function checkAccess() {
+                const ok = (codeInput.value.trim() === ACCESS_CODE);
+                fetchBtn.disabled = !ok;
+                if(ok) {
+                    msg.innerHTML = '<i class="fa-solid fa-circle-check"></i> พร้อมดึงข้อมูล';
+                    msg.className = 'text-green-600 text-sm ml-3 font-bold';
+                    if(remCheck.checked) sessionStorage.setItem('access_ok','1');
+                } else {
+                    msg.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> รหัสไม่ถูกต้อง';
+                    msg.className = 'text-red-500 text-sm ml-3 font-bold';
+                    sessionStorage.removeItem('access_ok');
+                }
+                return ok;
+            }
+
+            if(sessionStorage.getItem('access_ok') === '1') {
+                codeInput.value = ACCESS_CODE;
+                remCheck.checked = true;
+                checkAccess();
+            }
+
+            codeInput.addEventListener('input', checkAccess);
+            remCheck.addEventListener('change', checkAccess);
+
+            fetchBtn.addEventListener('click', doFetch);
+            
+            const searchWfNo = document.getElementById('searchWarfarinNo');
+            if(searchWfNo) {
+                searchWfNo.addEventListener('keydown', e => { 
+                    if(e.key === 'Enter') doFetch(); 
+                });
+            }
+            
+            // Warfarin Print Sticker
+            const printBtn = document.getElementById('printBtn');
+            if(printBtn) {
+                printBtn.addEventListener('click', () => {
+                    document.body.classList.add('print-mode-warfarin-stk');
+                    window.print();
+                    document.body.classList.remove('print-mode-warfarin-stk');
+                });
+            }
+
+            document.querySelectorAll('input[name="size"]').forEach(r => {
+                r.addEventListener('change', () => {
+                    const box = document.getElementById('sticker');
+                    if(box) {
+                        box.classList.remove('size-4_5', 'size-6_0');
+                        box.classList.add('size-' + r.value);
+                    }
+                });
+            });
+
+            const btnInr23 = document.getElementById('btnInr23');
+            if(btnInr23) {
+                btnInr23.addEventListener('click', () => {
+                    const stkInr = document.getElementById('stk-inr');
+                    if(stkInr) stkInr.textContent='2-3';
+                });
+            }
+            
+            const btnInr2535 = document.getElementById('btnInr2535');
+            if(btnInr2535) {
+                btnInr2535.addEventListener('click', () => {
+                    const stkInr = document.getElementById('stk-inr');
+                    if(stkInr) stkInr.textContent='2.5-3.5';
+                });
+            }
+            
+            const btnAll = document.getElementById('btnAll');
+            if(btnAll) {
+                btnAll.addEventListener('click', () => {
+                    const ex = document.getElementById('extraArea');
+                    if(!ex) return;
+                    const t = ex.textContent.trim();
+                    ex.textContent = t ? (t + ' ALL:') : 'ALL:';
+                    const sel = window.getSelection(); 
+                    const range = document.createRange();
+                    range.selectNodeContents(ex); 
+                    range.collapse(false);
+                    sel.removeAllRanges(); 
+                    sel.addRange(range); 
+                    ex.focus();
+                });
+            }
+            
+            // Warfarin Form Submission
+            const wfForm = document.getElementById('warfarinForm');
+            if(wfForm) {
+                wfForm.addEventListener('submit', e => {
+                    e.preventDefault();
+                    const submitBtn = document.getElementById('submitBtn');
+                    const loadingSpinner = document.getElementById('loadingSpinner');
+                    
+                    if(submitBtn) submitBtn.style.display = 'none';
+                    if(loadingSpinner) loadingSpinner.style.display = 'block';
+                    
+                    const data = Object.fromEntries(new FormData(wfForm).entries());
+                    
+                    fetch(SCRIPT_URL, { 
+                        method: 'POST', 
+                        body: JSON.stringify(data), 
+                        headers: {"Content-Type": "text/plain"} 
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if(loadingSpinner) loadingSpinner.style.display = 'none';
+                        if (res.result === 'success') {
+                            const resultArea = document.getElementById('resultArea');
+                            const showNumber = document.getElementById('showNumber');
+                            if(resultArea) resultArea.classList.remove('hidden');
+                            if(showNumber) showNumber.innerText = res.warfarinId;
+                        } else {
+                            alert('เกิดข้อผิดพลาด: ' + res.error);
+                            if(submitBtn) submitBtn.style.display = 'block';
+                        }
+                    }).catch(err => {
+                        alert('การเชื่อมต่อขัดข้อง');
+                        if(submitBtn) submitBtn.style.display = 'block';
+                        if(loadingSpinner) loadingSpinner.style.display = 'none';
+                    });
+                });
+            }
+        }
+
+        async function fetchByAppsScript(no) {
+            const url = new URL(SCRIPT_URL); 
+            url.searchParams.set('warfarin', String(no).trim());
+            const res = await fetch(url.toString(), {cache:'no-store'});
+            if(!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            if(!data || (!data.warfarinNo && !data.fullName)) throw new Error('ไม่พบข้อมูล');
+            return data;
+        }
+
+        async function doFetch() {
+            const wnoInput = document.getElementById('searchWarfarinNo');
+            const btn = document.getElementById('fetchBtn');
+            if(!wnoInput || !btn) return;
+            
+            const no = wnoInput.value.trim();
+            if(!no) { 
+                alert('กรุณาใส่เลข Warfarin No'); 
+                return; 
+            }
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังดึง...'; 
+            btn.disabled = true;
+            
+            try { 
+                const d = await fetchByAppsScript(no); 
+                const stkFullName = document.getElementById('stk-fullName');
+                const stkHn = document.getElementById('stk-hn');
+                const stkWfno = document.getElementById('stk-wfno');
+                const stkIndication = document.getElementById('stk-indication');
+                const stkInr = document.getElementById('stk-inr');
+
+                if(stkFullName) stkFullName.textContent = d.fullName || '—';
+                if(stkHn) stkHn.textContent = d.hn || '—';
+                if(stkWfno) stkWfno.textContent = d.warfarinNo || '—';
+                if(stkIndication) stkIndication.textContent = d.indication || '—';
+                if(stkInr) stkInr.textContent = d.inr || '—';
+            } catch(e) { 
+                alert('ดึงข้อมูลไม่สำเร็จ: ' + e.message); 
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล'; 
+                btn.disabled = false;
+            }
+        }
+
+        // Warfarin Pending logic
+        function loadPending() {
+            const container = document.getElementById('pendingContainer');
+            if(!container) return;
+            
+            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-blue-500"></i></div>';
+            
+            fetch(SCRIPT_URL + "?action=getPending")
+            .then(res => res.json())
+            .then(data => renderPendingCards(data))
+            .catch(err => {
+                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded font-bold">โหลดข้อมูลผิดพลาด</div>';
+            });
+        }
+
+        function forceRefreshCache() {
+            const btn = document.getElementById('forceRefreshBtn');
+            const container = document.getElementById('pendingContainer');
+            if(!btn || !container) return;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังอัปเดต...'; 
+            btn.disabled = true;
+            
+            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-yellow-500"></i><p class="mt-2 text-sm text-yellow-700 font-bold">กำลังซิงค์ข้อมูลตรงจากระบบ...</p></div>';
+
+            fetch(SCRIPT_URL + "?action=forceRefreshCache")
+            .then(res => res.json())
+            .then(res => {
+                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; 
+                btn.disabled = false;
+                if(res.result === 'success') {
+                    renderPendingCards(res.data);
+                }
+            }).catch(err => {
+                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; 
+                btn.disabled = false;
+                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded font-bold">โหลดข้อมูลผิดพลาด โปรดลองใหม่</div>';
+            });
+        }
+
+        function renderPendingCards(data) {
+            const container = document.getElementById('pendingContainer');
+            if(!container) return;
+            
+            container.innerHTML = '';
+            if(data.length === 0) {
+                container.innerHTML = '<div class="bg-white border border-gray-200 text-center py-8 text-gray-500 rounded-lg font-bold">ไม่มีคิวรออนุมัติจาก LINE ครับ</div>';
+                return;
+            }
+            data.forEach(item => {
+                const card = `
+                <div class="pending-card p-4 shadow-sm border border-yellow-200 bg-white" id="card-${item.id}">
+                    <form id="form-${item.id}">
+                        <input type="hidden" name="id" value="${item.id}">
+                        <div class="grid grid-cols-2 gap-3 mb-2">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600">HN</label>
+                                <input type="text" class="w-full rounded border-gray-300 px-2 py-1 text-sm bg-gray-50" name="hn" value="${item.hn}">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600">เพศ</label>
+                                <select class="w-full rounded border-gray-300 px-2 py-1 text-sm bg-gray-50" name="sex">
+                                    <option value="1" ${item.sex=='1'?'selected':''}>ชาย</option>
+                                    <option value="2" ${item.sex=='2'?'selected':''}>หญิง</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="block text-xs font-bold text-gray-600">ชื่อ-นามสกุล</label>
+                            <input type="text" class="w-full rounded border-gray-300 px-2 py-1 text-sm font-bold text-blue-800" name="name" value="${item.name}">
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 mb-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600">อายุ</label>
+                                <input type="text" class="w-full rounded border-gray-300 px-2 py-1 text-sm bg-gray-50" name="age" value="${item.age}">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600">Indication</label>
+                                <input type="text" class="w-full rounded border-blue-300 border-2 px-2 py-1 text-sm font-bold text-blue-700 bg-white" name="indication" value="${item.indication}">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600">Goal</label>
+                                <input type="text" class="w-full rounded border-red-300 border-2 px-2 py-1 text-sm font-bold text-red-700 bg-white" name="goal" value="${item.goal}">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" class="flex-1 bg-white border border-red-300 text-red-600 px-3 py-1.5 rounded hover:bg-red-50 text-sm font-bold shadow-sm" onclick="actionPending('${item.id}', 'reject')">
+                                <i class="fa-solid fa-xmark mr-1"></i> ทิ้ง
+                            </button>
+                            <button type="button" class="flex-1 bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm font-bold shadow-sm" onclick="actionPending('${item.id}', 'approve')">
+                                <i class="fa-solid fa-check mr-1"></i> อนุมัติ
+                            </button>
+                        </div>
+                    </form>
+                    <div id="res-${item.id}" class="hidden bg-green-100 text-green-800 text-center font-bold p-2 mt-3 rounded border border-green-300"></div>
+                </div>`;
+                container.innerHTML += card;
+            });
+        }
+
+        function actionPending(id, actionType) {
+            const form = document.getElementById('form-' + id);
+            if(!form) return;
+
+            const data = Object.fromEntries(new FormData(form).entries());
+            data.action = actionType;
+            
+            form.style.opacity = '0.4'; 
+            form.style.pointerEvents = 'none';
+            
+            fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify(data), 
+                headers: {"Content-Type": "text/plain"} 
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.result === 'success') {
+                    if(actionType === 'approve') {
+                        const resDiv = document.getElementById('res-' + id);
+                        if(resDiv) {
+                            resDiv.classList.remove('hidden');
+                            resDiv.innerHTML = `<i class="fa-solid fa-check-circle"></i> ออกเลข: ${res.warfarinId}`;
+                        }
+                        setTimeout(() => {
+                            const card = document.getElementById('card-' + id);
+                            if(card) card.remove();
+                        }, 3000);
+                    } else { 
+                        const card = document.getElementById('card-' + id);
+                        if(card) card.remove(); 
+                    }
+                } else { 
+                    alert('Error: ' + res.error); 
+                    form.style.opacity = '1'; 
+                    form.style.pointerEvents = 'auto'; 
+                }
+            });
+        }
+        
         // ==========================================
         //         BOOTSTRAP INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Pre-OP Drug Search events
             const drugInput = document.getElementById('drugSearch');
             if(drugInput) {
                 drugInput.addEventListener('focus', () => filterPreopDrugs(true));
                 drugInput.addEventListener('click', () => filterPreopDrugs(true));
                 drugInput.addEventListener('keyup', () => filterPreopDrugs(false));
             }
-            
-            // Pre-OP Procedure Search events
             const procInput = document.getElementById('procedureSearch');
             if(procInput) {
                 procInput.addEventListener('focus', () => filterPreopProcedures(true));
                 procInput.addEventListener('click', () => filterPreopProcedures(true));
                 procInput.addEventListener('keyup', () => filterPreopProcedures(false));
             }
-            
-            // Hide popups when clicking outside
             document.addEventListener('click', (e) => {
                 if(drugInput && !document.getElementById('drugListContainer').contains(e.target) && e.target !== drugInput) { document.getElementById('drugListContainer').classList.add('hidden'); }
                 if(procInput && !document.getElementById('procedureListContainer').contains(e.target) && e.target !== procInput) { document.getElementById('procedureListContainer').classList.add('hidden'); }
             });
 
-            // Modals listener
             document.querySelectorAll('#chadModal input, #chadModal select').forEach(i => i.addEventListener('change', calculateChad));
             document.querySelectorAll('#capriniModal input').forEach(i => i.addEventListener('change', calculateCaprini));
             
@@ -2841,7 +3351,6 @@
                 if(wfHn) wfHn.value = e.target.value;
                 updateOpdStickerPreview();
             });
-            
             const ptNameInp = document.getElementById('ptName');
             if(ptNameInp) ptNameInp.addEventListener('input', (e) => {
                 const wfName = document.getElementById('wfNameInput');
@@ -2849,18 +3358,10 @@
                 updateOpdStickerPreview();
             });
             
-            // Initialize Arrays & APIs
             setupWarfarinAccess();
             renderMrSources();
             renderHivDrugs();
-            if (typeof renderAsthmaDevices === 'function') {
-                renderAsthmaDevices();
-            }
-            
             generateOutput();
-
-            // Default select MR
-            switchTab('MR');
         });
     </script>
 </body>
