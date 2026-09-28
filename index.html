@@ -944,174 +944,120 @@
 
             <!-- 7. Clinic 7 (CKD Form) -->
             <div id="form-CLINIC7" class="space-y-6 clinic-form hidden">
-                <div class="bg-purple-100 p-4 border border-purple-200 rounded-xl mb-4 text-sm">
-                    <h3 class="font-bold text-purple-800 mb-1 text-lg"><i class="fa-solid fa-kidneys"></i> คลินิกโรคไตเรื้อรัง (CKD Clinic)</h3>
-                    <p class="text-purple-700 text-sm">ประเมินและชะลอความเสื่อมของไต (CKD Delay Progression)</p>
+                <div class="bg-orange-50 p-4 border border-orange-200 rounded-xl mb-4 text-sm">
+                    <h3 class="font-bold text-orange-800 mb-2"><i class="fa-solid fa-notes-medical"></i> 7. คลินิกชะลอไตเสื่อม (CKD Clinic)</h3>
+                    <p class="text-orange-700">การประเมินการทำงานของไต เป้าหมายความดันโลหิต น้ำตาลสะสม และการปรับขนาดยาตามสภาพไต</p>
                 </div>
                 
-                <!-- 1. ข้อมูลการทำงานของไต & Lab -->
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-gray-800 mb-4 border-b pb-2">1. ข้อมูลการทำงานของไต & Lab</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">ข้อมูลผลตรวจและเป้าหมายทางคลินิก</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">CKD Stage</label>
-                            <select id="c7CkdStage" class="w-full rounded border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
-                                <option value="">- เลือก -</option>
-                                <option value="Stage 1">Stage 1</option>
-                                <option value="Stage 2">Stage 2</option>
-                                <option value="Stage 3a">Stage 3a</option>
-                                <option value="Stage 3b">Stage 3b</option>
-                                <option value="Stage 4">Stage 4</option>
-                                <option value="Stage 5">Stage 5</option>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">eGFR (mL/min/1.73m²)</label>
+                            <input type="number" id="c7Egfr" placeholder="เช่น 45" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">CKD Stage</label>
+                            <select id="c7CkdStage" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
+                                <option value="">-- เลือก Stage --</option>
+                                <option value="Stage 1">Stage 1 (eGFR ≥ 90)</option>
+                                <option value="Stage 2">Stage 2 (eGFR 60-89)</option>
+                                <option value="Stage 3a">Stage 3a (eGFR 45-59)</option>
+                                <option value="Stage 3b">Stage 3b (eGFR 30-44)</option>
+                                <option value="Stage 4">Stage 4 (eGFR 15-29)</option>
+                                <option value="Stage 5">Stage 5 (eGFR < 15)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">eGFR ล่าสุด</label>
-                            <div class="flex items-center">
-                                <input type="number" id="c7Egfr" class="w-full rounded border-gray-300 border px-3 py-2 text-sm text-center" oninput="generateOutput()">
-                                <span class="text-xs text-gray-500 ml-2">ml/min</span>
-                            </div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">HbA1c (%)</label>
+                            <input type="text" id="c7A1c" placeholder="เช่น 7.2" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Scr</label>
-                            <div class="flex items-center">
-                                <input type="text" id="c7Scr" class="w-full rounded border-gray-300 border px-3 py-2 text-sm text-center" oninput="generateOutput()">
-                                <span class="text-xs text-gray-500 ml-2">mg/dL</span>
-                            </div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Blood Pressure (mmHg)</label>
+                            <input type="text" id="c7Bp" placeholder="เช่น 130/80" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">UACR / Urine Pro</label>
-                            <div class="flex items-center">
-                                <input type="text" id="c7UrineProt" placeholder="mg/g หรือ Trace" class="w-full rounded border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
-                            </div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Urine Protein / Albumin</label>
+                            <input type="text" id="c7UrineProt" placeholder="เช่น Microalbuminuria" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Serum K+ (mEq/L)</label>
+                            <input type="text" id="c7K" placeholder="เช่น 4.5" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">K</label>
-                            <div class="flex items-center">
-                                <input type="text" id="c7K" class="w-full rounded border-gray-300 border px-3 py-2 text-sm text-center" oninput="generateOutput()">
-                                <span class="text-xs text-gray-500 ml-2">mEq/L</span>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Hb / Hct</label>
-                            <div class="flex items-center">
-                                <input type="text" id="c7Hb" class="w-full rounded border-gray-300 border px-3 py-2 text-sm text-center" oninput="generateOutput()">
-                                <span class="text-xs text-gray-500 ml-2">%</span>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">BP ล่าสุด</label>
-                            <input type="text" id="c7Bp" placeholder="เช่น 130/80" class="w-full rounded border-gray-300 border px-3 py-2 text-sm text-center" oninput="generateOutput()">
-                        </div>
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">ประเมินปัญหาการใช้ยา (Drug-Related Problems)</label>
+                        <input type="text" id="c7Drp" placeholder="เช่น ได้รับขนาดยาเกินตามการทำงานของไต, มีอาการน้ำตาลตก" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                     </div>
-                </div>
 
-                <!-- 2. ยาชะลอไตเสื่อม (Renoprotective Meds) -->
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-gray-800 mb-4 border-b pb-2">2. ยาชะลอไตเสื่อม (Renoprotective Meds)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
-                        <label class="flex items-center bg-gray-50 p-3 rounded border border-gray-200 cursor-pointer hover:bg-gray-100">
-                            <input type="checkbox" id="c7MedAcei" class="form-checkbox h-5 w-5 text-purple-600 rounded mr-3" onchange="generateOutput()"> ได้รับ ACEI / ARB
-                        </label>
-                        <label class="flex items-center bg-gray-50 p-3 rounded border border-gray-200 cursor-pointer hover:bg-gray-100">
-                            <input type="checkbox" id="c7MedSglt2" class="form-checkbox h-5 w-5 text-purple-600 rounded mr-3" onchange="generateOutput()"> ได้รับ SGLT2i (Dapa/Empa)
-                        </label>
-                        <label class="flex items-center bg-gray-50 p-3 rounded border border-gray-200 cursor-pointer hover:bg-gray-100">
-                            <input type="checkbox" id="c7MedMra" class="form-checkbox h-5 w-5 text-purple-600 rounded mr-3" onchange="generateOutput()"> ได้รับ MRA / Finerenone
-                        </label>
-                        <label class="flex items-center bg-gray-50 p-3 rounded border border-gray-200 cursor-pointer hover:bg-gray-100">
-                            <input type="checkbox" id="c7MedStatin" class="form-checkbox h-5 w-5 text-purple-600 rounded mr-3" onchange="generateOutput()"> ได้รับ Statin
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 3. ปัญหาและแผนการดูแล (Plan) -->
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-gray-800 mb-4 border-b pb-2">3. ปัญหาและแผนการดูแล (Plan)</h3>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ระบุ DRPs / การแก้ไข (Intervention)</label>
-                        <input type="text" id="c7Drp" placeholder="เช่น แนะนำให้เริ่ม ACEI, ผู้ป่วยทานยาสมุนไพรให้งอด่วน" class="w-full rounded border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()">
-                    </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก CKD</label>
-                        <input type="text" id="c7PharmName" list="pharmList" class="w-full md:w-1/2 rounded border-gray-300 border px-3 py-2 text-sm" placeholder="เลือกเภสัชกร" oninput="generateOutput()">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก</label>
+                        <input type="text" id="c7PharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
                     </div>
                 </div>
             </div>
 
             <!-- 8. Clinic 8 (Asthma / COPD Form) -->
             <div id="form-CLINIC8" class="space-y-6 clinic-form hidden">
-                <div class="bg-teal-100 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
-                    <h3 class="font-bold text-teal-800 mb-1 text-lg"><i class="fa-solid fa-lungs"></i> คลินิกหอบหืดและปอดอุดกั้นเรื้อรัง (Asthma & COPD)</h3>
-                    <p class="text-teal-700 text-sm">ประเมินการควบคุมอาการ และประเมินเทคนิคการใช้ยาพ่น</p>
+                <div class="bg-teal-50 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
+                    <h3 class="font-bold text-teal-800 mb-2"><i class="fa-solid fa-lungs"></i> 8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD Clinic)</h3>
+                    <p class="text-teal-700">ประเมินเทคนิคการใช้ยาพ่น การควบคุมอาการโรคหืด/ปอดอุดกั้นเรื้อรัง การเกิดผลข้างเคียง และประวัติการเข้าฉุกเฉิน (ER)</p>
                 </div>
                 
-                <!-- 1. ข้อมูลทั่วไป & การประเมิน -->
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mb-4">
-                    <h3 class="font-semibold text-lg text-gray-800 mb-4 border-b pb-2">1. ข้อมูลทั่วไป & การประเมิน</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-5">
-                        <div class="bg-gray-50 p-3 rounded border border-gray-200">
-                            <label class="block text-xs font-bold text-gray-600 mb-2">Indication</label>
-                            <div class="flex gap-4">
-                                <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="Asthma" class="form-radio text-teal-600 h-4 w-4" onchange="generateOutput()"><span class="ml-2 text-sm">Asthma</span></label>
-                                <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="COPD" class="form-radio text-teal-600 h-4 w-4" onchange="generateOutput()"><span class="ml-2 text-sm">COPD</span></label>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">เข้า ER (ครั้ง/ปี)</label>
-                            <input type="number" id="c8Er" placeholder="จำนวน" class="w-full rounded border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Admit (ครั้ง/ปี)</label>
-                            <input type="number" id="c8Admit" placeholder="จำนวน" class="w-full rounded border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-5">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Score (ACT/CAT)</label>
-                            <input type="text" id="c8Score" placeholder="คะแนน" class="w-full rounded border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-gray-600 mb-1">DRPs / หมายเหตุ</label>
-                            <input type="text" id="c8Drp" placeholder="ปัญหาการใช้ยาที่พบ" class="w-full rounded border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()">
-                        </div>
-                    </div>
-
-                    <label class="inline-flex items-center bg-yellow-50 px-3 py-2 rounded border border-yellow-200 cursor-pointer">
-                        <input type="checkbox" id="c8NewPt" class="form-checkbox text-yellow-600 rounded mr-2" onchange="generateOutput()">
-                        <span class="text-sm font-medium text-yellow-800">ผู้ป่วยใหม่ (เพิ่งเข้าคลินิกครั้งแรก)</span>
-                    </label>
-
-                    <!-- อาการในรอบ 1 เดือน -->
-                    <div class="mt-6">
-                        <h4 class="font-bold text-sm text-red-600 mb-3"><i class="fa-solid fa-triangle-exclamation"></i> อาการในรอบ 1 เดือน (Symptom Control)</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700 bg-gray-50 p-4 rounded border border-gray-200">
-                            <label class="flex items-center cursor-pointer"><input type="checkbox" class="form-checkbox text-red-500 rounded mr-2 symp-chk" value="ใช้ยาพ่นฉุกเฉิน > 2 ครั้ง/สัปดาห์" onchange="generateOutput()"> ใช้ยาพ่นฉุกเฉิน > 2 ครั้ง/สัปดาห์</label>
-                            <label class="flex items-center cursor-pointer"><input type="checkbox" class="form-checkbox text-red-500 rounded mr-2 symp-chk" value="หอบกำเริบ > 2 ครั้ง/สัปดาห์" onchange="generateOutput()"> หอบกำเริบ > 2 ครั้ง/สัปดาห์</label>
-                            <label class="flex items-center cursor-pointer"><input type="checkbox" class="form-checkbox text-red-500 rounded mr-2 symp-chk" value="หอบกำเริบกลางคืน > 2 ครั้ง/เดือน" onchange="generateOutput()"> หอบกำเริบกลางคืน > 2 ครั้ง/เดือน</label>
-                            <label class="flex items-center cursor-pointer"><input type="checkbox" class="form-checkbox text-red-500 rounded mr-2 symp-chk" value="จำกัดการใช้ชีวิตประจำวัน" onchange="generateOutput()"> จำกัดการใช้ชีวิตประจำวัน</label>
-                        </div>
-                    </div>
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">การประเมินการใช้ยาพ่น (Inhaler Technique & Compliance)</h3>
+                    <div id="asthmaDevicesContainer" class="space-y-3 mb-3"></div>
+                    <button onclick="addAsthmaDevice()" class="text-sm text-teal-600 hover:text-teal-800 font-medium bg-teal-50 px-3 py-1.5 rounded border border-teal-200">+ เพิ่มรายการยาพ่นสูด</button>
                 </div>
 
-                <!-- 2. ประเมินเทคนิคการพ่นยา -->
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-gray-800 mb-4 border-b pb-2">2. ประเมินเทคนิคการพ่นยา (Inhaler Technique)</h3>
-                    
-                    <div id="asthmaDevicesContainer" class="space-y-3 mb-4"></div>
-                    <button onclick="addAsthmaDevice()" class="text-sm text-teal-600 hover:text-teal-800 font-medium bg-teal-50 px-4 py-2 rounded border border-teal-200 transition">+ เพิ่มรายการยาพ่น</button>
-                    
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">การควบคุมอาการโรค (Disease Control)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">การควบคุมอาการ (Asthma/COPD Control)</label>
+                            <select id="c8Control" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
+                                <option value="">-- เลือกระดับ --</option>
+                                <option value="Well-controlled">Well-controlled (ควบคุมได้ดี)</option>
+                                <option value="Partly-controlled">Partly-controlled (ควบคุมได้บางส่วน)</option>
+                                <option value="Uncontrolled">Uncontrolled (ควบคุมไม่ได้)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ACT / CAT Score</label>
+                            <input type="text" id="c8Score" placeholder="เช่น ACT 22 หรือ CAT 8" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1 text-red-600">ประวัติ ER / Admit (หอบกำเริบ)</label>
+                            <select id="c8ErAdmit" class="w-full rounded-lg border-red-300 border px-3 py-2 text-sm bg-red-50 text-red-800" onchange="generateOutput()">
+                                <option value="ไม่มี">ไม่มีประวัติเร็วๆนี้</option>
+                                <option value="เข้า ER">มีประวัติเข้า ER</option>
+                                <option value="Admit">มีประวัติ Admit</option>
+                                <option value="เข้า ER และ Admit">มีประวัติทั้ง ER และ Admit</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">การบ้วนปากหลังพ่นยาสเตียรอยด์ (Gargle)</label>
+                            <select id="c8Gargle" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
+                                <option value="">-- เลือก --</option>
+                                <option value="บ้วนปากสม่ำเสมอ">บ้วนปากสม่ำเสมอ (ปฏิเสธฝ้าขาว/เสียงแหบ)</option>
+                                <option value="ลืมบ้วนปากบ่อย">ลืมบ้วนปากบ่อย (แนะนำ/ย้ำเตือนแล้ว)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">การใช้ Reliever (ครั้ง/สัปดาห์)</label>
+                            <input type="text" id="c8RelieverUse" placeholder="เช่น ≤ 2 ครั้ง/สัปดาห์" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                    </div>
+
                     <div class="mt-4 pt-4 border-t border-gray-200">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก Asthma/COPD</label>
-                        <input type="text" id="c8PharmName" list="pharmList" class="w-full md:w-1/2 rounded border-gray-300 border px-3 py-2 text-sm" placeholder="เลือกเภสัชกร" oninput="generateOutput()">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก</label>
+                        <input type="text" id="c8PharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
                     </div>
                 </div>
-
             </div>
 
         </div>
@@ -2858,11 +2804,61 @@
             .finally(() => { btn.innerHTML = originalHTML; btn.disabled = false; });
         }
 
-        // Initialize UI
+        // ==========================================
+        //         BOOTSTRAP INITIALIZATION
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
+            // Pre-OP Drug Search events
+            const drugInput = document.getElementById('drugSearch');
+            if(drugInput) {
+                drugInput.addEventListener('focus', () => filterPreopDrugs(true));
+                drugInput.addEventListener('click', () => filterPreopDrugs(true));
+                drugInput.addEventListener('keyup', () => filterPreopDrugs(false));
+            }
+            
+            // Pre-OP Procedure Search events
+            const procInput = document.getElementById('procedureSearch');
+            if(procInput) {
+                procInput.addEventListener('focus', () => filterPreopProcedures(true));
+                procInput.addEventListener('click', () => filterPreopProcedures(true));
+                procInput.addEventListener('keyup', () => filterPreopProcedures(false));
+            }
+            
+            // Hide popups when clicking outside
+            document.addEventListener('click', (e) => {
+                if(drugInput && !document.getElementById('drugListContainer').contains(e.target) && e.target !== drugInput) { document.getElementById('drugListContainer').classList.add('hidden'); }
+                if(procInput && !document.getElementById('procedureListContainer').contains(e.target) && e.target !== procInput) { document.getElementById('procedureListContainer').classList.add('hidden'); }
+            });
+
+            // Modals listener
+            document.querySelectorAll('#chadModal input, #chadModal select').forEach(i => i.addEventListener('change', calculateChad));
+            document.querySelectorAll('#capriniModal input').forEach(i => i.addEventListener('change', calculateCaprini));
+            
+            // Sync HN/Name into Warfarin tab
+            const hnInp = document.getElementById('hn');
+            if(hnInp) hnInp.addEventListener('input', (e) => {
+                const wfHn = document.getElementById('wfHnInput');
+                if(wfHn) wfHn.value = e.target.value;
+                updateOpdStickerPreview();
+            });
+            
+            const ptNameInp = document.getElementById('ptName');
+            if(ptNameInp) ptNameInp.addEventListener('input', (e) => {
+                const wfName = document.getElementById('wfNameInput');
+                if(wfName) wfName.value = e.target.value;
+                updateOpdStickerPreview();
+            });
+            
+            // Initialize Arrays & APIs
+            setupWarfarinAccess();
+            renderMrSources();
+            renderHivDrugs();
             if (typeof renderAsthmaDevices === 'function') {
                 renderAsthmaDevices();
             }
+            
+            generateOutput();
+
             // Default select MR
             switchTab('MR');
         });
