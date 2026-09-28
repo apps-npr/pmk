@@ -211,11 +211,11 @@
                 <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
                     <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
                 </button>
-                <button onclick="switchTab('CLINIC7')" id="tab-CLINIC7" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">
+                <button onclick="switchTab('CKD')" id="tab-CKD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">
                     <i class="fa-solid fa-notes-medical mr-1"></i> 7. CKD
                 </button>
-                <button onclick="switchTab('CLINIC8')" id="tab-CLINIC8" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">
-                    <i class="fa-solid fa-lungs mr-1"></i> 8. Asthma/COPD
+                <button onclick="switchTab('Asthma COPD')" id="tab-Asthma COPD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">
+                    <i class="fa-solid fa-lungs mr-1"></i> 8. Asthma COPD
                 </button>
             </div>
         </div>
@@ -929,7 +929,7 @@
             </div>
 
             <!-- 7. CKD Form -->
-            <div id="form-CLINIC7" class="space-y-6 clinic-form hidden">
+            <div id="form-CKD" class="space-y-6 clinic-form hidden">
                 <div class="bg-orange-50 p-4 border border-orange-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-orange-800 mb-2"><i class="fa-solid fa-notes-medical"></i> 7. คลินิกโรคเรื้อรังและชะลอไตเสื่อม (NCD / CKD Clinic)</h3>
                     <p class="text-orange-700">การประเมินการทำงานของไต เป้าหมายความดันโลหิต น้ำตาลสะสม และการปรับขนาดยาตามสภาพไต</p>
@@ -985,7 +985,7 @@
             </div>
 
             <!-- 8. Asthma / COPD Form -->
-            <div id="form-CLINIC8" class="space-y-6 clinic-form hidden">
+            <div id="form-Asthma COPD" class="space-y-6 clinic-form hidden">
                 <div class="bg-teal-50 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-teal-800 mb-2"><i class="fa-solid fa-lungs"></i> 8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD Clinic)</h3>
                     <p class="text-teal-700">ประเมินเทคนิคการใช้ยาพ่น การควบคุมอาการโรคหืด/ปอดอุดกั้นเรื้อรัง และการเกิดผลข้างเคียงจากสเตียรอยด์พ่น</p>
@@ -1267,8 +1267,8 @@
             
             if(tab === 'WARFARIN') activeBtn.classList.remove('text-red-700');
             if(tab === 'HF') activeBtn.classList.remove('text-green-700');
-            if(tab === 'CLINIC7') activeBtn.classList.remove('text-orange-700');
-            if(tab === 'CLINIC8') activeBtn.classList.remove('text-teal-700');
+            if(tab === 'CKD') activeBtn.classList.remove('text-orange-700');
+            if(tab === 'Asthma COPD') activeBtn.classList.remove('text-teal-700');
 
             // จัดการ Checkbox นำข้อมูล MR มารวม
             const mergeCheck = document.getElementById('mergeMrOption');
@@ -2567,7 +2567,7 @@
                     if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmName}`);
                 }
             }
-            else if (currentTab === 'CLINIC7') {
+            else if (currentTab === 'CKD') {
                 notes.push("pharmacist note");
                 let c7Lines = [];
                 const egfr = document.getElementById('c7Egfr')?.value;
@@ -2589,7 +2589,7 @@
                 if (drp) notes.push(`DRP/Intervention: ${drp}`);
                 if (pharm) notes.push(`/${pharm}`);
             }
-            else if (currentTab === 'CLINIC8') {
+            else if (currentTab === 'Asthma COPD') {
                 notes.push("pharmacist note");
                 let c8Lines = [];
                 const ctrl = document.getElementById('c8Control')?.value;
@@ -2817,14 +2817,14 @@
                 let summary = `LVEF: ${lvef ? lvef + '%' : '-'} | NYHA: ${nyha} | BP: ${sbp}/${dbp} mmHg | HR: ${hr} bpm | eGFR: ${egfr} | K: ${potassium} | Meds: ${medsString}${interventionText}`;
                 rowData[6] = summary.replace(/\s+/g, ' ').trim(); 
             }
-            else if (currentTab === 'CLINIC7') {
+            else if (currentTab === 'CKD') {
                 rowData[2] = document.getElementById('c7Egfr')?.value || '';
                 rowData[3] = document.getElementById('c7CkdStage')?.value || '';
                 rowData[4] = document.getElementById('c7A1c')?.value || '';
                 rowData[5] = document.getElementById('c7Bp')?.value || '';
                 rowData[6] = document.getElementById('c7Drp')?.value || '';
             }
-            else if (currentTab === 'CLINIC8') {
+            else if (currentTab === 'Asthma COPD') {
                 rowData[2] = document.getElementById('c8Control')?.value || '';
                 rowData[3] = document.getElementById('c8Score')?.value || '';
                 rowData[4] = document.getElementById('c8Technique')?.value || '';
@@ -2864,10 +2864,10 @@
             let targetClinicName = currentTab;
             if (currentTab === 'HF') {
                 targetClinicName = 'HF clinic'; // ระบุชื่อแท็บชีทปลายทางให้ไป HF clinic แน่นอน
-            } else if (currentTab === 'CLINIC7') {
-                targetClinicName = 'NCD';
-            } else if (currentTab === 'CLINIC8') {
-                targetClinicName = 'Asthma-COPD';
+            } else if (currentTab === 'CKD') {
+                targetClinicName = 'CKD';
+            } else if (currentTab === 'Asthma COPD') {
+                targetClinicName = 'Asthma COPD';
             }
 
             fetch(SCRIPT_URL, {
