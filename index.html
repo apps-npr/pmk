@@ -211,11 +211,11 @@
                 <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
                     <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
                 </button>
-                <button onclick="switchTab('CKD')" id="tab-CKD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">
-                    <i class="fa-solid fa-notes-medical mr-1"></i> 7. CKD
+                <button onclick="switchTab('CLINIC7')" id="tab-CLINIC7" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">
+                    <i class="fa-solid fa-notes-medical mr-1"></i> 7. Clinic 7 (NCD/CKD)
                 </button>
-                <button onclick="switchTab('Asthma COPD')" id="tab-Asthma COPD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">
-                    <i class="fa-solid fa-lungs mr-1"></i> 8. Asthma COPD
+                <button onclick="switchTab('CLINIC8')" id="tab-CLINIC8" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">
+                    <i class="fa-solid fa-lungs mr-1"></i> 8. Clinic 8 (Asthma/COPD)
                 </button>
             </div>
         </div>
@@ -928,39 +928,19 @@
                 </div>
             </div>
 
-            <!-- 7. CKD Form -->
-            <div id="form-CKD" class="space-y-6 clinic-form hidden">
+            <!-- 7. Clinic 7 (NCD / CKD Form) -->
+            <div id="form-CLINIC7" class="space-y-6 clinic-form hidden">
                 <div class="bg-orange-50 p-4 border border-orange-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-orange-800 mb-2"><i class="fa-solid fa-notes-medical"></i> 7. คลินิกโรคเรื้อรังและชะลอไตเสื่อม (NCD / CKD Clinic)</h3>
-                    <p class="text-orange-700">การประเมินการทำงานของไต และการประเมินปัญหาจากการใช้ยา (DRP)</p>
+                    <p class="text-orange-700">การประเมินการทำงานของไต เป้าหมายความดันโลหิต น้ำตาลสะสม และการปรับขนาดยาตามสภาพไต</p>
                 </div>
-    
+                
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">ข้อมูลผลตรวจการทำงานของไต</h3>
-        
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่เจาะ Lab เดิม (ถ้ามี)</label>
-                            <input type="date" id="c7LastLabDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()">
-                        </div>
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">ข้อมูลผลตรวจและเป้าหมายทางคลินิก</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">sCr เดิม</label>
-                            <input type="number" step="0.01" id="c7LastScr" placeholder="เช่น 1.2" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">eGFR เดิม</label>
-                            <input type="number" step="0.1" id="c7LastEgfr" placeholder="เช่น 55" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-medium text-blue-700 mb-1">sCr วันนี้ (ปัจจุบัน)</label>
-                            <input type="number" step="0.01" id="c7Scr" placeholder="เช่น 1.4" class="w-full rounded-lg border-blue-300 border-2 px-3 py-2 text-sm" oninput="generateOutput()">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-blue-700 mb-1">eGFR วันนี้ (ปัจจุบัน)</label>
-                            <input type="number" step="0.1" id="c7Egfr" placeholder="เช่น 45" class="w-full rounded-lg border-blue-300 border-2 px-3 py-2 text-sm" oninput="generateOutput()">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">eGFR (mL/min/1.73m²)</label>
+                            <input type="number" id="c7Egfr" placeholder="เช่น 45" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">CKD Stage</label>
@@ -974,23 +954,6 @@
                                 <option value="Stage 5">Stage 5 (eGFR < 15)</option>
                             </select>
                         </div>
-                    </div>
-        
-                    <hr class="my-5 border-gray-200">
-                    <h4 class="font-bold text-gray-700 mb-3 text-sm">ข้อมูลประกอบสำหรับลง Pharmacist Note (ไม่บังคับ)</h4>
-        
-                    <!-- เพิ่มส่วนบันทึกยาปกป้องไต ตาม Requirement -->
-                    <div class="mb-4 bg-orange-50 p-3 rounded-lg border border-orange-100">
-                        <label class="block text-xs font-bold text-orange-800 mb-2">ประวัติการได้รับยาปกป้องไต (Renoprotective Agents)</label>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-gray-700">
-                            <label class="flex items-center cursor-pointer"><input type="checkbox" id="c7MedAcei" class="mr-2 text-orange-600 rounded" onchange="generateOutput()"> ACEI / ARB</label>
-                            <label class="flex items-center cursor-pointer"><input type="checkbox" id="c7MedSglt2i" class="mr-2 text-orange-600 rounded" onchange="generateOutput()"> SGLT2i</label>
-                            <label class="flex items-center cursor-pointer"><input type="checkbox" id="c7MedMra" class="mr-2 text-orange-600 rounded" onchange="generateOutput()"> MRA (เช่น Finerenone)</label>
-                            <label class="flex items-center cursor-pointer"><input type="checkbox" id="c7MedStatin" class="mr-2 text-orange-600 rounded" onchange="generateOutput()"> Statin</label>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">HbA1c (%)</label>
                             <input type="text" id="c7A1c" placeholder="เช่น 7.2" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
@@ -1008,8 +971,8 @@
                             <input type="text" id="c7K" placeholder="เช่น 4.5" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                     </div>
-        
-                    <div class="mb-4">
+                    
+                    <div class="mb-3">
                         <label class="block text-xs font-medium text-gray-700 mb-1">ประเมินปัญหาการใช้ยา (Drug-Related Problems)</label>
                         <input type="text" id="c7Drp" placeholder="เช่น ได้รับขนาดยาเกินตามการทำงานของไต, มีอาการน้ำตาลตก" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                     </div>
@@ -1021,60 +984,58 @@
                 </div>
             </div>
 
-            <!-- 8. Asthma / COPD Form (โค้ดเดิมของคุณสมบูรณ์แล้ว) -->
-            <div id="form-Asthma COPD" class="space-y-6 clinic-form hidden">
-                <!-- ... (ใช้ HTML เดิมของคุณในคลินิก 8 ได้เลยครับ) ... -->
+            <!-- 8. Clinic 8 (Asthma / COPD Form) -->
+            <div id="form-CLINIC8" class="space-y-6 clinic-form hidden">
                 <div class="bg-teal-50 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-teal-800 mb-2"><i class="fa-solid fa-lungs"></i> 8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD Clinic)</h3>
-                    <p class="text-teal-700">ประเมินระดับการควบคุมอาการ และการตรวจสอบเทคนิคการใช้ยาพ่นอย่างละเอียดตามประเภทอุปกรณ์</p>
+                    <p class="text-teal-700">ประเมินเทคนิคการใช้ยาพ่น การควบคุมอาการโรคหืด/ปอดอุดกั้นเรื้อรัง และการเกิดผลข้างเคียงจากสเตียรอยด์พ่น</p>
                 </div>
-    
+                
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">1. ข้อมูลผู้ป่วยและอาการ</h3>
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">การประเมินการควบคุมโรคและเทคนิคการพ่นยา</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <div class="col-span-1 md:col-span-3 flex flex-wrap items-center gap-4 bg-teal-50 p-3 rounded border border-teal-100">
-                            <label class="font-bold text-gray-700">Diagnosis:</label>
-                            <label class="cursor-pointer"><input type="radio" name="c8Indication" value="Asthma" onchange="generateOutput()"> Asthma</label>
-                            <label class="cursor-pointer"><input type="radio" name="c8Indication" value="COPD" onchange="generateOutput()"> COPD</label>
-                            <div class="flex-grow"></div>
-                            <label class="ml-auto text-red-600 font-bold cursor-pointer"><input type="checkbox" id="c8NewPt" onchange="generateOutput()"> ผู้ป่วยใหม่ (พึ่งเคยเข้าคลินิก)</label>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">การควบคุมอาการ (Asthma/COPD Control)</label>
+                            <select id="c8Control" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
+                                <option value="">-- เลือกระดับ --</option>
+                                <option value="Well-controlled">Well-controlled (ควบคุมได้ดี)</option>
+                                <option value="Partly-controlled">Partly-controlled (ควบคุมได้บางส่วน)</option>
+                                <option value="Uncontrolled">Uncontrolled (ควบคุมไม่ได้)</option>
+                            </select>
                         </div>
-            
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">ACT / CAT Score</label>
                             <input type="text" id="c8Score" placeholder="เช่น ACT 22 หรือ CAT 8" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">ประวัติ ER (ครั้งในรอบปี)</label>
-                            <input type="number" id="c8Er" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เทคนิคการใช้ยาพ่น (Inhaler Technique)</label>
+                            <select id="c8Technique" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
+                                <option value="">-- เลือก --</option>
+                                <option value="ถูกต้องครบถ้วน">ถูกต้องครบถ้วน (Good technique)</option>
+                                <option value="มีข้อผิดพลาด">มีข้อผิดพลาด ได้รับการสอนซ้ำ (Re-educated)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">การบ้วนปากหลังพ่นยาสเตียรอยด์</label>
+                            <select id="c8Gargle" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
+                                <option value="บ้วนปากสม่ำเสมอ">บ้วนปากสม่ำเสมอ (ปฏิเสธฝ้าขาว/เสียงแหบ)</option>
+                                <option value="ลืมบ้วนปากบ่อย">ลืมบ้วนปากบ่อย (แนะนำย้ำเตือน)</option>
+                            </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">ประวัติ Admit (ครั้งในรอบปี)</label>
-                            <input type="number" id="c8Admit" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">การใช้ Reliever (ครั้ง/สัปดาห์)</label>
+                            <input type="text" id="c8RelieverUse" placeholder="เช่น ≤ 2 ครั้ง/สัปดาห์" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 p-4 rounded mb-4 border border-gray-200">
-                        <label class="block font-bold text-gray-800 mb-3"><i class="fa-solid fa-clipboard-check text-blue-500"></i> Symptom Control (ประเมินในรอบ 4 สัปดาห์) ติ๊กข้อที่มีอาการ</label>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700">
-                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp1" value="ใช้ยาฉุกเฉิน >2 ครั้ง/สัปดาห์" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> ใช้ยาพ่นฉุกเฉินบรรเทาอาการ > 2 ครั้ง/สัปดาห์</label>
-                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp2" value="หอบกำเริบ >2 ครั้ง/สัปดาห์" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> หอบกำเริบ > 2 ครั้ง/สัปดาห์</label>
-                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp3" value="หอบกำเริบตอนกลางคืน" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> หอบกำเริบตอนกลางคืน (จนต้องตื่นมาพ่นยา)</label>
-                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp4" value="จำกัดการใช้ชีวิตประจำวัน" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> จำกัดการทำกิจกรรมในชีวิตประจำวัน</label>
-                        </div>
-                        <div class="mt-3 text-xs text-blue-700 font-medium">* Asthma Control: ติ๊ก 0 ข้อ = ควบคุมได้ดี (Well-controlled), ติ๊ก 1-2 ข้อ = คุมได้บางส่วน (Partly), ติ๊ก 3-4 ข้อ = ควบคุมไม่ได้ (Uncontrolled)</div>
-                    </div>
-                </div>
-    
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <div id="c8DeviceContainer" class="space-y-2 mb-4">
-                        <!-- Checklists generated by JS -->
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">รายการยาพ่นและอุปกรณ์เสริม (Inhaler Devices)</label>
+                        <input type="text" id="c8Devices" placeholder="เช่น MDI + Spacer, Accuhaler, Turbuhaler" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-xs font-medium text-gray-700 mb-1">ประเมินปัญหาการใช้ยาอื่นๆ (DRP / ข้อเสนอแนะ)</label>
-                        <input type="text" id="c8Drp" placeholder="เช่น ผู้ป่วยใช้ยาไม่สม่ำเสมอ, แนะนำให้บ้วนปากหลังพ่นสเตียรอยด์ทุกครั้ง" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
-                    </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก</label>
                         <input type="text" id="c8PharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
@@ -1306,8 +1267,8 @@
             
             if(tab === 'WARFARIN') activeBtn.classList.remove('text-red-700');
             if(tab === 'HF') activeBtn.classList.remove('text-green-700');
-            if(tab === 'CKD') activeBtn.classList.remove('text-orange-700');
-            if(tab === 'Asthma COPD') activeBtn.classList.remove('text-teal-700');
+            if(tab === 'CLINIC7') activeBtn.classList.remove('text-orange-700');
+            if(tab === 'CLINIC8') activeBtn.classList.remove('text-teal-700');
 
             // จัดการ Checkbox นำข้อมูล MR มารวม
             const mergeCheck = document.getElementById('mergeMrOption');
@@ -2606,8 +2567,8 @@
                     if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmName}`);
                 }
             }
-            else if (currentTab === 'CKD') {
-                notes.push("pharmacist note [CKD Clinic]");
+            else if (currentTab === 'CLINIC7') {
+                notes.push("pharmacist note");
                 let c7Lines = [];
                 const egfr = document.getElementById('c7Egfr')?.value;
                 const stage = document.getElementById('c7CkdStage')?.value;
@@ -2618,62 +2579,46 @@
                 const drp = document.getElementById('c7Drp')?.value;
                 const pharm = document.getElementById('c7PharmName')?.value;
 
-                // รวบรวมยาปกป้องไต
-                let meds = [];
-                if(document.getElementById('c7MedAcei')?.checked) meds.push('ACEI/ARB');
-                if(document.getElementById('c7MedSglt2i')?.checked) meds.push('SGLT2i');
-                if(document.getElementById('c7MedMra')?.checked) meds.push('MRA');
-                if(document.getElementById('c7MedStatin')?.checked) meds.push('Statin');
-
-                if (stage || egfr) c7Lines.push(`CKD: ${stage || '-'} (eGFR ปัจจุบัน: ${egfr || '-'})`);
+                if (stage || egfr) c7Lines.push(`CKD: ${stage || '-'} (eGFR: ${egfr || '-'})`);
                 if (bp) c7Lines.push(`BP: ${bp}`);
                 if (a1c) c7Lines.push(`HbA1c: ${a1c}%`);
                 if (urine) c7Lines.push(`Urine: ${urine}`);
                 if (k) c7Lines.push(`K: ${k}`);
-                if (meds.length > 0) c7Lines.push(`Renoprotective Agents: ${meds.join(', ')}`);
-            
+                
                 if (c7Lines.length > 0) notes.push(c7Lines.join(' | '));
                 if (drp) notes.push(`DRP/Intervention: ${drp}`);
                 if (pharm) notes.push(`/${pharm}`);
             }
-            else if (currentTab === 'Asthma COPD') {
-                notes.push("pharmacist note [Asthma/COPD]");
+            else if (currentTab === 'CLINIC8') {
+                notes.push("pharmacist note");
                 let c8Lines = [];
-                const ind = document.querySelector('input[name="c8Indication"]:checked')?.value;
+                const ctrl = document.getElementById('c8Control')?.value;
                 const score = document.getElementById('c8Score')?.value;
-                const er = document.getElementById('c8Er')?.value;
-                const admit = document.getElementById('c8Admit')?.value;
-                const isNew = document.getElementById('c8NewPt')?.checked;
-
-                if (isNew) notes.push("⭐ ผู้ป่วยใหม่ (พึ่งเคยเข้าคลินิกครั้งแรก)");
-                if (ind) c8Lines.push(`Dx: ${ind}`);
-                if (score) c8Lines.push(`Score: ${score}`);
-                if (er || admit) c8Lines.push(`History: ER ${er||0} ครั้ง/ปี, Admit ${admit||0} ครั้ง/ปี`);
-            
-                if (c8Lines.length > 0) notes.push(c8Lines.join(' | '));
-            
-                let symps = [];
-                document.querySelectorAll('.c8-symp:checked').forEach(cb => symps.push(cb.value));
-                if (symps.length > 0) notes.push(`Symptoms: ${symps.join(', ')}`);
-                else notes.push(`Symptoms: Well-controlled`);
-
-                let devLines = [];
-                asthmaDevicesDef.forEach(dev => {
-                    if(document.getElementById(`c8_dev_${dev.id}`)?.checked) {
-                        const pct = document.getElementById(`c8_dev_${dev.id}_percent`)?.innerText;
-                        devLines.push(`${dev.title} (Tech: ${pct}%)`);
-                    }
-                });
-                if (devLines.length > 0) notes.push(`Devices: ${devLines.join(', ')}`);
-
-                const drp = document.getElementById('c8Drp')?.value;
+                const tech = document.getElementById('c8Technique')?.value;
+                const gargle = document.getElementById('c8Gargle')?.value;
+                const reliever = document.getElementById('c8RelieverUse')?.value;
+                const devices = document.getElementById('c8Devices')?.value;
                 const pharm = document.getElementById('c8PharmName')?.value;
-                if (drp) notes.push(`DRP/Note: ${drp}`);
+
+                if (ctrl) c8Lines.push(`Control: ${ctrl}`);
+                if (score) c8Lines.push(`Score: ${score}`);
+                if (tech) c8Lines.push(`Technique: ${tech}`);
+                if (gargle) c8Lines.push(`Gargle: ${gargle}`);
+                if (reliever) c8Lines.push(`Reliever: ${reliever}`);
+                
+                if (c8Lines.length > 0) notes.push(c8Lines.join(' | '));
+                if (devices) notes.push(`Devices: ${devices}`);
                 if (pharm) notes.push(`/${pharm}`);
             }
-        
-            // Output -> textarea
-            // document.getElementById('outputTextarea').value = notes.join('\n');
+            
+            // Output injection
+            if (currentTab !== 'HF') {
+                const outputNode = document.getElementById('outputPmk');
+                if(outputNode) {
+                    outputNode.value = notes.join('\n');
+                    updateOpdStickerPreview(); 
+                }
+            }
         }
 
         // ==========================================
@@ -2872,111 +2817,19 @@
                 let summary = `LVEF: ${lvef ? lvef + '%' : '-'} | NYHA: ${nyha} | BP: ${sbp}/${dbp} mmHg | HR: ${hr} bpm | eGFR: ${egfr} | K: ${potassium} | Meds: ${medsString}${interventionText}`;
                 rowData[6] = summary.replace(/\s+/g, ' ').trim(); 
             }
-            else if (currentTab === 'CKD') {
-                rowData = Array(9).fill(''); // อิงตามชีท CKD: Date(จัดการหลังบ้าน) BถึงJ คือ index 0ถึง8 
-                rowData[0] = document.getElementById('hn')?.value || '';
-                rowData[1] = document.getElementById('ptName')?.value || '';
-                rowData[2] = document.getElementById('c7LastLabDate')?.value || '';
-                rowData[3] = document.getElementById('c7LastScr')?.value || '';
-                rowData[4] = document.getElementById('c7LastEgfr')?.value || '';
-                rowData[5] = document.getElementById('c7Scr')?.value || '';
-                rowData[6] = document.getElementById('c7Egfr')?.value || '';
-                rowData[7] = document.getElementById('c7CkdStage')?.value || '';
-            
-                // นำข้อมูล Clinical และ ยาปกป้องไต ไปต่อท้ายข้อความ DRP เพื่อเก็บใน Excel (Column J)
-                let drpExtra = [];
-                const a1c = document.getElementById('c7A1c')?.value;
-                const bp = document.getElementById('c7Bp')?.value;
-                const urine = document.getElementById('c7UrineProt')?.value;
-                const k = document.getElementById('c7K')?.value;
-            
-                let meds = [];
-                if(document.getElementById('c7MedAcei')?.checked) meds.push('ACEI/ARB');
-                if(document.getElementById('c7MedSglt2i')?.checked) meds.push('SGLT2i');
-                if(document.getElementById('c7MedMra')?.checked) meds.push('MRA');
-                if(document.getElementById('c7MedStatin')?.checked) meds.push('Statin');
-
-                if(a1c) drpExtra.push(`HbA1c: ${a1c}%`);
-                if(bp) drpExtra.push(`BP: ${bp}`);
-                if(urine) drpExtra.push(`Urine: ${urine}`);
-                if(k) drpExtra.push(`K: ${k}`);
-                if(meds.length > 0) drpExtra.push(`Meds: ${meds.join(', ')}`);
-            
-                let rawDrp = document.getElementById('c7Drp')?.value || '';
-                rowData[8] = drpExtra.length > 0 ? (rawDrp ? `${rawDrp} | ${drpExtra.join(', ')}` : drpExtra.join(', ')) : rawDrp;
+            else if (currentTab === 'CLINIC7') {
+                rowData[2] = document.getElementById('c7Egfr')?.value || '';
+                rowData[3] = document.getElementById('c7CkdStage')?.value || '';
+                rowData[4] = document.getElementById('c7A1c')?.value || '';
+                rowData[5] = document.getElementById('c7Bp')?.value || '';
+                rowData[6] = document.getElementById('c7Drp')?.value || '';
             }
-            else if (currentTab === 'Asthma COPD') {
-                rowData = Array(85).fill(''); // จากคอลัมน์ B ถึง CH (รวม 85 คอลัมน์)
-                rowData[0] = document.getElementById('hn')?.value || '';
-                rowData[1] = document.getElementById('ptName')?.value || '';
-                rowData[2] = document.querySelector('input[name="c8Indication"]:checked')?.value || '';
-                rowData[3] = document.getElementById('c8Er')?.value || '';
-                rowData[4] = document.getElementById('c8Admit')?.value || '';
-                rowData[5] = document.getElementById('c8NewPt')?.checked ? '1' : '';
-                rowData[6] = document.getElementById('c8Drp')?.value || '';
-                rowData[7] = document.getElementById('c8Score')?.value || '';
-            
-                // อาการ 4 ข้อ
-                rowData[8] = document.getElementById('c8Symp1')?.checked ? '1' : '0';
-                rowData[9] = document.getElementById('c8Symp2')?.checked ? '1' : '0';
-                rowData[10] = document.getElementById('c8Symp3')?.checked ? '1' : '0';
-                rowData[11] = document.getElementById('c8Symp4')?.checked ? '1' : '0';
-            
-                asthmaDevicesDef.forEach(dev => {
-                    const isActive = document.getElementById(`c8_dev_${dev.id}`)?.checked;
-                    // ปรับเป็น 'TRUE'/'FALSE' ตามตัวอย่างข้อมูลจริงบน Sheet
-                    rowData[dev.excelOffset] = isActive ? 'TRUE' : 'FALSE'; 
-                
-                    if(isActive) {
-                        let total = 0;
-                        let max = dev.steps.length;
-                        let regimen = document.getElementById(`c8_dev_${dev.id}_regimen`)?.value || '1';
-                        let isMulti = regimen.includes('>1');
-                    
-                        dev.steps.forEach((step, idx) => {
-                            let cb = document.getElementById(`c8_dev_${dev.id}_step_${idx}`);
-                            let checked = 0;
-                        
-                            const isWaitStep = step.includes('เว้น 1-2 นาที');
-                            if (isWaitStep && !isMulti) {
-                                checked = 0; // Skip
-                                max--;
-                            } else {
-                                checked = cb?.checked ? 1 : 0;
-                                total += checked;
-                            }
-                        
-                            rowData[dev.excelOffset + 1 + idx] = checked.toString();
-                        });
-                    
-                        let percent = max > 0 ? Math.round((total / max) * 100) : 0;
-                    
-                        if (dev.id === 'mdi') {
-                            rowData[23] = total; 
-                            if(regimen === '1') rowData[24] = percent;
-                            else if(regimen === '>1') rowData[25] = percent;
-                            else if(regimen === 'prn1') rowData[26] = percent;
-                            else if(regimen === 'prn>1') rowData[27] = percent;
-                        } else if (dev.id === 'accuhaler') {
-                            rowData[38] = total;
-                            if(regimen === '1') rowData[39] = percent;
-                            else if(regimen === '>1') rowData[40] = percent;
-                        } else if (dev.id === 'handihaler') {
-                            rowData[52] = percent;
-                        } else if (dev.id === 'spiromax') {
-                            rowData[62] = total;
-                            if(regimen === '1') rowData[63] = percent;
-                            else if(regimen === '>1') rowData[64] = percent;
-                        } else if (dev.id === 'respimat') {
-                            rowData[73] = total;
-                            if(regimen === '1') rowData[74] = percent;
-                            else if(regimen === '>1') rowData[75] = percent;
-                        } else if (dev.id === 'ellipta') {
-                            rowData[83] = total;
-                            rowData[84] = percent;
-                        }
-                    }
-                });
+            else if (currentTab === 'CLINIC8') {
+                rowData[2] = document.getElementById('c8Control')?.value || '';
+                rowData[3] = document.getElementById('c8Score')?.value || '';
+                rowData[4] = document.getElementById('c8Technique')?.value || '';
+                rowData[5] = document.getElementById('c8RelieverUse')?.value || '';
+                rowData[6] = document.getElementById('c8Devices')?.value || '';
             }
             return rowData;
         }
@@ -3011,10 +2864,10 @@
             let targetClinicName = currentTab;
             if (currentTab === 'HF') {
                 targetClinicName = 'HF clinic'; // ระบุชื่อแท็บชีทปลายทางให้ไป HF clinic แน่นอน
-            } else if (currentTab === 'CKD') {
-                targetClinicName = 'CKD';
-            } else if (currentTab === 'Asthma COPD') {
-                targetClinicName = 'Asthma COPD';
+            } else if (currentTab === 'CLINIC7') {
+                targetClinicName = 'NCD';
+            } else if (currentTab === 'CLINIC8') {
+                targetClinicName = 'Asthma-COPD';
             }
 
             fetch(SCRIPT_URL, {
