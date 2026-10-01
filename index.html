@@ -1003,6 +1003,12 @@
                                 <option value="Uncontrolled">Uncontrolled (ควบคุมไม่ได้)</option>
                             </select>
                         </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700">
+                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp1" value="ใช้ยาฉุกเฉิน >2 ครั้ง/สัปดาห์" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> ใช้ยาพ่นฉุกเฉินบรรเทาอาการ > 2 ครั้ง/สัปดาห์</label>
+                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp2" value="หอบกำเริบ >2 ครั้ง/สัปดาห์" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> หอบกำเริบ > 2 ครั้ง/สัปดาห์</label>
+                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp3" value="หอบกำเริบตอนกลางคืน" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> หอบกำเริบตอนกลางคืน (จนต้องตื่นมาพ่นยา)</label>
+                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp4" value="จำกัดการใช้ชีวิตประจำวัน" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> จำกัดการทำกิจกรรมในชีวิตประจำวัน</label>
+                        </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">ACT / CAT Score</label>
                             <input type="text" id="c8Score" placeholder="เช่น ACT 22 หรือ CAT 8" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
@@ -1239,7 +1245,101 @@
         let hivDrugs = [ { name: '', usage: '', time: '' } ]; 
         let selectedPreopDrugs = [];
         let preopCalculatedNotes = [];
-
+        
+        const asthmaDevicesDef = [
+            { 
+                id: 'mdi', title: 'MDI (Metered Dose Inhaler)', 
+                regimens: [{v:'1', t:'พ่นประจำ 1 Puff'}, {v:'>1', t:'พ่นประจำ >1 Puff'}, {v:'prn1', t:'PRN 1 Puff'}, {v:'prn>1', t:'PRN >1 Puff'}],
+                steps: [
+                    "ถือหลอดพ่นในแนวตั้ง เปิดฝาครอบปากขวดยาพ่นออก เขย่าขวดยาในแนวตั้ง 3-4 ครั้ง",
+                    "เตรียมลมหายใจโดย พ่นลมหายใจออก ให้เต็มที่",
+                    "อมปากขวดยาพ่น : ริมฝีปากอมรอบปากขวดยาให้สนิท",
+                    "หายใจเข้าช้าๆ ลึกๆ ทางปากพร้อมกับกดที่พ่นยา 1 ครั้ง",
+                    "เอาขวดยาพ่นออกจากปาก ปิดปากให้สนิท กลั้นหายใจให้นานที่สุดอย่างน้อย 10 วินาที",
+                    "ผ่อนลมหายใจออกทางปาก หรือจมูกช้าๆ",
+                    "หลังใช้เสร็จกลั้วภายในปากและคอด้วยน้ำสะอาด",
+                    "เช็ดปากกระบอกหรือดึงขวดยาออก แล้วล้างทำความสะอาดอุปกรณ์พลาสติก โดยเปิดน้ำสะอาดให้ไหลผ่าน ผึ่งให้แห้งในที่ร่ม",
+                    "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
+                ],
+                excelOffset: 13
+            },
+            { 
+                id: 'accuhaler', title: 'ACCUHALER', 
+                regimens: [{v:'1', t:'พ่น 1 Puff'}, {v:'>1', t:'พ่น >1 Puff'}],
+                steps: [
+                    "วางเครื่องแนวราบ ไม่เขย่า ไม่พลิกไปมา ใช้นิ้วหัวแม่มือดันออกจากตัวจนสุด",
+                    "ดันแกนเลื่อนด้านในออกไปจนสุดได้ยินเสียง 'คลิก' เพื่อบรรจุยา",
+                    "หายใจออกให้เต็มที่ระวังอย่าพ่นลมหายใจเข้าไปในเครื่อง",
+                    "อมปากกระบอกให้สนิท สูดลมหายใจเข้าทางปากโดยผ่านเครื่องมือ ให้เร็ว แรง และลึก",
+                    "กลั้นหายใจ 10 วินาทีแล้วผ่อนลมหายใจออกทางปาก หรือจมูกช้าๆ",
+                    "ปิดเครื่องพ่นยาโดยใช้นิ้วหัวแม่มือวางลงที่ช่อง ดันกลับไปที่เดิมจนได้ยินเสียง “คลิก” ไม่ดันแกนด้านในกลับ",
+                    "หลังพ่นยา กลั้วภายในปากและคอด้วยน้ำสะอาด",
+                    "หลังใช้เสร็จ ทำความสะอาดปากขวดยาพ่นโดยใช้กระดาษ/ผ้าแห้งเช็ด",
+                    "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
+                ],
+                excelOffset: 29
+            },
+            {
+                id: 'handihaler', title: 'HANDIHALER',
+                regimens: [{v:'1', t:'พ่นครั้งละ 1 แคปซูล'}],
+                steps: [
+                    "ดึงฝาเปิดขึ้น แล้วเปิดปากกระบอก",
+                    "แกะยาออกจากแผง (ไม่แกะยาทิ้งไว้) แล้วใส่แคปซูลยาลงในช่องใส่เม็ดยา",
+                    "ปิดปากกระบอก ได้ยินเสียงคลิก(ฝายังคงเปิดไว้)",
+                    "หันปากกระบอกตั้งขึ้น กดปุ่มด้านข้างกระบอกเพื่อเจาะยา (เพียงครั้งเดียว)",
+                    "หายใจออกให้เต็มที่ระวังอย่าพ่นลมหายใจเข้าไปในปากกระบอก",
+                    "อมปากกระบอก สูดลมหายใจเข้าทางปาก เร็ว แรง และลึก",
+                    "ผ่อนลมหายใจออกทางปาก หรือจมูกช้าๆ",
+                    "เปิดปากกระบอกอีกครั้ง แล้วเคาะแคปซูลดูผงยาที่เหลือ (แล้วทิ้งไป)",
+                    "ปิดปากกระบอกและฝาให้สนิท",
+                    "หลังใช้เสร็จ ทำความสะอาดปากขวดยาพ่นโดยใช้กระดาษซับให้แห้ง"
+                ],
+                excelOffset: 42
+            },
+            {
+                id: 'spiromax', title: 'DuoResp Spiromax',
+                regimens: [{v:'1', t:'พ่น 1 Puff'}, {v:'>1', t:'พ่น >1 Puff'}],
+                steps: [
+                    "ถือกระบอกยาในแนวตั้ง (โดยให้ปากกระบอกยาอยู่ด้านล่าง) และไม่เขย่าขวดยาพ่น",
+                    "เปิดฝากระบอกยาจนสุดจะได้ยินเสียงคลิก",
+                    "หายใจออกให้เต็มที่ระวังอย่าพ่นลมหายใจเข้าไปในปากกระบอก",
+                    "อมปากกระบอก สูดลมหายใจเข้าทางปาก เร็ว แรง และลึก",
+                    "เอาปากกระบอกออก งับปาก และกลั้นหายใจ 10 วินาที แล้วผ่อนลมหายใจออกทางจมูกช้าๆ",
+                    "หลังใช้เสร็จ ทำความสะอาดปากขวดยาพ่นโดยใช้กระดาษซับให้แห้ง ก่อนปิดฝากระบอกยา",
+                    "หลังพ่นยา กลั้วภายในปากและคอด้วยน้ำสะอาด",
+                    "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
+                ],
+                excelOffset: 54
+            },
+            {
+                id: 'respimat', title: 'Spiolto respimat',
+                regimens: [{v:'1', t:'พ่น 1 Puff'}, {v:'>1', t:'พ่น >1 Puff'}],
+                steps: [
+                    "กำจัดน้ำมูก เสมหะ นั่งเตรียมพร้อมและหมุนขวดยาตามลูกศรเพื่อบรรจุยาก่อนสูด",
+                    "เตรียมลมโดยหายใจออกให้เต็มที่ก่อนพ่นยา",
+                    "อมปากกระบอกโดยไม่ให้ริมฝีกปากปิดช่องระบายอากาศ",
+                    "กดยาพ่นพร้อมกับสูดลมหายใจเข้าช้าๆ ลึกๆ",
+                    "เอาปากกระบอกออก งับปาก และกลั้นหายใจ 10 วินาที แล้วผ่อนลมหายใจออกทางจมูกช้าๆ",
+                    "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที",
+                    "หลังใช้เสร็จ ทำความสะอาดปากขวดยาพ่นโดยใช้กระดาษเช็ดให้สะอาด ก่อนปิดฝากระบอกยา"
+                ],
+                excelOffset: 66
+            },
+            {
+                id: 'ellipta', title: 'Anoro ellipta',
+                regimens: [{v:'1', t:'พ่น 1 Puff'}],
+                steps: [
+                    "กำจัดน้ำมูก เสมหะ นั่งเตรียมพร้อม และเปิดกระบอกยาจนสุดจะมีเสียงดังคลิก",
+                    "เตรียมลมโดยหายใจออกให้เต็มที่ก่อนพ่นยา",
+                    "อมปากกระบอกโดยไม่ให้ริมฝีกปากปิดช่องระบายอากาศ",
+                    "สูดยาเข้าปอดโดยหายใจเข้าเร็ว แรง ลึกจนสุด",
+                    "เอาปากกระบอกออก งับปาก และกลั้นหายใจ 10 วินาที แล้วผ่อนลมหายใจออกทางจมูกช้าๆ",
+                    "ทำความสะอาดปากกระบอกยาพ่นโดยใช้กระดาษทิชชู่หรือผ้าแห้งเช็ดให้สะอาด ก่อนปิดฝากระบอกยา"
+                ],
+                excelOffset: 77
+            }
+        ];
+        
         // ==========================================
         //         UI & TABS LOGIC
         // ==========================================
@@ -2590,24 +2690,40 @@
                 if (pharm) notes.push(`/${pharm}`);
             }
             else if (currentTab === 'CLINIC8') {
-                notes.push("pharmacist note");
+                notes.push("pharmacist note Asthma/COPD");
                 let c8Lines = [];
-                const ctrl = document.getElementById('c8Control')?.value;
+                const ind = document.querySelector('input[name="c8Indication"]:checked')?.value;
                 const score = document.getElementById('c8Score')?.value;
-                const tech = document.getElementById('c8Technique')?.value;
-                const gargle = document.getElementById('c8Gargle')?.value;
-                const reliever = document.getElementById('c8RelieverUse')?.value;
-                const devices = document.getElementById('c8Devices')?.value;
-                const pharm = document.getElementById('c8PharmName')?.value;
+                const er = document.getElementById('c8Er')?.value;
+                const admit = document.getElementById('c8Admit')?.value;
+                const isNew = document.getElementById('c8NewPt')?.checked;
 
-                if (ctrl) c8Lines.push(`Control: ${ctrl}`);
+                if (isNew) notes.push("⭐ ผู้ป่วยใหม่ (พึ่งเคยเข้าคลินิกครั้งแรก)");
+                if (ind) c8Lines.push(`Dx: ${ind}`);
                 if (score) c8Lines.push(`Score: ${score}`);
-                if (tech) c8Lines.push(`Technique: ${tech}`);
-                if (gargle) c8Lines.push(`Gargle: ${gargle}`);
-                if (reliever) c8Lines.push(`Reliever: ${reliever}`);
-                
+                if (er || admit) c8Lines.push(`History: ER ${er||0} ครั้ง/ปี, Admit ${admit||0} ครั้ง/ปี`);
+            
                 if (c8Lines.length > 0) notes.push(c8Lines.join(' | '));
-                if (devices) notes.push(`Devices: ${devices}`);
+            
+                let symps = [];
+                document.querySelectorAll('.c8-symp:checked').forEach(cb => {
+                    if (cb.checked) symps.push(cb.value)
+                });
+                if (symps.length > 0) notes.push(`Symptoms: ${symps.join(', ')}`);
+                else notes.push(`Symptoms: Well-controlled`);
+
+                let devLines = [];
+                asthmaDevicesDef.forEach(dev => {
+                    if(document.getElementById(`c8_dev_${dev.id}`)?.checked) {
+                        const pct = document.getElementById(`c8_dev_${dev.id}_percent`)?.innerText;
+                        devLines.push(`${dev.title} (Tech: ${pct}%)`);
+                    }
+                });
+                if (devLines.length > 0) notes.push(`Devices: ${devLines.join(', ')}`);
+
+                const drp = document.getElementById('c8Drp')?.value;
+                const pharm = document.getElementById('c8PharmName')?.value;
+                if (drp) notes.push(`DRP/Note: ${drp}`);
                 if (pharm) notes.push(`/${pharm}`);
             }
             
@@ -2825,11 +2941,76 @@
                 rowData[6] = document.getElementById('c7Drp')?.value || '';
             }
             else if (currentTab === 'CLINIC8') {
-                rowData[2] = document.getElementById('c8Control')?.value || '';
-                rowData[3] = document.getElementById('c8Score')?.value || '';
-                rowData[4] = document.getElementById('c8Technique')?.value || '';
-                rowData[5] = document.getElementById('c8RelieverUse')?.value || '';
-                rowData[6] = document.getElementById('c8Devices')?.value || '';
+                rowData = Array(86).fill(''); // จากคอลัมน์ A ถึง CH 
+                rowData[0] = document.getElementById('hn')?.value || '';
+                rowData[1] = document.getElementById('ptName')?.value || '';
+                rowData[2] = document.querySelector('input[name="c8Indication"]:checked')?.value || '';
+                rowData[3] = document.getElementById('c8Er')?.value || '';
+                rowData[4] = document.getElementById('c8Admit')?.value || '';
+                rowData[5] = document.getElementById('c8NewPt')?.checked ? '1' : '';
+                rowData[6] = document.getElementById('c8Drp')?.value || '';
+                rowData[7] = document.getElementById('c8Score')?.value || '';
+            
+                // อาการ 4 ข้อ
+                rowData[8] = document.getElementById('c8Symp1')?.checked ? '1' : '0';
+                rowData[9] = document.getElementById('c8Symp2')?.checked ? '1' : '0';
+                rowData[10] = document.getElementById('c8Symp3')?.checked ? '1' : '0';
+                rowData[11] = document.getElementById('c8Symp4')?.checked ? '1' : '0';
+            
+                asthmaDevicesDef.forEach(dev => {
+                    const isActive = document.getElementById(`c8_dev_${dev.id}`)?.checked;
+                    rowData[dev.excelOffset] = isActive ? 'TRUE' : 'FALSE'; 
+                
+                    if(isActive) {
+                        let total = 0;
+                        let max = dev.steps.length;
+                        let regimen = document.getElementById(`c8_dev_${dev.id}_regimen`)?.value || '1';
+                        let isMulti = regimen.includes('>1');
+                    
+                        dev.steps.forEach((step, idx) => {
+                            let cb = document.getElementById(`c8_dev_${dev.id}_step_${idx}`);
+                            let checked = 0;
+                        
+                            const isWaitStep = step.includes('เว้น 1-2 นาที');
+                            if (isWaitStep && !isMulti) {
+                                checked = 0; 
+                                max--;
+                            } else {
+                                checked = cb?.checked ? 1 : 0;
+                                total += checked;
+                            }
+                        
+                            rowData[dev.excelOffset + 1 + idx] = checked.toString();
+                        });
+                    
+                        let percent = max > 0 ? Math.round((total / max) * 100) : 0;
+                    
+                        if (dev.id === 'mdi') {
+                            rowData[24] = total; 
+                            if(regimen === '1') rowData[25] = percent;
+                            else if(regimen === '>1') rowData[26] = percent;
+                            else if(regimen === 'prn1') rowData[27] = percent;
+                            else if(regimen === 'prn>1') rowData[28] = percent;
+                        } else if (dev.id === 'accuhaler') {
+                            rowData[39] = total;
+                            if(regimen === '1') rowData[40] = percent;
+                            else if(regimen === '>1') rowData[41] = percent;
+                        } else if (dev.id === 'handihaler') {
+                            rowData[53] = percent;
+                        } else if (dev.id === 'spiromax') {
+                            rowData[63] = total;
+                            if(regimen === '1') rowData[64] = percent;
+                            else if(regimen === '>1') rowData[65] = percent;
+                        } else if (dev.id === 'respimat') {
+                            rowData[74] = total;
+                            if(regimen === '1') rowData[75] = percent;
+                            else if(regimen === '>1') rowData[76] = percent;
+                        } else if (dev.id === 'ellipta') {
+                            rowData[84] = total;
+                            rowData[85] = percent;
+                        }
+                    }
+                });
             }
             return rowData;
         }
@@ -3412,6 +3593,107 @@
             document.getElementById(`c8_dev_${id}_percent`).innerText = pct;
             
             generateOutput();
+        }
+
+        // ==========================================
+        //         ASTHMA COPD DEVICES LOGIC
+        // ==========================================
+        function renderC8Devices() {
+            const container = document.getElementById('c8DeviceContainer');
+            if(!container) return;
+            let html = '<h4 class="font-bold text-blue-700 mb-3 border-b pb-2"><i class="fa-solid fa-list-check"></i> ประเมินเทคนิคการใช้ยาพ่น (Checklist)</h4>';
+            
+            asthmaDevicesDef.forEach(dev => {
+                let regimenOptions = dev.regimens.map(r => `<option value="${r.v}">${r.t}</option>`).join('');
+                let stepsHtml = dev.steps.map((step, idx) => `
+                    <label class="flex items-start gap-2 text-sm text-gray-700 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
+                        <input type="checkbox" id="c8_dev_${dev.id}_step_${idx}" class="mt-1 w-4 h-4 text-blue-600 c8-dev-step-${dev.id}" onchange="updateC8Score('${dev.id}')">
+                        <span class="flex-1">${step}</span>
+                    </label>
+                `).join('');
+
+                html += `
+                <div class="bg-gray-50 border border-gray-300 rounded-lg p-4 mb-3 shadow-sm">
+                    <div class="flex flex-wrap items-center gap-4 mb-2">
+                        <label class="font-bold text-gray-800 text-base md:text-lg flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" id="c8_dev_${dev.id}" onchange="toggleC8Device('${dev.id}')" class="w-5 h-5 text-blue-600 rounded"> 
+                            ${dev.title}
+                        </label>
+                        <select id="c8_dev_${dev.id}_regimen" class="rounded border-gray-300 border px-3 py-1.5 text-sm bg-white hidden focus:ring-blue-300 shadow-sm" onchange="updateC8Score('${dev.id}')">
+                            ${regimenOptions}
+                        </select>
+                    </div>
+                    
+                    <div id="c8_dev_${dev.id}_checklist" class="hidden md:ml-7 pl-4 border-l-4 border-blue-200 mt-3 bg-white p-3 rounded">
+                        <button class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded mb-3 font-bold transition shadow-sm" onclick="checkAllC8('${dev.id}')">
+                            <i class="fa-solid fa-check-double"></i> ติ๊กถูกทั้งหมด (ทำได้ถูกต้อง 100%)
+                        </button>
+                        ${stepsHtml}
+                        <div class="mt-3 bg-blue-50 border border-blue-200 p-3 rounded text-blue-900 font-bold text-sm text-center">
+                            ประเมินผล: ทำถูกต้อง <span id="c8_dev_${dev.id}_score" class="text-lg text-blue-600">0</span> / <span id="c8_dev_${dev.id}_max">0</span> ข้อ 
+                            <span class="bg-white px-2 py-1 rounded ml-2 shadow-sm border border-blue-100">คิดเป็น <span id="c8_dev_${dev.id}_percent" class="text-lg text-green-600">0</span>%</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleC8Device(id) {
+            const isChecked = document.getElementById(`c8_dev_${id}`).checked;
+            const checklist = document.getElementById(`c8_dev_${id}_checklist`);
+            const regimen = document.getElementById(`c8_dev_${id}_regimen`);
+            if(isChecked) {
+                checklist.classList.remove('hidden');
+                regimen.classList.remove('hidden');
+                updateC8Score(id);
+            } else {
+                checklist.classList.add('hidden');
+                regimen.classList.add('hidden');
+                document.querySelectorAll(`.c8-dev-step-${id}`).forEach(cb => cb.checked = false);
+            }
+            if(typeof generateOutput === 'function') generateOutput();
+        }
+
+        function checkAllC8(id) {
+            document.querySelectorAll(`.c8-dev-step-${id}`).forEach(cb => {
+                if(!cb.disabled) cb.checked = true;
+            });
+            updateC8Score(id);
+        }
+
+        function updateC8Score(id) {
+            const devDef = asthmaDevicesDef.find(d => d.id === id);
+            const regimenEl = document.getElementById(`c8_dev_${id}_regimen`);
+            const regimen = regimenEl ? regimenEl.value : '1';
+            const isMulti = regimen.includes('>1');
+            
+            let max = devDef.steps.length;
+            let total = 0;
+            
+            devDef.steps.forEach((step, idx) => {
+                const cb = document.getElementById(`c8_dev_${id}_step_${idx}`);
+                if(!cb) return;
+
+                const isWaitStep = step.includes('เว้น 1-2 นาที');
+                if (isWaitStep && !isMulti) {
+                    cb.checked = false;
+                    cb.disabled = true;
+                    cb.parentElement.classList.add('opacity-40', 'line-through', 'bg-gray-100');
+                    max--;
+                } else {
+                    cb.disabled = false;
+                    cb.parentElement.classList.remove('opacity-40', 'line-through', 'bg-gray-100');
+                    if (cb.checked) total++;
+                }
+            });
+            
+            const pct = max > 0 ? Math.round((total / max) * 100) : 0;
+            document.getElementById(`c8_dev_${id}_score`).innerText = total;
+            document.getElementById(`c8_dev_${id}_max`).innerText = max;
+            document.getElementById(`c8_dev_${id}_percent`).innerText = pct;
+            
+            if(typeof generateOutput === 'function') generateOutput();
         }
         
         // ==========================================
