@@ -928,10 +928,10 @@
                 </div>
             </div>
 
-            <!-- 7. Clinic 7 (NCD / CKD Form) -->
+            <!-- 7. CKD -->
             <div id="form-CLINIC7" class="space-y-6 clinic-form hidden">
                 <div class="bg-orange-50 p-4 border border-orange-200 rounded-xl mb-4 text-sm">
-                    <h3 class="font-bold text-orange-800 mb-2"><i class="fa-solid fa-notes-medical"></i> 7. คลินิกโรคเรื้อรังและชะลอไตเสื่อม (NCD / CKD Clinic)</h3>
+                    <h3 class="font-bold text-orange-800 mb-2"><i class="fa-solid fa-notes-medical"></i> 7. คลินิกโรคเรื้อรังและชะลอไตเสื่อม CKD Clinic)</h3>
                     <p class="text-orange-700">การประเมินการทำงานของไต เป้าหมายความดันโลหิต น้ำตาลสะสม และการปรับขนาดยาตามสภาพไต</p>
                 </div>
                 
@@ -984,7 +984,7 @@
                 </div>
             </div>
 
-            <!-- 8. Clinic 8 (Asthma / COPD Form) -->
+            <!-- 8. Asthma/COPD -->
             <div id="form-CLINIC8" class="space-y-6 clinic-form hidden">
                 <div class="bg-teal-50 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-teal-800 mb-2"><i class="fa-solid fa-lungs"></i> 8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD Clinic)</h3>
@@ -1372,7 +1372,7 @@
             
             if(tab === 'WARFARIN') activeBtn.classList.remove('text-red-700');
             if(tab === 'HF') activeBtn.classList.remove('text-green-700');
-            if(tab === 'CKD') activeBtn.classList.remove('text-orange-700');
+            if(tab === 'CKD Clinic') activeBtn.classList.remove('text-orange-700');
             if(tab === 'Asthma/COPD') activeBtn.classList.remove('text-teal-700');
 
             // จัดการ Checkbox นำข้อมูล MR มารวม
@@ -3050,7 +3050,7 @@
             let targetClinicName = currentTab;
             if (currentTab === 'HF') {
                 targetClinicName = 'HF clinic'; // ระบุชื่อแท็บชีทปลายทางให้ไป HF clinic แน่นอน
-            } else if (currentTab === 'CKD') {
+            } else if (currentTab === 'CKD clinic') {
                 targetClinicName = 'CKD';
             } else if (currentTab === 'Asthma/COPD') {
                 targetClinicName = 'Asthma COPD';
