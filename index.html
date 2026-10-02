@@ -3056,7 +3056,6 @@
             }
             return rowData;
         }
-
         function copyToClipboard(elementId) {
             const el = document.getElementById(elementId);
             if(el && el.value) { 
@@ -3081,16 +3080,16 @@
             if(!btn) return;
             
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>กำลังบันทึก...`;
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>กำลังบันทึก...`;
             btn.disabled = true;
 
             let targetClinicName = currentTab;
             if (currentTab === 'HF') {
-                targetClinicName = 'HF clinic'; 
+                targetClinicName = 'HF clinic'; // ระบุชื่อแท็บชีทปลายทางให้ไป HF clinic แน่นอน
             } else if (currentTab === 'CKD') {
                 targetClinicName = 'CKD';
             } else if (currentTab === 'ASTHMA') {
-                targetClinicName = 'Asthma COPD'; 
+                targetClinicName = 'Asthma COPD';
             }
 
             fetch(SCRIPT_URL, {
@@ -3100,7 +3099,7 @@
                 body: JSON.stringify({ action: "saveOPDNote", clinic: targetClinicName, payload: getRowDataArray() })
             })
             .then(() => { 
-                showToast('ส่งคำสั่งบันทึกลง Google Sheet สำเร็จแล้ว!'); 
+                showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!'); 
             })
             .catch(error => { 
                 console.error('Error!', error); 
@@ -3110,6 +3109,632 @@
                 btn.innerHTML = originalHTML; 
                 btn.disabled = false; 
             });
+        }
+
+        // ==========================================
+        //         PRINTING SYSTEM
+        // ==========================================
+        function printOpdCard() {
+            const ptNameNode = document.getElementById('ptName');
+            const ptHnNode = document.getElementById('hn');
+            const ptName = ptNameNode ? ptNameNode.value || '-' : '-';
+            const ptHn = ptHnNode ? ptHnNode.value || '-' : '-';
+            
+            const pNameEl = document.getElementById('printName');
+            const pNoteEl = document.getElementById('printNote');
+            const outPmkEl = document.getElementById('outputPmk');
+            
+            if(pNameEl) pNameEl.innerText = `${ptName} HN: ${ptHn}`;
+            if(pNoteEl) pNoteEl.innerText = outPmkEl ? outPmkEl.value || 'ไม่มีข้อมูล' : 'ไม่มีข้อมูล';
+            
+            const printDiv = document.getElementById('printArea');
+            if(printDiv) printDiv.classList.remove('hidden');
+            
+            document.body.classList.add('print-mode-opd-a5');
+            window.print();
+            document.body.classList.remove('print-mode-opd-a5');
+            
+            if(printDiv) printDiv.classList.add('hidden');
+        }
+
+        function updateOpdStickerPreview() {
+            const ptNameNode = document.getElementById('ptName');
+            const ptHnNode = document.getElementById('hn');
+            const outPmkNode = document.getElementById('outputPmk');
+            
+            const ptName = ptNameNode ? ptNameNode.value || '-' : '-';
+            const ptHn = ptHnNode ? ptHnNode.value || '-' : '-';
+            const noteText = outPmkNode ? outPmkNode.value || 'ไม่มีข้อมูล' : 'ไม่มีข้อมูล';
+
+            const stkWNode = document.getElementById('stkW');
+            const stkPtNode = document.getElementById('stkPt');
+            const stkW = stkWNode ? stkWNode.value || 80 : 80;
+            const stkPt = stkPtNode ? stkPtNode.value || 11 : 11;
+
+            const prevStkName = document.getElementById('prevStkName');
+            const prevStkHn = document.getElementById('prevStkHn');
+            const prevStkNote = document.getElementById('prevStkNote');
+            const previewBox = document.getElementById('opdStickerPreview');
+
+            if(prevStkName) prevStkName.innerText = ptName;
+            if(prevStkHn) prevStkHn.innerText = ptHn;
+            if(prevStkNote) prevStkNote.innerText = noteText;
+            if(previewBox) {
+                previewBox.style.width = `${stkW}mm`;
+                previewBox.style.fontSize = `${stkPt}pt`;
+            }
+        }
+
+        function executePrintOpdSticker() {
+            const ptNameNode = document.getElementById('ptName');
+            const ptHnNode = document.getElementById('hn');
+            const outPmkNode = document.getElementById('outputPmk');
+            
+            const ptName = ptNameNode ? ptNameNode.value || '-' : '-';
+            const ptHn = ptHnNode ? ptHnNode.value || '-' : '-';
+            const noteText = outPmkNode ? outPmkNode.value || 'ไม่มีข้อมูล' : 'ไม่มีข้อมูล';
+
+            const stkXNode = document.getElementById('stkX');
+            const stkYNode = document.getElementById('stkY');
+            const stkWNode = document.getElementById('stkW');
+            const stkPtNode = document.getElementById('stkPt');
+            
+            const stkX = stkXNode ? stkXNode.value || 0 : 0;
+            const stkY = stkYNode ? stkYNode.value || 0 : 0;
+            const stkW = stkWNode ? stkWNode.value || 80 : 80;
+            const stkPt = stkPtNode ? stkPtNode.value || 11 : 11;
+
+            const printArea = document.getElementById('printStickerArea');
+            const stkPrintName = document.getElementById('stkPrintName');
+            const stkPrintHn = document.getElementById('stkPrintHn');
+            const stkPrintNote = document.getElementById('stkPrintNote');
+
+            if(stkPrintName) stkPrintName.innerText = `${ptName}`;
+            if(stkPrintHn) stkPrintHn.innerText = `${ptHn}`;
+            if(stkPrintNote) stkPrintNote.innerText = noteText;
+
+            if(printArea) {
+                printArea.style.position = 'absolute';
+                printArea.style.left = `${stkX}mm`;
+                printArea.style.top = `${stkY}mm`;
+                printArea.style.width = `${stkW}mm`;
+                printArea.style.fontSize = `${stkPt}pt`;
+                printArea.style.fontFamily = "'Prompt', sans-serif";
+                printArea.style.color = "black";
+                printArea.style.lineHeight = "1.3";
+                printArea.classList.remove('hidden'); 
+            }
+            
+            document.body.classList.add('print-mode-opd-stk');
+            window.print();
+            document.body.classList.remove('print-mode-opd-stk');
+            
+            if(printArea) printArea.classList.add('hidden'); 
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            if(toast) {
+                toast.innerText = msg;
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+            }
+        }
+
+        // ==========================================
+        //         WARFARIN SYSTEM LOGIC
+        // ==========================================
+        function setupWarfarinAccess() {
+            const codeInput = document.getElementById('accessCode');
+            const remCheck = document.getElementById('rememberCode');
+            const msg = document.getElementById('gateMsg');
+            const fetchBtn = document.getElementById('fetchBtn');
+
+            if(!codeInput || !remCheck || !msg || !fetchBtn) return;
+
+            function checkAccess() {
+                const ok = (codeInput.value.trim() === ACCESS_CODE);
+                fetchBtn.disabled = !ok;
+                if(ok) {
+                    msg.innerHTML = '<i class="fa-solid fa-circle-check"></i> พร้อมดึงข้อมูล';
+                    msg.className = 'text-green-600 text-sm ml-3 font-bold';
+                    if(remCheck.checked) sessionStorage.setItem('access_ok','1');
+                } else {
+                    msg.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> รหัสไม่ถูกต้อง';
+                    msg.className = 'text-red-500 text-sm ml-3 font-bold';
+                    sessionStorage.removeItem('access_ok');
+                }
+                return ok;
+            }
+
+            if(sessionStorage.getItem('access_ok') === '1') {
+                codeInput.value = ACCESS_CODE;
+                remCheck.checked = true;
+                checkAccess();
+            }
+
+            codeInput.addEventListener('input', checkAccess);
+            remCheck.addEventListener('change', checkAccess);
+
+            fetchBtn.addEventListener('click', doFetch);
+            
+            const searchWfNo = document.getElementById('searchWarfarinNo');
+            if(searchWfNo) {
+                searchWfNo.addEventListener('keydown', e => { 
+                    if(e.key === 'Enter') doFetch(); 
+                });
+            }
+            
+            // Warfarin Print Sticker
+            const printBtn = document.getElementById('printBtn');
+            if(printBtn) {
+                printBtn.addEventListener('click', () => {
+                    document.body.classList.add('print-mode-warfarin-stk');
+                    window.print();
+                    document.body.classList.remove('print-mode-warfarin-stk');
+                });
+            }
+
+            document.querySelectorAll('input[name="size"]').forEach(r => {
+                r.addEventListener('change', () => {
+                    const box = document.getElementById('sticker');
+                    if(box) {
+                        box.classList.remove('size-4_5', 'size-6_0');
+                        box.classList.add('size-' + r.value);
+                    }
+                });
+            });
+
+            const btnInr23 = document.getElementById('btnInr23');
+            if(btnInr23) {
+                btnInr23.addEventListener('click', () => {
+                    const stkInr = document.getElementById('stk-inr');
+                    if(stkInr) stkInr.textContent='2-3';
+                });
+            }
+            
+            const btnInr2535 = document.getElementById('btnInr2535');
+            if(btnInr2535) {
+                btnInr2535.addEventListener('click', () => {
+                    const stkInr = document.getElementById('stk-inr');
+                    if(stkInr) stkInr.textContent='2.5-3.5';
+                });
+            }
+            
+            const btnAll = document.getElementById('btnAll');
+            if(btnAll) {
+                btnAll.addEventListener('click', () => {
+                    const ex = document.getElementById('extraArea');
+                    if(!ex) return;
+                    const t = ex.textContent.trim();
+                    ex.textContent = t ? (t + ' ALL:') : 'ALL:';
+                    const sel = window.getSelection(); 
+                    const range = document.createRange();
+                    range.selectNodeContents(ex); 
+                    range.collapse(false);
+                    sel.removeAllRanges(); 
+                    sel.addRange(range); 
+                    ex.focus();
+                });
+            }
+            
+            // Warfarin Form Submission
+            const wfForm = document.getElementById('warfarinForm');
+            if(wfForm) {
+                wfForm.addEventListener('submit', e => {
+                    e.preventDefault();
+                    const submitBtn = document.getElementById('submitBtn');
+                    const loadingSpinner = document.getElementById('loadingSpinner');
+                    
+                    if(submitBtn) submitBtn.style.display = 'none';
+                    if(loadingSpinner) loadingSpinner.style.display = 'block';
+                    
+                    const data = Object.fromEntries(new FormData(wfForm).entries());
+                    
+                    fetch(SCRIPT_URL, { 
+                        method: 'POST', 
+                        body: JSON.stringify(data), 
+                        headers: {"Content-Type": "text/plain"} 
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if(loadingSpinner) loadingSpinner.style.display = 'none';
+                        if (res.result === 'success') {
+                            const resultArea = document.getElementById('resultArea');
+                            const showNumber = document.getElementById('showNumber');
+                            if(resultArea) resultArea.classList.remove('hidden');
+                            if(showNumber) showNumber.innerText = res.warfarinId;
+                        } else {
+                            alert('เกิดข้อผิดพลาด: ' + res.error);
+                            if(submitBtn) submitBtn.style.display = 'block';
+                        }
+                    }).catch(err => {
+                        alert('การเชื่อมต่อขัดข้อง');
+                        if(submitBtn) submitBtn.style.display = 'block';
+                        if(loadingSpinner) loadingSpinner.style.display = 'none';
+                    });
+                });
+            }
+        }
+
+        async function fetchByAppsScript(no) {
+            const url = new URL(SCRIPT_URL); 
+            url.searchParams.set('warfarin', String(no).trim());
+            const res = await fetch(url.toString(), {cache:'no-store'});
+            if(!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            if(!data || (!data.warfarinNo && !data.fullName)) throw new Error('ไม่พบข้อมูล');
+            return data;
+        }
+
+        async function doFetch() {
+            const wnoInput = document.getElementById('searchWarfarinNo');
+            const btn = document.getElementById('fetchBtn');
+            if(!wnoInput || !btn) return;
+            
+            const no = wnoInput.value.trim();
+            if(!no) { 
+                alert('กรุณาใส่เลข Warfarin No'); 
+                return; 
+            }
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังดึง...'; 
+            btn.disabled = true;
+            
+            try { 
+                const d = await fetchByAppsScript(no); 
+                const stkFullName = document.getElementById('stk-fullName');
+                const stkHn = document.getElementById('stk-hn');
+                const stkWfno = document.getElementById('stk-wfno');
+                const stkIndication = document.getElementById('stk-indication');
+                const stkInr = document.getElementById('stk-inr');
+
+                if(stkFullName) stkFullName.textContent = d.fullName || '—';
+                if(stkHn) stkHn.textContent = d.hn || '—';
+                if(stkWfno) stkWfno.textContent = d.warfarinNo || '—';
+                if(stkIndication) stkIndication.textContent = d.indication || '—';
+                if(stkInr) stkInr.textContent = d.inr || '—';
+            } catch(e) { 
+                alert('ดึงข้อมูลไม่สำเร็จ: ' + e.message); 
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล'; 
+                btn.disabled = false;
+            }
+        }
+
+        // Warfarin Pending logic
+        function loadPending() {
+            const container = document.getElementById('pendingContainer');
+            if(!container) return;
+            
+            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-blue-500"></i></div>';
+            
+            fetch(SCRIPT_URL + "?action=getPending")
+            .then(res => res.json())
+            .then(data => renderPendingCards(data))
+            .catch(err => {
+                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded font-bold">โหลดข้อมูลผิดพลาด</div>';
+            });
+        }
+
+        function forceRefreshCache() {
+            const btn = document.getElementById('forceRefreshBtn');
+            const container = document.getElementById('pendingContainer');
+            if(!btn || !container) return;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังอัปเดต...'; 
+            btn.disabled = true;
+            
+            container.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin text-2xl text-yellow-500"></i><p class="mt-2 text-sm text-yellow-700 font-bold">กำลังซิงค์ข้อมูลตรงจากระบบ...</p></div>';
+
+            fetch(SCRIPT_URL + "?action=forceRefreshCache")
+            .then(res => res.json())
+            .then(res => {
+                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; 
+                btn.disabled = false;
+                if(res.result === 'success') {
+                    renderPendingCards(res.data);
+                }
+            }).catch(err => {
+                btn.innerHTML = '<i class="fa-solid fa-bolt mr-1"></i> อัปเดตเดี๋ยวนี้'; 
+                btn.disabled = false;
+                container.innerHTML = '<div class="bg-red-50 text-red-600 p-3 rounded font-bold">โหลดข้อมูลผิดพลาด โปรดลองใหม่</div>';
+            });
+        }
+
+        function renderPendingCards(data) {
+            const container = document.getElementById('pendingContainer');
+            if(!container) return;
+            
+            container.innerHTML = '';
+            if(data.length === 0) {
+                container.innerHTML = '<div class="bg-white border border-gray-200 text-center py-8 text-gray-500 rounded-lg font-bold">ไม่มีคิวรออนุมัติจาก LINE ครับ</div>';
+                return;
+            }
+            data.forEach(item => {
+                const card = `
+                <div class="pending-card p-4 shadow-sm border border-yellow-200 bg-white" id="card-${item.id}">
+                    <form id="form-${item.id}">
+                        <input type="hidden" name="id" value="${item.id}">
+                        <div class="grid grid-cols-2 gap-3 mb-2">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600">HN</label>
+                                <input type="text" class="w-full rounded border-gray-300 px-2 py-1 text-sm bg-gray-50" name="hn" value="${item.hn}">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600">เพศ</label>
+                                <select class="w-full rounded border-gray-300 px-2 py-1 text-sm bg-gray-50" name="sex">
+                                    <option value="1" ${item.sex=='1'?'selected':''}>ชาย</option>
+                                    <option value="2" ${item.sex=='2'?'selected':''}>หญิง</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="block text-xs font-bold text-gray-600">ชื่อ-นามสกุล</label>
+                            <input type="text" class="w-full rounded border-gray-300 px-2 py-1 text-sm font-bold text-blue-800" name="name" value="${item.name}">
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 mb-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600">อายุ</label>
+                                <input type="text" class="w-full rounded border-gray-300 px-2 py-1 text-sm bg-gray-50" name="age" value="${item.age}">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600">Indication</label>
+                                <input type="text" class="w-full rounded border-blue-300 border-2 px-2 py-1 text-sm font-bold text-blue-700 bg-white" name="indication" value="${item.indication}">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600">Goal</label>
+                                <input type="text" class="w-full rounded border-red-300 border-2 px-2 py-1 text-sm font-bold text-red-700 bg-white" name="goal" value="${item.goal}">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" class="flex-1 bg-white border border-red-300 text-red-600 px-3 py-1.5 rounded hover:bg-red-50 text-sm font-bold shadow-sm" onclick="actionPending('${item.id}', 'reject')">
+                                <i class="fa-solid fa-xmark mr-1"></i> ทิ้ง
+                            </button>
+                            <button type="button" class="flex-1 bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm font-bold shadow-sm" onclick="actionPending('${item.id}', 'approve')">
+                                <i class="fa-solid fa-check mr-1"></i> อนุมัติ
+                            </button>
+                        </div>
+                    </form>
+                    <div id="res-${item.id}" class="hidden bg-green-100 text-green-800 text-center font-bold p-2 mt-3 rounded border border-green-300"></div>
+                </div>`;
+                container.innerHTML += card;
+            });
+        }
+
+        function actionPending(id, actionType) {
+            const form = document.getElementById('form-' + id);
+            if(!form) return;
+
+            const data = Object.fromEntries(new FormData(form).entries());
+            data.action = actionType;
+            
+            form.style.opacity = '0.4'; 
+            form.style.pointerEvents = 'none';
+            
+            fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify(data), 
+                headers: {"Content-Type": "text/plain"} 
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.result === 'success') {
+                    if(actionType === 'approve') {
+                        const resDiv = document.getElementById('res-' + id);
+                        if(resDiv) {
+                            resDiv.classList.remove('hidden');
+                            resDiv.innerHTML = `<i class="fa-solid fa-check-circle"></i> ออกเลข: ${res.warfarinId}`;
+                        }
+                        setTimeout(() => {
+                            const card = document.getElementById('card-' + id);
+                            if(card) card.remove();
+                        }, 3000);
+                    } else { 
+                        const card = document.getElementById('card-' + id);
+                        if(card) card.remove(); 
+                    }
+                } else { 
+                    alert('Error: ' + res.error); 
+                    form.style.opacity = '1'; 
+                    form.style.pointerEvents = 'auto'; 
+                }
+            });
+        }
+        function renderC8Devices() {
+            const container = document.getElementById('c8DeviceContainer');
+            if(!container) return;
+            let html = '<h4 class="font-bold text-blue-700 mb-3 border-b pb-2"><i class="fa-solid fa-list-check"></i> ประเมินเทคนิคการใช้ยาพ่น (Checklist)</h4>';
+            
+            asthmaDevicesDef.forEach(dev => {
+                let regimenOptions = dev.regimens.map(r => `<option value="${r.v}">${r.t}</option>`).join('');
+                let stepsHtml = dev.steps.map((step, idx) => `
+                    <label class="flex items-start gap-2 text-sm text-gray-700 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
+                        <input type="checkbox" id="c8_dev_${dev.id}_step_${idx}" class="mt-1 w-4 h-4 text-blue-600 c8-dev-step-${dev.id}" onchange="updateC8Score('${dev.id}')">
+                        <span class="flex-1">${step}</span>
+                    </label>
+                `).join('');
+
+                html += `
+                <div class="bg-white border border-gray-300 rounded p-4 mb-3 shadow-sm">
+                    <div class="flex flex-wrap items-center gap-4 mb-2">
+                        <label class="font-bold text-gray-800 text-base md:text-lg flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" id="c8_dev_${dev.id}" onchange="toggleC8Device('${dev.id}')" class="w-5 h-5 text-blue-600 rounded"> 
+                            ${dev.title}
+                        </label>
+                        <select id="c8_dev_${dev.id}_regimen" class="rounded border-gray-300 border px-3 py-1.5 text-sm bg-gray-50 hidden focus:ring-blue-300" onchange="updateC8Score('${dev.id}')">
+                            ${regimenOptions}
+                        </select>
+                    </div>
+                    <div id="c8_dev_${dev.id}_checklist" class="hidden md:ml-7 pl-4 border-l-4 border-blue-100 mt-3">
+                        <button class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded mb-3 font-bold transition shadow-sm" onclick="checkAllC8('${dev.id}')">
+                            <i class="fa-solid fa-check-double"></i> เช็คถูกทั้งหมด (ทำได้ถูกต้อง 100%)
+                        </button>
+                        ${stepsHtml}
+                        <div class="mt-3 bg-blue-50 border border-blue-200 p-3 rounded text-blue-900 font-bold text-sm text-center">
+                            ประเมินผล: ทำถูกต้อง <span id="c8_dev_${dev.id}_score" class="text-lg text-blue-600">0</span> / <span id="c8_dev_${dev.id}_max">0</span> ข้อ 
+                            <span class="bg-white px-2 py-1 rounded ml-2 shadow-sm">คิดเป็น <span id="c8_dev_${dev.id}_percent" class="text-lg text-green-600">0</span>%</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleC8Device(id) {
+            const isChecked = document.getElementById(`c8_dev_${id}`).checked;
+            const checklist = document.getElementById(`c8_dev_${id}_checklist`);
+            const regimen = document.getElementById(`c8_dev_${id}_regimen`);
+            if(isChecked) {
+                checklist.classList.remove('hidden');
+                regimen.classList.remove('hidden');
+                updateC8Score(id);
+            } else {
+                checklist.classList.add('hidden');
+                regimen.classList.add('hidden');
+                document.querySelectorAll(`.c8-dev-step-${id}`).forEach(cb => cb.checked = false);
+            }
+            generateOutput();
+        }
+
+        function checkAllC8(id) {
+            document.querySelectorAll(`.c8-dev-step-${id}`).forEach(cb => {
+                if(!cb.disabled) cb.checked = true;
+            });
+            updateC8Score(id);
+        }
+
+        function updateC8Score(id) {
+            const devDef = asthmaDevicesDef.find(d => d.id === id);
+            const regimenEl = document.getElementById(`c8_dev_${id}_regimen`);
+            const regimen = regimenEl ? regimenEl.value : '1';
+            const isMulti = regimen.includes('>1');
+            
+            let max = devDef.steps.length;
+            let total = 0;
+            
+            devDef.steps.forEach((step, idx) => {
+                const cb = document.getElementById(`c8_dev_${id}_step_${idx}`);
+                const isWaitStep = step.includes('เว้น 1-2 นาที');
+                if (isWaitStep && !isMulti) {
+                    cb.checked = false;
+                    cb.disabled = true;
+                    cb.parentElement.classList.add('opacity-40', 'line-through', 'bg-gray-100');
+                    max--;
+                } else {
+                    cb.disabled = false;
+                    cb.parentElement.classList.remove('opacity-40', 'line-through', 'bg-gray-100');
+                    if (cb.checked) total++;
+                }
+            });
+            
+            const pct = max > 0 ? Math.round((total / max) * 100) : 0;
+            document.getElementById(`c8_dev_${id}_score`).innerText = total;
+            document.getElementById(`c8_dev_${id}_max`).innerText = max;
+            document.getElementById(`c8_dev_${id}_percent`).innerText = pct;
+            
+            generateOutput();
+        }
+
+        // ==========================================
+        //         ASTHMA COPD DEVICES LOGIC
+        // ==========================================
+        function renderC8Devices() {
+            const container = document.getElementById('c8DeviceContainer');
+            if(!container) return;
+            let html = '<h4 class="font-bold text-blue-700 mb-3 border-b pb-2"><i class="fa-solid fa-list-check"></i> ประเมินเทคนิคการใช้ยาพ่น (Checklist)</h4>';
+            
+            asthmaDevicesDef.forEach(dev => {
+                let regimenOptions = dev.regimens.map(r => `<option value="${r.v}">${r.t}</option>`).join('');
+                let stepsHtml = dev.steps.map((step, idx) => `
+                    <label class="flex items-start gap-2 text-sm text-gray-700 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
+                        <input type="checkbox" id="c8_dev_${dev.id}_step_${idx}" class="mt-1 w-4 h-4 text-blue-600 c8-dev-step-${dev.id}" onchange="updateC8Score('${dev.id}')">
+                        <span class="flex-1">${step}</span>
+                    </label>
+                `).join('');
+
+                html += `
+                <div class="bg-gray-50 border border-gray-300 rounded-lg p-4 mb-3 shadow-sm">
+                    <div class="flex flex-wrap items-center gap-4 mb-2">
+                        <label class="font-bold text-gray-800 text-base md:text-lg flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" id="c8_dev_${dev.id}" onchange="toggleC8Device('${dev.id}')" class="w-5 h-5 text-blue-600 rounded"> 
+                            ${dev.title}
+                        </label>
+                        <select id="c8_dev_${dev.id}_regimen" class="rounded border-gray-300 border px-3 py-1.5 text-sm bg-white hidden focus:ring-blue-300 shadow-sm" onchange="updateC8Score('${dev.id}')">
+                            ${regimenOptions}
+                        </select>
+                    </div>
+                    
+                    <div id="c8_dev_${dev.id}_checklist" class="hidden md:ml-7 pl-4 border-l-4 border-blue-200 mt-3 bg-white p-3 rounded">
+                        <button class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded mb-3 font-bold transition shadow-sm" onclick="checkAllC8('${dev.id}')">
+                            <i class="fa-solid fa-check-double"></i> ติ๊กถูกทั้งหมด (ทำได้ถูกต้อง 100%)
+                        </button>
+                        ${stepsHtml}
+                        <div class="mt-3 bg-blue-50 border border-blue-200 p-3 rounded text-blue-900 font-bold text-sm text-center">
+                            ประเมินผล: ทำถูกต้อง <span id="c8_dev_${dev.id}_score" class="text-lg text-blue-600">0</span> / <span id="c8_dev_${dev.id}_max">0</span> ข้อ 
+                            <span class="bg-white px-2 py-1 rounded ml-2 shadow-sm border border-blue-100">คิดเป็น <span id="c8_dev_${dev.id}_percent" class="text-lg text-green-600">0</span>%</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleC8Device(id) {
+            const isChecked = document.getElementById(`c8_dev_${id}`).checked;
+            const checklist = document.getElementById(`c8_dev_${id}_checklist`);
+            const regimen = document.getElementById(`c8_dev_${id}_regimen`);
+            if(isChecked) {
+                checklist.classList.remove('hidden');
+                regimen.classList.remove('hidden');
+                updateC8Score(id);
+            } else {
+                checklist.classList.add('hidden');
+                regimen.classList.add('hidden');
+                document.querySelectorAll(`.c8-dev-step-${id}`).forEach(cb => cb.checked = false);
+            }
+            if(typeof generateOutput === 'function') generateOutput();
+        }
+
+        function checkAllC8(id) {
+            document.querySelectorAll(`.c8-dev-step-${id}`).forEach(cb => {
+                if(!cb.disabled) cb.checked = true;
+            });
+            updateC8Score(id);
+        }
+
+        function updateC8Score(id) {
+            const devDef = asthmaDevicesDef.find(d => d.id === id);
+            const regimenEl = document.getElementById(`c8_dev_${id}_regimen`);
+            const regimen = regimenEl ? regimenEl.value : '1';
+            const isMulti = regimen.includes('>1');
+            
+            let max = devDef.steps.length;
+            let total = 0;
+            
+            devDef.steps.forEach((step, idx) => {
+                const cb = document.getElementById(`c8_dev_${id}_step_${idx}`);
+                if(!cb) return;
+
+                const isWaitStep = step.includes('เว้น 1-2 นาที');
+                if (isWaitStep && !isMulti) {
+                    cb.checked = false;
+                    cb.disabled = true;
+                    cb.parentElement.classList.add('opacity-40', 'line-through', 'bg-gray-100');
+                    max--;
+                } else {
+                    cb.disabled = false;
+                    cb.parentElement.classList.remove('opacity-40', 'line-through', 'bg-gray-100');
+                    if (cb.checked) total++;
+                }
+            });
+            
+            const pct = max > 0 ? Math.round((total / max) * 100) : 0;
+            document.getElementById(`c8_dev_${id}_score`).innerText = total;
+            document.getElementById(`c8_dev_${id}_max`).innerText = max;
+            document.getElementById(`c8_dev_${id}_percent`).innerText = pct;
+            
+            if(typeof generateOutput === 'function') generateOutput();
         }
         
         // ==========================================
