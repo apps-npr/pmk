@@ -211,10 +211,10 @@
                 <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
                     <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
                 </button>
-                <button onclick="switchTab('CLINIC7')" id="tab-CLINIC7" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">
+                <button onclick="switchTab('CKD')" id="tab-CKD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">
                     <i class="fa-solid fa-notes-medical mr-1"></i> 7. CKD
                 </button>
-                <button onclick="switchTab('CLINIC8')" id="tab-CLINIC8" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">
+                <button onclick="switchTab('ASTHMA')" id="tab-ASTHMA" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">
                     <i class="fa-solid fa-lungs mr-1"></i> 8. Asthma/COPD
                 </button>
             </div>
@@ -929,7 +929,7 @@
             </div>
 
             <!-- 7. CKD -->
-            <div id="form-CLINIC7" class="space-y-6 clinic-form hidden">
+            <div id="form-CKD" class="space-y-6 clinic-form hidden">
                 <div class="bg-orange-50 p-4 border border-orange-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-orange-800 mb-2"><i class="fa-solid fa-notes-medical"></i> 7. คลินิกโรคเรื้อรังและชะลอไตเสื่อม CKD Clinic)</h3>
                     <p class="text-orange-700">การประเมินการทำงานของไต เป้าหมายความดันโลหิต น้ำตาลสะสม และการปรับขนาดยาตามสภาพไต</p>
@@ -985,7 +985,7 @@
             </div>
 
             <!-- 8. Asthma/COPD -->
-            <div id="form-CLINIC8" class="space-y-6 clinic-form hidden">
+            <div id="form-ASTHMA" class="space-y-6 clinic-form hidden">
                 <div class="bg-teal-50 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-teal-800 mb-2"><i class="fa-solid fa-lungs"></i> 8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD Clinic)</h3>
                     <p class="text-teal-700">ประเมินเทคนิคการใช้ยาพ่น การควบคุมอาการโรคหืด/ปอดอุดกั้นเรื้อรัง และการเกิดผลข้างเคียงจากสเตียรอยด์พ่น</p>
@@ -1299,7 +1299,7 @@
                     "ปิดปากกระบอกและฝาให้สนิท",
                     "หลังใช้เสร็จ ทำความสะอาดปากขวดยาพ่นโดยใช้กระดาษซับให้แห้ง"
                 ],
-                excelOffset: 42
+                excelOffset: 43
             },
             {
                 id: 'spiromax', title: 'DuoResp Spiromax',
@@ -1314,7 +1314,7 @@
                     "หลังพ่นยา กลั้วภายในปากและคอด้วยน้ำสะอาด",
                     "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
                 ],
-                excelOffset: 54
+                excelOffset: 55
             },
             {
                 id: 'respimat', title: 'Spiolto respimat',
@@ -1328,7 +1328,7 @@
                     "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที",
                     "หลังใช้เสร็จ ทำความสะอาดปากขวดยาพ่นโดยใช้กระดาษเช็ดให้สะอาด ก่อนปิดฝากระบอกยา"
                 ],
-                excelOffset: 66
+                excelOffset: 67
             },
             {
                 id: 'ellipta', title: 'Anoro ellipta',
@@ -1341,7 +1341,7 @@
                     "เอาปากกระบอกออก งับปาก และกลั้นหายใจ 10 วินาที แล้วผ่อนลมหายใจออกทางจมูกช้าๆ",
                     "ทำความสะอาดปากกระบอกยาพ่นโดยใช้กระดาษทิชชู่หรือผ้าแห้งเช็ดให้สะอาด ก่อนปิดฝากระบอกยา"
                 ],
-                excelOffset: 77
+                excelOffset: 78
             }
         ];
         
@@ -1372,8 +1372,8 @@
             
             if(tab === 'WARFARIN') activeBtn.classList.remove('text-red-700');
             if(tab === 'HF') activeBtn.classList.remove('text-green-700');
-            if(tab === 'CKD Clinic') activeBtn.classList.remove('text-orange-700');
-            if(tab === 'Asthma/COPD') activeBtn.classList.remove('text-teal-700');
+            if(tab === 'CKD') activeBtn.classList.remove('text-orange-700');
+            if(tab === 'ASTHMA') activeBtn.classList.remove('text-teal-700');
 
             // จัดการ Checkbox นำข้อมูล MR มารวม
             const mergeCheck = document.getElementById('mergeMrOption');
@@ -2694,7 +2694,7 @@
                 if (drp) notes.push(`DRP/Intervention: ${drp}`);
                 if (pharm) notes.push(`/${pharm}`);
             }
-            else if (currentTab === 'Asthma/COPD') {
+            else if (currentTab === 'ASTHMA') {
                 notes.push("pharmacist note Asthma/COPD");
                 let c8Lines = [];
                 const ind = document.querySelector('input[name="c8Indication"]:checked')?.value;
@@ -2748,10 +2748,14 @@
         function getRowDataArray() {
             let rowData = Array(18).fill('');
             const hnNode = document.getElementById('hn');
-            if(hnNode) rowData[0] = hnNode.value;       
+            const ptNameNode = document.getElementById('ptName');
             
+            // ใช้เวลาปัจจุบันสำหรับคอลัมน์ Date
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('th-TH', { year: '2-digit', month: '2-digit', day: '2-digit' });
+
+            if(hnNode) rowData[0] = hnNode.value;       
             if (currentTab !== 'HIV') {
-                const ptNameNode = document.getElementById('ptName');
                 if(ptNameNode) rowData[1] = ptNameNode.value; 
             }
 
@@ -2939,29 +2943,48 @@
                 rowData[6] = summary.replace(/\s+/g, ' ').trim(); 
             }
             else if (currentTab === 'CKD') {
-                rowData[2] = document.getElementById('c7Egfr')?.value || '';
-                rowData[3] = document.getElementById('c7CkdStage')?.value || '';
-                rowData[4] = document.getElementById('c7A1c')?.value || '';
-                rowData[5] = document.getElementById('c7Bp')?.value || '';
-                rowData[6] = document.getElementById('c7Drp')?.value || '';
+                rowData = Array(10).fill('');
+                // เรียงคอลัมน์: ['date', 'HN', 'Name', 'date at last lab sCr, eGFR', 'last visit sCr', 'last eGFR', 'scr วันนี้', 'eGFR วันนี้', 'stage', 'DRP']
+                rowData[0] = dateStr; // date
+                rowData[1] = hnNode?.value || ''; // HN
+                rowData[2] = ptNameNode?.value || ''; // Name
+                rowData[3] = document.getElementById('c7LastLabDate')?.value || '';
+                rowData[4] = document.getElementById('c7LastScr')?.value || '';
+                rowData[5] = document.getElementById('c7LastEgfr')?.value || '';
+                rowData[6] = document.getElementById('c7Scr')?.value || '';
+                rowData[7] = document.getElementById('c7Egfr')?.value || '';
+                rowData[8] = document.getElementById('c7CkdStage')?.value || '';
+                
+                let drpExtra = [];
+                const a1c = document.getElementById('c7A1c')?.value;
+                const bp = document.getElementById('c7Bp')?.value;
+                const urine = document.getElementById('c7UrineProt')?.value;
+                const k = document.getElementById('c7K')?.value;
+                if(a1c) drpExtra.push(`HbA1c: ${a1c}%`);
+                if(bp) drpExtra.push(`BP: ${bp}`);
+                if(urine) drpExtra.push(`Urine: ${urine}`);
+                if(k) drpExtra.push(`K: ${k}`);
+                
+                let rawDrp = document.getElementById('c7Drp')?.value || '';
+                rowData[9] = drpExtra.length > 0 ? (rawDrp ? `${rawDrp} | ${drpExtra.join(', ')}` : drpExtra.join(', ')) : rawDrp;
             }
-            else if (currentTab === 'Asthma/COPD') {
-                rowData = Array(86).fill(''); // จากคอลัมน์ A ถึง CH 
-                rowData[0] = document.getElementById('hn')?.value || '';
-                rowData[1] = document.getElementById('ptName')?.value || '';
-                rowData[2] = document.querySelector('input[name="c8Indication"]:checked')?.value || '';
-                rowData[3] = document.getElementById('c8Er')?.value || '';
-                rowData[4] = document.getElementById('c8Admit')?.value || '';
-                rowData[5] = document.getElementById('c8NewPt')?.checked ? '1' : '';
-                rowData[6] = document.getElementById('c8Drp')?.value || '';
-                rowData[7] = document.getElementById('c8Score')?.value || '';
-            
-                // อาการ 4 ข้อ
-                rowData[8] = document.getElementById('c8Symp1')?.checked ? '1' : '0';
-                rowData[9] = document.getElementById('c8Symp2')?.checked ? '1' : '0';
-                rowData[10] = document.getElementById('c8Symp3')?.checked ? '1' : '0';
-                rowData[11] = document.getElementById('c8Symp4')?.checked ? '1' : '0';
-            
+            else if (currentTab === 'ASTHMA') {
+                rowData = Array(86).fill(''); 
+                // คอลัมน์ ['date(ถ้ามี, หรือเว้นไว้)', 'HN', 'Name', 'indication ', 'ER (ครั้ง)', 'admit ', 'new พึ่งเคยเข้าคลินิก ', 'DRP', 'score', 'ใช้ยาพ่นฉุกเฉิน...', 'หอบกำเริบ...', ...]
+                rowData[1] = hnNode?.value || '';
+                rowData[2] = ptNameNode?.value || '';
+                rowData[3] = document.querySelector('input[name="c8Indication"]:checked')?.value || '';
+                rowData[4] = document.getElementById('c8Er')?.value || '';
+                rowData[5] = document.getElementById('c8Admit')?.value || '';
+                rowData[6] = document.getElementById('c8NewPt')?.checked ? '1' : '';
+                rowData[7] = document.getElementById('c8Drp')?.value || '';
+                rowData[8] = document.getElementById('c8Score')?.value || '';
+                
+                rowData[9] = document.getElementById('c8Symp1')?.checked ? '1' : '0';
+                rowData[10] = document.getElementById('c8Symp2')?.checked ? '1' : '0';
+                rowData[11] = document.getElementById('c8Symp3')?.checked ? '1' : '0';
+                rowData[12] = document.getElementById('c8Symp4')?.checked ? '1' : '0';
+                
                 asthmaDevicesDef.forEach(dev => {
                     const isActive = document.getElementById(`c8_dev_${dev.id}`)?.checked;
                     rowData[dev.excelOffset] = isActive ? 'TRUE' : 'FALSE'; 
@@ -2984,42 +3007,55 @@
                                 checked = cb?.checked ? 1 : 0;
                                 total += checked;
                             }
-                        
+                            // +1 เพื่อข้ามคอลัมน์ชื่ออุปกรณ์
                             rowData[dev.excelOffset + 1 + idx] = checked.toString();
                         });
                     
                         let percent = max > 0 ? Math.round((total / max) * 100) : 0;
                     
-                        if (dev.id === 'mdi') {
+                        // คำนวณ index ผลลัพธ์ให้แม่นยำ (อ้างอิงจากรายชื่อคอลัมน์ Excel จริง)
+                        // excelOffset คือ Index เริ่มต้นของแต่ละอุปกรณ์ (คอลัมน์ชื่ออุปกรณ์)
+                        if (dev.id === 'mdi') { 
+                            // excelOffset = 13 (คอลัมน์ N)
+                            // steps มี 9 ข้อ => จบที่ 13+1+8 = 22
+                            // รวมคะแนน = 24
                             rowData[24] = total; 
                             if(regimen === '1') rowData[25] = percent;
                             else if(regimen === '>1') rowData[26] = percent;
                             else if(regimen === 'prn1') rowData[27] = percent;
                             else if(regimen === 'prn>1') rowData[28] = percent;
                         } else if (dev.id === 'accuhaler') {
-                            rowData[39] = total;
-                            if(regimen === '1') rowData[40] = percent;
-                            else if(regimen === '>1') rowData[41] = percent;
+                            // excelOffset = 29 (คอลัมน์ AD)
+                            // steps มี 9 ข้อ => จบที่ 29+1+8 = 38
+                            // รวมคะแนน = 40 (อ้างอิงจากไฟล์ Excel จริง 'รวมคะแนน' อยู่ index 40)
+                            rowData[40] = total;
+                            if(regimen === '1') rowData[41] = percent;
+                            else if(regimen === '>1') rowData[42] = percent;
                         } else if (dev.id === 'handihaler') {
-                            rowData[53] = percent;
+                            // excelOffset = 43 (คอลัมน์ AR)
+                            // steps มี 10 ข้อ => จบที่ 43+1+9 = 53
+                            // %technique = 54
+                            rowData[54] = percent;
                         } else if (dev.id === 'spiromax') {
-                            rowData[63] = total;
-                            if(regimen === '1') rowData[64] = percent;
-                            else if(regimen === '>1') rowData[65] = percent;
+                            // excelOffset = 55
+                            rowData[64] = total;
+                            if(regimen === '1') rowData[65] = percent;
+                            else if(regimen === '>1') rowData[66] = percent;
                         } else if (dev.id === 'respimat') {
-                            rowData[74] = total;
-                            if(regimen === '1') rowData[75] = percent;
-                            else if(regimen === '>1') rowData[76] = percent;
+                            // excelOffset = 67
+                            rowData[75] = total;
+                            if(regimen === '1') rowData[76] = percent;
+                            else if(regimen === '>1') rowData[77] = percent;
                         } else if (dev.id === 'ellipta') {
-                            rowData[84] = total;
-                            rowData[85] = percent;
+                            // excelOffset = 78
+                            rowData[85] = total;
+                            rowData[86] = percent;
                         }
                     }
                 });
             }
             return rowData;
         }
-
         function copyToClipboard(elementId) {
             const el = document.getElementById(elementId);
             if(el && el.value) { 
@@ -3050,9 +3086,9 @@
             let targetClinicName = currentTab;
             if (currentTab === 'HF') {
                 targetClinicName = 'HF clinic'; // ระบุชื่อแท็บชีทปลายทางให้ไป HF clinic แน่นอน
-            } else if (currentTab === 'CKD clinic') {
+            } else if (currentTab === 'CKD') {
                 targetClinicName = 'CKD';
-            } else if (currentTab === 'Asthma/COPD') {
+            } else if (currentTab === 'ASTHMA') {
                 targetClinicName = 'Asthma COPD';
             }
 
