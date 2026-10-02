@@ -992,6 +992,40 @@
                 </div>
                 
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">ข้อมูลผู้ป่วยและการวินิจฉัย (Diagnosis)</h3>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">การวินิจฉัยโรค (Indication)</label>
+                        <div class="flex flex-wrap gap-4">
+                            <!-- เพิ่มตัวเลือก Indication ตรงนี้ -->
+                            <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="Asthma" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Asthma</span></label>
+                            <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="COPD" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">COPD</span></label>
+                            <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="Asthma/COPD" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Asthma/COPD</span></label>
+                            <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="Bronchiectasis" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Bronchiectasis</span></label>
+                            <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="Fibrosis" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Fibrosis</span></label>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ER (ครั้ง)</label>
+                            <input type="number" id="c8Er" placeholder="จำนวนครั้ง" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Admit (ครั้ง)</label>
+                            <input type="number" id="c8Admit" placeholder="จำนวนครั้ง" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div class="flex items-end pb-2">
+                            <!-- เปลี่ยนเป็น Checkbox สำหรับผู้ป่วยใหม่ -->
+                            <label class="inline-flex items-center font-bold text-orange-600 cursor-pointer">
+                                <input type="checkbox" id="c8NewPt" class="form-checkbox text-orange-600 rounded mr-2" onchange="generateOutput()">
+                                ⭐ ผู้ป่วยใหม่ (พึ่งเข้าคลินิกครั้งแรก)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mt-4">
                     <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">การประเมินการควบคุมโรคและเทคนิคการพ่นยา</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
@@ -2971,12 +3005,14 @@
             else if (currentTab === 'ASTHMA') {
                 rowData = Array(86).fill(''); 
                 // คอลัมน์ ['date(ถ้ามี, หรือเว้นไว้)', 'HN', 'Name', 'indication ', 'ER (ครั้ง)', 'admit ', 'new พึ่งเคยเข้าคลินิก ', 'DRP', 'score', 'ใช้ยาพ่นฉุกเฉิน...', 'หอบกำเริบ...', ...]
+                rowData[0] = dateStr;
                 rowData[1] = hnNode?.value || '';
                 rowData[2] = ptNameNode?.value || '';
                 rowData[3] = document.querySelector('input[name="c8Indication"]:checked')?.value || '';
                 rowData[4] = document.getElementById('c8Er')?.value || '';
                 rowData[5] = document.getElementById('c8Admit')?.value || '';
-                rowData[6] = document.getElementById('c8NewPt')?.checked ? '1' : '';
+                const isNewPt = document.getElementById('c8NewPt')?.checked;
+                rowData[6] = isNewPt ? 'yes' : 'no';
                 rowData[7] = document.getElementById('c8Drp')?.value || '';
                 rowData[8] = document.getElementById('c8Score')?.value || '';
                 
