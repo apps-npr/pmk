@@ -1599,12 +1599,12 @@
         function formatWfRegimenStandard(text) {
             if (!text) return '';
             let formatted = text
-                .replace(/(\b[1235]\s*mg)\s*:\s*/g, '$1 : ')
-                .replace(/(\b[1235]\s*mg)\s+(?=\d)/g, '$1 : ')
-                .replace(/\b1\s*mg\b/g, 'W(1mg) เม็ดขาว')
-                .replace(/\b2\s*mg\b/g, 'W(2mg) เม็ดส้ม')
-                .replace(/\b3\s*mg\b/g, 'W(3mg) เม็ดฟ้า')
-                .replace(/\b5\s*mg\b/g, 'W(5mg) เม็ดเหลือง');
+                .replace(/(^|[^(\w])([1235]\s*mg)\s*:\s*/g, '$1$2 : ')
+                .replace(/(^|[^(\w])([1235]\s*mg)\s+(?=\d)/g, '$1$2 : ')
+                .replace(/(^|[^(\w])1\s*mg\b/g, '$1W(1mg) เม็ดขาว')
+                .replace(/(^|[^(\w])2\s*mg\b/g, '$1W(2mg) เม็ดส้ม')
+                .replace(/(^|[^(\w])3\s*mg\b/g, '$1W(3mg) เม็ดฟ้า')
+                .replace(/(^|[^(\w])5\s*mg\b/g, '$1W(5mg) เม็ดเหลือง');
             // แยกแต่ละรายการยาออกเป็น 1 การใช้ 1 บรรทัด (โดยไม่ตัดลูกน้ำที่อยู่ในวงเล็บวัน)
             return formatted.replace(/,\s*(?=W\()/g, '\n');
         }
@@ -3231,9 +3231,9 @@
                             if (line.trim()) notes.push(line.trim());
                         });
                     }
-                    notes.push(`Adherence: ${adherence}${adherenceText ? ' (' + adherenceText + ')' : ''}`);
-                    notes.push(`ADR: ${adr}${adrText ? ' (' + adrText + ')' : ''}`);
-                    notes.push(`D/I: ${di}${diText ? ' (' + diText + ')' : ''}`);
+                    notes.push(`Adherence: ${adherence}${adherenceText ? ' ' + adherenceText : ''}`);
+                    notes.push(`ADR: ${adr}${adrText ? ' ' + adrText : ''}`);
+                    notes.push(`D/I: ${di}${diText ? ' ' + diText : ''}`);
                     if (otherCb && otherText) notes.push(`Other: ${otherText}`);
                     if (pharm) notes.push(`/${pharm}`);
                 }
@@ -3590,9 +3590,9 @@
                 const otherCb = document.getElementById('wfNoteOtherCb')?.checked;
                 const other = document.getElementById('wfNoteOtherText')?.value?.trim();
                 
-                if(adherence) extraData.push(`Adherence: ${adherence}${adherenceText ? ' (' + adherenceText + ')' : ''}`);
-                if(adr) extraData.push(`ADR: ${adr}${adrText ? ' (' + adrText + ')' : ''}`);
-                if(di) extraData.push(`D/I: ${di}${diText ? ' (' + diText + ')' : ''}`);
+                if(adherence) extraData.push(`Adherence: ${adherence}${adherenceText ? ' ' + adherenceText : ''}`);
+                if(adr) extraData.push(`ADR: ${adr}${adrText ? ' ' + adrText : ''}`);
+                if(di) extraData.push(`D/I: ${di}${diText ? ' ' + diText : ''}`);
                 if(otherCb && other) extraData.push(`Other: ${other}`);
                 
                 rowData[4] = extraData.join(', ');
