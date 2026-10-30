@@ -820,9 +820,9 @@
                                     </div>
                                 </div>
 
-                                <!-- 3. ช่องข้อความวิธีรับประทาน (พิมพ์เองหรือแก้ไขได้) -->
-                                <label class="block text-xs font-medium text-gray-600 mb-1">รายละเอียดวิธีรับประทาน (เลือกจากด้านบน หรือพิมพ์แก้ไขเองได้):</label>
-                                <input type="text" id="wfNoteDoseDetail" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-white" placeholder="เช่น W(3mg) เม็ดฟ้า : 1x1 hs (จ-ศ), W(2mg) เม็ดส้ม : 1x1 hs (ส-อา)" oninput="generateOutput()">
+                                <!-- 3. ช่องข้อความวิธีรับประทาน (พิมพ์เองหรือแก้ไขได้ แสดงผล 1 การใช้ 1 บรรทัด) -->
+                                <label class="block text-xs font-medium text-gray-600 mb-1">รายละเอียดวิธีรับประทาน (1 การใช้ 1 บรรทัด เลือกจากด้านบนหรือพิมพ์แก้ไขเองได้):</label>
+                                <textarea id="wfNoteDoseDetail" rows="3" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-white leading-relaxed" placeholder="เช่น&#10;W(3mg) เม็ดฟ้า : 1x1 hs ทุกวัน&#10;W(5mg) เม็ดเหลือง : 1x1 hs ทุกวัน" oninput="generateOutput()"></textarea>
                             </div>
 
                             <!-- Adherence / ADR / D/I พร้อมช่องกรอกอธิบายเพิ่มเติม -->
@@ -1596,6 +1596,19 @@
             90: "5 mg : 2.5x1 hs (จ-ส), 5 mg : 3x1 hs (อา)"
         };
 
+        function formatWfRegimenStandard(text) {
+            if (!text) return '';
+            let formatted = text
+                .replace(/(\b[1235]\s*mg)\s*:\s*/g, '$1 : ')
+                .replace(/(\b[1235]\s*mg)\s+(?=\d)/g, '$1 : ')
+                .replace(/\b1\s*mg\b/g, 'W(1mg) เม็ดขาว')
+                .replace(/\b2\s*mg\b/g, 'W(2mg) เม็ดส้ม')
+                .replace(/\b3\s*mg\b/g, 'W(3mg) เม็ดฟ้า')
+                .replace(/\b5\s*mg\b/g, 'W(5mg) เม็ดเหลือง');
+            // แยกแต่ละรายการยาออกเป็น 1 การใช้ 1 บรรทัด (โดยไม่ตัดลูกน้ำที่อยู่ในวงเล็บวัน)
+            return formatted.replace(/,\s*(?=W\()/g, '\n');
+        }
+
         function onWfDoseTotalInput() {
             const val = parseFloat(document.getElementById('wfNoteDoseTotal')?.value);
             const box = document.getElementById('wfRegimenPresetBox');
@@ -1604,13 +1617,13 @@
 
             if (val && wfDosingSchedule[val]) {
                 const raw = wfDosingSchedule[val];
-                const options = raw.split('|').map(s => s.trim());
+                const options = raw.split('|').map(s => formatWfRegimenStandard(s.trim()));
                 box.innerHTML = '<span class="text-xs text-purple-700 font-bold">เลือก Regimen:</span>';
                 options.forEach((opt) => {
                     const btn = document.createElement('button');
                     btn.type = 'button';
-                    btn.className = 'text-xs bg-purple-100 hover:bg-purple-200 text-purple-900 border border-purple-300 px-2.5 py-1 rounded transition';
-                    btn.innerText = opt;
+                    btn.className = 'text-xs bg-purple-100 hover:bg-purple-200 text-purple-900 border border-purple-300 px-2.5 py-1 rounded transition text-left';
+                    btn.innerText = opt.replace(/\n/g, ' + ');
                     btn.onclick = () => {
                         detailInp.value = opt;
                         generateOutput();
@@ -1618,7 +1631,7 @@
                     box.appendChild(btn);
                 });
                 box.classList.remove('hidden');
-                // ใส่ตัวเลือกแรกให้อัตโนมัติ
+                // ใส่ตัวเลือกแรกให้อัตโนมัติ (แยก 1 การใช้ 1 บรรทัด)
                 detailInp.value = options[0];
             } else {
                 box.innerHTML = '';
@@ -1634,7 +1647,6 @@
         }
 
         function formatWfDaysLabel(days) {
-            const allDays = ['จ','อ','พ','พฤ','ศ','ส','อา'];
             if (days.length === 7) return 'ทุกวัน';
             const str = days.join(',');
             if (str === 'จ,อ,พ,พฤ,ศ') return '(จ-ศ)';
@@ -1664,7 +1676,9 @@
             
             const detailInp = document.getElementById('wfNoteDoseDetail');
             if (detailInp) {
-                detailInp.value = detailInp.value.trim() ? `${detailInp.value.trim()}, ${textSegment}` : textSegment;
+                const currentText = formatWfRegimenStandard(detailInp.value.trim());
+                // ต่อท้ายด้วยการขึ้นบรรทัดใหม่ (1 การใช้ 1 บรรทัด)
+                detailInp.value = currentText ? `${currentText}\n${textSegment}` : textSegment;
             }
 
             // คำนวณ mg/wk สะสมให้อัตโนมัติ
@@ -3210,7 +3224,13 @@
                     notes.push("pharmacist note Warfarin Clinic");
                     notes.push(`WARFARIN NO: ${wno} | INR วันนี้: ${inrToday} | INR ครั้งก่อน: ${inrPrevStr}`);
                     notes.push(`Target INR: ${targetStr}`);
-                    notes.push(`Current dose (รวม ${curDoseTotal} mg/wk)${curDoseDetail ? ' : ' + curDoseDetail : ''}`);
+                    notes.push(`Current dose (รวม ${curDoseTotal} mg/wk)`);
+                    if (curDoseDetail) {
+                        const formattedDetail = formatWfRegimenStandard(curDoseDetail.trim());
+                        formattedDetail.split('\n').forEach(line => {
+                            if (line.trim()) notes.push(line.trim());
+                        });
+                    }
                     notes.push(`Adherence: ${adherence}${adherenceText ? ' (' + adherenceText + ')' : ''}`);
                     notes.push(`ADR: ${adr}${adrText ? ' (' + adrText + ')' : ''}`);
                     notes.push(`D/I: ${di}${diText ? ' (' + diText + ')' : ''}`);
