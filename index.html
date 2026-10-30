@@ -728,64 +728,141 @@
                         <div class="bg-white p-5 border border-gray-200 rounded-lg shadow-sm">
                             <h3 class="font-bold text-purple-800 mb-4 border-b pb-2"><i class="fa-solid fa-file-signature"></i> ข้อมูลประเมินผู้ป่วย (Pharmacist Note)</h3>
                             
+                            <!-- WARFARIN NO & INR -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                <div><label class="block text-xs font-medium text-gray-600 mb-1">WARFARIN NO</label><input type="text" id="wfNoteNo" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()"></div>
-                                <div><label class="block text-xs font-medium text-gray-600 mb-1">INR วันนี้</label><input type="number" step="0.01" id="wfNoteInrToday" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm font-bold text-red-600" oninput="generateOutput()"></div>
-                                <div><label class="block text-xs font-medium text-gray-600 mb-1">INR ครั้งก่อน</label><input type="number" step="0.01" id="wfNoteInrPrev" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()"></div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">WARFARIN NO</label>
+                                    <input type="text" id="wfNoteNo" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" placeholder="เช่น 844" oninput="generateOutput()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">INR วันนี้</label>
+                                    <input type="number" step="0.01" id="wfNoteInrToday" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm font-bold text-red-600" placeholder="เช่น 2.35" oninput="generateOutput()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">INR ครั้งก่อน & วันที่เจาะ</label>
+                                    <div class="flex gap-2">
+                                        <input type="number" step="0.01" id="wfNoteInrPrev" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="ผล INR" oninput="generateOutput()">
+                                        <input type="text" id="wfNoteInrPrevDate" class="w-1/2 rounded-lg border-gray-300 border px-2 py-2 text-sm bg-gray-50" placeholder="วว/ดด/พศ" oninput="generateOutput()">
+                                    </div>
+                                </div>
                             </div>
 
+                            <!-- Target INR -->
                             <div class="mb-4 bg-gray-50 p-3 rounded border border-gray-200">
                                 <label class="block text-xs font-medium text-gray-600 mb-2">Target INR</label>
-                                <div class="flex gap-4 items-center">
-                                    <label class="inline-flex items-center"><input type="radio" name="wfNoteTarget" value="2-3" class="form-radio text-blue-600" onchange="generateOutput()" checked><span class="ml-2 text-sm">2-3</span></label>
-                                    <label class="inline-flex items-center"><input type="radio" name="wfNoteTarget" value="2.5-3.5" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-2 text-sm">2.5-3.5</span></label>
-                                    <label class="inline-flex items-center"><input type="radio" name="wfNoteTarget" value="อื่นๆ" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-2 text-sm">อื่นๆ</span></label>
-                                    <input type="text" id="wfNoteTargetOther" placeholder="ระบุ..." class="rounded border-gray-300 px-2 py-1 text-sm flex-1" oninput="document.querySelector('input[name=\'wfNoteTarget\'][value=\'อื่นๆ\']').checked = true; generateOutput();">
+                                <div class="flex flex-wrap gap-4 items-center">
+                                    <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteTarget" value="2-3" class="form-radio text-blue-600" onchange="generateOutput()" checked><span class="ml-2 text-sm">2-3</span></label>
+                                    <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteTarget" value="2.5-3.5" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-2 text-sm">2.5-3.5</span></label>
+                                    <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteTarget" value="อื่นๆ" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-2 text-sm">อื่นๆ</span></label>
+                                    <input type="text" id="wfNoteTargetOther" placeholder="ระบุ..." class="rounded border-gray-300 border px-2 py-1 text-sm flex-1 min-w-[120px]" oninput="document.querySelector('input[name=\'wfNoteTarget\'][value=\'อื่นๆ\']').checked = true; generateOutput();">
                                 </div>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="block text-xs font-medium text-gray-600 mb-1">Current dose (ขนาดยาปัจจุบัน)</label>
-                                <div class="flex gap-2 items-center mb-2">
-                                    <span class="text-sm">รวม</span>
-                                    <input type="number" step="0.5" id="wfNoteDoseTotal" class="w-24 rounded border-gray-300 px-2 py-1 text-sm font-bold text-blue-600" placeholder="mg/wk" oninput="generateOutput()">
-                                    <span class="text-sm">mg/wk</span>
+                            <!-- Current Dose & Regimen Builder -->
+                            <div class="mb-4 bg-purple-50/50 p-4 rounded-xl border border-purple-200">
+                                <label class="block text-sm font-bold text-purple-900 mb-2"><i class="fa-solid fa-pills mr-1"></i> Current dose (ขนาดยาและวิธีทานปัจจุบัน)</label>
+                                
+                                <!-- 1. เลือกหรือกรอก mg/wk เพื่อดึง Regimen สำเร็จรูป -->
+                                <div class="flex flex-wrap gap-3 items-center mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm font-medium text-gray-700">รวม</span>
+                                        <input type="number" step="0.5" id="wfNoteDoseTotal" class="w-24 rounded-lg border-purple-300 border-2 px-3 py-1.5 text-sm font-bold text-blue-700 bg-white" placeholder="mg/wk" oninput="onWfDoseTotalInput()">
+                                        <span class="text-sm font-medium text-gray-700">mg/wk</span>
+                                    </div>
+                                    <div id="wfRegimenPresetBox" class="hidden flex-1 flex flex-wrap gap-1.5 items-center"></div>
                                 </div>
-                                <input type="text" id="wfNoteDoseDetail" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="วิธีรับประทาน เช่น 3 mg : 1x1 hs (จ-ศ), 1 mg : 1x1 hs (ส-อา)" oninput="generateOutput()">
+
+                                <!-- 2. ตัวช่วยสร้างวิธีทานตามสีเม็ดยา -->
+                                <div class="bg-white p-3 rounded-lg border border-gray-200 mb-3 shadow-sm">
+                                    <div class="text-xs font-bold text-gray-600 mb-2">กำหนดวิธีทานตามเม็ดยา (เลือกสีเม็ดยา -> จำนวนเม็ด -> วันที่ทาน แล้วกด "+ เพิ่มวิธีทาน"):</div>
+                                    <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-center mb-2">
+                                        <div class="md:col-span-4">
+                                            <select id="wfPillType" class="w-full rounded border-gray-300 border px-2 py-1.5 text-sm font-medium bg-gray-50">
+                                                <option value="1|W(1mg) เม็ดขาว">⚪ W(1mg) เม็ดขาว</option>
+                                                <option value="2|W(2mg) เม็ดส้ม">🟠 W(2mg) เม็ดส้ม</option>
+                                                <option value="3|W(3mg) เม็ดฟ้า" selected>🔵 W(3mg) เม็ดฟ้า</option>
+                                                <option value="5|W(5mg) เม็ดเหลือง">🟡 W(5mg) เม็ดเหลือง</option>
+                                            </select>
+                                        </div>
+                                        <div class="md:col-span-3">
+                                            <select id="wfPillQty" class="w-full rounded border-gray-300 border px-2 py-1.5 text-sm bg-gray-50">
+                                                <option value="0.5">กิน 0.5 เม็ด (ครึ่งเม็ด)</option>
+                                                <option value="1" selected>กิน 1 เม็ด</option>
+                                                <option value="1.5">กิน 1.5 เม็ด</option>
+                                                <option value="2">กิน 2 เม็ด</option>
+                                                <option value="2.5">กิน 2.5 เม็ด</option>
+                                                <option value="3">กิน 3 เม็ด</option>
+                                            </select>
+                                        </div>
+                                        <div class="md:col-span-5 flex flex-wrap gap-1">
+                                            <button type="button" onclick="setWfDays(['จ','อ','พ','พฤ','ศ','ส','อา'])" class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-1 rounded font-medium">ทุกวัน</button>
+                                            <button type="button" onclick="setWfDays(['จ','อ','พ','พฤ','ศ'])" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded">จ-ศ</button>
+                                            <button type="button" onclick="setWfDays(['จ','อ','พ','พฤ','ศ','ส'])" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded">จ-ส</button>
+                                            <button type="button" onclick="setWfDays(['ส','อา'])" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded">ส-อา</button>
+                                            <button type="button" onclick="setWfDays([])" class="text-xs bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded">ล้างวัน</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100">
+                                        <div class="flex flex-wrap gap-3 text-sm">
+                                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="จ" class="wf-day-cb form-checkbox text-blue-600 rounded" checked><span class="ml-1">จ</span></label>
+                                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="อ" class="wf-day-cb form-checkbox text-blue-600 rounded" checked><span class="ml-1">อ</span></label>
+                                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="พ" class="wf-day-cb form-checkbox text-blue-600 rounded" checked><span class="ml-1">พ</span></label>
+                                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="พฤ" class="wf-day-cb form-checkbox text-blue-600 rounded" checked><span class="ml-1">พฤ</span></label>
+                                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="ศ" class="wf-day-cb form-checkbox text-blue-600 rounded" checked><span class="ml-1">ศ</span></label>
+                                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="ส" class="wf-day-cb form-checkbox text-blue-600 rounded" checked><span class="ml-1">ส</span></label>
+                                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="อา" class="wf-day-cb form-checkbox text-blue-600 rounded" checked><span class="ml-1">อา</span></label>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button type="button" onclick="addWfPillToDetail()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm transition">+ เพิ่มวิธีทาน</button>
+                                            <button type="button" onclick="clearWfDoseDetail()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs px-2.5 py-1.5 rounded-lg transition">ล้างช่องวิธีทาน</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. ช่องข้อความวิธีรับประทาน (พิมพ์เองหรือแก้ไขได้) -->
+                                <label class="block text-xs font-medium text-gray-600 mb-1">รายละเอียดวิธีรับประทาน (เลือกจากด้านบน หรือพิมพ์แก้ไขเองได้):</label>
+                                <input type="text" id="wfNoteDoseDetail" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-white" placeholder="เช่น W(3mg) เม็ดฟ้า : 1x1 hs (จ-ศ), W(2mg) เม็ดส้ม : 1x1 hs (ส-อา)" oninput="generateOutput()">
                             </div>
 
+                            <!-- Adherence / ADR / D/I พร้อมช่องกรอกอธิบายเพิ่มเติม -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                 <div class="bg-blue-50 p-3 rounded border border-blue-200">
                                     <label class="block text-xs font-bold text-blue-800 mb-2">Adherence</label>
-                                    <div class="flex flex-col gap-1">
-                                        <label class="inline-flex items-center"><input type="radio" name="wfNoteAdherence" value="Good" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-2 text-sm">Good</span></label>
-                                        <label class="inline-flex items-center"><input type="radio" name="wfNoteAdherence" value="Poor" class="form-radio text-red-600" onchange="generateOutput()"><span class="ml-2 text-sm">Poor</span></label>
+                                    <div class="flex gap-4 mb-2">
+                                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteAdherence" value="Good" class="form-radio text-blue-600" onchange="generateOutput()" checked><span class="ml-2 text-sm">Good</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteAdherence" value="Poor" class="form-radio text-red-600" onchange="generateOutput()"><span class="ml-2 text-sm">Poor</span></label>
                                     </div>
+                                    <input type="text" id="wfNoteAdherenceText" class="w-full rounded border-blue-200 border px-2 py-1 text-xs bg-white" placeholder="อธิบายเพิ่มเติม (เช่น ลืมกิน 1 วัน)..." oninput="generateOutput()">
                                 </div>
                                 <div class="bg-red-50 p-3 rounded border border-red-200">
                                     <label class="block text-xs font-bold text-red-800 mb-2">ADR</label>
-                                    <div class="flex gap-4">
-                                        <label class="inline-flex items-center"><input type="radio" name="wfNoteAdr" value="NO" class="form-radio text-green-600" onchange="generateOutput()" checked><span class="ml-2 text-sm">NO</span></label>
-                                        <label class="inline-flex items-center"><input type="radio" name="wfNoteAdr" value="Yes" class="form-radio text-red-600" onchange="generateOutput()"><span class="ml-2 text-sm">Yes</span></label>
+                                    <div class="flex gap-4 mb-2">
+                                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteAdr" value="NO" class="form-radio text-green-600" onchange="generateOutput()" checked><span class="ml-2 text-sm">NO</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteAdr" value="Yes" class="form-radio text-red-600" onchange="generateOutput()"><span class="ml-2 text-sm">Yes</span></label>
                                     </div>
+                                    <input type="text" id="wfNoteAdrText" class="w-full rounded border-red-200 border px-2 py-1 text-xs bg-white" placeholder="ระบุอาการ ADR (ถ้ามี)..." oninput="if(this.value.trim()!=='') document.querySelector('input[name=\'wfNoteAdr\'][value=\'Yes\']').checked=true; generateOutput();">
                                 </div>
                                 <div class="bg-yellow-50 p-3 rounded border border-yellow-200">
                                     <label class="block text-xs font-bold text-yellow-800 mb-2">D/I</label>
-                                    <div class="flex gap-4">
-                                        <label class="inline-flex items-center"><input type="radio" name="wfNoteDi" value="NO" class="form-radio text-green-600" onchange="generateOutput()" checked><span class="ml-2 text-sm">NO</span></label>
-                                        <label class="inline-flex items-center"><input type="radio" name="wfNoteDi" value="Yes" class="form-radio text-yellow-600" onchange="generateOutput()"><span class="ml-2 text-sm">Yes</span></label>
+                                    <div class="flex gap-4 mb-2">
+                                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteDi" value="NO" class="form-radio text-green-600" onchange="generateOutput()" checked><span class="ml-2 text-sm">NO</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteDi" value="Yes" class="form-radio text-yellow-600" onchange="generateOutput()"><span class="ml-2 text-sm">Yes</span></label>
                                     </div>
+                                    <input type="text" id="wfNoteDiText" class="w-full rounded border-yellow-200 border px-2 py-1 text-xs bg-white" placeholder="ระบุยา/สมุนไพรที่มี D/I (ถ้ามี)..." oninput="if(this.value.trim()!=='') document.querySelector('input[name=\'wfNoteDi\'][value=\'Yes\']').checked=true; generateOutput();">
                                 </div>
                             </div>
 
+                            <!-- Other -->
                             <div class="mb-4">
                                 <label class="inline-flex items-center mb-1 cursor-pointer">
                                     <input type="checkbox" id="wfNoteOtherCb" class="form-checkbox text-purple-600 rounded" onchange="generateOutput()">
                                     <span class="ml-2 text-sm font-bold text-gray-700">Other (ข้อมูลอื่นๆ)</span>
                                 </label>
-                                <input type="text" id="wfNoteOtherText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm mt-1" placeholder="ระบุข้อมูลที่ซักเพิ่มเติม..." oninput="generateOutput()">
+                                <input type="text" id="wfNoteOtherText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm mt-1" placeholder="ระบุข้อมูลที่ซักเพิ่มเติม..." oninput="if(this.value.trim()!=='') document.getElementById('wfNoteOtherCb').checked=true; generateOutput()">
                             </div>
 
+                            <!-- เภสัชกร -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ประเมิน (เภสัชกร)</label>
                                 <input type="text" id="wfNotePharm" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 bg-white" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
@@ -1360,6 +1437,255 @@
         let hivDrugs = [ { name: '', usage: '', time: '' } ]; 
         let selectedPreopDrugs = [];
         let preopCalculatedNotes = [];
+        const wfDosingSchedule = {
+            3: "1 mg : 0.5x1 hs (จ-ส)",
+            3.5: "1 mg : 0.5x1 hs ทุกวัน",
+            4: "1 mg : 0.5x1 hs (จ-ส), 1 mg : 1x1 hs (อา)",
+            4.5: "1 mg : 0.5x1 hs (จ-ศ), 1 mg : 1x1 hs (ส-อา)",
+            5: "1 mg : 1x1 hs (จ-พ), 1 mg : 0.5x1 hs (พฤ-อา)",
+            5.5: "1 mg : 1x1 hs (จ-พฤ), 1 mg : 0.5x1 hs (ศ-อา)",
+            6: "1 mg : 1x1 hs (จ-ส) | 1 mg : 1x1 hs (จ-ศ), 1 mg : 0.5x1 hs (ส-อา)",
+            6.5: "2 mg : 0.5x1 hs (จ-ศ), 3 mg : 0.5x1 hs (ส) | 1 mg : 1x1 hs (จ-ส), 1 mg : 0.5x1 hs (อา)",
+            7: "1 mg : 1x1 hs ทุกวัน",
+            7.5: "2 mg : 0.5x1 hs (จ-ส), 3 mg : 0.5x1 hs (อา) | 1 mg : 1x1 hs (จ-ส), 1 mg : 1.5x1 hs (อา)",
+            8: "1 mg : 1x1 hs (จ-ศ), 3 mg : 0.5x1 hs (ส-อา) | 1 mg : 1x1 hs (จ-ส), 2 mg : 1x1 hs (อา)",
+            8.5: "1 mg : 1x1 hs (จ-พฤ), 3 mg : 0.5x1 hs (ศ-อา)",
+            9: "3 mg : 0.5x1 hs (จ-ส) | 1 mg : 1x1 hs (จ-ศ), 2 mg : 1x1 hs (ส-อา)",
+            9.5: "3 mg : 0.5x1 hs (จ-ศ), 1 mg : 1x1 hs (ส-อา)",
+            10: "3 mg : 0.5x1 hs (จ-ส), 1 mg : 1x1 hs (อา)",
+            10.5: "3 mg : 0.5x1 hs ทุกวัน",
+            11: "3 mg : 0.5x1 hs (จ-ส), 2 mg : 1x1 hs (อา) | 1 mg : 1.5x1 hs (จ-ส), 2 mg : 1x1 hs (อา)",
+            11.5: "3 mg : 0.5x1 hs (จ-ศ), 2 mg : 1x1 hs (ส-อา)",
+            12: "2 mg : 1x1 hs (จ-ศ), 2 mg : 0.5x1 hs (ส-อา) | 2 mg : 1x1 hs (จ-ศ), 1 mg : 1x1 hs (ส-อา)",
+            12.5: "3 mg : 0.5x1 hs (จ-ศ), 5 mg : 0.5x1 hs (ส-อา)",
+            13: "2 mg : 1x1 hs (จ-ส), 1 mg : 1x1 hs (อา)",
+            13.5: "2 mg : 1x1 hs (จ-ส), 3 mg : 0.5x1 hs (อา) | 3 mg : 0.5x1 hs (จ-ศ), 3 mg : 1x1 hs (ส-อา)",
+            14: "2 mg : 1x1 hs ทุกวัน",
+            14.5: "2 mg : 1x1 hs (จ-ส), 5 mg : 0.5x1 hs (อา)",
+            15: "2 mg : 1x1 hs (จ-ส), 3 mg : 1x1 hs (อา)",
+            15.5: "5 mg : 0.5x1 hs (จ-ศ), 3 mg : 0.5x1 hs (ส-อา)",
+            16: "2 mg : 1x1 hs (จ-ศ), 3 mg : 1x1 hs (ส-อา)",
+            16.5: "5 mg : 0.5x1 hs (จ-ศ), 2 mg : 1x1 hs (ส-อา)",
+            17: "2 mg : 1x1 hs (จ-พฤ), 3 mg : 1x1 hs (ศ-อา)",
+            17.5: "5 mg : 0.5x1 hs ทุกวัน",
+            18: "5 mg : 0.5x1 hs (จ-ส), 3 mg : 1x1 hs (อา) | 3 mg : 1x1 hs (จ-ศ), 3 mg : 0.5x1 hs (ส-อา)",
+            18.5: "5 mg : 0.5x1 hs (จ-ศ), 3 mg : 1x1 hs (ส-อา)",
+            19: "3 mg : 1x1 hs (จ-ศ), 2 mg : 1x1 hs (ส-อา)",
+            19.5: "3 mg : 1x1 hs (จ-ส), 3 mg : 0.5x1 hs (อา)",
+            20: "3 mg : 1x1 hs (จ-ส), 2 mg : 1x1 hs (อา)",
+            20.5: "3 mg : 1x1 hs (จ-ส), 5 mg : 0.5x1 hs (อา)",
+            21: "3 mg : 1x1 hs ทุกวัน",
+            21.5: "5 mg : 0.5x1 hs (จ-ศ), 3 mg : 1.5x1 hs (ส-อา)",
+            22: "3 mg : 1x1 hs (จ-ส), 2 mg : 2x1 hs (อา)",
+            22.5: "3 mg : 1x1 hs (จ-ส), 3 mg : 1.5x1 hs (อา)",
+            23: "3 mg : 1x1 hs (จ-ส), 5 mg : 1x1 hs (อา)",
+            23.5: "2 mg : 2x1 hs (จ-พฤ), 5 mg : 0.5x1 hs (ศ-อา)",
+            24: "3 mg : 1x1 hs (จ-ศ), 3 mg : 1.5x1 hs (ส-อา)",
+            24.5: "2 mg : 1x1 hs ทุกวัน, 3 mg : 0.5x1 hs ทุกวัน | 3 mg : 1x1 hs ทุกวัน, 1 mg : 0.5x1 hs ทุกวัน",
+            25: "3 mg : 1x1 hs (จ-ศ), 5 mg : 1x1 hs (ส-อา)",
+            25.5: "3 mg : 1x1 hs (จ-พฤ), 3 mg : 1.5x1 hs (ศ-อา)",
+            26: "2 mg : 2x1 hs (จ-ศ), 3 mg : 1x1 hs (ส-อา) | 2 mg : 2x1 hs (จ-ส), 2 mg : 1x1 hs (อา)",
+            26.5: "3 mg : 1.5x1 hs (จ-ศ), 2 mg : 1x1 hs (ส-อา)",
+            27: "2 mg : 2x1 hs (จ-ส), 3 mg : 1x1 hs (อา)",
+            27.5: "3 mg : 1.5x1 hs (จ-ศ), 5 mg : 0.5x1 hs (ส-อา)",
+            28: "2 mg : 2x1 hs ทุกวัน",
+            28.5: "3 mg : 1.5x1 hs (จ-ศ), 3 mg : 1x1 hs (ส-อา)",
+            29: "2 mg : 2x1 hs (จ-ส), 5 mg : 1x1 hs (อา)",
+            29.5: "3 mg : 1.5x1 hs (จ-ส), 5 mg : 0.5x1 hs (อา)",
+            30: "5 mg : 1x1 hs (จ-ศ), 5 mg : 0.5x1 hs (ส-อา) | 2 mg : 2x1 hs (จ-ศ), 5 mg : 1x1 hs (ส-อา)",
+            30.5: "3 mg : 1.5x1 hs (จ-ศ), 2 mg : 2x1 hs (ส-อา)",
+            31: "5 mg : 1x1 hs (จ-ศ), 3 mg : 1x1 hs (ส-อา)",
+            31.5: "3 mg : 1.5x1 hs ทุกวัน",
+            32: "5 mg : 1x1 hs (จ-ส), 2 mg : 1x1 hs (อา)",
+            32.5: "5 mg : 1x1 hs (จ-ส), 5 mg : 0.5x1 hs (อา)",
+            33: "5 mg : 1x1 hs (จ-ส), 3 mg : 1x1 hs (อา)",
+            33.5: "5 mg : 1x1 hs (จ-พฤ), 3 mg : 1.5x1 hs (ศ-อา)",
+            34: "5 mg : 1x1 hs (จ-ส), 2 mg : 2x1 hs (อา)",
+            34.5: "5 mg : 1x1 hs (จ-ส), 3 mg : 1.5x1 hs (อา)",
+            35: "5 mg : 1x1 hs ทุกวัน",
+            35.5: "3 mg : 1.5x1 hs ทุกวัน, 2 mg : 1x1 hs (ส-อา)",
+            36: "5 mg : 1x1 hs (จ-ส), 3 mg : 2x1 hs (อา)",
+            36.5: "5 mg : 1x1 hs ทุกวัน, 3 mg : 0.5x1 hs (อา)",
+            37: "5 mg : 1x1 hs (จ-ศ), 3 mg : 2x1 hs (ส-อา)",
+            37.5: "5 mg : 1x1 hs (จ-ส), 5 mg : 1.5x1 hs (อา)",
+            38: "3 mg : 2x1 hs (จ-ศ), 2 mg : 2x1 hs (ส-อา) | 3 mg : 2x1 hs (จ-พ), 5 mg : 1x1 hs (พฤ-อา)",
+            38.5: "3 mg: 1x1 hs ทุกวัน, 5 mg : 0.5x1 hs ทุกวัน",
+            39: "3 mg : 2x1 hs (จ-ส), 3 mg : 1x1 hs (อา)",
+            39.5: "2 mg: 0.5x1 hs (ส-อา), 5 mg : 1.5x1 hs (จ-ศ)",
+            40: "5 mg : 1x1 hs (จ-ศ), 5 mg : 1.5x1 hs (ส-อา) | 3 mg : 2x1 hs (จ-ศ), 5 mg : 1x1 hs (ส-อา)",
+            40.5: "3 mg : 0.5x1 hs (ส-อา), 5 mg : 1.5x1 hs (จ-ศ)",
+            41: "3 mg : 2x1 hs (จ-ส), 5 mg : 1x1 hs (อา)",
+            41.5: "2 mg : 1x1 hs (ส-อา), 5 mg : 1.5x1 hs (จ-ศ)",
+            42: "3 mg : 2x1 hs ทุกวัน",
+            42.5: "5 mg : 1x1 hs (จ-พฤ), 5 mg : 1.5x1 hs (ศ-อา)",
+            43: "3 mg : 2x1 hs ทุกวัน, 1 mg : 1x1 hs (อา)",
+            43.5: "3 mg : 1x1 hs (ส-อา), 5 mg : 1.5x1 hs (จ-ศ)",
+            44: "3 mg : 2x1 hs ทุกวัน, 1 mg : 1x1 hs (ส-อา)",
+            44.5: "3 mg : 2x1 hs ทุกวัน, 5 mg : 0.5x1 hs (อา)",
+            45: "5 mg : 1.5x1 hs (จ-พฤ), 5 mg : 1x1 hs (ศ-อา)",
+            45.5: "3 mg : 0.5x1 hs ทุกวัน, 5 mg : 1x1 hs ทุกวัน",
+            46: "3 mg : 2x1 hs ทุกวัน, 2 mg : 1x1 hs (ส-อา)",
+            46.5: "3 mg : 1.5x1 hs (ส-อา), 5 mg : 1.5x1 hs (จ-ศ)",
+            47: "3 mg : 2x1 hs ทุกวัน, 1 mg : 1x1 hs (จ-ศ)",
+            47.5: "5 mg : 0.5x1 hs ทุกวัน, 5 mg : 1x1 hs (จ-ส)",
+            48: "3 mg : 2x1 hs ทุกวัน, 1 mg : 1x1 hs (จ-ส)",
+            48.5: "3 mg : 1.5x1 hs (ศ-อา), 5 mg 1x1 hs ทุกวัน",
+            49: "5 mg : 1x1 hs ทุกวัน, 2 mg : 1x1 hs ทุกวัน",
+            49.5: "3 mg : 2x1 hs (จ-อ), 3 mg : 2.5x1 hs (พ-อา)",
+            50: "5 mg : 1.5x1 hs (จ-ส), 5 mg : 1x1 hs (อา)",
+            50.5: "2 mg : 4x1 hs (จ-ส), 5 mg : 0.5x1 hs (อา)",
+            51: "5 mg : 1x1 hs (จ-ส), 3 mg : 1x1 hs ทุกวัน | 5 mg : 1.5x1 hs (จ-ส), 3 mg : 2x1 hs (อา)",
+            51.5: "2 mg : 4x1 hs (จ-ส), 1 mg : 3.5x1 hs (อา)",
+            52: "2 mg : 4x1 hs (จ-ส), 2 mg : 2x1 hs (อา)",
+            52.5: "5 mg : 1.5x1 hs ทุกวัน",
+            53: "3 mg : 3x1 hs (จ-ศ), 2 mg : 2x1 hs (ส-อา)",
+            53.5: "3 mg : 1.5x1 hs (ศ-อา), 5 mg : 2x1 hs (จ-พฤ)",
+            54: "3 mg : 2x1 hs (จ-พฤ), 5 mg : 2x1 hs (ศ-อา) | 5 mg : 1.5x1 hs (จ-ส), 3 mg : 3x1 hs (อา)",
+            54.5: "2 mg : 4x1 hs (จ-พฤ), 5 mg : 1.5x1 hs (ศ-อา)",
+            55: "5 mg : 1.5x1 hs (จ-ส), 5 mg : 2x1 hs (อา)",
+            55.5: "3 mg : 3x1 hs (จ-ส), 3 mg : 0.5x1 hs (อา)",
+            56: "3 mg : 1x1 hs ทุกวัน, 5 mg : 1x1 hs ทุกวัน",
+            56.5: "3 mg : 3x1 hs (จ-ส), 5 mg : 0.5x1 hs (อา)",
+            57: "3 mg : 3x1 hs (จ-ศ), 3 mg : 2x1 hs (ส-อา)",
+            57.5: "5 mg : 1.5x1 hs (จ-ศ), 5 mg : 2x1 hs (ส-อา)",
+            58: "3 mg : 3x1 hs (จ-ส), 2 mg : 2x1 hs (อา)",
+            58.5: "3 mg : 3x1 hs (จ-ส), 3 mg : 1.5x1 hs (อา)",
+            59: "3 mg : 3x1 hs (จ-ส), 5 mg : 1x1 hs (อา) | 2 mg : 4x1 hs (จ-พฤ), 3 mg : 3x1 hs (ศ-อา)",
+            59.5: "3 mg : 2x1 hs ทุกวัน, 5 mg : 0.5x1 hs ทุกวัน",
+            60: "3 mg : 3x1 hs (จ-ส), 3 mg : 2x1 hs (อา) | 3 mg : 3x1 hs (จ-พฤ), 2 mg : 4x1 hs (ศ-อา)",
+            60.5: "1 mg : 0.5x1 hs (อา), 5 mg : 2x1 hs (จ-ส)",
+            61: "2 mg : 4x1 hs (จ-ศ), 3 mg : 3.5x1 hs (ส-อา) | 3 mg : 3x1 hs (จ-ศ), 2 mg : 4x1 hs (ส-อา)",
+            61.5: "3 mg : 3x1 hs (จ-ส), 3 mg : 2.5x1 hs (อา)",
+            62: "5 mg : 2x1 hs (จ-ศ), 3 mg : 2x1 hs (ส-อา) | 3 mg : 3x1 hs (จ-ส), 2 mg : 4x1 hs (อา)",
+            62.5: "5 mg : 2x1 hs (จ-ส), 5 mg : 0.5x1 hs (อา)",
+            63: "3 mg : 3x1 hs ทุกวัน",
+            63.5: "1 mg : 0.5x1 ทุกวัน, 5 mg : 2x1 hs (จ-ส)",
+            64: "5 mg : 2x1 hs (จ-ส), 2 mg : 2x1 hs (อา)",
+            64.5: "3 mg : 1.5x1 hs (อา), 5 mg : 2x1 hs (จ-ส)",
+            65: "5 mg : 2x1 hs (จ-ศ), 5 mg : 1.5x1 hs (ส-อา)",
+            65.5: "3 mg : 0.5x1 hs (ส-อา), 5 mg : 2.5x1 hs (จ-ศ)",
+            66: "5 mg : 2x1 hs (จ-ส), 3 mg : 2x1 hs (อา)",
+            66.5: "2 mg : 1x1 hs ทุกวัน, 5 mg : 1.5x1 hs ทุกวัน",
+            67: "3 mg : 3x1 hs ทุกวัน, 2 mg : 1x1 hs (ส-อา)",
+            67.5: "5 mg : 2x1 hs (จ-ส), 5 mg : 1.5x1 hs (อา)",
+            68: "5 mg : 2x1 hs (จ-ส), 2 mg : 4x1 hs (อา)",
+            68.5: "3 mg : 1x1 hs (ส-อา), 5 mg : 2.5x1 hs (จ-ศ)",
+            69: "5 mg : 2x1 hs (จ-ส), 3 mg : 3x1 hs (อา)",
+            69.5: "2 mg : 4x1 hs (จ-พฤ), 5 mg : 2.5x1 hs (ศ-อา)",
+            70: "5 mg : 2x1 hs ทุกวัน",
+            70.5: "1 mg : 0.5x1 hs (อา), 5 mg : 2x1 hs ทุกวัน",
+            71: "5 mg : 2x1 hs ทุกวัน, 1 mg : 1x1 hs (อา)",
+            72: "5 mg : 2x1 hs ทุกวัน, 2 mg : 1x1 hs (อา)",
+            73: "5 mg : 2x1 hs ทุกวัน, 3 mg : 1x1 hs (อา)",
+            74: "5 mg : 2x1 hs ทุกวัน, 2 mg : 2x1 hs (อา)",
+            75: "5 mg : 2x1 hs (จ-ส), 5 mg : 3x1 hs (อา)",
+            76: "5 mg : 2x1 hs ทุกวัน, 3 mg : 2x1 hs (อา)",
+            77: "5 mg : 2x1 hs ทุกวัน, 1 mg : 1x1 hs ทุกวัน",
+            78: "5 mg : 3x1 hs (จ-ศ), 3 mg : 0.5x1 hs (ส-อา)",
+            79: "5 mg : 3x1 hs (จ-ศ), 2 mg : 1x1 hs (ส-อา)",
+            80: "5 mg : 2x1 hs (จ-พ), 5 mg : 2.5x1 hs (พฤ-อา)",
+            81: "5 mg : 3x1 hs (จ-ศ), 3 mg : 1x1 hs (ส-อา)",
+            82: "5 mg : 2x1 hs ทุกวัน, 2 mg : 1x1 hs (จ-ส)",
+            83: "2 mg : 6x1 hs (จ-ส), 2 mg : 5.5x1 hs (อา)",
+            84: "5 mg : 2x1 hs ทุกวัน, 2 mg : 1x1 hs ทุกวัน",
+            85: "5 mg : 2.5x1 hs (จ-ส), 5 mg : 2x1 hs (อา)",
+            86: "2 mg : 6x1 hs (จ-ศ), 2 mg : 6.5x1 hs (ส-อา)",
+            87: "3 mg : 4x1 hs (จ-ส), 5 mg : 3x1 hs (อา)",
+            88: "5 mg : 2x1 hs ทุกวัน, 3 mg : 1x1 hs (จ-ส)",
+            89: "5 mg : 1x1 hs ทุกวัน, 3 mg : 3x1 hs (จ-ส)",
+            90: "5 mg : 2.5x1 hs (จ-ส), 5 mg : 3x1 hs (อา)"
+        };
+
+        function onWfDoseTotalInput() {
+            const val = parseFloat(document.getElementById('wfNoteDoseTotal')?.value);
+            const box = document.getElementById('wfRegimenPresetBox');
+            const detailInp = document.getElementById('wfNoteDoseDetail');
+            if (!box || !detailInp) return;
+
+            if (val && wfDosingSchedule[val]) {
+                const raw = wfDosingSchedule[val];
+                const options = raw.split('|').map(s => s.trim());
+                box.innerHTML = '<span class="text-xs text-purple-700 font-bold">เลือก Regimen:</span>';
+                options.forEach((opt) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'text-xs bg-purple-100 hover:bg-purple-200 text-purple-900 border border-purple-300 px-2.5 py-1 rounded transition';
+                    btn.innerText = opt;
+                    btn.onclick = () => {
+                        detailInp.value = opt;
+                        generateOutput();
+                    };
+                    box.appendChild(btn);
+                });
+                box.classList.remove('hidden');
+                // ใส่ตัวเลือกแรกให้อัตโนมัติ
+                detailInp.value = options[0];
+            } else {
+                box.innerHTML = '';
+                box.classList.add('hidden');
+            }
+            generateOutput();
+        }
+
+        function setWfDays(daysArr) {
+            document.querySelectorAll('.wf-day-cb').forEach(cb => {
+                cb.checked = daysArr.includes(cb.value);
+            });
+        }
+
+        function formatWfDaysLabel(days) {
+            const allDays = ['จ','อ','พ','พฤ','ศ','ส','อา'];
+            if (days.length === 7) return 'ทุกวัน';
+            const str = days.join(',');
+            if (str === 'จ,อ,พ,พฤ,ศ') return '(จ-ศ)';
+            if (str === 'จ,อ,พ,พฤ,ศ,ส') return '(จ-ส)';
+            if (str === 'จ,อ,พ,พฤ') return '(จ-พฤ)';
+            if (str === 'จ,อ,พ') return '(จ-พ)';
+            if (str === 'พฤ,ศ,ส,อา') return '(พฤ-อา)';
+            if (str === 'ศ,ส,อา') return '(ศ-อา)';
+            if (str === 'ส,อา') return '(ส-อา)';
+            return `(${days.join(', ')})`;
+        }
+
+        function addWfPillToDetail() {
+            const pillVal = document.getElementById('wfPillType')?.value || '3|W(3mg) เม็ดฟ้า';
+            const [mgStr, pillLabel] = pillVal.split('|');
+            const mg = parseFloat(mgStr);
+            const qty = parseFloat(document.getElementById('wfPillQty')?.value || '1');
+            const selectedDays = Array.from(document.querySelectorAll('.wf-day-cb:checked')).map(cb => cb.value);
+
+            if (selectedDays.length === 0) {
+                alert('กรุณาเลือกวันที่รับประทานอย่างน้อย 1 วันครับ');
+                return;
+            }
+
+            const dayLabel = formatWfDaysLabel(selectedDays);
+            const textSegment = `${pillLabel} : ${qty}x1 hs ${dayLabel}`;
+            
+            const detailInp = document.getElementById('wfNoteDoseDetail');
+            if (detailInp) {
+                detailInp.value = detailInp.value.trim() ? `${detailInp.value.trim()}, ${textSegment}` : textSegment;
+            }
+
+            // คำนวณ mg/wk สะสมให้อัตโนมัติ
+            const addedMgWk = mg * qty * selectedDays.length;
+            const totalInp = document.getElementById('wfNoteDoseTotal');
+            if (totalInp) {
+                const currentTotal = parseFloat(totalInp.value) || 0;
+                totalInp.value = (currentTotal + addedMgWk);
+            }
+            generateOutput();
+        }
+
+        function clearWfDoseDetail() {
+            const detailInp = document.getElementById('wfNoteDoseDetail');
+            const totalInp = document.getElementById('wfNoteDoseTotal');
+            const box = document.getElementById('wfRegimenPresetBox');
+            if (detailInp) detailInp.value = '';
+            if (totalInp) totalInp.value = '';
+            if (box) { box.innerHTML = ''; box.classList.add('hidden'); }
+            generateOutput();
+        }
         
         const asthmaDevicesDef = [
             { 
@@ -2855,10 +3181,11 @@
             else if (currentTab === 'WARFARIN') {
                 const activeWf = document.querySelector('.wf-nav-link.active')?.id;
                 if (activeWf === 'wf-note-tab') {
-                    let wLines = [];
                     const wno = document.getElementById('wfNoteNo')?.value || '-';
                     const inrToday = document.getElementById('wfNoteInrToday')?.value || '-';
                     const inrPrev = document.getElementById('wfNoteInrPrev')?.value || '-';
+                    const inrPrevDate = document.getElementById('wfNoteInrPrevDate')?.value || '';
+                    const inrPrevStr = inrPrevDate ? `${inrPrev} (${inrPrevDate})` : inrPrev;
                     
                     const targetInr = document.querySelector('input[name="wfNoteTarget"]:checked')?.value;
                     const targetOther = document.getElementById('wfNoteTargetOther')?.value;
@@ -2868,21 +3195,25 @@
                     const curDoseDetail = document.getElementById('wfNoteDoseDetail')?.value || '';
 
                     const adherence = document.querySelector('input[name="wfNoteAdherence"]:checked')?.value || '-';
+                    const adherenceText = document.getElementById('wfNoteAdherenceText')?.value?.trim() || '';
+                    
                     const adr = document.querySelector('input[name="wfNoteAdr"]:checked')?.value || '-';
+                    const adrText = document.getElementById('wfNoteAdrText')?.value?.trim() || '';
+                    
                     const di = document.querySelector('input[name="wfNoteDi"]:checked')?.value || '-';
+                    const diText = document.getElementById('wfNoteDiText')?.value?.trim() || '';
                     
                     const otherCb = document.getElementById('wfNoteOtherCb')?.checked;
-                    const otherText = document.getElementById('wfNoteOtherText')?.value;
+                    const otherText = document.getElementById('wfNoteOtherText')?.value?.trim() || '';
                     const pharm = document.getElementById('wfNotePharm')?.value || '';
 
                     notes.push("pharmacist note Warfarin Clinic");
-                    notes.push(`WARFARIN NO: ${wno} | INR วันนี้: ${inrToday} | INR ครั้งก่อน: ${inrPrev}`);
+                    notes.push(`WARFARIN NO: ${wno} | INR วันนี้: ${inrToday} | INR ครั้งก่อน: ${inrPrevStr}`);
                     notes.push(`Target INR: ${targetStr}`);
-                    notes.push(`Current dose (รวม ${curDoseTotal} mg/wk)`);
-                    if (curDoseDetail) notes.push(curDoseDetail);
-                    notes.push(`Adherence: ${adherence}`);
-                    notes.push(`ADR: ${adr}`);
-                    notes.push(`D/I: ${di}`);
+                    notes.push(`Current dose (รวม ${curDoseTotal} mg/wk)${curDoseDetail ? ' : ' + curDoseDetail : ''}`);
+                    notes.push(`Adherence: ${adherence}${adherenceText ? ' (' + adherenceText + ')' : ''}`);
+                    notes.push(`ADR: ${adr}${adrText ? ' (' + adrText + ')' : ''}`);
+                    notes.push(`D/I: ${di}${diText ? ' (' + diText + ')' : ''}`);
                     if (otherCb && otherText) notes.push(`Other: ${otherText}`);
                     if (pharm) notes.push(`/${pharm}`);
                 }
@@ -3220,7 +3551,7 @@
             }
             else if (currentTab === 'WARFARIN') {
                 rowData = Array(5).fill('');
-                // คอลัมน์: A วันที่, B HN, C ชื่อ, D INR วันนี้, E ข้อมูลซักได้
+                // คอลัมน์: A วันที่, B HN, C ชื่อ, D INR วันนี้, E ข้อมูลที่ซักได้ในรอบนี้
                 rowData[0] = dateStr;
                 rowData[1] = hnNode?.value || '';
                 rowData[2] = ptNameNode?.value || '';
@@ -3228,14 +3559,20 @@
                 
                 let extraData = [];
                 const adherence = document.querySelector('input[name="wfNoteAdherence"]:checked')?.value;
-                const adr = document.querySelector('input[name="wfNoteAdr"]:checked')?.value;
-                const di = document.querySelector('input[name="wfNoteDi"]:checked')?.value;
-                const otherCb = document.getElementById('wfNoteOtherCb')?.checked;
-                const other = document.getElementById('wfNoteOtherText')?.value;
+                const adherenceText = document.getElementById('wfNoteAdherenceText')?.value?.trim();
                 
-                if(adherence) extraData.push(`Adherence: ${adherence}`);
-                if(adr) extraData.push(`ADR: ${adr}`);
-                if(di) extraData.push(`D/I: ${di}`);
+                const adr = document.querySelector('input[name="wfNoteAdr"]:checked')?.value;
+                const adrText = document.getElementById('wfNoteAdrText')?.value?.trim();
+                
+                const di = document.querySelector('input[name="wfNoteDi"]:checked')?.value;
+                const diText = document.getElementById('wfNoteDiText')?.value?.trim();
+                
+                const otherCb = document.getElementById('wfNoteOtherCb')?.checked;
+                const other = document.getElementById('wfNoteOtherText')?.value?.trim();
+                
+                if(adherence) extraData.push(`Adherence: ${adherence}${adherenceText ? ' (' + adherenceText + ')' : ''}`);
+                if(adr) extraData.push(`ADR: ${adr}${adrText ? ' (' + adrText + ')' : ''}`);
+                if(di) extraData.push(`D/I: ${di}${diText ? ' (' + diText + ')' : ''}`);
                 if(otherCb && other) extraData.push(`Other: ${other}`);
                 
                 rowData[4] = extraData.join(', ');
