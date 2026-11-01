@@ -400,30 +400,284 @@
                 <div id="resultContent" class="hidden"></div>
             </div>
 
-            <!-- 3. ADR Form -->
-            <div id="form-ADR" class="space-y-4 clinic-form hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ป่วยรับยาจาก</label>
-                        <input type="text" id="adrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น รพ.นพรัตนฯ" oninput="generateOutput()">
+            <!-- 3. ADR Form (Upgraded Modern Clinical ADR/SE Suite) -->
+            <div id="form-ADR" class="space-y-5 clinic-form hidden">
+                
+                <!-- 1. ประเภทการประเมิน & แหล่งรับยา -->
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                    <div class="flex flex-wrap justify-between items-center border-b pb-3 mb-4 gap-2">
+                        <h3 class="font-bold text-lg text-rose-700"><i class="fa-solid fa-allergies mr-2"></i>1. ข้อมูลการรับยาและประเภทอาการไม่พึงประสงค์ (ADR / Side Effect)</h3>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="text-xs text-gray-500 self-center mr-1">ปุ่มด่วนเคสพบบ่อย:</span>
+                            <button type="button" onclick="applyAdrPreset('statin_myalgia')" class="text-xs bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 px-2.5 py-1 rounded-full transition">Statin ปวดกล้ามเนื้อ</button>
+                            <button type="button" onclick="applyAdrPreset('acei_cough')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full transition">ACEI ไอแห้ง</button>
+                            <button type="button" onclick="applyAdrPreset('ccb_edema')" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-2.5 py-1 rounded-full transition">CCB เท้าบวม</button>
+                            <button type="button" onclick="applyAdrPreset('abx_rash')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-full transition">ผื่นแพ้ยา (MP rash)</button>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา</label>
-                        <input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="วว/ดด/พศ เช่น 18/09/69" oninput="generateOutput()">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-rose-50/60 p-3 rounded-lg border border-rose-100">
+                            <label class="block text-xs font-bold text-rose-900 mb-2">ประเภทการบันทึก (เชื่อมคอลัมน์ Google Sheet)</label>
+                            <div class="flex flex-wrap gap-4 text-sm">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="adrRecordMode" value="active" class="form-radio text-rose-600" checked onchange="generateOutput()">
+                                    <span class="ml-2 font-medium text-gray-800">Active ADR / ปรึกษาผลข้างเคียงครั้งนี้</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="adrRecordMode" value="history" class="form-radio text-blue-600" onchange="generateOutput()">
+                                    <span class="ml-2 font-medium text-gray-800">ซักประวัติแพ้ยาเดิม (ลง ADR)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-50/60 p-3 rounded-lg border border-amber-100">
+                            <label class="block text-xs font-bold text-amber-900 mb-2">การจำแนกตามกลไก (Classification)</label>
+                            <div class="flex flex-wrap gap-3 text-sm">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="adrMechType" value="Type A (Side Effect / ผลข้างเคียงตามฤทธิ์ยา)" class="form-radio text-amber-600" checked onchange="generateOutput()">
+                                    <span class="ml-1.5 font-medium text-gray-800">Type A (Side Effect)</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="adrMechType" value="Type B (Drug Allergy / แพ้ยาจากภูมิคุ้มกัน)" class="form-radio text-rose-600" onchange="generateOutput()">
+                                    <span class="ml-1.5 font-medium text-gray-800">Type B (แพ้ยา/Allergy)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-sm font-medium text-gray-700">ผู้ป่วยรับยาจาก</label>
+                                <div class="flex gap-1">
+                                    <button type="button" onclick="document.getElementById('adrPlace').value='รพ.นพรัตนฯ'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded text-gray-700">รพ.นพรัตนฯ</button>
+                                    <button type="button" onclick="document.getElementById('adrPlace').value='รพ.อื่น/คลินิก'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded text-gray-700">รพ.อื่น/คลินิก</button>
+                                    <button type="button" onclick="document.getElementById('adrPlace').value='ร้านยา'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded text-gray-700">ร้านยา</button>
+                                </div>
+                            </div>
+                            <input type="text" id="adrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น รพ.นพรัตนฯ, คลินิก, ร้านยา" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา / แหล่งข้อมูลอ้างอิง</label>
+                            <input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 18/09/69 หรือ ผู้ป่วยแจ้ง/ดูซองยา" oninput="generateOutput()">
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">รายการยา</label>
-                    <input type="text" id="adrDrug" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น Simvastatin 20mg" oninput="generateOutput()">
+
+                <!-- 2. อาการไม่พึงประสงค์ & Red Flags -->
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                    <h3 class="font-bold text-lg text-blue-800 border-b pb-2 mb-3"><i class="fa-solid fa-heart-circle-exclamation mr-2"></i>2. อาการไม่พึงประสงค์และการคัดกรองอาการรุนแรง (Reaction & Severity)</h3>
+                    
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">คลิกเลือกอาการที่พบบ่อย (หรือพิมพ์รายละเอียดด้านล่าง):</label>
+                        <div class="flex flex-wrap gap-1.5 mb-2">
+                            <button type="button" onclick="appendAdrSymptom('ผื่นแดงคัน (MP rash)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ผื่นคัน (MP rash)</button>
+                            <button type="button" onclick="appendAdrSymptom('ผื่นลมพิษ (Urticaria)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ลมพิษ (Urticaria)</button>
+                            <button type="button" onclick="appendAdrSymptom('ตาบวม/ปากบวม (Angioedema)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ตาบวม/ปากบวม</button>
+                            <button type="button" onclick="appendAdrSymptom('ปวดกล้ามเนื้อ (Myalgia)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ปวดกล้ามเนื้อ</button>
+                            <button type="button" onclick="appendAdrSymptom('ไอแห้งระคายคอ (Dry cough)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ไอแห้ง</button>
+                            <button type="button" onclick="appendAdrSymptom('ข้อเท้า/ขาบวมทั้ง 2 ข้าง (Pedal edema)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ขา/เท้าบวม</button>
+                            <button type="button" onclick="appendAdrSymptom('เวียนศีรษะ/หน้ามืด (Dizziness)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ เวียนศีรษะ/หน้ามืด</button>
+                            <button type="button" onclick="appendAdrSymptom('คลื่นไส้/อาเจียน (N/V)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ คลื่นไส้/อาเจียน</button>
+                            <button type="button" onclick="appendAdrSymptom('เอนไซม์ตับขึ้นสูง (Transaminitis)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ตับอักเสบ (AST/ALT สูง)</button>
+                        </div>
+                        <input type="text" id="adrSymptomText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm font-medium text-gray-800" placeholder="ระบุลักษณะอาการ ตำแหน่งที่เป็น หรือผล Lab ที่ผิดปกติ..." oninput="generateOutput()">
+                    </div>
+
+                    <!-- ช่วงเวลาเกิดอาการ (สำหรับคำนวณ Latency & วาด Gantt Chart) -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-blue-50/50 p-3.5 rounded-lg border border-blue-100 mb-3">
+                        <div>
+                            <label class="block text-xs font-bold text-blue-900 mb-1">วันที่เริ่มมีอาการ (Onset Date)</label>
+                            <input type="date" id="adrSympOnsetDate" class="w-full rounded border-gray-300 border px-2.5 py-1.5 text-sm bg-white" onchange="renderAdrGanttChart(); generateOutput();">
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-bold text-blue-900">วันที่อาการหาย/ดีขึ้น</label>
+                                <label class="inline-flex items-center text-xs text-rose-600 font-semibold cursor-pointer">
+                                    <input type="checkbox" id="adrSympOngoing" class="form-checkbox text-rose-600 rounded mr-1" onchange="toggleAdrSympOngoing(); renderAdrGanttChart(); generateOutput();"> ยังมีอาการอยู่
+                                </label>
+                            </div>
+                            <input type="date" id="adrSympResolveDate" class="w-full rounded border-gray-300 border px-2.5 py-1.5 text-sm bg-white" onchange="renderAdrGanttChart(); generateOutput();">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-blue-900 mb-1">ระยะเวลาเกิดอาการหลังได้ยา (พิมพ์เสริมได้)</label>
+                            <input type="text" id="adrOnsetManual" class="w-full rounded border-gray-300 border px-2.5 py-1.5 text-sm bg-white" placeholder="เช่น หลังกินเม็ดแรก 30 นาที" oninput="generateOutput()">
+                        </div>
+                    </div>
+
+                    <!-- SCARs / Anaphylaxis Red Flags -->
+                    <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+                        <div class="text-xs font-bold text-red-800 mb-2"><i class="fa-solid fa-triangle-exclamation mr-1"></i>คัดกรองสัญญาณอันตรายรุนแรง (Anaphylaxis / SCARs: SJS, TEN, DRESS, AGEP):</div>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs text-gray-800">
+                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="มีไข้สูง" class="adr-redflag form-checkbox text-red-600 rounded mr-1.5" onchange="checkAdrRedFlags(); generateOutput();">มีไข้ร่วมกับผื่น</label>
+                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="แผลเยื่อบุ (ปาก/ตา/อวัยวะเพศ)" class="adr-redflag form-checkbox text-red-600 rounded mr-1.5" onchange="checkAdrRedFlags(); generateOutput();">แผลเยื่อบุ (ปาก/ตา)</label>
+                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="ผื่นตุ่มน้ำพอง/ผิวหนังลอก" class="adr-redflag form-checkbox text-red-600 rounded mr-1.5" onchange="checkAdrRedFlags(); generateOutput();">ตุ่มน้ำพอง/ผิวลอก</label>
+                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="แน่นหน้าอก/หายใจหอบ/ความดันตก" class="adr-redflag form-checkbox text-red-600 rounded mr-1.5" onchange="checkAdrRedFlags(); generateOutput();">หอบเหนื่อย/BP ตก</label>
+                            <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="หน้าบวม/ต่อมน้ำเหลืองโต/ตับอักเสบ" class="adr-redflag form-checkbox text-red-600 rounded mr-1.5" onchange="checkAdrRedFlags(); generateOutput();">ต่อมน้ำเหลืองโต/ตับอักเสบ</label>
+                        </div>
+                        <div id="adrRedFlagAlert" class="hidden mt-2.5 p-2.5 bg-red-600 text-white rounded-lg text-xs font-bold flex items-center justify-between shadow-sm">
+                            <span>🚨 พบสัญญาณเตือนปฏิกิริยารุนแรง (Severe ADR / Anaphylaxis / SCARs)! แนะนำให้หยุดยาทันทีและส่งพบแพทย์ฉุกเฉิน</span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">ประเมินว่าเป็นสาเหตุจากยาไหม (ระบุรายละเอียด)</label>
-                    <input type="text" id="adrAssessment" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="เช่น ปวดกล้ามเนื้อ ตั้งแต่วันที่... ไม่ค่อยสงสัย" oninput="generateOutput()">
+
+                <!-- 3. รายการยา & Interactive Gantt Chart Timeline -->
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                    <div class="flex flex-wrap justify-between items-center border-b pb-2 mb-3 gap-2">
+                        <h3 class="font-bold text-lg text-indigo-800"><i class="fa-solid fa-chart-gantt mr-2"></i>3. รายการยาที่เกี่ยวข้อง & ไทม์ไลน์เปรียบเทียบ (ADR Gantt Chart)</h3>
+                        <button type="button" onclick="addAdrDrugRow()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center">
+                            <i class="fa-solid fa-plus mr-1"></i> เพิ่มรายการยาเพื่อเปรียบเทียบไทม์ไลน์
+                        </button>
+                    </div>
+
+                    <!-- ช่องพิมพ์รายการยาแบบด่วน (ซิงค์กับตารางด้านล่างอัตโนมัติ) -->
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-600 mb-1">สรุปรายการยาที่สงสัย (พิมพ์ด่วนตรงนี้ หรือกรอกในตารางไทม์ไลน์ด้านล่าง ระบบจะเชื่อมข้อมูลให้เอง):</label>
+                        <input type="text" id="adrDrug" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm font-bold text-indigo-900 bg-indigo-50/40" placeholder="เช่น Atorvastatin 40mg, Enalapril 5mg, Amoxicillin 500mg" oninput="generateOutput()">
+                    </div>
+
+                    <!-- ตารางรายการยาสำหรับทำ Gantt Chart -->
+                    <div id="adrDrugTimelineRows" class="space-y-2.5 mb-4"></div>
+
+                    <!-- พื้นที่แสดงผล Gantt Chart -->
+                    <div id="adrGanttContainer" class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div class="text-xs text-slate-400 text-center py-2">ระบุ "วันที่เริ่มยา" และ "วันที่เริ่มมีอาการ" เพื่อสร้างกราฟ Gantt Chart เปรียบเทียบความสัมพันธ์เชิงเวลา (Temporal Relationship) อัตโนมัติ</div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ประเมิน</label>
-                    <input type="text" id="adrPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+
+                <!-- 4. อัลกอริทึมประเมินความน่าจะเป็น (Naranjo / WHO-UMC / Thai Algorithm) -->
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                    <div class="flex flex-wrap justify-between items-center border-b pb-3 mb-4 gap-2">
+                        <h3 class="font-bold text-lg text-emerald-800"><i class="fa-solid fa-calculator mr-2"></i>4. อัลกอริทึมประเมินความน่าจะเป็น (Causality Assessment)</h3>
+                        <div class="flex gap-1.5 bg-gray-100 p-1 rounded-lg">
+                            <button type="button" id="btnAlgoNaranjo" onclick="switchAdrAlgo('naranjo')" class="px-3 py-1 rounded-md text-xs font-bold bg-emerald-600 text-white shadow-sm transition">1. Naranjo's Algorithm</button>
+                            <button type="button" id="btnAlgoWho" onclick="switchAdrAlgo('who')" class="px-3 py-1 rounded-md text-xs font-bold text-gray-600 hover:bg-gray-200 transition">2. WHO-UMC Criteria</button>
+                            <button type="button" id="btnAlgoThai" onclick="switchAdrAlgo('thai')" class="px-3 py-1 rounded-md text-xs font-bold text-gray-600 hover:bg-gray-200 transition">3. Thai Algorithm</button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4.1: Naranjo Algorithm (10 Questions) -->
+                    <div id="adrAlgoNaranjoPane" class="space-y-3">
+                        <div class="flex flex-wrap justify-between items-center bg-emerald-50 p-3 rounded-lg border border-emerald-200 gap-2">
+                            <div>
+                                <span class="text-xs font-bold text-emerald-900">คะแนน Naranjo รวม: </span>
+                                <span id="naranjoTotalScore" class="text-lg font-extrabold text-emerald-700 ml-1">0</span>
+                                <span class="text-xs text-emerald-800"> คะแนน ➔ แปลผล: </span>
+                                <span id="naranjoInterpretationBadge" class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-200 text-gray-700">ยังไม่ได้ประเมิน / Doubtful (≤ 0)</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="button" onclick="autoFillNaranjoFromTimeline()" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded shadow-sm transition">
+                                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>ดึงผลจากไทม์ไลน์อัตโนมัติ
+                                </button>
+                                <button type="button" onclick="resetNaranjoQuestions()" class="text-xs bg-white hover:bg-gray-100 text-gray-600 border border-gray-300 px-2.5 py-1 rounded transition">รีเซ็ตคะแนน</button>
+                            </div>
+                        </div>
+
+                        <div id="naranjoQuestionsContainer" class="divide-y divide-gray-100 text-xs border border-gray-200 rounded-lg overflow-hidden">
+                            <!-- สร้างโดย JS -->
+                        </div>
+                    </div>
+
+                    <!-- Tab 4.2: WHO-UMC Causality Assessment -->
+                    <div id="adrAlgoWhoPane" class="hidden space-y-3">
+                        <p class="text-xs text-gray-600 mb-2">เลือกเกณฑ์ขององค์การอนามัยโลก (WHO-UMC Causality Categories) ที่ตรงกับข้อมูลทางคลินิกของผู้ป่วยมากที่สุด:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            <label class="p-3 rounded-lg border border-gray-200 hover:bg-emerald-50 cursor-pointer flex items-start gap-2">
+                                <input type="radio" name="adrWhoLevel" value="Certain (ใช่แน่นอน)" class="mt-1 text-emerald-600" onchange="generateOutput()">
+                                <div><div class="font-bold text-emerald-800">Certain (ใช่แน่นอน)</div><div class="text-gray-500 mt-0.5">เวลาสัมพันธ์ชัดเจน, อธิบายด้วยโรค/ยาอื่นไม่ได้, หยุดยาแล้วหายชัดเจน, เกิดซ้ำเมื่อให้ยาซ้ำ (Rechallenge +)</div></div>
+                            </label>
+                            <label class="p-3 rounded-lg border border-gray-200 hover:bg-blue-50 cursor-pointer flex items-start gap-2">
+                                <input type="radio" name="adrWhoLevel" value="Probable / Likely (น่าจะใช่)" class="mt-1 text-blue-600" onchange="generateOutput()">
+                                <div><div class="font-bold text-blue-800">Probable / Likely (น่าจะใช่)</div><div class="text-gray-500 mt-0.5">เวลาสัมพันธ์เหมาะสม, ไม่น่าเกิดจากโรค/ยาอื่น, อาการดีขึ้นเมื่อหยุดยา (Dechallenge +), ไม่จำเป็นต้องให้ยาซ้ำ</div></div>
+                            </label>
+                            <label class="p-3 rounded-lg border border-gray-200 hover:bg-amber-50 cursor-pointer flex items-start gap-2">
+                                <input type="radio" name="adrWhoLevel" value="Possible (อาจจะใช่)" class="mt-1 text-amber-600" onchange="generateOutput()">
+                                <div><div class="font-bold text-amber-800">Possible (อาจจะใช่)</div><div class="text-gray-500 mt-0.5">เวลาสัมพันธ์เหมาะสม แต่อาจเกิดจากโรคหรือยาอื่นที่ได้รับร่วมกันได้ หรือไม่มีข้อมูลหลังหยุดยา</div></div>
+                            </label>
+                            <label class="p-3 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer flex items-start gap-2">
+                                <input type="radio" name="adrWhoLevel" value="Unlikely (ไม่น่าใช่)" class="mt-1 text-gray-600" onchange="generateOutput()">
+                                <div><div class="font-bold text-gray-800">Unlikely (ไม่น่าใช่)</div><div class="text-gray-500 mt-0.5">ระยะเวลาที่เกิดอาการไม่สอดคล้องกับการได้รับยา หรือมีสาเหตุอื่นที่อธิบายได้ชัดเจนกว่า</div></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4.3: Thai Algorithm -->
+                    <div id="adrAlgoThaiPane" class="hidden space-y-3 text-xs">
+                        <div class="bg-blue-50 p-3 rounded-lg border border-blue-200 flex justify-between items-center">
+                            <span class="font-bold text-blue-900">ผลประเมินตามเกณฑ์ Thai Algorithm (อย.): <span id="thaiAlgoResultBadge" class="ml-1 px-2.5 py-0.5 rounded-full bg-white text-blue-700 border border-blue-300">-</span></span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="p-3 border rounded-lg bg-gray-50">
+                                <label class="font-bold text-gray-700 block mb-1">1. ลำดับเวลาการเกิดอาการหลังได้รับยาสอดคล้องหรือไม่?</label>
+                                <select id="thaiQ1" class="w-full rounded border-gray-300 p-1.5 bg-white" onchange="evalThaiAlgo(); generateOutput();">
+                                    <option value="yes">สอดคล้องเหมาะสม (เกิดหลังได้รับยา)</option>
+                                    <option value="no">ไม่สอดคล้อง (เกิดก่อนได้รับยา / นานเกินไป)</option>
+                                </select>
+                            </div>
+                            <div class="p-3 border rounded-lg bg-gray-50">
+                                <label class="font-bold text-gray-700 block mb-1">2. เมื่อหยุดยาแล้วอาการดีขึ้นหรือไม่ (Dechallenge)?</label>
+                                <select id="thaiQ2" class="w-full rounded border-gray-300 p-1.5 bg-white" onchange="evalThaiAlgo(); generateOutput();">
+                                    <option value="yes">ดีขึ้นชัดเจนหลังหยุดยา</option>
+                                    <option value="unknown">ยังไม่หยุดยา / ไม่ทราบผล</option>
+                                    <option value="no">หยุดยาแล้วอาการไม่ดีขึ้น</option>
+                                </select>
+                            </div>
+                            <div class="p-3 border rounded-lg bg-gray-50">
+                                <label class="font-bold text-gray-700 block mb-1">3. มีสาเหตุอื่น (โรคประจำตัว / ยาอื่นร่วม) ที่อธิบายอาการได้หรือไม่?</label>
+                                <select id="thaiQ3" class="w-full rounded border-gray-300 p-1.5 bg-white" onchange="evalThaiAlgo(); generateOutput();">
+                                    <option value="no">ไม่มีสาเหตุอื่น (เกิดจากยานี้ชัดเจน)</option>
+                                    <option value="yes">มีสาเหตุอื่นหรือยาอื่นร่วมด้วยที่อาจทำให้เกิดได้</option>
+                                </select>
+                            </div>
+                            <div class="p-3 border rounded-lg bg-gray-50">
+                                <label class="font-bold text-gray-700 block mb-1">4. มีการได้รับยาซ้ำแล้วเกิดอาการซ้ำหรือไม่ (Rechallenge)?</label>
+                                <select id="thaiQ4" class="w-full rounded border-gray-300 p-1.5 bg-white" onchange="evalThaiAlgo(); generateOutput();">
+                                    <option value="none">ไม่ได้ให้ยาซ้ำ</option>
+                                    <option value="pos">ได้รับยาซ้ำแล้วเกิดอาการซ้ำ (+)</option>
+                                    <option value="neg">ได้รับยาซ้ำแต่ไม่เกิดอาการ (-)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- 5. การจัดการ & สรุปการประเมิน -->
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-lg text-gray-800 border-b pb-2"><i class="fa-solid fa-clipboard-check mr-2 text-emerald-600"></i>5. การจัดการของเภสัชกรและสรุปผลประเมิน (Management & Plan)</h3>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-2">แผนการจัดการ (ติ๊กเลือกได้มากกว่า 1 ข้อ):</label>
+                        <div class="flex flex-wrap gap-3 text-sm text-gray-700">
+                            <label class="inline-flex items-center bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100">
+                                <input type="checkbox" value="แนะนำหยุดยาที่สงสัย" class="adr-action-cb form-checkbox text-blue-600 rounded mr-2" onchange="generateOutput()">แนะนำหยุดยาที่สงสัย
+                            </label>
+                            <label class="inline-flex items-center bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100">
+                                <input type="checkbox" value="ออกบัตรแพ้ยา/บัตรเตือนเรื่องยา" class="adr-action-cb form-checkbox text-blue-600 rounded mr-2" onchange="generateOutput()">ออกบัตรแพ้ยา/บัตรเตือนเรื่องยา
+                            </label>
+                            <label class="inline-flex items-center bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100">
+                                <input type="checkbox" value="ลงบันทึกประวัติแพ้ยาในระบบ PMK" class="adr-action-cb form-checkbox text-blue-600 rounded mr-2" onchange="generateOutput()">บันทึกประวัติใน PMK
+                            </label>
+                            <label class="inline-flex items-center bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100">
+                                <input type="checkbox" value="ส่งปรึกษาแพทย์เพื่อพิจารณาปรับเปลี่ยนยา" class="adr-action-cb form-checkbox text-blue-600 rounded mr-2" onchange="generateOutput()">ปรึกษาแพทย์ปรับเปลี่ยนยา
+                            </label>
+                            <label class="inline-flex items-center bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100">
+                                <input type="checkbox" value="สามารถใช้ยาต่อได้ แนะนำวิธีสังเกตอาการ" class="adr-action-cb form-checkbox text-blue-600 rounded mr-2" onchange="generateOutput()">ทานต่อได้/แนะนำสังเกตอาการ
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">สรุปการประเมินเพิ่มเติม / ข้อความอิสระ (จะนำไปรวมใน Note และคอลัมน์ DRP/อาการแพ้ยา)</label>
+                        <input type="text" id="adrAssessment" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น ปวดกล้ามเนื้อหลังปรับเพิ่มขนาดยา ไม่พบ CK สูง หรือ ไม่ค่อยสงสัยจากยา..." oninput="generateOutput()">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ประเมิน (เภสัชกร)</label>
+                        <input type="text" id="adrPharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                    </div>
+                </div>
+
             </div>
 
             <!-- 4. HIV Form -->
@@ -3106,9 +3360,417 @@
         }
 
         // ==========================================
+        //         CLINIC 3: MODERN ADR / SE SUITE
+        // ==========================================
+        let adrActiveAlgo = 'naranjo';
+        let adrTimelineDrugs = [
+            { name: '', startDate: '', stopDate: '', ongoing: false, suspected: true, dechallenge: 'ดีขึ้นหลังหยุดยา' }
+        ];
+
+        const naranjoQuestionsDef = [
+            { id: 1, q: "1. เคยมีสรุปหรือรายงานการเกิดปฏิกิริยานี้กับยาชนิดนี้มาแล้วหรือไม่?", yes: 1, no: 0, unk: 0 },
+            { id: 2, q: "2. อาการไม่พึงประสงค์นี้เกิดขึ้นหลังจากได้รับยาที่คิดว่าเป็นสาเหตุหรือไม่?", yes: 2, no: -1, unk: 0 },
+            { id: 3, q: "3. อาการไม่พึงประสงค์ดีขึ้นเมื่อหยุดยาดังกล่าว หรือให้ยาต้านที่จำเพาะ (Dechallenge) หรือไม่?", yes: 1, no: 0, unk: 0 },
+            { id: 4, q: "4. อาการไม่พึงประสงค์เกิดขึ้นซ้ำอีกเมื่อได้รับยาซ้ำ (Rechallenge) หรือไม่?", yes: 2, no: -1, unk: 0 },
+            { id: 5, q: "5. ปฏิกิริยาที่เกิดขึ้นสามารถอธิบายได้จากสาเหตุอื่น (เช่น โรคประจำตัว หรือยาอื่นที่ได้รับร่วม) หรือไม่?", yes: -1, no: 2, unk: 0 },
+            { id: 6, q: "6. ปฏิกิริยาดังกล่าวเกิดขึ้นอีกเมื่อได้รับยาหลอก (Placebo) หรือไม่?", yes: -1, no: 1, unk: 0 },
+            { id: 7, q: "7. สามารถตรวจวัดระดับยาในเลือดหรือของเหลวในร่างกายในระดับที่เป็นพิษหรือไม่?", yes: 1, no: 0, unk: 0 },
+            { id: 8, q: "8. อาการรุนแรงขึ้นเมื่อเพิ่มขนาดยา หรือลดความรุนแรงลงเมื่อลดขนาดยาหรือไม่?", yes: 1, no: 0, unk: 0 },
+            { id: 9, q: "9. ผู้ป่วยเคยมีปฏิกิริยาเหมือนหรือคล้ายกันนี้มาก่อนในการได้รับยาชนิดนี้/กลุ่มนี้ในอดีตหรือไม่?", yes: 1, no: 0, unk: 0 },
+            { id: 10, q: "10. อาการไม่พึงประสงค์ได้รับการยืนยันโดยหลักฐานเชิงประจักษ์ (เช่น ผล Lab, การตรวจร่างกายชัดเจน) หรือไม่?", yes: 1, no: 0, unk: 0 }
+        ];
+
+        let naranjoAnswers = { 1: 'unk', 2: 'unk', 3: 'unk', 4: 'unk', 5: 'unk', 6: 'unk', 7: 'unk', 8: 'unk', 9: 'unk', 10: 'unk' };
+
+        function initAdrModule() {
+            renderAdrTimelineRows();
+            renderNaranjoQuestions();
+            renderAdrGanttChart();
+            evalThaiAlgo();
+        }
+
+        function appendAdrSymptom(symp) {
+            const inp = document.getElementById('adrSymptomText');
+            if (!inp) return;
+            const cur = inp.value.trim();
+            if (!cur.includes(symp)) {
+                inp.value = cur ? `${cur}, ${symp}` : symp;
+            }
+            generateOutput();
+        }
+
+        function toggleAdrSympOngoing() {
+            const cb = document.getElementById('adrSympOngoing');
+            const resInp = document.getElementById('adrSympResolveDate');
+            if (cb && resInp) {
+                resInp.disabled = cb.checked;
+                if (cb.checked) resInp.value = '';
+            }
+        }
+
+        function checkAdrRedFlags() {
+            const checked = document.querySelectorAll('.adr-redflag:checked');
+            const alertBox = document.getElementById('adrRedFlagAlert');
+            if (alertBox) {
+                if (checked.length > 0) alertBox.classList.remove('hidden');
+                else alertBox.classList.add('hidden');
+            }
+        }
+
+        function addAdrDrugRow() {
+            adrTimelineDrugs.push({ name: '', startDate: '', stopDate: '', ongoing: false, suspected: true, dechallenge: 'ดีขึ้นหลังหยุดยา' });
+            renderAdrTimelineRows();
+        }
+
+        function removeAdrDrugRow(idx) {
+            adrTimelineDrugs.splice(idx, 1);
+            if (adrTimelineDrugs.length === 0) {
+                adrTimelineDrugs.push({ name: '', startDate: '', stopDate: '', ongoing: false, suspected: true, dechallenge: 'ดีขึ้นหลังหยุดยา' });
+            }
+            renderAdrTimelineRows();
+            syncAdrDrugMainInput();
+            renderAdrGanttChart();
+            generateOutput();
+        }
+
+        function updateAdrDrugRow(idx, field, val) {
+            adrTimelineDrugs[idx][field] = val;
+            if (field === 'ongoing' && val === true) {
+                adrTimelineDrugs[idx].stopDate = '';
+                renderAdrTimelineRows();
+            }
+            if (field === 'name' || field === 'suspected') {
+                syncAdrDrugMainInput();
+            }
+            renderAdrGanttChart();
+            generateOutput();
+        }
+
+        function syncAdrDrugMainInput() {
+            const mainInp = document.getElementById('adrDrug');
+            if (!mainInp) return;
+            const suspectedNames = adrTimelineDrugs.filter(d => d.name.trim() !== '' && d.suspected).map(d => d.name.trim());
+            if (suspectedNames.length > 0) {
+                mainInp.value = suspectedNames.join(', ');
+            }
+        }
+
+        function renderAdrTimelineRows() {
+            const container = document.getElementById('adrDrugTimelineRows');
+            if (!container) return;
+            container.innerHTML = '';
+
+            adrTimelineDrugs.forEach((d, i) => {
+                container.innerHTML += `
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-center bg-gray-50 p-2.5 rounded-lg border ${d.suspected ? 'border-indigo-300 bg-indigo-50/30' : 'border-gray-200'} text-xs">
+                        <div class="md:col-span-3">
+                            <label class="block text-[10px] font-bold text-gray-500 mb-0.5">ชื่อยา & วิธีใช้ #${i+1}</label>
+                            <input type="text" value="${d.name}" oninput="updateAdrDrugRow(${i}, 'name', this.value)" placeholder="เช่น Simvastatin 20mg 1x1 hs" class="w-full rounded border-gray-300 border px-2 py-1.5 font-semibold text-gray-800 bg-white">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-[10px] font-bold text-gray-500 mb-0.5">วันที่เริ่มยา (Start)</label>
+                            <input type="date" value="${d.startDate}" onchange="updateAdrDrugRow(${i}, 'startDate', this.value)" class="w-full rounded border-gray-300 border px-2 py-1 bg-white">
+                        </div>
+                        <div class="md:col-span-2">
+                            <div class="flex justify-between items-center mb-0.5">
+                                <label class="text-[10px] font-bold text-gray-500">วันที่หยุดยา (Stop)</label>
+                                <label class="inline-flex items-center text-[10px] text-blue-600 cursor-pointer">
+                                    <input type="checkbox" ${d.ongoing ? 'checked' : ''} onchange="updateAdrDrugRow(${i}, 'ongoing', this.checked)" class="mr-0.5">ทานต่อ
+                                </label>
+                            </div>
+                            <input type="date" value="${d.stopDate}" ${d.ongoing ? 'disabled' : ''} onchange="updateAdrDrugRow(${i}, 'stopDate', this.value)" class="w-full rounded border-gray-300 border px-2 py-1 bg-white disabled:bg-gray-100">
+                        </div>
+                        <div class="md:col-span-3">
+                            <label class="block text-[10px] font-bold text-gray-500 mb-0.5">ผลหลังหยุดยา (Dechallenge)</label>
+                            <select onchange="updateAdrDrugRow(${i}, 'dechallenge', this.value)" class="w-full rounded border-gray-300 border px-2 py-1.5 bg-white">
+                                <option value="ดีขึ้นหลังหยุดยา" ${d.dechallenge==='ดีขึ้นหลังหยุดยา'?'selected':''}>ดีขึ้นหลังหยุดยา (Positive)</option>
+                                <option value="ยังไม่ได้หยุดยา/ไม่ทราบ" ${d.dechallenge==='ยังไม่ได้หยุดยา/ไม่ทราบ'?'selected':''}>ยังไม่ได้หยุดยา / ไม่ทราบ</option>
+                                <option value="ไม่ดีขึ้นหลังหยุดยา" ${d.dechallenge==='ไม่ดีขึ้นหลังหยุดยา'?'selected':''}>ไม่ดีขึ้นหลังหยุดยา (Negative)</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 flex items-center justify-between pt-3 md:pt-4">
+                            <label class="inline-flex items-center cursor-pointer font-bold ${d.suspected ? 'text-rose-600' : 'text-gray-500'}">
+                                <input type="checkbox" ${d.suspected ? 'checked' : ''} onchange="updateAdrDrugRow(${i}, 'suspected', this.checked)" class="form-checkbox text-rose-600 rounded mr-1">
+                                ยาที่สงสัย
+                            </label>
+                            ${adrTimelineDrugs.length > 1 ? `<button type="button" onclick="removeAdrDrugRow(${i})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function formatThaiShortDate(dateStr) {
+            if (!dateStr) return '-';
+            const d = new Date(dateStr);
+            if (isNaN(d)) return dateStr;
+            return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' });
+        }
+
+        function renderAdrGanttChart() {
+            const container = document.getElementById('adrGanttContainer');
+            if (!container) return;
+
+            const onsetStr = document.getElementById('adrSympOnsetDate')?.value;
+            const resolveStr = document.getElementById('adrSympResolveDate')?.value;
+            const sympOngoing = document.getElementById('adrSympOngoing')?.checked;
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            const validDrugs = adrTimelineDrugs.filter(d => d.startDate);
+            if (validDrugs.length === 0 && !onsetStr) {
+                container.innerHTML = `<div class="text-xs text-slate-400 text-center py-2">ระบุ "วันที่เริ่มยา" และ "วันที่เริ่มมีอาการ" เพื่อสร้างกราฟ Gantt Chart เปรียบเทียบความสัมพันธ์เชิงเวลา (Temporal Relationship) อัตโนมัติ</div>`;
+                return;
+            }
+
+            let allTimestamps = [];
+            validDrugs.forEach(d => {
+                allTimestamps.push(new Date(d.startDate).getTime());
+                const endD = d.ongoing ? todayStr : (d.stopDate || d.startDate);
+                allTimestamps.push(new Date(endD).getTime());
+            });
+            if (onsetStr) {
+                allTimestamps.push(new Date(onsetStr).getTime());
+                const endSymp = sympOngoing ? todayStr : (resolveStr || onsetStr);
+                allTimestamps.push(new Date(endSymp).getTime());
+            }
+
+            const minTime = Math.min(...allTimestamps);
+            const maxTime = Math.max(...allTimestamps, minTime + 86400000);
+            const totalDays = Math.max(1, Math.round((maxTime - minTime) / 86400000));
+
+            let onsetPercent = null;
+            if (onsetStr) {
+                onsetPercent = Math.min(100, Math.max(0, ((new Date(onsetStr).getTime() - minTime) / (maxTime - minTime)) * 100));
+            }
+
+            let rowsHtml = '';
+            validDrugs.forEach(d => {
+                const sTime = new Date(d.startDate).getTime();
+                const eStr = d.ongoing ? todayStr : (d.stopDate || d.startDate);
+                const eTime = Math.max(sTime, new Date(eStr).getTime());
+                const leftPct = Math.min(96, Math.max(0, ((sTime - minTime) / (maxTime - minTime)) * 100));
+                const widthPct = Math.max(4, ((eTime - sTime) / (maxTime - minTime)) * 100);
+                const durationDays = Math.round((eTime - sTime) / 86400000) + 1;
+
+                let latencyBadge = '';
+                if (onsetStr) {
+                    const diffOnsetDays = Math.round((new Date(onsetStr).getTime() - sTime) / 86400000);
+                    if (diffOnsetDays >= 0) {
+                        latencyBadge = `<span class="text-[11px] font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full">Latency: +${diffOnsetDays} วัน หลังเริ่มยา</span>`;
+                    } else {
+                        latencyBadge = `<span class="text-[11px] font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded-full">⚠️ เกิดอาการก่อนเริ่มยานี้ (${diffOnsetDays} วัน)</span>`;
+                    }
+                }
+
+                const barColor = d.suspected ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-slate-400';
+                rowsHtml += `
+                    <div class="mb-2.5">
+                        <div class="flex flex-wrap justify-between items-center text-xs mb-1 gap-1">
+                            <span class="font-bold ${d.suspected ? 'text-orange-800' : 'text-slate-600'}">
+                                ${d.suspected ? '💊 [สงสัย]' : '⚪ [ยาร่วม]'} ${d.name || 'ไม่ระบุชื่อยา'} 
+                                <span class="font-normal text-gray-500">(${formatThaiShortDate(d.startDate)} ถึง ${d.ongoing ? 'ปัจจุบัน' : formatThaiShortDate(eStr)} • รวม ${durationDays} วัน)</span>
+                            </span>
+                            ${latencyBadge}
+                        </div>
+                        <div class="w-full h-5 bg-gray-200 rounded-full relative overflow-hidden">
+                            ${onsetPercent !== null ? `<div style="left:${onsetPercent}%" class="absolute top-0 bottom-0 w-0.5 bg-red-600 z-10" title="จุดเริ่มเกิดอาการ"></div>` : ''}
+                            <div style="left:${leftPct}%; width:${Math.min(100 - leftPct, widthPct)}%" class="h-full ${barColor} rounded-full shadow-sm"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (onsetStr) {
+                const oTime = new Date(onsetStr).getTime();
+                const rStr = sympOngoing ? todayStr : (resolveStr || onsetStr);
+                const rTime = Math.max(oTime, new Date(rStr).getTime());
+                const leftPct = Math.min(96, Math.max(0, ((oTime - minTime) / (maxTime - minTime)) * 100));
+                const widthPct = Math.max(4, ((rTime - oTime) / (maxTime - minTime)) * 100);
+                const sympDays = Math.round((rTime - oTime) / 86400000) + 1;
+
+                rowsHtml += `
+                    <div class="mt-3 pt-2 border-t border-dashed border-rose-200">
+                        <div class="flex justify-between items-center text-xs mb-1">
+                            <span class="font-bold text-rose-700">🚨 ช่วงเวลาที่เกิดอาการ (${formatThaiShortDate(onsetStr)} ถึง ${sympOngoing ? 'ปัจจุบัน' : formatThaiShortDate(rStr)} • ${sympDays} วัน)</span>
+                        </div>
+                        <div class="w-full h-5 bg-rose-100 rounded-full relative overflow-hidden">
+                            <div style="left:${leftPct}%; width:${Math.min(100 - leftPct, widthPct)}%" class="h-full bg-rose-600 rounded-full shadow-sm"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="flex justify-between text-[11px] font-bold text-slate-500 mb-2 border-b pb-1">
+                    <span>เริ่มต้น: ${formatThaiShortDate(new Date(minTime).toISOString().split('T')[0])}</span>
+                    <span>กรอบเวลารวม: ${totalDays} วัน (เส้นขีดสีแดง = จุดเริ่มเกิดอาการ)</span>
+                    <span>สิ้นสุด: ${formatThaiShortDate(new Date(maxTime).toISOString().split('T')[0])}</span>
+                </div>
+                ${rowsHtml}
+            `;
+        }
+
+        function switchAdrAlgo(algo) {
+            adrActiveAlgo = algo;
+            document.getElementById('adrAlgoNaranjoPane')?.classList.toggle('hidden', algo !== 'naranjo');
+            document.getElementById('adrAlgoWhoPane')?.classList.toggle('hidden', algo !== 'who');
+            document.getElementById('adrAlgoThaiPane')?.classList.toggle('hidden', algo !== 'thai');
+
+            const activeClass = "px-3 py-1 rounded-md text-xs font-bold bg-emerald-600 text-white shadow-sm transition";
+            const inactiveClass = "px-3 py-1 rounded-md text-xs font-bold text-gray-600 hover:bg-gray-200 transition";
+            document.getElementById('btnAlgoNaranjo').className = algo === 'naranjo' ? activeClass : inactiveClass;
+            document.getElementById('btnAlgoWho').className = algo === 'who' ? activeClass : inactiveClass;
+            document.getElementById('btnAlgoThai').className = algo === 'thai' ? activeClass : inactiveClass;
+            generateOutput();
+        }
+
+        function renderNaranjoQuestions() {
+            const container = document.getElementById('naranjoQuestionsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            naranjoQuestionsDef.forEach(item => {
+                const curAns = naranjoAnswers[item.id] || 'unk';
+                container.innerHTML += `
+                    <div class="p-2.5 bg-white hover:bg-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                        <span class="text-gray-800 font-medium flex-1">${item.q}</span>
+                        <div class="flex gap-3 flex-shrink-0">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="nar_q_${item.id}" value="yes" ${curAns==='yes'?'checked':''} onchange="setNaranjoAnswer(${item.id}, 'yes')" class="text-emerald-600">
+                                <span class="ml-1">ใช่ (${item.yes >= 0 ? '+'+item.yes : item.yes})</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="nar_q_${item.id}" value="no" ${curAns==='no'?'checked':''} onchange="setNaranjoAnswer(${item.id}, 'no')" class="text-rose-600">
+                                <span class="ml-1">ไม่ใช่ (${item.no >= 0 ? '+'+item.no : item.no})</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="nar_q_${item.id}" value="unk" ${curAns==='unk'?'checked':''} onchange="setNaranjoAnswer(${item.id}, 'unk')" class="text-gray-500">
+                                <span class="ml-1 text-gray-500">ไม่ทราบ (0)</span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            });
+            calculateNaranjoScore();
+        }
+
+        function setNaranjoAnswer(qId, ans) {
+            naranjoAnswers[qId] = ans;
+            calculateNaranjoScore();
+            generateOutput();
+        }
+
+        function calculateNaranjoScore() {
+            let total = 0;
+            let anyAnswered = false;
+            naranjoQuestionsDef.forEach(item => {
+                const ans = naranjoAnswers[item.id];
+                if (ans !== 'unk') anyAnswered = true;
+                total += item[ans] || 0;
+            });
+
+            let level = "Doubtful (ไม่น่าใช่)";
+            let badgeClass = "bg-gray-200 text-gray-700";
+            if (total >= 9) {
+                level = "Definite (ใช่แน่นอน)";
+                badgeClass = "bg-red-600 text-white";
+            } else if (total >= 5) {
+                level = "Probable (น่าจะใช่)";
+                badgeClass = "bg-orange-500 text-white";
+            } else if (total >= 1) {
+                level = "Possible (อาจจะใช่)";
+                badgeClass = "bg-amber-400 text-amber-950";
+            }
+
+            const scoreEl = document.getElementById('naranjoTotalScore');
+            const badgeEl = document.getElementById('naranjoInterpretationBadge');
+            if (scoreEl) scoreEl.innerText = total;
+            if (badgeEl) {
+                badgeEl.className = `inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${badgeClass}`;
+                badgeEl.innerText = `${level} (${total} คะแนน)`;
+            }
+            return { total, level, anyAnswered };
+        }
+
+        function resetNaranjoQuestions() {
+            Object.keys(naranjoAnswers).forEach(k => naranjoAnswers[k] = 'unk');
+            renderNaranjoQuestions();
+            generateOutput();
+        }
+
+        function autoFillNaranjoFromTimeline() {
+            const onsetStr = document.getElementById('adrSympOnsetDate')?.value;
+            const suspectedDrug = adrTimelineDrugs.find(d => d.suspected && d.startDate);
+            // ข้อ 1: เคยมีรายงานมาก่อน ให้ตั้งต้น +1
+            naranjoAnswers[1] = 'yes';
+            if (suspectedDrug && onsetStr) {
+                const diff = new Date(onsetStr).getTime() - new Date(suspectedDrug.startDate).getTime();
+                naranjoAnswers[2] = diff >= 0 ? 'yes' : 'no';
+            }
+            if (suspectedDrug) {
+                if (suspectedDrug.dechallenge === 'ดีขึ้นหลังหยุดยา') naranjoAnswers[3] = 'yes';
+                else if (suspectedDrug.dechallenge === 'ไม่ดีขึ้นหลังหยุดยา') naranjoAnswers[3] = 'no';
+            }
+            renderNaranjoQuestions();
+            generateOutput();
+            showToast('ดึงข้อมูลไทม์ไลน์เข้าสู่แบบประเมิน Naranjo เรียบร้อยแล้ว!');
+        }
+
+        function evalThaiAlgo() {
+            const q1 = document.getElementById('thaiQ1')?.value || 'yes';
+            const q2 = document.getElementById('thaiQ2')?.value || 'yes';
+            const q3 = document.getElementById('thaiQ3')?.value || 'no';
+            const q4 = document.getElementById('thaiQ4')?.value || 'none';
+
+            let res = "Possible (อาจจะใช่)";
+            if (q1 === 'no' || q4 === 'neg') {
+                res = "Unlikely (ไม่น่าใช่)";
+            } else if (q1 === 'yes' && q2 === 'yes' && q3 === 'no' && q4 === 'pos') {
+                res = "Certain (ใช่แน่นอน)";
+            } else if (q1 === 'yes' && q2 === 'yes' && q3 === 'no') {
+                res = "Probable (น่าจะใช่)";
+            } else {
+                res = "Possible (อาจจะใช่)";
+            }
+
+            const badge = document.getElementById('thaiAlgoResultBadge');
+            if (badge) badge.innerText = res;
+            return res;
+        }
+
+        function applyAdrPreset(type) {
+            if (type === 'statin_myalgia') {
+                document.querySelector('input[name="adrMechType"][value*="Type A"]').checked = true;
+                document.getElementById('adrDrug').value = 'Atorvastatin / Simvastatin';
+                document.getElementById('adrSymptomText').value = 'ปวดกล้ามเนื้อน่อง/ต้นขา (Myalgia) ไม่มีปัสสาวะสีเข้ม';
+                adrTimelineDrugs[0].name = 'Atorvastatin / Simvastatin';
+                naranjoAnswers = { 1: 'yes', 2: 'yes', 3: 'yes', 4: 'unk', 5: 'no', 6: 'unk', 7: 'unk', 8: 'unk', 9: 'unk', 10: 'unk' };
+            } else if (type === 'acei_cough') {
+                document.querySelector('input[name="adrMechType"][value*="Type A"]').checked = true;
+                document.getElementById('adrDrug').value = 'Enalapril';
+                document.getElementById('adrSymptomText').value = 'ไอแห้งระคายคอเรื้อรัง (ACEI-induced dry cough) ไม่มีไข้ ไม่มีเสมหะ';
+                adrTimelineDrugs[0].name = 'Enalapril';
+                naranjoAnswers = { 1: 'yes', 2: 'yes', 3: 'yes', 4: 'unk', 5: 'no', 6: 'unk', 7: 'unk', 8: 'unk', 9: 'unk', 10: 'unk' };
+            } else if (type === 'ccb_edema') {
+                document.querySelector('input[name="adrMechType"][value*="Type A"]').checked = true;
+                document.getElementById('adrDrug').value = 'Amlodipine / Manidipine';
+                document.getElementById('adrSymptomText').value = 'ข้อเท้าและขาบวมทั้ง 2 ข้าง (CCB-induced pedal edema) ไม่มีหอบเหนื่อย';
+                adrTimelineDrugs[0].name = 'Amlodipine / Manidipine';
+                naranjoAnswers = { 1: 'yes', 2: 'yes', 3: 'yes', 4: 'unk', 5: 'no', 6: 'unk', 7: 'unk', 8: 'yes', 9: 'unk', 10: ' yes' };
+            } else if (type === 'abx_rash') {
+                document.querySelector('input[name="adrMechType"][value*="Type B"]').checked = true;
+                document.getElementById('adrSymptomText').value = 'ผื่นแดงคันตามตัว (MP rash) ไม่มีแผลเยื่อบุ ไม่มีตุ่มน้ำพอง';
+                naranjoAnswers = { 1: 'yes', 2: 'yes', 3: 'yes', 4: 'unk', 5: 'no', 6: 'unk', 7: 'unk', 8: 'unk', 9: 'unk', 10: 'yes' };
+            }
+            renderAdrTimelineRows();
+            renderNaranjoQuestions();
+            generateOutput();
+        }
+        
+        // ==========================================
         //         OUTPUT GENERATOR
         // ==========================================
-
+        
         function resetForm() {
             if(confirm('ต้องการล้างข้อมูลคนไข้ทั้งหมดหรือไม่?')) {
                 document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="date"]').forEach(el => el.value = '');
@@ -3134,7 +3796,14 @@
                 mrSources = [ { place: '', date: '', drugs: [""] } ]; 
                 selectedLabs = []; 
                 hivDrugs = [ { name: '', usage: '', time: '' } ];
-                selectedPreopDrugs = []; 
+                selectedPreopDrugs = [];
+                // รีเซ็ตข้อมูล Clinic 3. ADR
+                adrTimelineDrugs = [{ name: '', startDate: '', stopDate: '', ongoing: false, suspected: true, dechallenge: 'ดีขึ้นหลังหยุดยา' }];
+                const adrActRadio = document.querySelector('input[name="adrRecordMode"][value="active"]'); if(adrActRadio) adrActRadio.checked = true;
+                const adrTypeARadio = document.querySelector('input[name="adrMechType"][value*="Type A"]'); if(adrTypeARadio) adrTypeARadio.checked = true;
+                resetNaranjoQuestions();
+                initAdrModule();
+                checkAdrRedFlags();
                 preopCalculatedNotes = [];
                 
                 // Hide dynamic HF sections safely
@@ -3263,30 +3932,74 @@
                 if (notes.length > 0) notes.unshift("pharmacist note");
             }
             else if (currentTab === 'ADR') {
-                const placeNode = document.getElementById('adrPlace');
-                const dateNode = document.getElementById('adrDate');
-                const drugNode = document.getElementById('adrDrug');
-                const assessNode = document.getElementById('adrAssessment');
-                const pharmNode = document.getElementById('adrPharmName');
-                
-                const place = placeNode ? placeNode.value : '';
-                const date = dateNode ? dateNode.value : '';
-                const drug = drugNode ? drugNode.value : '';
-                const assess = assessNode ? assessNode.value : '';
-                const pharmName = pharmNode ? pharmNode.value : '';
-                
-                if (place || date || drug || assess || pharmName) {
-                    notes.push("pharmacist note");
-                    let line1 = []; 
-                    if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`); 
-                    if (date) line1.push(`วันที่ ${date}`);
+                const place = document.getElementById('adrPlace')?.value?.trim() || '';
+                const date = document.getElementById('adrDate')?.value?.trim() || '';
+                const drug = document.getElementById('adrDrug')?.value?.trim() || '';
+                const symp = document.getElementById('adrSymptomText')?.value?.trim() || '';
+                const onsetDate = document.getElementById('adrSympOnsetDate')?.value || '';
+                const resolveDate = document.getElementById('adrSympResolveDate')?.value || '';
+                const sympOngoing = document.getElementById('adrSympOngoing')?.checked || false;
+                const onsetManual = document.getElementById('adrOnsetManual')?.value?.trim() || '';
+                const mechType = document.querySelector('input[name="adrMechType"]:checked')?.value || '';
+                const assess = document.getElementById('adrAssessment')?.value?.trim() || '';
+                const pharmName = document.getElementById('adrPharmName')?.value?.trim() || '';
+
+                const redFlags = Array.from(document.querySelectorAll('.adr-redflag:checked')).map(cb => cb.value);
+                const actions = Array.from(document.querySelectorAll('.adr-action-cb:checked')).map(cb => cb.value);
+                const narObj = calculateNaranjoScore();
+                const whoLevel = document.querySelector('input[name="adrWhoLevel"]:checked')?.value || '';
+                const thaiLevel = evalThaiAlgo();
+
+                const hasTimelineDrugs = adrTimelineDrugs.some(d => d.name.trim() !== '' || d.startDate !== '');
+
+                if (place || date || drug || symp || assess || pharmName || hasTimelineDrugs || narObj.anyAnswered || whoLevel) {
+                    notes.push("pharmacist note (ADR / Side Effect Assessment)");
+                    
+                    let line1 = [];
+                    if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
+                    if (date) line1.push(`(${date})`);
+                    if (mechType) line1.push(`[${mechType}]`);
                     if (line1.length > 0) notes.push(line1.join(' '));
-                    
-                    let line2 = []; 
-                    if (drug) line2.push(`รายการยา ${drug}`); 
-                    if (assess) line2.push(`${assess}`); 
-                    if (line2.length > 0) notes.push(line2.join(' '));
-                    
+
+                    if (drug) notes.push(`ยาที่สงสัย: ${drug}`);
+
+                    // แสดงไทม์ไลน์ยาแต่ละตัว (ถ้ามีการกรอกวันที่เริ่มยา)
+                    adrTimelineDrugs.forEach((d, idx) => {
+                        if (d.name.trim() || d.startDate) {
+                            let dLine = `  - ${d.suspected ? '[สงสัย]' : '[ยาร่วม]'} ${d.name || '-'}`;
+                            if (d.startDate) {
+                                dLine += ` | เริ่ม: ${formatThaiShortDate(d.startDate)} ถึง ${d.ongoing ? 'ทานต่อ' : formatThaiShortDate(d.stopDate)}`;
+                                if (onsetDate) {
+                                    const diffDays = Math.round((new Date(onsetDate).getTime() - new Date(d.startDate).getTime()) / 86400000);
+                                    dLine += ` (Latency: ${diffDays >= 0 ? '+' + diffDays : diffDays} วัน)`;
+                                }
+                            }
+                            if (d.dechallenge) dLine += ` | ${d.dechallenge}`;
+                            notes.push(dLine);
+                        }
+                    });
+
+                    let sympParts = [];
+                    if (symp) sympParts.push(`อาการที่พบ: ${symp}`);
+                    if (onsetManual) sympParts.push(`(${onsetManual})`);
+                    if (onsetDate) sympParts.push(`เริ่มมีอาการ: ${formatThaiShortDate(onsetDate)}${sympOngoing ? ' (ยังมีอาการอยู่)' : (resolveDate ? ' หาย: ' + formatThaiShortDate(resolveDate) : '')}`);
+                    if (sympParts.length > 0) notes.push(sympParts.join(' | '));
+
+                    if (redFlags.length > 0) {
+                        notes.push(`🚨 Red Flags: พบ ${redFlags.join(', ')}`);
+                    }
+
+                    // ผลประเมินตามอัลกอริทึมที่เลือก
+                    if (adrActiveAlgo === 'naranjo' && narObj.anyAnswered) {
+                        notes.push(`ผลประเมิน Naranjo's Algorithm: ${narObj.total} คะแนน -> ${narObj.level}`);
+                    } else if (adrActiveAlgo === 'who' && whoLevel) {
+                        notes.push(`ผลประเมิน WHO-UMC Criteria: ${whoLevel}`);
+                    } else if (adrActiveAlgo === 'thai') {
+                        notes.push(`ผลประเมิน Thai Algorithm: ${thaiLevel}`);
+                    }
+
+                    if (actions.length > 0) notes.push(`การจัดการ: ${actions.join(', ')}`);
+                    if (assess) notes.push(`สรุปเพิ่มเติม: ${assess}`);
                     if (pharmName) notes.push(`/${pharmName}`);
                 }
             }
@@ -3595,9 +4308,35 @@
                 rowData[11] = allDrugs.join(', ');
             } 
             else if (currentTab === 'ADR') {
-                rowData[7] = '1'; 
-                const adrAssNode = document.getElementById('adrAssessment');
-                if(adrAssNode) rowData[9] = adrAssNode.value;
+                const recordMode = document.querySelector('input[name="adrRecordMode"]:checked')?.value || 'active';
+                if (recordMode === 'history') {
+                    rowData[6] = '1'; // คอลัมน์ H: ลง ADR (ประวัติแพ้ยาเดิม)
+                } else {
+                    rowData[7] = '1'; // คอลัมน์ I: Active ADR (ค่าเริ่มต้นเหมือนเดิม)
+                }
+
+                const drug = document.getElementById('adrDrug')?.value?.trim() || '';
+                const symp = document.getElementById('adrSymptomText')?.value?.trim() || '';
+                const assess = document.getElementById('adrAssessment')?.value?.trim() || '';
+                const narObj = calculateNaranjoScore();
+                const whoLevel = document.querySelector('input[name="adrWhoLevel"]:checked')?.value || '';
+
+                let algoSummary = '';
+                if (adrActiveAlgo === 'naranjo' && narObj.anyAnswered) algoSummary = `Naranjo ${narObj.total} (${narObj.level})`;
+                else if (adrActiveAlgo === 'who' && whoLevel) algoSummary = `WHO: ${whoLevel}`;
+                else if (adrActiveAlgo === 'thai') algoSummary = `Thai: ${evalThaiAlgo()}`;
+
+                let drpParts = [];
+                if (drug || symp) drpParts.push(`${drug}${symp ? '/' + symp : ''}`);
+                if (algoSummary) drpParts.push(algoSummary);
+                if (assess) drpParts.push(assess);
+
+                // คอลัมน์ K (index 9): DRP/ อาการแพ้ยา (เหมือนเดิม)
+                rowData[9] = drpParts.join(' | ');
+                // คอลัมน์ L (index 10): สถานที่รับยา
+                rowData[10] = document.getElementById('adrPlace')?.value?.trim() || '';
+                // คอลัมน์ M (index 11): รายการยา
+                rowData[11] = drug;
             }
             else if (currentTab === 'PREOP') {
                 const chkMergeNode = document.getElementById('chkMergeMr');
@@ -4950,7 +5689,8 @@
             setupWarfarinRifampin();
             renderMrSources();
             renderHivDrugs();
-            renderC8Devices(); // <--- เรียกใช้งานฟังก์ชัน renderC8Devices
+            renderC8Devices();
+            initAdrModule();
             generateOutput();
         });
     </script>
