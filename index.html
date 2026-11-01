@@ -684,8 +684,30 @@
             <div id="form-HIV" class="space-y-6 clinic-form hidden">
                 
                 <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm mb-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">BP (ความดันโลหิต)</label>
-                    <input type="text" id="hivBp" placeholder="เช่น 120/80" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                        <div class="md:col-span-8">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">สถานะผู้ป่วย / ผู้มารับยา (บรรทัดเปิด)</label>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="hivPtStatus" value="ผู้ป่วยสบายดี" class="form-radio text-blue-600" onchange="generateOutput()">
+                                    <span class="ml-1.5 text-sm">ผู้ป่วยสบายดี</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="hivPtStatus" value="ญาติมารับยาแทน" class="form-radio text-blue-600" onchange="generateOutput()">
+                                    <span class="ml-1.5 text-sm">ญาติมารับยาแทน</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="hivPtStatus" value="custom" class="form-radio text-blue-600" onchange="generateOutput()">
+                                    <span class="ml-1.5 text-sm">กรอกเอง:</span>
+                                </label>
+                                <input type="text" id="hivPtStatusCustom" placeholder="พิมพ์ข้อความบรรทัดเปิด..." class="flex-1 min-w-[160px] rounded-lg border-gray-300 border px-3 py-1.5 text-sm" oninput="document.querySelector('input[name=\'hivPtStatus\'][value=\'custom\']').checked = true; generateOutput();">
+                            </div>
+                        </div>
+                        <div class="md:col-span-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">BP (ความดันโลหิต)</label>
+                            <input type="text" id="hivBp" placeholder="เช่น 128/78" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -695,15 +717,21 @@
                             <input type="text" id="hivCd4Val" placeholder="ค่า CD4 (เช่น 200)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                             <input type="text" id="hivCd4Percent" placeholder="%CD4 (เช่น 25.2)" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
                         </div>
-                        <input type="text" id="hivCd4Date" placeholder="วันที่เจาะ (วว/ดด/พศ)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()">
+                        <input type="text" id="hivCd4Date" placeholder="วันที่เจาะ (วว/ดด/พศ)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="syncVlDateWithCd4(); generateOutput();">
                     </div>
                     
                     <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Viral Load</label>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-sm font-medium text-gray-700">Viral Load</label>
+                            <label class="inline-flex items-center text-xs text-blue-600 font-medium cursor-pointer bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                                <input type="checkbox" id="hivVlSameDateCd4" class="form-checkbox text-blue-600 rounded mr-1.5" onchange="toggleVlSameDateCd4(); generateOutput();">
+                                ใช้วันที่เดียวกับ CD4
+                            </label>
+                        </div>
                         <div class="flex gap-2 mb-2">
                             <select id="hivVlSelect" class="rounded-lg border-gray-300 border px-3 py-2 flex-grow" onchange="toggleVlInput(); generateOutput()">
                                 <option value="">-- เลือกค่า VL --</option>
-                                <option value="<20log<1.3"><20log<1.3</option>
+                                <option value="<20log<1.3">&lt;20log&lt;1.3</option>
                                 <option value="other">อื่นๆ (ระบุเอง)</option>
                             </select>
                             <div id="hivVlCustomContainer" class="hidden flex gap-2 w-full md:w-3/5">
@@ -712,7 +740,7 @@
                                 <input type="text" id="hivVlLog" placeholder="log (เช่น 1.45)" class="w-1/2 rounded-lg border-gray-300 border px-2 py-2 text-center" oninput="generateOutput()">
                             </div>
                         </div>
-                        <input type="text" id="hivVlDate" placeholder="วันที่เจาะ (วว/ดด/พศ)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" oninput="generateOutput()">
+                        <input type="text" id="hivVlDate" placeholder="วันที่เจาะ (วว/ดด/พศ)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50 disabled:opacity-60" oninput="generateOutput()">
                     </div>
                 </div>
 
@@ -784,7 +812,20 @@
                         <div id="adherenceAutoContainer" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-3 rounded-lg border border-blue-100">
                             <div><label class="block text-xs text-gray-500 mb-1">นัดกี่วัน?</label><input type="number" id="hivDays" placeholder="เช่น 180" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
                             <div><label class="block text-xs text-gray-500 mb-1">ทานรวมกี่มื้อต่อวัน?</label><input type="number" id="hivDoses" placeholder="เช่น 1" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
-                            <div><label class="block text-xs text-red-500 mb-1">ลืมไปกี่มื้อ?</label><input type="number" id="hivMissed" placeholder="เช่น 0" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <div class="flex gap-3 text-xs font-semibold">
+                                        <label class="inline-flex items-center cursor-pointer text-red-600">
+                                            <input type="radio" name="hivMissType" value="ลืม" checked class="form-radio text-red-600 mr-1" onchange="generateOutput()">ลืมไป
+                                        </label>
+                                        <label class="inline-flex items-center cursor-pointer text-amber-600">
+                                            <input type="radio" name="hivMissType" value="เลท" class="form-radio text-amber-600 mr-1" onchange="generateOutput()">เลทไป
+                                        </label>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(กี่มื้อ?)</span>
+                                </div>
+                                <input type="number" id="hivMissed" placeholder="เช่น 0" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3215,26 +3256,74 @@
         }
 
         // --- HIV ---
+        const hivUsagePresetList = ['1x1', '1x2', '1x3', '1x4', '2x1', '2x2', '2x3', '2x4', '3x1', '3x2', '3x3', '3x4'];
+
         function renderHivDrugs() {
             const container = document.getElementById('hivDrugsContainer'); 
             if(!container) return;
             
             container.innerHTML = '';
             hivDrugs.forEach((drug, index) => {
+                const isCustom = drug.usageMode === 'other' || (drug.usage && !hivUsagePresetList.includes(drug.usage));
+                const selectVal = isCustom ? 'other' : (drug.usage || '');
+                const optionsHtml = hivUsagePresetList.map(u => `<option value="${u}" ${selectVal === u ? 'selected' : ''}>${u}</option>`).join('');
+
                 container.innerHTML += `
                     <div class="flex flex-col md:flex-row gap-2 items-center bg-white p-2 rounded-lg border border-gray-200">
                         <span class="font-bold text-blue-500 w-4 text-center text-sm">${index+1}.</span>
                         <input type="text" list="hivDrugOptions" value="${drug.name}" oninput="updateHivDrug(${index}, 'name', this.value)" placeholder="ชื่อยา" class="w-full md:w-2/5 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
-                        <input type="text" value="${drug.usage}" oninput="updateHivDrug(${index}, 'usage', this.value)" placeholder="วิธีใช้" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
-                        <input type="text" value="${drug.time}" oninput="updateHivDrug(${index}, 'time', this.value)" placeholder="เวลา" class="w-full md:w-1/4 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
+                        <div class="flex gap-1.5 w-full md:w-1/3">
+                            <select onchange="onHivUsageSelectChange(${index}, this.value)" class="rounded-lg border-gray-300 border px-2 py-1.5 text-sm bg-gray-50 ${isCustom ? 'w-2/5' : 'w-full'}">
+                                <option value="">-- วิธีใช้ --</option>
+                                ${optionsHtml}
+                                <option value="other" ${isCustom ? 'selected' : ''}>กรอกเอง...</option>
+                            </select>
+                            <input type="text" id="hivDrugCustomUsage_${index}" value="${isCustom ? (drug.usage || '') : ''}" oninput="updateHivDrug(${index}, 'usage', this.value)" placeholder="พิมพ์วิธีใช้..." class="${isCustom ? 'block w-3/5' : 'hidden'} rounded-lg border-gray-300 border px-2.5 py-1.5 text-sm">
+                        </div>
+                        <input type="text" value="${drug.time}" oninput="updateHivDrug(${index}, 'time', this.value)" placeholder="เวลา" class="w-full md:w-1/5 rounded-lg border-gray-300 border px-3 py-1.5 text-sm">
                         <button onclick="removeHivDrug(${index})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash"></i></button>
                     </div>`;
             });
             generateOutput();
         }
-        function addHivDrugRow() { hivDrugs.push({name:'', usage:'', time:''}); renderHivDrugs(); }
+        function onHivUsageSelectChange(idx, val) {
+            if (val === 'other') {
+                hivDrugs[idx].usageMode = 'other';
+                hivDrugs[idx].usage = '';
+                renderHivDrugs();
+                setTimeout(() => document.getElementById(`hivDrugCustomUsage_${idx}`)?.focus(), 50);
+            } else {
+                hivDrugs[idx].usageMode = 'preset';
+                hivDrugs[idx].usage = val;
+                renderHivDrugs();
+            }
+        }
+        function addHivDrugRow() { hivDrugs.push({name:'', usage:'', time:'', usageMode:'preset'}); renderHivDrugs(); }
         function updateHivDrug(idx, field, val) { hivDrugs[idx][field] = val; generateOutput(); }
-        function removeHivDrug(idx) { hivDrugs.splice(idx, 1); if(hivDrugs.length===0) hivDrugs.push({name:'', usage:'', time:''}); renderHivDrugs(); }
+        function removeHivDrug(idx) { hivDrugs.splice(idx, 1); if(hivDrugs.length===0) hivDrugs.push({name:'', usage:'', time:'', usageMode:'preset'}); renderHivDrugs(); }
+
+        function toggleVlSameDateCd4() {
+            const cb = document.getElementById('hivVlSameDateCd4');
+            const vlDateInp = document.getElementById('hivVlDate');
+            const cd4DateInp = document.getElementById('hivCd4Date');
+            if (cb && vlDateInp) {
+                if (cb.checked) {
+                    vlDateInp.value = cd4DateInp ? cd4DateInp.value : '';
+                    vlDateInp.disabled = true;
+                } else {
+                    vlDateInp.disabled = false;
+                }
+            }
+        }
+        function syncVlDateWithCd4() {
+            const cb = document.getElementById('hivVlSameDateCd4');
+            const vlDateInp = document.getElementById('hivVlDate');
+            const cd4DateInp = document.getElementById('hivCd4Date');
+            if (cb && cb.checked && vlDateInp && cd4DateInp) {
+                vlDateInp.value = cd4DateInp.value;
+            }
+        }
+
         function toggleAdherence() { 
             const chk = document.getElementById('hivCalcAdherence');
             const auto = document.getElementById('adherenceAutoContainer');
@@ -3323,7 +3412,7 @@
             c.innerHTML=''; 
             selectedLabs.forEach((l,i)=>{ 
                 let t=`${l.name} ${l.val}`; 
-                if(l.date) t+=` (วันที่ ${l.date})`; 
+                if(l.date) t=`วันที่ ${l.date} ${t}`; 
                 c.innerHTML+=`<span class="inline-flex items-center gap-1 bg-white border border-indigo-200 text-indigo-800 text-sm font-medium px-2.5 py-1.5 rounded-full shadow-sm">${t}<button onclick="removeLab(${i})" class="text-indigo-400 hover:text-red-500 font-bold ml-1"><i class="fa-solid fa-xmark"></i></button></span>`; 
             }); 
         }
@@ -3350,8 +3439,7 @@
             let groupStrings = [];
             for (const [dateKey, labList] of Object.entries(grouped)) { 
                 if (labList.length > 0) { 
-                    let groupStr = labList.join(', '); 
-                    if (dateKey) groupStr += ` (วันที่ ${dateKey})`; 
+                    let groupStr = dateKey ? `วันที่ ${dateKey} ${labList.join(', ')}` : labList.join(', '); 
                     groupStrings.push(groupStr); 
                 } 
             }
@@ -3785,6 +3873,9 @@
                 
                 const refillRadio = document.querySelector('input[name="hivType"][value="refill"]');
                 if(refillRadio) refillRadio.checked = true;
+                const missRadio = document.querySelector('input[name="hivMissType"][value="ลืม"]');
+                if(missRadio) missRadio.checked = true;
+                toggleVlSameDateCd4();
 
                 // Reset defaults for Warfarin note
                 const wfTgt = document.querySelector('input[name="wfNoteTarget"][value="2-3"]'); if(wfTgt) wfTgt.checked = true;
@@ -4005,55 +4096,59 @@
             }
             else if (currentTab === 'HIV') {
                 notes.push("pharmacist note");
-                
-                const cd4ValNode = document.getElementById('hivCd4Val');
-                const cd4PerNode = document.getElementById('hivCd4Percent');
-                const cd4DateNode = document.getElementById('hivCd4Date');
-                
-                const cd4Val = cd4ValNode ? cd4ValNode.value : '';
-                const cd4Per = cd4PerNode ? cd4PerNode.value : '';
-                const cd4Date = cd4DateNode ? cd4DateNode.value : '';
-                
-                let cd4Str = '';
-                if(cd4Val && cd4Per) cd4Str = `CD4 = ${cd4Val}(${cd4Per}%)`; 
-                else if (cd4Val) cd4Str = `CD4 = ${cd4Val}`; 
-                else if (cd4Per) cd4Str = `CD4 = (${cd4Per}%)`;
-                if (cd4Str && cd4Date) cd4Str += ` วันที่ ${cd4Date}`;
 
-                const vlSelNode = document.getElementById('hivVlSelect');
-                const vlValNode = document.getElementById('hivVlVal');
-                const vlLogNode = document.getElementById('hivVlLog');
-                const vlDateNode = document.getElementById('hivVlDate');
+                // 1. บรรทัดเปิด: ผู้ป่วยสบายดี / ญาติมารับยาแทน / กรอกเอง + BP
+                const statusRadio = document.querySelector('input[name="hivPtStatus"]:checked')?.value || '';
+                const statusCustom = document.getElementById('hivPtStatusCustom')?.value?.trim() || '';
+                const statusStr = statusRadio === 'custom' ? statusCustom : statusRadio;
+                const bpVal = document.getElementById('hivBp')?.value?.trim() || '';
+
+                let openLine = [];
+                if (statusStr) openLine.push(statusStr);
+                if (bpVal) openLine.push(`BP ${bpVal}`);
+                if (openLine.length > 0) notes.push(openLine.join(' '));
                 
-                const vlSel = vlSelNode ? vlSelNode.value : '';
-                const vlVal = vlValNode ? vlValNode.value : '';
-                const vlLog = vlLogNode ? vlLogNode.value : '';
-                const vlDate = vlDateNode ? vlDateNode.value : '';
+                // 2. ข้อมูล CD4 และ Viral Load (ขึ้นต้นด้วยวันที่ก่อน ถ้าวันเดียวกันต่อกันได้เลย)
+                const cd4Val = document.getElementById('hivCd4Val')?.value?.trim() || '';
+                const cd4Per = document.getElementById('hivCd4Percent')?.value?.trim() || '';
+                const cd4Date = document.getElementById('hivCd4Date')?.value?.trim() || '';
                 
-                let vlStr = ''; 
+                let cd4Core = '';
+                if (cd4Val && cd4Per) cd4Core = `CD4 = ${cd4Val}(${cd4Per}%)`; 
+                else if (cd4Val) cd4Core = `CD4 = ${cd4Val}`; 
+                else if (cd4Per) cd4Core = `CD4 = (${cd4Per}%)`;
+
+                const vlSel = document.getElementById('hivVlSelect')?.value || '';
+                const vlVal = document.getElementById('hivVlVal')?.value?.trim() || '';
+                const vlLog = document.getElementById('hivVlLog')?.value?.trim() || '';
+                const vlSameCd4 = document.getElementById('hivVlSameDateCd4')?.checked || false;
+                const vlDate = vlSameCd4 ? cd4Date : (document.getElementById('hivVlDate')?.value?.trim() || '');
+                
                 let finalVl = vlSel === 'other' ? (vlVal && vlLog ? `${vlVal}log${vlLog}` : vlVal) : vlSel;
-                if(finalVl) vlStr = `Viral Load ${finalVl}`; 
-                if(vlStr && vlDate) vlStr += ` วันที่ ${vlDate}`;
+                let vlCore = finalVl ? `Viral Load ${finalVl}` : '';
 
-                let cd4vlLine = []; 
-                if(cd4Str) cd4vlLine.push(cd4Str); 
-                if(vlStr) cd4vlLine.push(vlStr);
-                
-                const bpValNode = document.getElementById('hivBp');
-                const bpVal = bpValNode ? bpValNode.value : '';
-                if (bpVal) cd4vlLine.push(`BP ${bpVal}`);
-                
-                if (cd4vlLine.length > 0) notes.push(cd4vlLine.join(' '));
+                if (cd4Core && vlCore) {
+                    if (cd4Date && vlDate && cd4Date === vlDate) {
+                        notes.push(`วันที่ ${cd4Date} ${cd4Core} ${vlCore}`);
+                    } else {
+                        const partCd4 = cd4Date ? `วันที่ ${cd4Date} ${cd4Core}` : cd4Core;
+                        const partVl = vlDate ? `วันที่ ${vlDate} ${vlCore}` : vlCore;
+                        notes.push(`${partCd4} ${partVl}`);
+                    }
+                } else if (cd4Core) {
+                    notes.push(cd4Date ? `วันที่ ${cd4Date} ${cd4Core}` : cd4Core);
+                } else if (vlCore) {
+                    notes.push(vlDate ? `วันที่ ${vlDate} ${vlCore}` : vlCore);
+                }
 
+                // 3. ผล Lab อื่นๆ (ขึ้นต้นด้วยวันที่ก่อน และรวม Lab วันที่เดียวกันต่อกัน)
                 const typeNode = document.querySelector('input[name="hivType"]:checked');
                 const type = typeNode ? typeNode.value : 'refill';
                 
                 const labPrefix = 'Lab'; 
-                const labDateRefNode = document.getElementById('hivLabDateRef');
-                const labDateRef = labDateRefNode ? labDateRefNode.value : 'cd4';
-                
+                const labDateRef = document.getElementById('hivLabDateRef')?.value || 'cd4';
                 const hivLabDateNode = document.getElementById('hivLabDate');
-                let mainLabDate = labDateRef === 'cd4' ? cd4Date : (labDateRef === 'vl' ? vlDate : (hivLabDateNode ? hivLabDateNode.value : ''));
+                let mainLabDate = labDateRef === 'cd4' ? cd4Date : (labDateRef === 'vl' ? vlDate : (hivLabDateNode ? hivLabDateNode.value.trim() : ''));
 
                 let mainItems = [];
                 const scrNode = document.getElementById('hivScr');
@@ -4068,6 +4163,7 @@
                 let finalLabOutput = groupLabsByDate(mainLabDate, labPrefix, mainItems, selectedLabs, hivLabsTextNode ? hivLabsTextNode.value : '');
                 if (finalLabOutput) notes.push(finalLabOutput);
 
+                // 4. รายการยา & การคำนวณ Adherence (ตัดวงเล็บสมการซ้ำออก และเลือก ลืม/เลท ได้)
                 let drugLines = [];
                 hivDrugs.forEach(d => { 
                     let parts = []; 
@@ -4078,46 +4174,38 @@
                 });
                 let drugLineOutput = drugLines.length > 0 ? `on ${drugLines.join(', ')}` : "";
 
-                const autoCalcNode = document.getElementById('hivCalcAdherence');
-                const isAutoCalc = autoCalcNode ? autoCalcNode.checked : false;
-                
+                const isAutoCalc = document.getElementById('hivCalcAdherence')?.checked || false;
                 let adherenceStr = "";
                 if (isAutoCalc) {
-                    const daysNode = document.getElementById('hivDays');
-                    const dosesNode = document.getElementById('hivDoses');
-                    const missedNode = document.getElementById('hivMissed');
-                    
-                    const days = daysNode ? parseFloat(daysNode.value) : 0; 
-                    const doses = dosesNode ? parseFloat(dosesNode.value) : 0;
+                    const days = parseFloat(document.getElementById('hivDays')?.value) || 0; 
+                    const doses = parseFloat(document.getElementById('hivDoses')?.value) || 0;
+                    const missType = document.querySelector('input[name="hivMissType"]:checked')?.value || 'ลืม';
                     
                     if (days && doses) {
-                        const missed = missedNode ? (parseFloat(missedNode.value) || 0) : 0; 
+                        const missed = parseFloat(document.getElementById('hivMissed')?.value) || 0; 
                         const totalM = days * doses; 
                         const taken = totalM - missed; 
-                        const adPercent = totalM > 0 ? ((taken/totalM)*100).toFixed(2) : 0;
+                        const adPercent = totalM > 0 ? ((taken / totalM) * 100).toFixed(2) : 0;
                         adherenceStr = `adherence ${adPercent}%`;
-                        if(drugLineOutput) notes.push(`${drugLineOutput} ${adherenceStr}`);
-                        notes.push(`นัด ${days}วัน ลืมไป ${missed} มื้อ (${taken}/${totalM}*100 = ${adPercent}%)`);
-                    } else if (drugLineOutput) notes.push(drugLineOutput);
+                        if (drugLineOutput) notes.push(`${drugLineOutput} ${adherenceStr}`);
+                        notes.push(`นัด ${days}วัน ${missType}ไป ${missed} มื้อ`);
+                    } else if (drugLineOutput) {
+                        notes.push(drugLineOutput);
+                    }
                 } else {
-                    const manualAdhNode = document.getElementById('hivManualAdherence');
-                    const manualAdh = manualAdhNode ? manualAdhNode.value : '';
-                    if(manualAdh) adherenceStr = `adherence ${manualAdh}`;
-                    if(drugLineOutput) notes.push(adherenceStr ? `${drugLineOutput} ${adherenceStr}` : drugLineOutput);
+                    const manualAdh = document.getElementById('hivManualAdherence')?.value || '';
+                    if (manualAdh) adherenceStr = `adherence ${manualAdh}`;
+                    if (drugLineOutput) notes.push(adherenceStr ? `${drugLineOutput} ${adherenceStr}` : drugLineOutput);
                 }
 
+                // 5. แผนการรักษา (เติมยา vs ส่งพบแพทย์)
                 if (type === 'refill') {
-                    const rmDateNode = document.getElementById('hivRmDate');
-                    const rmMonthsNode = document.getElementById('hivRmMonths');
-                    const nextLabSelNode = document.getElementById('hivNextLabSelect');
+                    const rmDate = document.getElementById('hivRmDate')?.value || ''; 
+                    const rmMonths = document.getElementById('hivRmMonths')?.value || ''; 
+                    const nextLabSel = document.getElementById('hivNextLabSelect')?.value || ''; 
                     const nextLabCustomNode = document.getElementById('hivNextLabCustom');
-                    const hivPharmNode = document.getElementById('hivPharmName');
-                    
-                    const rmDate = rmDateNode ? rmDateNode.value : ''; 
-                    const rmMonths = rmMonthsNode ? rmMonthsNode.value : ''; 
-                    const nextLabSel = nextLabSelNode ? nextLabSelNode.value : ''; 
                     const nextLab = nextLabSel === 'other' ? (nextLabCustomNode ? nextLabCustomNode.value : '') : nextLabSel; 
-                    const pharmName = hivPharmNode ? hivPharmNode.value : '';
+                    const pharmName = document.getElementById('hivPharmName')?.value || '';
                     
                     let rmLine = []; 
                     if (rmDate) rmLine.push(`RM ${rmDate}`); 
@@ -4145,7 +4233,8 @@
                     
                     const referPharmNode = document.getElementById('hivPharmNameRefer');
                     const pharmName = referPharmNode ? referPharmNode.value : '';
-                    if (pharmName) notes.push(`รคส. พญ. วรวรรณ/ ${pharmName}`);
+                    // ส่งพบแพทย์ ไม่ต้องมี รคส. พญ. วรวรรณ
+                    if (pharmName) notes.push(`/ ${pharmName}`);
                 }
             }
             else if (currentTab === 'CKD') {
