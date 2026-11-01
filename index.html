@@ -899,6 +899,229 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Warfarin: ปรับขนาดยาคู่ Rifampin -->
+                    <div id="wf-rifampin" class="wf-tab-content hidden">
+                        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                            <!-- Header -->
+                            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5 text-center shadow-sm">
+                                <h3 class="text-xl font-semibold tracking-wide"><i class="fa-solid fa-prescription-bottle-medical mr-2"></i>เครื่องมือปรับขนาดยาวาร์ฟารินคู่กับไรแฟมปิน</h3>
+                                <p class="text-blue-100 mt-1 text-xs">ประเมิน Onset / Offset และคำนวณขนาดยาร่วมกับระดับค่า INR</p>
+                            </div>
+
+                            <!-- เมนูพับเก็บได้: Guideline & Timeline -->
+                            <details class="group bg-slate-50 border-b border-gray-200">
+                                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-3.5 text-blue-800 hover:bg-blue-100 transition-colors text-sm">
+                                    <span class="flex items-center gap-2">
+                                        <i class="fa-solid fa-book-medical text-blue-600"></i>
+                                        ดูแนวทางการปรับยาและกลไกการเกิดอันตรกิริยา (คลิกเพื่อกางออก)
+                                    </span>
+                                    <span class="transition group-open:rotate-180">
+                                        <i class="fa-solid fa-chevron-down text-slate-500"></i>
+                                    </span>
+                                </summary>
+                                <div class="p-5 bg-slate-100 space-y-6 border-t border-slate-200">
+                                    <!-- Infographic 1: แผนภาพกลไกยา -->
+                                    <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
+                                        <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-2.5 text-center">
+                                            <h4 class="text-white font-medium text-sm">กลไกอันตรกิริยา (Mechanism of Action)</h4>
+                                        </div>
+                                        <div class="p-4">
+                                            <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+                                                <div class="flex flex-col items-center bg-white p-3 rounded-xl shadow-sm border border-blue-100 w-full md:w-1/3">
+                                                    <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-2"><i class="fa-solid fa-capsules text-2xl text-blue-600"></i></div>
+                                                    <h5 class="font-bold text-blue-900 text-sm">Rifampin</h5>
+                                                    <p class="text-xs text-gray-500 text-center mt-1">ยาปฏิชีวนะที่เป็น<br><span class="text-blue-600 font-semibold">Potent Enzyme Inducer</span></p>
+                                                </div>
+                                                <div class="hidden md:flex text-blue-300 text-xl"><i class="fa-solid fa-arrow-right"></i></div>
+                                                <div class="flex flex-col items-center bg-orange-50 p-3 rounded-xl shadow-sm border border-orange-200 w-full md:w-1/3">
+                                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 shadow-inner"><i class="fa-solid fa-cogs text-2xl text-orange-500"></i></div>
+                                                    <h5 class="font-bold text-orange-800 text-sm">CYP450 (ตับ)</h5>
+                                                    <p class="text-xs text-gray-600 text-center mt-1">เหนี่ยวนำเอนไซม์<br>เร่งการทำงานให้เร็วขึ้น</p>
+                                                </div>
+                                                <div class="hidden md:flex text-orange-300 text-xl"><i class="fa-solid fa-arrow-right"></i></div>
+                                                <div class="flex flex-col items-center bg-white p-3 rounded-xl shadow-sm border border-red-100 w-full md:w-1/3">
+                                                    <div class="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-2"><i class="fa-solid fa-arrow-trend-down text-2xl text-red-600"></i></div>
+                                                    <h5 class="font-bold text-red-800 text-sm">Warfarin Clearance</h5>
+                                                    <p class="text-xs text-gray-500 text-center mt-1">ยาถูกกำจัดออกเร็วขึ้น<br><span class="text-red-500 font-semibold">ค่า INR ลดลงอย่างรวดเร็ว</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Infographic 2: ไทม์ไลน์ Onset / Offset -->
+                                    <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
+                                        <div class="bg-slate-700 p-2.5 text-center">
+                                            <h4 class="text-white font-medium text-sm">ไทม์ไลน์การปรับยา (Clinical Guideline)</h4>
+                                        </div>
+                                        <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                                            <div class="bg-rose-50 border border-rose-200 rounded-lg p-3">
+                                                <div class="font-bold text-rose-700 mb-1">Onset สัปดาห์ที่ 1-2 (เริ่มใช้ Rifampin)</div>
+                                                <div class="text-rose-900">ปรับตามค่า INR หรือพิจารณาเพิ่มยา 40% - 50%</div>
+                                            </div>
+                                            <div class="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                                                <div class="font-bold text-orange-700 mb-1">Onset สัปดาห์ที่ 3-4 (เข้าสู่ Steady State)</div>
+                                                <div class="text-orange-900">ปรับเพิ่มยาอีก 20% - 30% (กรณี INR &lt; 2.0)</div>
+                                            </div>
+                                            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                                                <div class="font-bold text-emerald-700 mb-1">Offset สัปดาห์ที่ 1-2 (หลังหยุด Rifampin)</div>
+                                                <div class="text-emerald-900">ปรับลดขนาดยาลง 50% เพื่อป้องกันเลือดออก</div>
+                                            </div>
+                                            <div class="bg-teal-50 border border-teal-200 rounded-lg p-3">
+                                                <div class="font-bold text-teal-700 mb-1">Offset สัปดาห์ที่ 3-4 (เอนไซม์ตับกลับสู่ปกติ)</div>
+                                                <div class="text-teal-900">ปรับลดตามค่า INR หรือกลับไปใช้ขนาดยาเดิม</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+
+                            <!-- Main Calculator Form -->
+                            <div class="p-5 space-y-5">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">1. เลือกสถานการณ์</label>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="rifScenario" value="onset" class="peer sr-only" checked onchange="updateRifWeeks()">
+                                            <div class="p-3 rounded-xl border border-gray-200 peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:ring-2 peer-checked:ring-blue-500 transition-all text-center h-full flex items-center justify-center">
+                                                <span class="text-sm font-medium text-gray-700 peer-checked:text-blue-800">add Rifampin<br><span class="text-xs font-normal">(ได้รับ Warfarin อยู่แล้ว)</span></span>
+                                            </div>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="rifScenario" value="offset" class="peer sr-only" onchange="updateRifWeeks()">
+                                            <div class="p-3 rounded-xl border border-gray-200 peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:ring-2 peer-checked:ring-blue-500 transition-all text-center h-full flex items-center justify-center">
+                                                <span class="text-sm font-medium text-gray-700 peer-checked:text-blue-800">off Rifampin<br><span class="text-xs font-normal">(หลังใช้ร่วมกัน)</span></span>
+                                            </div>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="rifScenario" value="concurrent" class="peer sr-only" onchange="updateRifWeeks()">
+                                            <div class="p-3 rounded-xl border border-gray-200 peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:ring-2 peer-checked:ring-blue-500 transition-all text-center h-full flex items-center justify-center">
+                                                <span class="text-sm font-medium text-gray-700 peer-checked:text-blue-800">เริ่มยาพร้อมกัน<br><span class="text-xs font-normal">(หรือได้ Rifampicin ก่อน)</span></span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div id="rif-date-section">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">2. วันที่ Add/Off Rifampin</label>
+                                        <input type="date" id="rifEventDate" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm" onchange="updateRifWeeks()">
+                                        <p id="rif-week-display" class="text-xs text-blue-600 mt-1.5 font-medium"></p>
+                                        
+                                        <div id="rifOffsetCheckboxContainer" class="hidden mt-2 p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg">
+                                            <label class="flex items-start space-x-2 cursor-pointer">
+                                                <input type="checkbox" id="rifAlreadyReducedCheckbox" class="mt-0.5 w-4 h-4 text-emerald-600 border-gray-300 rounded">
+                                                <span class="text-xs font-medium text-emerald-900 leading-tight">ผู้ป่วยเคยได้รับการปรับ <strong>"ลดขนาดยาลง 50%"</strong> ไปแล้ว (ในช่วง 1-2 สัปดาห์แรกที่หยุดยา)</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">3. ขนาดยา Warfarin ปัจจุบัน (mg/wk)</label>
+                                        <input type="number" id="rifCurrentDose" step="0.5" placeholder="เช่น 21, 35" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm font-bold text-blue-700">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">4. INR วันนี้</label>
+                                        <input type="number" id="rifCurrentInr" step="0.01" placeholder="เช่น 2.50" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm font-bold text-red-600">
+                                    </div>
+                                </div>
+
+                                <button type="button" id="rifCalculateBtn" onclick="runRifampinCalculation()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition-all shadow-md">
+                                    <i class="fa-solid fa-calculator mr-1"></i> คำนวณแผนการจ่ายยา
+                                </button>
+                            </div>
+
+                            <!-- Result Dashboard -->
+                            <div id="rifResultDashboard" class="hidden bg-slate-50 border-t border-gray-200 p-5 space-y-4">
+                                <h4 class="text-base font-bold text-gray-800 border-b border-gray-200 pb-2">ผลการประเมินและขนาดยา</h4>
+                                
+                                <div id="rifAlertBox" class="p-4 rounded-lg border-l-4 shadow-sm">
+                                    <div id="rifAlertText" class="font-medium text-sm"></div>
+                                </div>
+
+                                <div class="bg-indigo-50 border border-indigo-100 p-3.5 rounded-lg flex items-start shadow-sm">
+                                    <i class="fa-solid fa-calendar-check text-indigo-500 mt-0.5 mr-3 text-lg"></i>
+                                    <div>
+                                        <p class="font-bold text-indigo-800 text-xs">การตรวจติดตามค่า INR</p>
+                                        <p id="rifFollowUpText" class="text-sm text-indigo-700 mt-0.5"></p>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-gray-200 p-4 rounded-xl shadow-sm">
+                                    <p class="text-xs text-gray-500 mb-2.5 font-medium">ตัวเลือกวิธีกินยาตามเป้าหมายการปรับขนาดยา (คลิกที่การ์ดเพื่อเลือก):</p>
+                                    <div id="rifPrescriptionOptions" class="space-y-2.5"></div>
+
+                                    <div id="rifSliderSection" class="hidden mt-5 pt-5 border-t border-gray-100">
+                                        <p class="text-sm font-bold text-gray-700 mb-3"><i class="fa-solid fa-sliders text-blue-500 mr-2"></i>ปรับขนาดยาที่ต้องการ (เลื่อนเพื่อเลือก หรือพิมพ์ตัวเลข)</p>
+                                        
+                                        <div class="flex items-center space-x-3 mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                            <span id="rifSliderMinLabel" class="text-xs font-bold text-slate-400 w-10 text-right"></span>
+                                            <input type="range" id="rifDoseSlider" class="flex-1 h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                                            <span id="rifSliderMaxLabel" class="text-xs font-bold text-slate-400 w-10 text-left"></span>
+                                        </div>
+
+                                        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl shadow-sm">
+                                            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                                                <div class="text-center md:text-left flex-shrink-0">
+                                                    <div class="flex items-baseline justify-center md:justify-start gap-2 mb-1.5">
+                                                        <input type="number" id="rifManualDoseInput" step="0.5" class="w-24 text-3xl font-bold text-blue-900 bg-transparent border-b-2 border-dashed border-blue-400 focus:border-blue-600 outline-none text-center px-1" />
+                                                        <span class="text-sm font-normal text-blue-700">mg/wk</span>
+                                                    </div>
+                                                    <div id="rifSliderPercentBadge" class="text-xs font-bold bg-white inline-block px-3 py-1 rounded-full shadow-sm border border-gray-100"></div>
+                                                </div>
+                                                <div class="text-center md:text-right w-full">
+                                                    <div id="rifSliderRegimenText" class="text-sm text-indigo-900 bg-white p-3.5 rounded-xl border border-blue-100 shadow-sm font-semibold w-full leading-relaxed text-left"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                                            <button type="button" onclick="applyRifampinToWfNote()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm">
+                                                <i class="fa-solid fa-file-import"></i> ส่งผลไปหน้า บันทึก Note (OPD Online)
+                                            </button>
+                                            <button type="button" id="rifPrintBtn" onclick="printRifampinAdviceA5()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm">
+                                                <i class="fa-solid fa-print"></i> พิมพ์ใบคำแนะนำโดยเภสัชกร (A5)
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- คลังความรู้อ้างอิง (พับเก็บได้) -->
+                            <details class="group bg-white border-t border-gray-200">
+                                <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-3.5 text-slate-700 hover:bg-slate-50 transition-colors text-sm">
+                                    <span class="flex items-center gap-2">
+                                        <i class="fa-solid fa-book-open-reader text-slate-500"></i>
+                                        ตารางอ้างอิงการจัดการเมื่อค่า INR อยู่นอกเป้าหมาย (No bleeding) และข้อควรระวัง
+                                    </span>
+                                    <span class="transition group-open:rotate-180">
+                                        <i class="fa-solid fa-chevron-down text-slate-500"></i>
+                                    </span>
+                                </summary>
+                                <div class="p-4 bg-slate-50 space-y-4 border-t border-gray-200 text-xs">
+                                    <div class="overflow-x-auto bg-white rounded-xl border border-slate-200">
+                                        <table class="w-full text-left">
+                                            <thead>
+                                                <tr class="bg-slate-100 text-slate-700 font-bold">
+                                                    <th class="py-2 px-3">ระดับค่า INR</th>
+                                                    <th class="py-2 px-3">การหยุดยา</th>
+                                                    <th class="py-2 px-3">การให้ Vitamin K1</th>
+                                                    <th class="py-2 px-3">การปรับขนาดยา</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-slate-100">
+                                                <tr><td class="py-2 px-3 font-semibold text-emerald-600">&lt; 1.5</td><td class="py-2 px-3">-</td><td class="py-2 px-3">-</td><td class="py-2 px-3">เพิ่มขนาดยาขึ้น 10-20% ต่อสัปดาห์</td></tr>
+                                                <tr><td class="py-2 px-3 font-semibold text-emerald-600">1.5 - 1.9</td><td class="py-2 px-3">-</td><td class="py-2 px-3">-</td><td class="py-2 px-3">เพิ่มขนาดยาขึ้น 5-10% ต่อสัปดาห์</td></tr>
+                                                <tr><td class="py-2 px-3 font-semibold text-emerald-600">2.0 - 3.0</td><td class="py-2 px-3">-</td><td class="py-2 px-3">-</td><td class="py-2 px-3">คงขนาดยาเดิม</td></tr>
+                                                <tr><td class="py-2 px-3 font-semibold text-yellow-600">3.1 - 3.9</td><td class="py-2 px-3">-</td><td class="py-2 px-3">-</td><td class="py-2 px-3">ลดขนาดยาลง 5-10% ต่อสัปดาห์</td></tr>
+                                                <tr class="bg-orange-50/50"><td class="py-2 px-3 font-semibold text-orange-600">4.0 - 4.9</td><td class="py-2 px-3 font-medium">หยุดยา 1 วัน</td><td class="py-2 px-3">-</td><td class="py-2 px-3">ลดขนาดยาลง 10-20% ต่อสัปดาห์</td></tr>
+                                                <tr class="bg-rose-50/50"><td class="py-2 px-3 font-semibold text-rose-600">5.0 - 8.9</td><td class="py-2 px-3 font-medium">หยุดยา 2-3 วัน</td><td class="py-2 px-3 font-medium">Vit K1 1 mg (กิน)</td><td class="py-2 px-3">ลดขนาดยาลง 20% ต่อสัปดาห์</td></tr>
+                                                <tr class="bg-red-100/50"><td class="py-2 px-3 font-bold text-red-700">&gt; 9.0</td><td class="py-2 px-3 font-bold">หยุดยา 5-7 วัน</td><td class="py-2 px-3 font-bold">Vit K1 5-10 mg (กิน)</td><td class="py-2 px-3 font-bold">ประเมินอย่างใกล้ชิด</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1353,6 +1576,54 @@
             <span id="stkPrintName"></span> HN: <span id="stkPrintHn"></span>
         </div>
         <div id="stkPrintNote" style="white-space: pre-wrap; word-wrap: break-word;"></div>
+    </div>
+    <!-- Warfarin-Rifampin A5 Print Area (สำหรับโหมด 4) -->
+    <div id="printRifampinArea" class="hidden w-full max-w-[148mm] mx-auto bg-white text-gray-900 p-6">
+        <div class="text-center border-b-2 border-gray-800 pb-3 mb-4">
+            <h1 class="text-lg font-bold">ใบคำแนะนำการปรับขนาดยาวาร์ฟาริน</h1>
+            <p class="text-xs text-gray-600 mt-0.5">ผู้ป่วยที่ได้รับยาวาร์ฟารินร่วมกับยาไรแฟมปิน</p>
+            <p class="text-xs text-gray-600">โรงพยาบาลนพรัตนราชธานี</p>
+        </div>
+
+        <div class="space-y-2 mb-4 text-xs">
+            <div class="flex justify-between gap-2">
+                <p><span class="font-bold">วันที่ประเมิน:</span> <span id="rif-print-date" class="border-b border-gray-400 px-2 text-blue-700"></span></p>
+                <p><span class="font-bold">ชื่อ-สกุล / HN:</span> <span id="rif-print-ptname" class="border-b border-gray-400 px-2 font-semibold"></span></p>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 border border-gray-300 p-3 rounded-lg mb-4">
+            <h2 class="text-sm font-bold text-gray-800 mb-2 underline">ข้อมูลปัจจุบันของผู้ป่วย</h2>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <p><span class="font-bold">สถานะ:</span> <span id="rif-print-scenario" class="text-blue-700"></span></p>
+                <p><span class="font-bold">วันที่ Add/Off:</span> <span id="rif-print-event-date"></span></p>
+                <p><span class="font-bold">ขนาดยาเดิม:</span> <span id="rif-print-old-dose"></span></p>
+                <p><span class="font-bold text-red-600">INR วันนี้:</span> <span id="rif-print-inr" class="font-semibold text-red-600"></span></p>
+            </div>
+        </div>
+
+        <div class="border-2 border-blue-800 p-3.5 rounded-lg mb-4 relative">
+            <div class="absolute -top-2.5 left-4 bg-white px-2 text-blue-800 font-bold text-xs">แผนการจ่ายยาใหม่ที่แนะนำ</div>
+            <div class="mt-1 space-y-2">
+                <p class="text-xs"><span class="font-bold">ขนาดยาเป้าหมาย:</span> <span id="rif-print-new-dose" class="text-base font-bold text-rose-600 ml-2"></span></p>
+                <div>
+                    <p class="text-xs font-bold mb-1">วิธีกินยา (Regimen):</p>
+                    <div id="rif-print-regimen" class="p-2.5 bg-blue-50 border border-blue-200 rounded text-xs font-semibold text-blue-900 leading-relaxed whitespace-pre-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-yellow-50 border border-yellow-400 p-3 rounded-lg mb-6">
+            <h2 class="text-xs font-bold text-yellow-800 mb-1"><i class="fa-solid fa-bell mr-1"></i> การนัดตรวจติดตาม INR</h2>
+            <p id="rif-print-followup" class="text-xs text-yellow-900"></p>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+            <div class="text-center">
+                <p class="text-xs mb-1">เภสัชกรผู้ประเมิน</p>
+                <p id="rif-print-pharm" class="mt-5 border-t border-gray-500 min-w-[160px] pt-1 text-xs">(........................................................)</p>
+            </div>
+        </div>
     </div>
 
     <!-- Modals -->
@@ -4310,6 +4581,332 @@
             
             if(typeof generateOutput === 'function') generateOutput();
         }
+
+// ==========================================
+        //         WARFARIN - RIFAMPIN CALCULATOR LOGIC
+        // ==========================================
+        function setupWarfarinRifampin() {
+            const evDate = document.getElementById('rifEventDate');
+            if (evDate && !evDate.value) {
+                evDate.valueAsDate = new Date();
+                updateRifWeeks();
+            }
+        }
+
+        function syncWfNoteToRifampin() {
+            setupWarfarinRifampin();
+            const noteDose = document.getElementById('wfNoteDoseTotal')?.value;
+            const noteInr = document.getElementById('wfNoteInrToday')?.value;
+            const rifDose = document.getElementById('rifCurrentDose');
+            const rifInr = document.getElementById('rifCurrentInr');
+            if (noteDose && rifDose && !rifDose.value) rifDose.value = noteDose;
+            if (noteInr && rifInr && !rifInr.value) rifInr.value = noteInr;
+        }
+
+        function updateRifWeeks() {
+            const eventDateInput = document.getElementById('rifEventDate');
+            const weekDisplay = document.getElementById('rif-week-display');
+            const dateSection = document.getElementById('rif-date-section');
+            const scenario = document.querySelector('input[name="rifScenario"]:checked')?.value || 'onset';
+
+            if (dateSection) {
+                if (scenario === 'concurrent') dateSection.classList.add('opacity-50', 'pointer-events-none');
+                else dateSection.classList.remove('opacity-50', 'pointer-events-none');
+            }
+
+            if (!eventDateInput || !eventDateInput.value) return 1;
+            const selectedDate = new Date(eventDateInput.value);
+            const today = new Date();
+            const diffTime = Math.abs(today - selectedDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const weeks = Math.floor(diffDays / 7) + 1;
+            if (weekDisplay) weekDisplay.innerText = `เวลาที่ผ่านไป: เข้าสู่สัปดาห์ที่ ${weeks}`;
+
+            const offsetCb = document.getElementById('rifOffsetCheckboxContainer');
+            if (offsetCb) {
+                if (scenario === 'offset' && weeks <= 2) offsetCb.classList.remove('hidden');
+                else offsetCb.classList.add('hidden');
+            }
+            return weeks;
+        }
+
+        function formatRifRegimenHtml(regimenStr) {
+            if (!regimenStr) return '<span class="text-red-500 font-medium">อยู่นอกเหนือตารางมาตรฐาน (กรุณาจัดยาเอง)</span>';
+            if (regimenStr.includes('|')) {
+                return regimenStr.split('|').map(s => `<div class="mb-1 last:mb-0"><span class="text-blue-500 mr-1"><i class="fa-solid fa-caret-right"></i></span> ${formatWfRegimenStandard(s.trim()).replace(/\n/g, ', ')}</div>`).join('');
+            }
+            return formatWfRegimenStandard(regimenStr).replace(/\n/g, ', ');
+        }
+
+        function getRifInrAdjustment(inr) {
+            if (!inr) return { min: 0, max: 0, text: "ไม่ได้กรอกค่า INR (สมมติฐาน: INR อยู่ในเกณฑ์ 2.0-3.0)", danger: null };
+            const val = parseFloat(inr);
+            if (val < 1.5) return { min: 0.10, max: 0.20, text: "เพิ่มขนาดยาขึ้น 10-20% (ระดับ INR < 1.5)", danger: null };
+            if (val >= 1.5 && val < 2.0) return { min: 0.05, max: 0.10, text: "เพิ่มขนาดยาขึ้น 5-10% (ระดับ INR 1.5-1.9)", danger: null };
+            if (val >= 2.0 && val <= 3.0) return { min: 0, max: 0, text: "คงขนาดยาเดิม (ระดับ INR 2.0-3.0)", danger: null };
+            if (val >= 3.1 && val <= 3.9) return { min: -0.10, max: -0.05, text: "ลดขนาดยาลง 5-10% (ระดับ INR 3.1-3.9)", danger: null };
+            if (val >= 4.0 && val <= 4.9) return { min: -0.20, max: -0.10, text: "ลดขนาดยาลง 10-20% (ระดับ INR 4.0-4.9)", danger: "หยุดยา 1 วัน และลดขนาด 10-20%" };
+            if (val >= 5.0 && val <= 8.9) return { min: -0.20, max: -0.20, text: "ลดขนาดยาลง 20% (ระดับ INR 5.0-8.9)", danger: "หยุดยา 1-2 วัน และให้ Vit K 1 mg orally และลดขนาดยาลง 20%" };
+            if (val >= 9.0) return { min: 0, max: 0, text: "ระดับวิกฤต (INR > 9.0)", danger: "หยุดยา และให้ Vit K 5-10 mg orally (ประเมินภาวะ Bleeding)" };
+            return { min: 0, max: 0, text: "ค่า INR ไม่ถูกต้อง", danger: null };
+        }
+
+        function getRifPrescriptionBlock(dose, currentDose) {
+            const roundedDose = Math.round(dose * 2) / 2;
+            let percentBadge = '';
+            if (currentDose && currentDose > 0) {
+                const percentChange = (((roundedDose - currentDose) / currentDose) * 100).toFixed(1);
+                const sign = percentChange > 0 ? '+' : '';
+                const colorClass = percentChange > 0 ? 'text-rose-600 bg-rose-50 border-rose-200' : 'text-emerald-600 bg-emerald-50 border-emerald-200';
+                percentBadge = `<span class="inline-block px-2 py-1 text-xs font-bold rounded-md border shadow-sm ${colorClass}">${sign}${percentChange}%</span>`;
+            }
+            const regimen = wfDosingSchedule[roundedDose];
+            const formattedRegimen = formatRifRegimenHtml(regimen);
+
+            return `
+                <div class="rif-option-card cursor-pointer p-3 bg-blue-50/50 border border-blue-100 rounded-xl grid grid-cols-1 md:grid-cols-12 items-center gap-2 hover:bg-blue-100 hover:border-blue-300 transition-all" data-dose="${roundedDose}">
+                    <div class="md:col-span-3 font-bold text-blue-900 text-base">${roundedDose} <span class="text-xs font-normal">mg/wk</span></div>
+                    <div class="md:col-span-2 text-left md:text-center">${percentBadge}</div>
+                    <div class="md:col-span-7 text-xs text-gray-700 font-medium text-left md:text-right leading-relaxed">${formattedRegimen}</div>
+                </div>
+            `;
+        }
+
+        function setupRifSlider(minTarget, maxTarget, currentDose) {
+            const sliderSection = document.getElementById('rifSliderSection');
+            const slider = document.getElementById('rifDoseSlider');
+            const manualInput = document.getElementById('rifManualDoseInput');
+            const badge = document.getElementById('rifSliderPercentBadge');
+            const regimenText = document.getElementById('rifSliderRegimenText');
+
+            if (!minTarget || !maxTarget) {
+                sliderSection.classList.add('hidden');
+                return;
+            }
+            sliderSection.classList.remove('hidden');
+
+            const min = Math.round(minTarget * 2) / 2;
+            const max = Math.round(maxTarget * 2) / 2;
+            slider.min = Math.min(3, Math.floor(min * 0.8));
+            slider.max = Math.max(90, Math.ceil(max * 1.2));
+            slider.step = 0.5;
+
+            const initialVal = Math.round(((min + max) / 2) * 2) / 2;
+            slider.value = initialVal;
+            manualInput.value = initialVal;
+
+            document.getElementById('rifSliderMinLabel').innerText = `${slider.min}`;
+            document.getElementById('rifSliderMaxLabel').innerText = `${slider.max}`;
+
+            const updateDisplay = (val) => {
+                const percentChange = (((val - currentDose) / currentDose) * 100).toFixed(1);
+                const sign = percentChange > 0 ? '+' : '';
+                const textClass = percentChange > 0 ? 'text-rose-600' : 'text-emerald-600';
+                badge.className = `text-xs font-bold ${textClass} bg-white inline-block px-3 py-1 rounded-full shadow-sm border border-gray-100`;
+                badge.innerHTML = `<i class="fa-solid fa-chart-line mr-1"></i> การปรับยา: ${sign}${percentChange}%`;
+                regimenText.innerHTML = formatRifRegimenHtml(wfDosingSchedule[val]);
+            };
+
+            slider.oninput = () => {
+                const val = parseFloat(slider.value);
+                manualInput.value = val;
+                updateDisplay(val);
+            };
+            manualInput.onchange = () => {
+                let val = Math.round((parseFloat(manualInput.value) || 0) * 2) / 2;
+                if (val < 0) val = 0;
+                slider.value = val;
+                manualInput.value = val;
+                updateDisplay(val);
+            };
+            updateDisplay(initialVal);
+        }
+
+        function runRifampinCalculation() {
+            const scenario = document.querySelector('input[name="rifScenario"]:checked')?.value || 'onset';
+            const currentDose = parseFloat(document.getElementById('rifCurrentDose')?.value);
+            const currentInr = document.getElementById('rifCurrentInr')?.value;
+
+            if (scenario !== 'concurrent' && (!currentDose || isNaN(currentDose))) {
+                showToast('กรุณากรอกขนาดยา Warfarin ปัจจุบันให้ถูกต้อง');
+                return;
+            }
+
+            const weeks = updateRifWeeks();
+            const dashboard = document.getElementById('rifResultDashboard');
+            const alertBox = document.getElementById('rifAlertBox');
+            const alertText = document.getElementById('rifAlertText');
+            const followUpText = document.getElementById('rifFollowUpText');
+            const optionsContainer = document.getElementById('rifPrescriptionOptions');
+            const sliderSection = document.getElementById('rifSliderSection');
+
+            dashboard.classList.remove('hidden', 'animate-slide-up');
+            void dashboard.offsetWidth;
+            dashboard.classList.add('animate-slide-up');
+            optionsContainer.innerHTML = '';
+            sliderSection.classList.add('hidden');
+
+            if (scenario === 'concurrent') {
+                alertBox.className = 'p-4 rounded-lg border-l-4 bg-yellow-50 border-yellow-500 text-yellow-800';
+                alertText.innerHTML = "<strong>เริ่มยาทั้ง 2 ชนิดพร้อมกัน:</strong> แนะนำตามแผนการรักษาปกติของผู้ป่วยแต่ละราย (7-35 mg/wk) หลังจากนั้นปรับตามค่า INR";
+                followUpText.innerText = "แนะนำติดตามค่า INR หลังจากให้ยา 1-2 wk และปรับขนาดยาตาม Protocol ปกติจนครบ 1 เดือนหรือ INR target พิจารณานัดทุก 1 เดือน";
+                optionsContainer.innerHTML = `<p class="text-sm text-gray-600 font-medium bg-gray-50 p-3 rounded-lg border border-gray-200 text-center">ปรับตามแนวทางการรักษาปกติ</p>`;
+                return;
+            }
+
+            const inrAdj = getRifInrAdjustment(currentInr);
+            const inrVal = parseFloat(currentInr);
+
+            if (currentInr && inrVal >= 9.0) {
+                alertBox.className = 'p-4 rounded-lg border-l-4 bg-red-100 border-red-600 text-red-900';
+                alertText.innerHTML = `<div class="font-bold text-base mb-1"><i class="fa-solid fa-triangle-exclamation mr-2"></i>วิกฤต (INR &ge; 9.0)</div><div class="text-sm"><strong>การจัดการด่วน:</strong> ${inrAdj.danger}</div>`;
+                followUpText.innerText = "ส่งพบแพทย์และประเมินอย่างใกล้ชิดทันที";
+                optionsContainer.innerHTML = `<p class="text-sm text-red-600 font-bold bg-red-50 p-3 rounded-lg border border-red-200 text-center">ระบบงดแสดงขนาดยาในภาวะวิกฤต กรุณาประเมินผู้ป่วยทางคลินิก</p>`;
+                return;
+            }
+
+            let finalMin = 0, finalMax = 0, finalText = "", fupText = "";
+
+            if (scenario === 'onset') {
+                if (weeks <= 2) {
+                    finalMin = inrAdj.min; finalMax = inrAdj.max; finalText = inrAdj.text;
+                    fupText = "แนะนำติดตามค่า INR ทุก 1-2 สัปดาห์ จนกว่าจะเข้าสู่ Steady State (1 เดือน)";
+                } else if (weeks <= 4) {
+                    if (inrVal < 2.0) {
+                        finalMin = 0.20; finalMax = 0.30;
+                        finalText = "ปรับเพิ่มขนาดยาอีก 20% - 30% (Onset สัปดาห์ที่ 3-4)";
+                    } else {
+                        finalMin = inrAdj.min; finalMax = inrAdj.max; finalText = inrAdj.text;
+                    }
+                    fupText = "แนะนำติดตามค่า INR ทุก 1-2 สัปดาห์ จนกว่าจะเข้าสู่ Steady State (1 เดือน)";
+                } else {
+                    finalMin = inrAdj.min; finalMax = inrAdj.max;
+                    finalText = inrAdj.text + " <span class='text-indigo-600 font-bold text-xs ml-2'>(โดยไม่คำนึงถึง DI / เข้าสู่ steady state แล้ว)</span>";
+                    fupText = "เอนไซม์ตับถูกเหนี่ยวนำเต็มที่แล้ว แนะนำติดตามค่า INR ทุก 4 สัปดาห์ (1 เดือน) หรือตาม Protocol ปกติ";
+                }
+            } else if (scenario === 'offset') {
+                if (weeks <= 2) {
+                    const alreadyReduced = document.getElementById('rifAlreadyReducedCheckbox')?.checked || false;
+                    if (!alreadyReduced) {
+                        finalMin = -0.50; finalMax = -0.50;
+                        finalText = "ลดขนาดยาลง 50% (Offset สัปดาห์ที่ 1-2)";
+                    } else {
+                        finalMin = inrAdj.min; finalMax = inrAdj.max;
+                        finalText = inrAdj.text + " <span class='text-emerald-700 font-bold text-xs ml-2'>(ปรับตามระดับ INR เนื่องจากเคยลดยา 50% ไปแล้ว)</span>";
+                    }
+                    fupText = "แนะนำติดตามค่า INR อย่างน้อย 1 ครั้ง/สัปดาห์ ในช่วง 2 สัปดาห์แรกหลังหยุดยา";
+                } else if (weeks <= 4) {
+                    finalMin = inrAdj.min; finalMax = inrAdj.max; finalText = inrAdj.text;
+                    fupText = "แนะนำติดตามค่า INR สัปดาห์ละ 1 ครั้ง จนถึงสัปดาห์ที่ 4 หรือ INR เข้า target แนะนำตรวจทุก 1 เดือน";
+                } else {
+                    finalMin = inrAdj.min; finalMax = inrAdj.max;
+                    finalText = inrAdj.text + " <span class='text-indigo-600 font-bold text-xs ml-2'>(โดยไม่คำนึงถึง DI / เข้าสู่ steady state แล้ว)</span>";
+                    fupText = "ระดับเอนไซม์ตับกลับสู่สภาวะปกติแล้ว แนะนำติดตามค่า INR ทุก 4 สัปดาห์ (1 เดือน) หรือตาม Protocol ปกติ";
+                }
+            }
+
+            const minTarget = currentDose * (1 + finalMin);
+            const maxTarget = currentDose * (1 + finalMax);
+            const dangerHtml = inrAdj.danger ? `<div class="mb-2 p-2.5 bg-red-50 text-red-800 rounded-lg text-xs border border-red-200"><i class="fa-solid fa-triangle-exclamation mr-1.5 text-red-600"></i><strong>คำสั่งการแพทย์ (INR ${currentInr}):</strong> ${inrAdj.danger}</div>` : '';
+
+            let themeClass = "bg-blue-50 border-blue-400 text-blue-900";
+            if (finalMin > 0 || finalMax > 0) themeClass = "bg-rose-50 border-rose-400 text-rose-900";
+            if (finalMin < 0 || finalMax < 0) themeClass = "bg-emerald-50 border-emerald-400 text-emerald-900";
+            if (inrAdj.danger) themeClass = "bg-yellow-50 border-yellow-400 text-yellow-900";
+
+            alertBox.className = `p-4 rounded-lg border-l-4 shadow-sm ${themeClass}`;
+            alertText.innerHTML = `${dangerHtml}<div class="font-bold text-sm mb-1"><i class="fa-solid fa-bullseye mr-1.5"></i>ข้อแนะนำการปรับยา:</div><div class="text-sm font-medium">${finalText}</div>`;
+            followUpText.innerText = fupText;
+
+            optionsContainer.innerHTML += getRifPrescriptionBlock(minTarget, currentDose);
+            if (minTarget !== maxTarget) {
+                if (Math.abs(maxTarget - minTarget) >= 1) optionsContainer.innerHTML += getRifPrescriptionBlock((minTarget + maxTarget) / 2, currentDose);
+                optionsContainer.innerHTML += getRifPrescriptionBlock(maxTarget, currentDose);
+            }
+
+            setupRifSlider(minTarget === maxTarget ? minTarget * 0.8 : minTarget, maxTarget === maxTarget ? maxTarget * 1.2 : maxTarget, currentDose);
+
+            document.querySelectorAll('.rif-option-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const targetDose = parseFloat(this.getAttribute('data-dose'));
+                    const manualInput = document.getElementById('rifManualDoseInput');
+                    manualInput.value = targetDose;
+                    manualInput.onchange();
+                    document.querySelectorAll('.rif-option-card').forEach(c => c.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-100'));
+                    this.classList.add('ring-2', 'ring-blue-500', 'bg-blue-100');
+                });
+            });
+        }
+
+        function applyRifampinToWfNote() {
+            const scenarioVal = document.querySelector('input[name="rifScenario"]:checked')?.value || 'onset';
+            const currentDose = parseFloat(document.getElementById('rifCurrentDose')?.value);
+            const currentInr = document.getElementById('rifCurrentInr')?.value;
+            const weeks = updateRifWeeks();
+            const targetDose = Math.round((parseFloat(document.getElementById('rifManualDoseInput')?.value) || currentDose) * 2) / 2;
+
+            if (currentInr) document.getElementById('wfNoteInrToday').value = currentInr;
+            if (currentDose) {
+                document.getElementById('wfNoteDoseTotal').value = currentDose;
+                onWfDoseTotalInput();
+            }
+
+            // ติ๊ก D/I = Yes และใส่รายละเอียด Rifampin
+            const diYes = document.querySelector('input[name="wfNoteDi"][value="Yes"]');
+            if (diYes) diYes.checked = true;
+            const scenarioLabel = scenarioVal === 'onset' ? `Onset Rifampin wk ${weeks}` : (scenarioVal === 'offset' ? `Offset Rifampin wk ${weeks}` : 'เริ่ม Warfarin+Rifampin พร้อมกัน');
+            document.getElementById('wfNoteDiText').value = `Rifampin (${scenarioLabel})`;
+
+            // ใส่แผนการปรับยาใหม่ลงในช่อง Other
+            if (targetDose && wfDosingSchedule[targetDose]) {
+                const rawRegimen = wfDosingSchedule[targetDose].split('|')[0].trim();
+                const stdRegimen = formatWfRegimenStandard(rawRegimen).replace(/\n/g, ', ');
+                document.getElementById('wfNoteOtherCb').checked = true;
+                document.getElementById('wfNoteOtherText').value = `แผนปรับยาใหม่ ${targetDose} mg/wk (${stdRegimen})`;
+            }
+
+            switchWfTab('note');
+            generateOutput();
+            showToast('ส่งผลประเมิน Rifampin ไปหน้า บันทึก Note เรียบร้อยแล้ว!');
+        }
+
+        function printRifampinAdviceA5() {
+            const scenarioVal = document.querySelector('input[name="rifScenario"]:checked')?.value || 'onset';
+            const currentDose = parseFloat(document.getElementById('rifCurrentDose')?.value);
+            const currentInr = document.getElementById('rifCurrentInr')?.value || '-';
+            const weeks = updateRifWeeks();
+            const eventDateStr = document.getElementById('rifEventDate')?.value;
+            const targetDose = Math.round((parseFloat(document.getElementById('rifManualDoseInput')?.value) || currentDose || 0) * 2) / 2;
+            const regimen = wfDosingSchedule[targetDose] ? formatWfRegimenStandard(wfDosingSchedule[targetDose].split('|')[0].trim()) : 'อยู่นอกเหนือตารางมาตรฐาน';
+
+            let percentChangeStr = '';
+            if (currentDose && currentDose > 0) {
+                const percentChange = (((targetDose - currentDose) / currentDose) * 100).toFixed(1);
+                percentChangeStr = `${percentChange > 0 ? '+' : ''}${percentChange}%`;
+            }
+
+            const ptName = document.getElementById('ptName')?.value || '';
+            const hn = document.getElementById('hn')?.value || '';
+            const pharm = document.getElementById('wfNotePharm')?.value || '';
+
+            document.getElementById('rif-print-date').innerText = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('rif-print-ptname').innerText = (ptName || hn) ? `${ptName} ${hn ? '(HN: ' + hn + ')' : ''}` : '................................................';
+            document.getElementById('rif-print-scenario').innerText = scenarioVal === 'onset' ? `เริ่มยา Rifampin (Onset สัปดาห์ที่ ${weeks})` : (scenarioVal === 'offset' ? `หยุดยา Rifampin (Offset สัปดาห์ที่ ${weeks})` : 'เริ่มยาทั้ง 2 ชนิดพร้อมกัน');
+            document.getElementById('rif-print-event-date').innerText = eventDateStr ? new Date(eventDateStr).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
+            document.getElementById('rif-print-old-dose').innerText = currentDose ? `${currentDose} mg/wk` : '-';
+            document.getElementById('rif-print-inr').innerText = currentInr;
+            document.getElementById('rif-print-new-dose').innerText = `${targetDose} mg/wk ${percentChangeStr ? '(' + percentChangeStr + ')' : ''}`;
+            document.getElementById('rif-print-regimen').innerText = regimen;
+            document.getElementById('rif-print-followup').innerText = document.getElementById('rifFollowUpText')?.innerText || '-';
+            document.getElementById('rif-print-pharm').innerText = pharm ? `(${pharm})` : '(........................................................)';
+
+            const printArea = document.getElementById('printRifampinArea');
+            if (printArea) printArea.classList.remove('hidden');
+            document.body.classList.add('print-mode-rifampin-a5');
+            window.print();
+            document.body.classList.remove('print-mode-rifampin-a5');
+            if (printArea) printArea.classList.add('hidden');
+        }
         
         // ==========================================
         //         BOOTSTRAP INITIALIZATION
@@ -4350,6 +4947,7 @@
             });
             
             setupWarfarinAccess();
+            setupWarfarinRifampin();
             renderMrSources();
             renderHivDrugs();
             renderC8Devices(); // <--- เรียกใช้งานฟังก์ชัน renderC8Devices
