@@ -1127,10 +1127,10 @@
                                     <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-center mb-2">
                                         <div class="md:col-span-4">
                                             <select id="wfPillType" class="w-full rounded border-gray-300 border px-2 py-1.5 text-sm font-medium bg-gray-50">
-                                                <option value="1|Warfarin 1mg">⚪ Warfarin 1mg (เม็ดขาว)</option>
-                                                <option value="2|Warfarin 2mg">🟠 Warfarin 2mg (เม็ดส้ม)</option>
-                                                <option value="3|Warfarin 3mg" selected>🔵 Warfarin 3mg (เม็ดฟ้า)</option>
-                                                <option value="5|Warfarin 5mg">🟡 Warfarin 5mg (เม็ดเหลือง)</option>
+                                                <option value="1|Warfarin 1 mg">⚪ Warfarin 1 mg (เม็ดขาว)</option>
+                                                <option value="2|Warfarin 2 mg">🟠 Warfarin 2 mg (เม็ดส้ม)</option>
+                                                <option value="3|Warfarin 3 mg" selected>🔵 Warfarin 3 mg (เม็ดฟ้า)</option>
+                                                <option value="5|Warfarin 5 mg">🟡 Warfarin 5 mg (เม็ดเหลือง)</option>
                                             </select>
                                         </div>
                                         <div class="md:col-span-3">
@@ -2393,15 +2393,17 @@
         function formatWfRegimenStandard(text) {
             if (!text) return '';
             let formatted = text
-                // แปลงรูปแบบเดิม W(1mg) เม็ดขาว ฯลฯ ให้เป็น Warfarin Xmg
-                .replace(/W\(\s*([1235])\s*mg\s*\)\s*(?:เม็ดขาว|เม็ดส้ม|เม็ดฟ้า|เม็ดเหลือง)?/g, 'Warfarin $1mg')
-                // จัดรูปแบบช่องว่างหน้าเครื่องหมาย : ของตารางมาตรฐาน เช่น "5 mg : 2x1" หรือ "5 mg 1x1"
-                .replace(/(^|[^(\w])([1235])\s*mg\s*:\s*/g, '$1Warfarin $2mg : ')
-                .replace(/(^|[^(\w])([1235])\s*mg\s+(?=\d)/g, '$1Warfarin $2mg : ')
-                // ป้องกันกรณีพิมพ์ซ้ำเป็น Warfarin Warfarin Xmg
-                .replace(/(?:Warfarin\s+)+([1235]mg)/g, 'Warfarin $1');
-            // แยกแต่ละรายการยาออกเป็น 1 การใช้ 1 บรรทัด (โดยไม่ตัดลูกน้ำในวงเล็บวัน)
-            return formatted.replace(/,\s*(?=Warfarin\s+[1235]mg)/g, '\n');
+                // 1. แปลงรูปแบบเดิม W(1mg) เม็ดขาว หรือ Warfarin 1mg ให้เป็น Warfarin X mg
+                .replace(/W\(\s*([1235])\s*mg\s*\)\s*(?:เม็ดขาว|เม็ดส้ม|เม็ดฟ้า|เม็ดเหลือง)?/g, 'Warfarin $1 mg')
+                .replace(/Warfarin\s*([1235])\s*mg\b/g, 'Warfarin $1 mg')
+                // 2. จัดรูปแบบช่องว่างหน้าเครื่องหมาย : ของตารางมาตรฐาน เช่น "3 mg : 1x1" หรือ "5 mg 1x1"
+                .replace(/(^|[^(\w])([1235])\s*mg\s*:\s*/g, '$1Warfarin $2 mg : ')
+                .replace(/(^|[^(\w])([1235])\s*mg\s+(?=\d)/g, '$1Warfarin $2 mg : ')
+                // 3. ป้องกันกรณีพิมพ์ซ้ำเป็น Warfarin Warfarin X mg และบังคับเว้นวรรค 1 เคาะก่อน mg
+                .replace(/(?:Warfarin\s+)+([1235]\s*mg)/g, 'Warfarin $1')
+                .replace(/Warfarin\s+([1235])\s*mg\b/g, 'Warfarin $1 mg');
+            // 4. แยกแต่ละรายการยาออกเป็น 1 การใช้ 1 บรรทัด (โดยไม่ตัดลูกน้ำในวงเล็บวัน)
+            return formatted.replace(/,\s*(?=Warfarin\s+[1235]\s+mg)/g, '\n');
         }
 
         function toggleWfInrMode() {
@@ -2478,7 +2480,7 @@
         }
 
         function addWfPillToDetail() {
-            const pillVal = document.getElementById('wfPillType')?.value || '3|Warfarin 3mg';
+            const pillVal = document.getElementById('wfPillType')?.value || '3|Warfarin 3 mg';
             const [mgStr, pillLabel] = pillVal.split('|');
             const mg = parseFloat(mgStr);
             const qty = parseFloat(document.getElementById('wfPillQty')?.value || '1');
