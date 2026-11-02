@@ -4639,7 +4639,6 @@
             else if (currentTab === 'WARFARIN') {
                 const activeWf = document.querySelector('.wf-nav-link.active')?.id;
                 if (activeWf === 'wf-note-tab') {
-                    const wno = document.getElementById('wfNoteNo')?.value || '-';
                     const inrMode = document.querySelector('input[name="wfNoteInrMode"]:checked')?.value || 'today';
                     const inrToday = document.getElementById('wfNoteInrToday')?.value || '-';
                     const inrTodayDate = document.getElementById('wfNoteInrTodayDate')?.value?.trim() || '';
@@ -4675,7 +4674,7 @@
                     const pharm = document.getElementById('wfNotePharm')?.value || '';
 
                     notes.push("pharmacist note Warfarin Clinic");
-                    notes.push(`WARFARIN NO: ${wno} | ${inrCurrentLabel} | INR ครั้งก่อน: ${inrPrevStr}`);
+                    notes.push(`${inrCurrentLabel} | INR ครั้งก่อน: ${inrPrevStr}`);
                     notes.push(`Indication: ${indication} | Target INR: ${targetStr}`);
                     notes.push(`Current dose รวม ${curDoseTotal} mg/wk`);
                     if (curDoseDetail) {
