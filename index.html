@@ -1055,8 +1055,21 @@
                                     <input type="text" id="wfNoteNo" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" placeholder="เช่น 844" oninput="generateOutput()">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-600 mb-1">INR วันนี้</label>
-                                    <input type="number" step="0.01" id="wfNoteInrToday" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm font-bold text-red-600" placeholder="เช่น 2.35" oninput="generateOutput()">
+                                    <div class="flex flex-wrap items-center justify-between gap-1 mb-1">
+                                        <span class="text-xs font-medium text-gray-600">INR รอบนี้:</span>
+                                        <div class="flex items-center gap-2 text-xs">
+                                            <label class="inline-flex items-center cursor-pointer font-semibold text-red-700">
+                                                <input type="radio" name="wfNoteInrMode" value="today" class="form-radio text-red-600 mr-1" checked onchange="toggleWfInrMode(); generateOutput();">วันนี้
+                                            </label>
+                                            <label class="inline-flex items-center cursor-pointer font-semibold text-blue-700">
+                                                <input type="radio" name="wfNoteInrMode" value="latest" class="form-radio text-blue-600 mr-1" onchange="toggleWfInrMode(); generateOutput();">ล่าสุด วันที่
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <input type="number" step="0.01" id="wfNoteInrToday" class="w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm font-bold text-red-600" placeholder="เช่น 2.35" oninput="generateOutput()">
+                                        <input type="text" id="wfNoteInrTodayDate" class="w-1/2 rounded-lg border-gray-300 border px-2 py-2 text-sm bg-gray-50 hidden" placeholder="วว/ดด/พศ" oninput="document.querySelector('input[name=\'wfNoteInrMode\'][value=\'latest\']').checked = true; generateOutput();">
+                                    </div>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-medium text-gray-600 mb-1">INR ครั้งก่อน & วันที่เจาะ</label>
@@ -1067,14 +1080,30 @@
                                 </div>
                             </div>
 
-                            <!-- Target INR -->
-                            <div class="mb-4 bg-gray-50 p-3 rounded border border-gray-200">
-                                <label class="block text-xs font-medium text-gray-600 mb-2">Target INR</label>
-                                <div class="flex flex-wrap gap-4 items-center">
-                                    <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteTarget" value="2-3" class="form-radio text-blue-600" onchange="generateOutput()" checked><span class="ml-2 text-sm">2-3</span></label>
-                                    <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteTarget" value="2.5-3.5" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-2 text-sm">2.5-3.5</span></label>
-                                    <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteTarget" value="อื่นๆ" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-2 text-sm">อื่นๆ</span></label>
-                                    <input type="text" id="wfNoteTargetOther" placeholder="ระบุ..." class="rounded border-gray-300 border px-2 py-1 text-sm flex-1 min-w-[120px]" oninput="document.querySelector('input[name=\'wfNoteTarget\'][value=\'อื่นๆ\']').checked = true; generateOutput();">
+                            <!-- Indication & Target INR -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-gray-50 p-3.5 rounded-lg border border-gray-200">
+                                <div>
+                                    <div class="flex flex-wrap justify-between items-center mb-1.5 gap-1">
+                                        <label class="block text-xs font-bold text-gray-700">Indication (ข้อบ่งใช้)</label>
+                                        <div class="flex flex-wrap gap-1">
+                                            <button type="button" onclick="setWfNoteIndication('AF', '2-3')" class="text-[11px] bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded">AF</button>
+                                            <button type="button" onclick="setWfNoteIndication('DVT', '2-3')" class="text-[11px] bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded">DVT</button>
+                                            <button type="button" onclick="setWfNoteIndication('PE', '2-3')" class="text-[11px] bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded">PE</button>
+                                            <button type="button" onclick="setWfNoteIndication('S/P AVR', '2-3')" class="text-[11px] bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded">S/P AVR</button>
+                                            <button type="button" onclick="setWfNoteIndication('S/P MVR', '2.5-3.5')" class="text-[11px] bg-white hover:bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded">S/P MVR</button>
+                                        </div>
+                                    </div>
+                                    <input type="text" id="wfNoteIndication" list="indicationOptions" class="w-full rounded-lg border-gray-300 border px-3 py-1.5 text-sm bg-white" placeholder="ระบุ เช่น AF, DVT, S/P AVR, S/P MVR" oninput="generateOutput()">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-2">Target INR</label>
+                                    <div class="flex flex-wrap gap-4 items-center">
+                                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteTarget" value="2-3" class="form-radio text-blue-600" onchange="generateOutput()" checked><span class="ml-1.5 text-sm">2-3</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteTarget" value="2.5-3.5" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-1.5 text-sm">2.5-3.5</span></label>
+                                        <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteTarget" value="อื่นๆ" class="form-radio text-blue-600" onchange="generateOutput()"><span class="ml-1.5 text-sm">อื่นๆ</span></label>
+                                        <input type="text" id="wfNoteTargetOther" placeholder="ระบุ..." class="rounded border-gray-300 border px-2 py-1 text-sm flex-1 min-w-[100px] bg-white" oninput="document.querySelector('input[name=\'wfNoteTarget\'][value=\'อื่นๆ\']').checked = true; generateOutput();">
+                                    </div>
                                 </div>
                             </div>
 
@@ -1094,14 +1123,14 @@
 
                                 <!-- 2. ตัวช่วยสร้างวิธีทานตามสีเม็ดยา -->
                                 <div class="bg-white p-3 rounded-lg border border-gray-200 mb-3 shadow-sm">
-                                    <div class="text-xs font-bold text-gray-600 mb-2">กำหนดวิธีทานตามเม็ดยา (เลือกสีเม็ดยา -> จำนวนเม็ด -> วันที่ทาน แล้วกด "+ เพิ่มวิธีทาน"):</div>
+                                    <div class="text-xs font-bold text-gray-600 mb-2">กำหนดวิธีทานตามเม็ดยา (เลือกขนาดเม็ดยา -> จำนวนเม็ด -> วันที่ทาน แล้วกด "+ เพิ่มวิธีทาน"):</div>
                                     <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-center mb-2">
                                         <div class="md:col-span-4">
                                             <select id="wfPillType" class="w-full rounded border-gray-300 border px-2 py-1.5 text-sm font-medium bg-gray-50">
-                                                <option value="1|W(1mg) เม็ดขาว">⚪ W(1mg) เม็ดขาว</option>
-                                                <option value="2|W(2mg) เม็ดส้ม">🟠 W(2mg) เม็ดส้ม</option>
-                                                <option value="3|W(3mg) เม็ดฟ้า" selected>🔵 W(3mg) เม็ดฟ้า</option>
-                                                <option value="5|W(5mg) เม็ดเหลือง">🟡 W(5mg) เม็ดเหลือง</option>
+                                                <option value="1|Warfarin 1mg">⚪ Warfarin 1mg (เม็ดขาว)</option>
+                                                <option value="2|Warfarin 2mg">🟠 Warfarin 2mg (เม็ดส้ม)</option>
+                                                <option value="3|Warfarin 3mg" selected>🔵 Warfarin 3mg (เม็ดฟ้า)</option>
+                                                <option value="5|Warfarin 5mg">🟡 Warfarin 5mg (เม็ดเหลือง)</option>
                                             </select>
                                         </div>
                                         <div class="md:col-span-3">
@@ -1142,7 +1171,7 @@
 
                                 <!-- 3. ช่องข้อความวิธีรับประทาน (พิมพ์เองหรือแก้ไขได้ แสดงผล 1 การใช้ 1 บรรทัด) -->
                                 <label class="block text-xs font-medium text-gray-600 mb-1">รายละเอียดวิธีรับประทาน (1 การใช้ 1 บรรทัด เลือกจากด้านบนหรือพิมพ์แก้ไขเองได้):</label>
-                                <textarea id="wfNoteDoseDetail" rows="3" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-white leading-relaxed" placeholder="เช่น&#10;W(3mg) เม็ดฟ้า : 1x1 hs ทุกวัน&#10;W(5mg) เม็ดเหลือง : 1x1 hs ทุกวัน" oninput="generateOutput()"></textarea>
+                                <textarea id="wfNoteDoseDetail" rows="3" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-white leading-relaxed" placeholder="เช่น&#10;Warfarin 5mg : 2x1 hs ทุกวัน&#10;Warfarin 2mg : 1x1 hs (อา)" oninput="generateOutput()"></textarea>
                             </div>
 
                             <!-- Adherence / ADR / D/I พร้อมช่องกรอกอธิบายเพิ่มเติม -->
@@ -1161,7 +1190,7 @@
                                         <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteAdr" value="NO" class="form-radio text-green-600" onchange="generateOutput()" checked><span class="ml-2 text-sm">NO</span></label>
                                         <label class="inline-flex items-center cursor-pointer"><input type="radio" name="wfNoteAdr" value="Yes" class="form-radio text-red-600" onchange="generateOutput()"><span class="ml-2 text-sm">Yes</span></label>
                                     </div>
-                                    <input type="text" id="wfNoteAdrText" class="w-full rounded border-red-200 border px-2 py-1 text-xs bg-white" placeholder="ระบุอาการ ADR (ถ้ามี)..." oninput="if(this.value.trim()!=='') document.querySelector('input[name=\'wfNoteAdr\'][value=\'Yes\']').checked=true; generateOutput();">
+                                    <input type="text" id="wfNoteAdrText" class="w-full rounded border-red-200 border px-2 py-1 text-xs bg-white" placeholder="ระบุอาการ ADR (เช่น จ้ำเลือด)..." oninput="if(this.value.trim()!=='') document.querySelector('input[name=\'wfNoteAdr\'][value=\'Yes\']').checked=true; generateOutput();">
                                 </div>
                                 <div class="bg-yellow-50 p-3 rounded border border-yellow-200">
                                     <div class="flex justify-between items-center mb-2">
@@ -1178,13 +1207,22 @@
                                 </div>
                             </div>
 
+                            <!-- กล่องแสดงคำแนะนำขนาดยาจากหน้าคำนวณคู่ Rifampin (จะปรากฏเมื่อกดส่งผลมาหน้า Note) -->
+                            <div id="wfRifampinSummaryBox" class="hidden mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-900 space-y-1.5 shadow-sm">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-sm text-rose-800"><i class="fa-solid fa-prescription-bottle-medical mr-1.5"></i>คำแนะนำการปรับขนาดยา Warfarin คู่กับ Rifampin:</span>
+                                    <button type="button" onclick="document.getElementById('wfRifampinSummaryBox').classList.add('hidden')" class="text-rose-500 hover:text-rose-700 font-bold">✕</button>
+                                </div>
+                                <div id="wfRifampinSummaryContent" class="leading-relaxed font-medium"></div>
+                            </div>
+
                             <!-- Other -->
                             <div class="mb-4">
                                 <label class="inline-flex items-center mb-1 cursor-pointer">
                                     <input type="checkbox" id="wfNoteOtherCb" class="form-checkbox text-purple-600 rounded" onchange="generateOutput()">
-                                    <span class="ml-2 text-sm font-bold text-gray-700">Other (ข้อมูลอื่นๆ)</span>
+                                    <span class="ml-2 text-sm font-bold text-gray-700">Other / แผนการปรับขนาดยา (ข้อมูลอื่นๆ)</span>
                                 </label>
-                                <input type="text" id="wfNoteOtherText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm mt-1" placeholder="ระบุข้อมูลที่ซักเพิ่มเติม..." oninput="if(this.value.trim()!=='') document.getElementById('wfNoteOtherCb').checked=true; generateOutput()">
+                                <input type="text" id="wfNoteOtherText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm mt-1" placeholder="ระบุข้อมูลที่ซักเพิ่มเติม หรือแผนปรับขนาดยา..." oninput="if(this.value.trim()!=='') document.getElementById('wfNoteOtherCb').checked=true; generateOutput()">
                             </div>
 
                             <!-- เภสัชกร -->
@@ -2355,14 +2393,38 @@
         function formatWfRegimenStandard(text) {
             if (!text) return '';
             let formatted = text
-                .replace(/(^|[^(\w])([1235]\s*mg)\s*:\s*/g, '$1$2 : ')
-                .replace(/(^|[^(\w])([1235]\s*mg)\s+(?=\d)/g, '$1$2 : ')
-                .replace(/(^|[^(\w])1\s*mg\b/g, '$1W(1mg) เม็ดขาว')
-                .replace(/(^|[^(\w])2\s*mg\b/g, '$1W(2mg) เม็ดส้ม')
-                .replace(/(^|[^(\w])3\s*mg\b/g, '$1W(3mg) เม็ดฟ้า')
-                .replace(/(^|[^(\w])5\s*mg\b/g, '$1W(5mg) เม็ดเหลือง');
-            // แยกแต่ละรายการยาออกเป็น 1 การใช้ 1 บรรทัด (โดยไม่ตัดลูกน้ำที่อยู่ในวงเล็บวัน)
-            return formatted.replace(/,\s*(?=W\()/g, '\n');
+                // แปลงรูปแบบเดิม W(1mg) เม็ดขาว ฯลฯ ให้เป็น Warfarin Xmg
+                .replace(/W\(\s*([1235])\s*mg\s*\)\s*(?:เม็ดขาว|เม็ดส้ม|เม็ดฟ้า|เม็ดเหลือง)?/g, 'Warfarin $1mg')
+                // จัดรูปแบบช่องว่างหน้าเครื่องหมาย : ของตารางมาตรฐาน เช่น "5 mg : 2x1" หรือ "5 mg 1x1"
+                .replace(/(^|[^(\w])([1235])\s*mg\s*:\s*/g, '$1Warfarin $2mg : ')
+                .replace(/(^|[^(\w])([1235])\s*mg\s+(?=\d)/g, '$1Warfarin $2mg : ')
+                // ป้องกันกรณีพิมพ์ซ้ำเป็น Warfarin Warfarin Xmg
+                .replace(/(?:Warfarin\s+)+([1235]mg)/g, 'Warfarin $1');
+            // แยกแต่ละรายการยาออกเป็น 1 การใช้ 1 บรรทัด (โดยไม่ตัดลูกน้ำในวงเล็บวัน)
+            return formatted.replace(/,\s*(?=Warfarin\s+[1235]mg)/g, '\n');
+        }
+
+        function toggleWfInrMode() {
+            const mode = document.querySelector('input[name="wfNoteInrMode"]:checked')?.value || 'today';
+            const dateInp = document.getElementById('wfNoteInrTodayDate');
+            if (dateInp) {
+                if (mode === 'latest') {
+                    dateInp.classList.remove('hidden');
+                    dateInp.focus();
+                } else {
+                    dateInp.classList.add('hidden');
+                }
+            }
+        }
+
+        function setWfNoteIndication(indText, targetVal) {
+            const indInp = document.getElementById('wfNoteIndication');
+            if (indInp) indInp.value = indText;
+            if (targetVal) {
+                const rad = document.querySelector(`input[name="wfNoteTarget"][value="${targetVal}"]`);
+                if (rad) rad.checked = true;
+            }
+            generateOutput();
         }
 
         function onWfDoseTotalInput() {
@@ -2416,7 +2478,7 @@
         }
 
         function addWfPillToDetail() {
-            const pillVal = document.getElementById('wfPillType')?.value || '3|W(3mg) เม็ดฟ้า';
+            const pillVal = document.getElementById('wfPillType')?.value || '3|Warfarin 3mg';
             const [mgStr, pillLabel] = pillVal.split('|');
             const mg = parseFloat(mgStr);
             const qty = parseFloat(document.getElementById('wfPillQty')?.value || '1');
@@ -4576,13 +4638,20 @@
                 const activeWf = document.querySelector('.wf-nav-link.active')?.id;
                 if (activeWf === 'wf-note-tab') {
                     const wno = document.getElementById('wfNoteNo')?.value || '-';
+                    const inrMode = document.querySelector('input[name="wfNoteInrMode"]:checked')?.value || 'today';
                     const inrToday = document.getElementById('wfNoteInrToday')?.value || '-';
+                    const inrTodayDate = document.getElementById('wfNoteInrTodayDate')?.value?.trim() || '';
+                    const inrCurrentLabel = inrMode === 'latest'
+                        ? `INR ล่าสุด${inrTodayDate ? ' วันที่ ' + inrTodayDate : ''}: ${inrToday}`
+                        : `INR วันนี้: ${inrToday}`;
+
                     const inrPrev = document.getElementById('wfNoteInrPrev')?.value || '-';
-                    const inrPrevDate = document.getElementById('wfNoteInrPrevDate')?.value || '';
+                    const inrPrevDate = document.getElementById('wfNoteInrPrevDate')?.value?.trim() || '';
                     const inrPrevStr = inrPrevDate ? `${inrPrev} (${inrPrevDate})` : inrPrev;
                     
+                    const indication = document.getElementById('wfNoteIndication')?.value?.trim() || '-';
                     const targetInr = document.querySelector('input[name="wfNoteTarget"]:checked')?.value;
-                    const targetOther = document.getElementById('wfNoteTargetOther')?.value;
+                    const targetOther = document.getElementById('wfNoteTargetOther')?.value?.trim();
                     let targetStr = targetInr === 'อื่นๆ' ? (targetOther || 'อื่นๆ') : (targetInr || '-');
 
                     const curDoseTotal = document.getElementById('wfNoteDoseTotal')?.value || '-';
@@ -4593,18 +4662,20 @@
                     
                     const adr = document.querySelector('input[name="wfNoteAdr"]:checked')?.value || '-';
                     const adrText = document.getElementById('wfNoteAdrText')?.value?.trim() || '';
+                    const adrDisplay = (adr === 'Yes' && adrText) ? adrText : `${adr}${adrText ? ' ' + adrText : ''}`;
                     
                     const di = document.querySelector('input[name="wfNoteDi"]:checked')?.value || '-';
                     const diText = document.getElementById('wfNoteDiText')?.value?.trim() || '';
+                    const diDisplay = (di === 'Yes' && diText) ? diText : `${di}${diText ? ' ' + diText : ''}`;
                     
                     const otherCb = document.getElementById('wfNoteOtherCb')?.checked;
                     const otherText = document.getElementById('wfNoteOtherText')?.value?.trim() || '';
                     const pharm = document.getElementById('wfNotePharm')?.value || '';
 
                     notes.push("pharmacist note Warfarin Clinic");
-                    notes.push(`WARFARIN NO: ${wno} | INR วันนี้: ${inrToday} | INR ครั้งก่อน: ${inrPrevStr}`);
-                    notes.push(`Target INR: ${targetStr}`);
-                    notes.push(`Current dose (รวม ${curDoseTotal} mg/wk)`);
+                    notes.push(`WARFARIN NO: ${wno} | ${inrCurrentLabel} | INR ครั้งก่อน: ${inrPrevStr}`);
+                    notes.push(`Indication: ${indication} | Target INR: ${targetStr}`);
+                    notes.push(`Current dose รวม ${curDoseTotal} mg/wk`);
                     if (curDoseDetail) {
                         const formattedDetail = formatWfRegimenStandard(curDoseDetail.trim());
                         formattedDetail.split('\n').forEach(line => {
@@ -4612,8 +4683,8 @@
                         });
                     }
                     notes.push(`Adherence: ${adherence}${adherenceText ? ' ' + adherenceText : ''}`);
-                    notes.push(`ADR: ${adr}${adrText ? ' ' + adrText : ''}`);
-                    notes.push(`D/I: ${di}${diText ? ' ' + diText : ''}`);
+                    notes.push(`ADR: ${adrDisplay}`);
+                    notes.push(`D/I: ${diDisplay}`);
                     if (otherCb && otherText) notes.push(`Other: ${otherText}`);
                     if (pharm) notes.push(`/${pharm}`);
                 }
@@ -4979,16 +5050,18 @@
                 
                 const adr = document.querySelector('input[name="wfNoteAdr"]:checked')?.value;
                 const adrText = document.getElementById('wfNoteAdrText')?.value?.trim();
+                const adrDisplay = (adr === 'Yes' && adrText) ? adrText : `${adr}${adrText ? ' ' + adrText : ''}`;
                 
                 const di = document.querySelector('input[name="wfNoteDi"]:checked')?.value;
                 const diText = document.getElementById('wfNoteDiText')?.value?.trim();
+                const diDisplay = (di === 'Yes' && diText) ? diText : `${di}${diText ? ' ' + diText : ''}`;
                 
                 const otherCb = document.getElementById('wfNoteOtherCb')?.checked;
                 const other = document.getElementById('wfNoteOtherText')?.value?.trim();
                 
                 if(adherence) extraData.push(`Adherence: ${adherence}${adherenceText ? ' ' + adherenceText : ''}`);
-                if(adr) extraData.push(`ADR: ${adr}${adrText ? ' ' + adrText : ''}`);
-                if(di) extraData.push(`D/I: ${di}${diText ? ' ' + diText : ''}`);
+                if(adr) extraData.push(`ADR: ${adrDisplay}`);
+                if(di) extraData.push(`D/I: ${diDisplay}`);
                 if(otherCb && other) extraData.push(`Other: ${other}`);
                 
                 rowData[4] = extraData.join(', ');
@@ -5918,7 +5991,7 @@
                 optionsContainer.innerHTML += getRifPrescriptionBlock(maxTarget, currentDose);
             }
 
-            setupRifSlider(minTarget === maxTarget ? minTarget * 0.8 : minTarget, maxTarget === maxTarget ? maxTarget * 1.2 : maxTarget, currentDose);
+            setupRifSlider(minTarget === maxTarget ? minTarget * 0.8 : minTarget, maxTarget === minTarget ? maxTarget * 1.2 : maxTarget, currentDose);
 
             document.querySelectorAll('.rif-option-card').forEach(card => {
                 card.addEventListener('click', function() {
@@ -5933,11 +6006,19 @@
         }
 
         function applyRifampinToWfNote() {
+            // หากยังไม่ได้กดปุ่มคำนวณ ให้สั่งคำนวณก่อนอัตโนมัติ
+            const dashboard = document.getElementById('rifResultDashboard');
+            if (dashboard && dashboard.classList.contains('hidden')) {
+                runRifampinCalculation();
+            }
+
             const scenarioVal = document.querySelector('input[name="rifScenario"]:checked')?.value || 'onset';
             const currentDose = parseFloat(document.getElementById('rifCurrentDose')?.value);
             const currentInr = document.getElementById('rifCurrentInr')?.value;
             const weeks = updateRifWeeks();
-            const targetDose = Math.round((parseFloat(document.getElementById('rifManualDoseInput')?.value) || currentDose) * 2) / 2;
+            const manualDoseVal = parseFloat(document.getElementById('rifManualDoseInput')?.value);
+            const sliderDoseVal = parseFloat(document.getElementById('rifDoseSlider')?.value);
+            const targetDose = Math.round(((manualDoseVal || sliderDoseVal || currentDose || 0)) * 2) / 2;
 
             if (currentInr) document.getElementById('wfNoteInrToday').value = currentInr;
             if (currentDose) {
@@ -5945,23 +6026,73 @@
                 onWfDoseTotalInput();
             }
 
-            // ติ๊ก D/I = Yes และใส่รายละเอียด Rifampin
+            // ดึงข้อความคำแนะนำจากกล่องประเมิน Rifampin
+            const inrAdj = getRifInrAdjustment(currentInr);
+            const inrVal = parseFloat(currentInr);
+            let recActionText = '';
+            if (scenarioVal === 'concurrent') {
+                recActionText = 'เริ่มยาพร้อมกัน แนะนำขนาดยาตามแผนรักษาปกติ (7-35 mg/wk) และติดตาม INR ใน 1-2 สัปดาห์';
+            } else if (scenarioVal === 'onset') {
+                if (weeks <= 2) recActionText = inrAdj.text;
+                else if (weeks <= 4) recActionText = (inrVal < 2.0) ? 'ปรับเพิ่มขนาดยาอีก 20% - 30% (Onset สัปดาห์ที่ 3-4)' : inrAdj.text;
+                else recActionText = `${inrAdj.text} (เข้าสู่ steady state แล้ว)`;
+            } else if (scenarioVal === 'offset') {
+                const alreadyReduced = document.getElementById('rifAlreadyReducedCheckbox')?.checked || false;
+                if (weeks <= 2) recActionText = !alreadyReduced ? 'ลดขนาดยาลง 50% (Offset สัปดาห์ที่ 1-2)' : `${inrAdj.text} (เคยลดยา 50% ไปแล้ว)`;
+                else recActionText = inrAdj.text;
+            }
+            if (inrAdj.danger) {
+                recActionText = `${inrAdj.danger} (${recActionText})`;
+            }
+
+            const fupText = document.getElementById('rifFollowUpText')?.innerText?.trim() || '';
+            const scenarioLabel = scenarioVal === 'onset' ? `Onset Rifampin สัปดาห์ที่ ${weeks}` : (scenarioVal === 'offset' ? `Offset Rifampin สัปดาห์ที่ ${weeks}` : 'เริ่ม Warfarin+Rifampin พร้อมกัน');
+
+            // 1. ติ๊ก D/I = Yes และใส่รายละเอียด Rifampin + ข้อแนะนำการปรับขนาดยา
             const diYes = document.querySelector('input[name="wfNoteDi"][value="Yes"]');
             if (diYes) diYes.checked = true;
-            const scenarioLabel = scenarioVal === 'onset' ? `Onset Rifampin wk ${weeks}` : (scenarioVal === 'offset' ? `Offset Rifampin wk ${weeks}` : 'เริ่ม Warfarin+Rifampin พร้อมกัน');
-            document.getElementById('wfNoteDiText').value = `Rifampin (${scenarioLabel})`;
+            document.getElementById('wfNoteDiText').value = `ได้รับ Rifampin ร่วมด้วย (${scenarioLabel}: ${recActionText})`;
 
-            // ใส่แผนการปรับยาใหม่ลงในช่อง Other
+            // 2. สร้างข้อความแนะนำขนาดยาใหม่และวิธีรับประทานใส่ลงช่อง Other และกล่องสรุปหน้า Note
+            let percentStr = '';
+            if (currentDose && targetDose) {
+                const pct = (((targetDose - currentDose) / currentDose) * 100).toFixed(1);
+                percentStr = `${pct > 0 ? '+' : ''}${pct}%`;
+            }
+
+            let stdRegimen = 'จัดยาตามดุลยพินิจแพทย์';
             if (targetDose && wfDosingSchedule[targetDose]) {
                 const rawRegimen = wfDosingSchedule[targetDose].split('|')[0].trim();
-                const stdRegimen = formatWfRegimenStandard(rawRegimen).replace(/\n/g, ', ');
-                document.getElementById('wfNoteOtherCb').checked = true;
-                document.getElementById('wfNoteOtherText').value = `แผนปรับยาใหม่ ${targetDose} mg/wk (${stdRegimen})`;
+                stdRegimen = formatWfRegimenStandard(rawRegimen).replace(/\n/g, ', ');
+            }
+
+            let otherPlanParts = [];
+            if (scenarioVal !== 'concurrent' && targetDose) {
+                otherPlanParts.push(`แนะนำปรับขนาดยา Warfarin เป็น ${targetDose} mg/wk${percentStr ? ' (' + percentStr + ')' : ''} : ${stdRegimen}`);
+            } else {
+                otherPlanParts.push(recActionText);
+            }
+            if (fupText) otherPlanParts.push(fupText);
+
+            document.getElementById('wfNoteOtherCb').checked = true;
+            document.getElementById('wfNoteOtherText').value = otherPlanParts.join(' | ');
+
+            // 3. แสดงกล่องสรุปคำแนะนำบนหน้า บันทึก Note พร้อมปุ่มกดนำขนาดยาใหม่ไปใส่เป็น Current dose ได้ทันที
+            const summaryBox = document.getElementById('wfRifampinSummaryBox');
+            const summaryContent = document.getElementById('wfRifampinSummaryContent');
+            if (summaryBox && summaryContent) {
+                summaryContent.innerHTML = `
+                    <div>• <strong>สถานการณ์:</strong> ${scenarioLabel} ➔ <span class="underline">${recActionText}</span></div>
+                    ${targetDose ? `<div>• <strong>ขนาดยาใหม่ที่แนะนำ:</strong> <span class="text-base font-bold text-blue-800">${targetDose} mg/wk ${percentStr ? '(' + percentStr + ')' : ''}</span> ➔ ${stdRegimen}
+                    <button type="button" onclick="document.getElementById('wfNoteDoseTotal').value='${targetDose}'; onWfDoseTotalInput();" class="ml-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-0.5 rounded text-[11px] shadow-sm transition">ใช้ ${targetDose} mg/wk เป็นขนาดยาปัจจุบัน</button></div>` : ''}
+                    ${fupText ? `<div>• <strong>การติดตาม:</strong> ${fupText}</div>` : ''}
+                `;
+                summaryBox.classList.remove('hidden');
             }
 
             switchWfTab('note');
             generateOutput();
-            showToast('ส่งผลประเมิน Rifampin ไปหน้า บันทึก Note เรียบร้อยแล้ว!');
+            showToast('ส่งผลประเมินและขนาดยาที่แนะนำไปหน้า บันทึก Note เรียบร้อยแล้ว!');
         }
 
         function printRifampinAdviceA5() {
