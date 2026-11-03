@@ -5857,45 +5857,6 @@
                 }
             });
         }
-        function renderC8Devices() {
-            const container = document.getElementById('c8DeviceContainer');
-            if(!container) return;
-            let html = '<h4 class="font-bold text-blue-700 mb-3 border-b pb-2"><i class="fa-solid fa-list-check"></i> ประเมินเทคนิคการใช้ยาพ่น (Checklist)</h4>';
-            
-            asthmaDevicesDef.forEach(dev => {
-                let regimenOptions = dev.regimens.map(r => `<option value="${r.v}">${r.t}</option>`).join('');
-                let stepsHtml = dev.steps.map((step, idx) => `
-                    <label class="flex items-start gap-2 text-sm text-gray-700 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
-                        <input type="checkbox" id="c8_dev_${dev.id}_step_${idx}" class="mt-1 w-4 h-4 text-blue-600 c8-dev-step-${dev.id}" onchange="updateC8Score('${dev.id}')">
-                        <span class="flex-1">${step}</span>
-                    </label>
-                `).join('');
-
-                html += `
-                <div class="bg-white border border-gray-300 rounded p-4 mb-3 shadow-sm">
-                    <div class="flex flex-wrap items-center gap-4 mb-2">
-                        <label class="font-bold text-gray-800 text-base md:text-lg flex items-center gap-2 cursor-pointer select-none">
-                            <input type="checkbox" id="c8_dev_${dev.id}" onchange="toggleC8Device('${dev.id}')" class="w-5 h-5 text-blue-600 rounded"> 
-                            ${dev.title}
-                        </label>
-                        <select id="c8_dev_${dev.id}_regimen" class="rounded border-gray-300 border px-3 py-1.5 text-sm bg-gray-50 hidden focus:ring-blue-300" onchange="updateC8Score('${dev.id}')">
-                            ${regimenOptions}
-                        </select>
-                    </div>
-                    <div id="c8_dev_${dev.id}_checklist" class="hidden md:ml-7 pl-4 border-l-4 border-blue-100 mt-3">
-                        <button class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded mb-3 font-bold transition shadow-sm" onclick="checkAllC8('${dev.id}')">
-                            <i class="fa-solid fa-check-double"></i> เช็คถูกทั้งหมด (ทำได้ถูกต้อง 100%)
-                        </button>
-                        ${stepsHtml}
-                        <div class="mt-3 bg-blue-50 border border-blue-200 p-3 rounded text-blue-900 font-bold text-sm text-center">
-                            ประเมินผล: ทำถูกต้อง <span id="c8_dev_${dev.id}_score" class="text-lg text-blue-600">0</span> / <span id="c8_dev_${dev.id}_max">0</span> ข้อ 
-                            <span class="bg-white px-2 py-1 rounded ml-2 shadow-sm">คิดเป็น <span id="c8_dev_${dev.id}_percent" class="text-lg text-green-600">0</span>%</span>
-                        </div>
-                    </div>
-                </div>`;
-            });
-            container.innerHTML = html;
-        }
 
         function toggleC8Device(id) {
             const isChecked = document.getElementById(`c8_dev_${id}`).checked;
