@@ -1963,108 +1963,111 @@
             <!-- 8. Asthma/COPD -->
             <div id="form-ASTHMA" class="space-y-6 clinic-form hidden">
                 <div class="bg-teal-50 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
-                    <h3 class="font-bold text-teal-800 mb-2"><i class="fa-solid fa-lungs"></i> 8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD Clinic)</h3>
-                    <p class="text-teal-700">ประเมินเทคนิคการใช้ยาพ่น การควบคุมอาการโรคหืด/ปอดอุดกั้นเรื้อรัง และการเกิดผลข้างเคียงจากสเตียรอยด์พ่น</p>
+                    <h3 class="font-bold text-teal-800 mb-1"><i class="fa-solid fa-lungs mr-1.5"></i>8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD Clinic)</h3>
+                    <p class="text-teal-700 text-xs">ประเมินการควบคุมอาการ รายการยาพ่นที่ใช้ปัจจุบัน (Current Medication) เทคนิคการพ่นยาพร้อมสรุปขั้นตอนที่ขาด และความร่วมมือในการใช้ยา</p>
                 </div>
                 
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">ข้อมูลผู้ป่วยและการวินิจฉัย (Diagnosis)</h3>
+                <!-- 1. การวินิจฉัยและประวัติการกำเริบ -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-base text-blue-800 mb-4 border-b pb-2">1. ข้อมูลผู้ป่วยและการวินิจฉัย (Diagnosis & History)</h3>
                     
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">การวินิจฉัยโรค (Indication)</label>
-                        <div class="flex flex-wrap gap-4">
-                            <!-- เพิ่มตัวเลือก Indication ตรงนี้ -->
-                            <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="Asthma" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Asthma</span></label>
-                            <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="COPD" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">COPD</span></label>
-                            <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="Asthma/COPD" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Asthma/COPD</span></label>
-                            <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="Bronchiectasis" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Bronchiectasis</span></label>
-                            <label class="inline-flex items-center"><input type="radio" name="c8Indication" value="Fibrosis" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Fibrosis</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">การวินิจฉัยโรค (Dx)</label>
+                        <div class="flex flex-wrap gap-4 text-sm">
+                            <label class="inline-flex items-center cursor-pointer"><input type="radio" name="c8Indication" value="Asthma" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Asthma</span></label>
+                            <label class="inline-flex items-center cursor-pointer"><input type="radio" name="c8Indication" value="COPD" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">COPD</span></label>
+                            <label class="inline-flex items-center cursor-pointer"><input type="radio" name="c8Indication" value="Asthma/COPD" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Asthma/COPD</span></label>
+                            <label class="inline-flex items-center cursor-pointer"><input type="radio" name="c8Indication" value="Bronchiectasis" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Bronchiectasis</span></label>
+                            <label class="inline-flex items-center cursor-pointer"><input type="radio" name="c8Indication" value="Fibrosis" class="form-radio text-teal-600" onchange="generateOutput()"><span class="ml-2">Fibrosis</span></label>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">ER (ครั้ง)</label>
-                            <input type="number" id="c8Er" placeholder="จำนวนครั้ง" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                            <input type="number" id="c8Er" placeholder="เช่น 0 หรือ 1" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Admit (ครั้ง)</label>
-                            <input type="number" id="c8Admit" placeholder="จำนวนครั้ง" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                            <input type="number" id="c8Admit" placeholder="เช่น 0" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ACT / CAT Score (ถ้ามี)</label>
+                            <input type="text" id="c8Score" placeholder="เช่น ACT 22, CAT 8" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div class="flex items-end pb-2">
-                            <!-- เปลี่ยนเป็น Checkbox สำหรับผู้ป่วยใหม่ -->
-                            <label class="inline-flex items-center font-bold text-orange-600 cursor-pointer">
+                            <label class="inline-flex items-center font-bold text-orange-600 cursor-pointer text-sm">
                                 <input type="checkbox" id="c8NewPt" class="form-checkbox text-orange-600 rounded mr-2" onchange="generateOutput()">
-                                ⭐ ผู้ป่วยใหม่ (พึ่งเข้าคลินิกครั้งแรก)
+                                ⭐ ผู้ป่วยใหม่ (เข้าคลินิกครั้งแรก)
                             </label>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mt-4">
-                    <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">การประเมินการควบคุมโรคและเทคนิคการพ่นยา</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">การควบคุมอาการ (Asthma/COPD Control)</label>
-                            <select id="c8Control" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
-                                <option value="">-- เลือกระดับ --</option>
-                                <option value="Well-controlled">Well-controlled (ควบคุมได้ดี)</option>
-                                <option value="Partly-controlled">Partly-controlled (ควบคุมได้บางส่วน)</option>
-                                <option value="Uncontrolled">Uncontrolled (ควบคุมไม่ได้)</option>
-                            </select>
-                        </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700">
-                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp1" value="ใช้ยาฉุกเฉิน >2 ครั้ง/สัปดาห์" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> ใช้ยาพ่นฉุกเฉินบรรเทาอาการ > 2 ครั้ง/สัปดาห์</label>
-                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp2" value="หอบกำเริบ >2 ครั้ง/สัปดาห์" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> หอบกำเริบ > 2 ครั้ง/สัปดาห์</label>
-                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp3" value="หอบกำเริบตอนกลางคืน" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> หอบกำเริบตอนกลางคืน (จนต้องตื่นมาพ่นยา)</label>
-                            <label class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"><input type="checkbox" id="c8Symp4" value="จำกัดการใช้ชีวิตประจำวัน" class="mr-2 h-4 w-4 text-blue-600 c8-symp" onchange="generateOutput()"> จำกัดการทำกิจกรรมในชีวิตประจำวัน</label>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">ACT / CAT Score</label>
-                            <input type="text" id="c8Score" placeholder="เช่น ACT 22 หรือ CAT 8" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">เทคนิคการใช้ยาพ่น (Inhaler Technique)</label>
-                            <select id="c8Technique" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
-                                <option value="">-- เลือก --</option>
-                                <option value="ถูกต้องครบถ้วน">ถูกต้องครบถ้วน (Good technique)</option>
-                                <option value="มีข้อผิดพลาด">มีข้อผิดพลาด ได้รับการสอนซ้ำ (Re-educated)</option>
-                            </select>
-                        </div>
+                <!-- 2. อาการและการควบคุมโรค (Symptoms) -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-base text-blue-800 mb-3 border-b pb-2">2. การประเมินอาการใน 4 สัปดาห์ที่ผ่านมา (Symptoms)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700">
+                        <label class="flex items-center cursor-pointer hover:bg-teal-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" id="c8Symp1" value="ใช้ยาฉุกเฉิน >2 ครั้ง/สัปดาห์" class="mr-2.5 h-4 w-4 text-teal-600 c8-symp" onchange="generateOutput()"> ใช้ยาพ่นฉุกเฉินบรรเทาอาการ &gt; 2 ครั้ง/สัปดาห์</label>
+                        <label class="flex items-center cursor-pointer hover:bg-teal-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" id="c8Symp2" value="หอบกำเริบ >2 ครั้ง/สัปดาห์" class="mr-2.5 h-4 w-4 text-teal-600 c8-symp" onchange="generateOutput()"> หอบกำเริบ &gt; 2 ครั้ง/สัปดาห์</label>
+                        <label class="flex items-center cursor-pointer hover:bg-teal-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" id="c8Symp3" value="หอบกำเริบตอนกลางคืน" class="mr-2.5 h-4 w-4 text-teal-600 c8-symp" onchange="generateOutput()"> หอบกำเริบตอนกลางคืน (จนต้องตื่นมาพ่นยา)</label>
+                        <label class="flex items-center cursor-pointer hover:bg-teal-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" id="c8Symp4" value="จำกัดการใช้ชีวิตประจำวัน" class="mr-2.5 h-4 w-4 text-teal-600 c8-symp" onchange="generateOutput()"> จำกัดการทำกิจกรรมในชีวิตประจำวัน</label>
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">การบ้วนปากหลังพ่นยาสเตียรอยด์</label>
-                            <select id="c8Gargle" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="generateOutput()">
-                                <option value="บ้วนปากสม่ำเสมอ">บ้วนปากสม่ำเสมอ (ปฏิเสธฝ้าขาว/เสียงแหบ)</option>
-                                <option value="ลืมบ้วนปากบ่อย">ลืมบ้วนปากบ่อย (แนะนำย้ำเตือน)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">การใช้ Reliever (ครั้ง/สัปดาห์)</label>
-                            <input type="text" id="c8RelieverUse" placeholder="เช่น ≤ 2 ครั้ง/สัปดาห์" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
-                        </div>
+                <!-- 3. Current Medication & Device Checklist (สร้างโดย JS) -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <div id="c8DeviceContainer" class="space-y-4">
+                        <!-- Checklists & Medications generated by renderC8Devices() -->
                     </div>
+                </div>
 
-                    <!-- จุดที่เพิ่มเข้ามา: กล่องสำหรับรองรับ Checklist ของ Devices -->
-                    <div id="c8DeviceContainer" class="space-y-2 mb-4">
-                        <!-- Checklists generated by JS -->
-                    </div>
+                <!-- 4. Compliance, DRP/Note & ผู้บันทึก -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-4">
+                    <h3 class="font-semibold text-base text-blue-800 border-b pb-2">4. ความร่วมมือในการใช้ยา (Compliance) และ DRP / Note</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                        <div class="md:col-span-5">
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-bold text-gray-700">Compliance (%)</label>
+                                <div class="flex gap-1">
+                                    <button type="button" onclick="document.getElementById('c8Compliance').value='100'; generateOutput();" class="text-[11px] bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 px-2 py-0.5 rounded font-semibold">100%</button>
+                                    <button type="button" onclick="document.getElementById('c8Compliance').value='90'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-0.5 rounded">90%</button>
+                                    <button type="button" onclick="document.getElementById('c8Compliance').value='80'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-0.5 rounded">80%</button>
+                                    <button type="button" onclick="document.getElementById('c8Compliance').value='70'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-0.5 rounded">70%</button>
+                                    <button type="button" onclick="document.getElementById('c8Compliance').value='50'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-0.5 rounded">50%</button>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="c8Compliance" placeholder="เช่น 100 หรือ 85" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm font-bold text-teal-800" oninput="generateOutput()">
+                                <span class="text-sm font-bold text-gray-600">%</span>
+                            </div>
+                        </div>
 
-                    <div class="mb-4">
-                        <label class="block text-xs font-medium text-gray-700 mb-1">ประเมินปัญหาการใช้ยาอื่นๆ (DRP / ข้อเสนอแนะ)</label>
-                        <input type="text" id="c8Drp" placeholder="เช่น ผู้ป่วยใช้ยาไม่สม่ำเสมอ, แนะนำให้บ้วนปากหลังพ่นสเตียรอยด์ทุกครั้ง" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        <div class="md:col-span-7">
+                            <label class="block text-xs font-bold text-gray-700 mb-1">ปุ่มด่วนปัญหาการใช้ยา (คลิกเพื่อเพิ่มลงในช่อง DRP/Note):</label>
+                            <div class="flex flex-wrap gap-1.5">
+                                <button type="button" onclick="appendC8Drp('ลืมพ่นยาช่วงเย็น 2 ครั้ง/สัปดาห์')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-lg transition">+ ลืมพ่นยาช่วงเย็น 2 ครั้ง/สัปดาห์</button>
+                                <button type="button" onclick="appendC8Drp('ลืมพ่นยาช่วงเช้า')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-lg transition">+ ลืมพ่นยาช่วงเช้า</button>
+                                <button type="button" onclick="appendC8Drp('ปรับลดยาเอง')" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-lg transition">+ ปรับลดยาเอง</button>
+                                <button type="button" onclick="appendC8Drp('หยุดยาเองเมื่อไม่มีอาการ')" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-lg transition">+ หยุดยาเองเมื่อไม่มีอาการ</button>
+                                <button type="button" onclick="appendC8Drp('ลืมบ้วนปากหลังพ่นสเตียรอยด์ แนะนำย้ำเตือนแล้ว')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-lg transition">+ ลืมบ้วนปาก</button>
+                                <button type="button" onclick="appendC8Drp('แนะนำและสอนเทคนิคการพ่นยาซ้ำแล้ว')" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-lg transition">+ สอนเทคนิคพ่นยาซ้ำแล้ว</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก</label>
-                        <input type="text" id="c8PharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                        <label class="block text-xs font-bold text-gray-700 mb-1">DRP / Note (รายละเอียดปัญหาการใช้ยา หรือข้อเสนอแนะ)</label>
+                        <input type="text" id="c8Drp" placeholder="เช่น ลืมพ่นยาช่วงเย็น 2 ครั้ง/สัปดาห์ / ปรับลดยาเอง..." class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก (เภสัชกร)</label>
+                        <input type="text" id="c8PharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
                     </div>
                 </div>
             </div>
-
-        </div>
 
         <!-- Output & Actions -->
         <div id="opdOutputSection" class="bg-gray-100 p-6 border-t border-gray-200">
@@ -2600,8 +2603,17 @@
         
         const asthmaDevicesDef = [
             { 
-                id: 'mdi', title: 'MDI (Metered Dose Inhaler)', 
+                id: 'mdi', title: 'MDI (Metered Dose Inhaler)', noteHeader: 'MDI :',
                 regimens: [{v:'1', t:'พ่นประจำ 1 Puff'}, {v:'>1', t:'พ่นประจำ >1 Puff'}, {v:'prn1', t:'PRN 1 Puff'}, {v:'prn>1', t:'PRN >1 Puff'}],
+                drugs: [
+                    { id: 'mdi_bude', name: 'Budesonide 200 mcg', defaultPuff: '2', defaultFreq: 'BID' },
+                    { id: 'mdi_fluti', name: 'Fluticasone 125 mcg', defaultPuff: '2', defaultFreq: 'BID' },
+                    { id: 'mdi_sere125', name: 'Seretide EVO (25/125)', defaultPuff: '2', defaultFreq: 'BID' },
+                    { id: 'mdi_sere250', name: 'Seretide EVO (25/250)', defaultPuff: '2', defaultFreq: 'BID' },
+                    { id: 'mdi_sere50', name: 'Seretide EVO (25/50)', defaultPuff: '2', defaultFreq: 'BID' },
+                    { id: 'mdi_ventolin', name: 'Ventolin 100 mcg', defaultPuff: '1-2', defaultFreq: 'prn' },
+                    { id: 'mdi_berodual', name: 'Berodual', defaultPuff: '1-2', defaultFreq: 'prn' }
+                ],
                 steps: [
                     "ถือหลอดพ่นในแนวตั้ง เปิดฝาครอบปากขวดยาพ่นออก เขย่าขวดยาในแนวตั้ง 3-4 ครั้ง",
                     "เตรียมลมหายใจโดย พ่นลมหายใจออก ให้เต็มที่",
@@ -2616,8 +2628,11 @@
                 excelOffset: 13
             },
             { 
-                id: 'accuhaler', title: 'ACCUHALER', 
+                id: 'accuhaler', title: 'Accuhaler', noteHeader: 'Accuhaler :',
                 regimens: [{v:'1', t:'พ่น 1 Puff'}, {v:'>1', t:'พ่น >1 Puff'}],
+                drugs: [
+                    { id: 'accu_sere250', name: 'Seretide Accu (50/250)', defaultPuff: '1', defaultFreq: 'BID' }
+                ],
                 steps: [
                     "วางเครื่องแนวราบ ไม่เขย่า ไม่พลิกไปมา ใช้นิ้วหัวแม่มือดันออกจากตัวจนสุด",
                     "ดันแกนเลื่อนด้านในออกไปจนสุดได้ยินเสียง 'คลิก' เพื่อบรรจุยา",
@@ -2632,8 +2647,11 @@
                 excelOffset: 29
             },
             {
-                id: 'handihaler', title: 'HANDIHALER',
+                id: 'handihaler', title: 'HANDIHALER', noteHeader: 'HANDIHALER :',
                 regimens: [{v:'1', t:'พ่นครั้งละ 1 แคปซูล'}],
+                drugs: [
+                    { id: 'handi_spiriva', name: 'Spiriva 18 mcg', defaultPuff: '1', defaultFreq: 'OD' }
+                ],
                 steps: [
                     "ดึงฝาเปิดขึ้น แล้วเปิดปากกระบอก",
                     "แกะยาออกจากแผง (ไม่แกะยาทิ้งไว้) แล้วใส่แคปซูลยาลงในช่องใส่เม็ดยา",
@@ -2649,8 +2667,12 @@
                 excelOffset: 42
             },
             {
-                id: 'spiromax', title: 'DuoResp Spiromax',
+                id: 'spiromax', title: 'Spiromax', noteHeader: 'Spiromax :',
                 regimens: [{v:'1', t:'พ่น 1 Puff'}, {v:'>1', t:'พ่น >1 Puff'}],
+                drugs: [
+                    { id: 'spiro_160', name: 'Duoresp (160/4.5)', defaultPuff: '1', defaultFreq: 'BID' },
+                    { id: 'spiro_320', name: 'Duoresp (320/9)', defaultPuff: '1', defaultFreq: 'BID' }
+                ],
                 steps: [
                     "ถือกระบอกยาในแนวตั้ง (โดยให้ปากกระบอกยาอยู่ด้านล่าง) และไม่เขย่าขวดยาพ่น",
                     "เปิดฝากระบอกยาจนสุดจะได้ยินเสียงคลิก",
@@ -2664,8 +2686,30 @@
                 excelOffset: 54
             },
             {
-                id: 'respimat', title: 'Spiolto respimat',
+                id: 'rapihaler', title: 'Rapihaler', noteHeader: 'Rapihaler :',
                 regimens: [{v:'1', t:'พ่น 1 Puff'}, {v:'>1', t:'พ่น >1 Puff'}],
+                drugs: [
+                    { id: 'rapi_symbi', name: 'Symbicort rapihaler (160/4.5)', defaultPuff: '2', defaultFreq: 'BID' }
+                ],
+                steps: [
+                    "ถือหลอดพ่นในแนวตั้ง เปิดฝาครอบปากขวดยาพ่นออก เขย่าขวดยาในแนวตั้ง 3-4 ครั้ง",
+                    "เตรียมลมหายใจโดย พ่นลมหายใจออก ให้เต็มที่",
+                    "อมปากขวดยาพ่น : ริมฝีปากอมรอบปากขวดยาให้สนิท",
+                    "หายใจเข้าช้าๆ ลึกๆ ทางปากพร้อมกับกดที่พ่นยา 1 ครั้ง",
+                    "เอาขวดยาพ่นออกจากปาก ปิดปากให้สนิท กลั้นหายใจให้นานที่สุดอย่างน้อย 10 วินาที",
+                    "ผ่อนลมหายใจออกทางปาก หรือจมูกช้าๆ",
+                    "หลังใช้เสร็จกลั้วภายในปากและคอด้วยน้ำสะอาด",
+                    "เช็ดทำความสะอาดปากกระบอกด้วยผ้าหรือกระดาษทิชชู่แห้ง (ห้ามล้างน้ำ)",
+                    "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
+                ],
+                excelOffset: null
+            },
+            {
+                id: 'respimat', title: 'Respimat', noteHeader: 'Respimat :',
+                regimens: [{v:'1', t:'พ่น 1 Puff'}, {v:'>1', t:'พ่น >1 Puff'}],
+                drugs: [
+                    { id: 'respi_spiolto', name: 'Spiolto', suffix: '(2.5/2.5)', defaultPuff: '1', defaultFreq: 'OD' }
+                ],
                 steps: [
                     "กำจัดน้ำมูก เสมหะ นั่งเตรียมพร้อมและหมุนขวดยาตามลูกศรเพื่อบรรจุยาก่อนสูด",
                     "เตรียมลมโดยหายใจออกให้เต็มที่ก่อนพ่นยา",
@@ -2678,8 +2722,11 @@
                 excelOffset: 66
             },
             {
-                id: 'ellipta', title: 'Anoro ellipta',
+                id: 'ellipta', title: 'Ellipta', noteHeader: 'Ellipta :',
                 regimens: [{v:'1', t:'พ่น 1 Puff'}],
+                drugs: [
+                    { id: 'ellip_anoro', name: 'ANORO (62.5/25)', defaultPuff: '1', defaultFreq: 'OD' }
+                ],
                 steps: [
                     "กำจัดน้ำมูก เสมหะ นั่งเตรียมพร้อม และเปิดกระบอกยาจนสุดจะมีเสียงดังคลิก",
                     "เตรียมลมโดยหายใจออกให้เต็มที่ก่อนพ่นยา",
@@ -2689,6 +2736,25 @@
                     "ทำความสะอาดปากกระบอกยาพ่นโดยใช้กระดาษทิชชู่หรือผ้าแห้งเช็ดให้สะอาด ก่อนปิดฝากระบอกยา"
                 ],
                 excelOffset: 77
+            },
+            {
+                id: 'aerosphere', title: 'Aerosphere', noteHeader: 'Aerosphere :',
+                regimens: [{v:'1', t:'พ่น 1 Puff'}, {v:'>1', t:'พ่น >1 Puff'}],
+                drugs: [
+                    { id: 'aero_breztri', name: 'BREZTRI (160/7.2/5)', defaultPuff: '1', defaultFreq: 'OD' }
+                ],
+                steps: [
+                    "ถือหลอดพ่นในแนวตั้ง เปิดฝาครอบปากขวดยาพ่นออก เขย่าขวดยาในแนวตั้ง 3-4 ครั้ง",
+                    "เตรียมลมหายใจโดย พ่นลมหายใจออก ให้เต็มที่",
+                    "อมปากขวดยาพ่น : ริมฝีปากอมรอบปากขวดยาให้สนิท",
+                    "หายใจเข้าช้าๆ ลึกๆ ทางปากพร้อมกับกดที่พ่นยา 1 ครั้ง",
+                    "เอาขวดยาพ่นออกจากปาก ปิดปากให้สนิท กลั้นหายใจให้นานที่สุดอย่างน้อย 10 วินาที",
+                    "ผ่อนลมหายใจออกทางปาก หรือจมูกช้าๆ",
+                    "หลังใช้เสร็จกลั้วภายในปากและคอด้วยน้ำสะอาด",
+                    "ล้างทำความสะอาดกระบอกพลาสติกสัปดาห์ละ 1 ครั้ง ผึ่งให้แห้งสนิท",
+                    "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
+                ],
+                excelOffset: null
             }
         ];
         
@@ -4798,39 +4864,77 @@
                 if (pharm) notes.push(`/${pharm}`);
             }
             else if (currentTab === 'ASTHMA') {
-                notes.push("pharmacist note Asthma/COPD");
+                notes.push("pharmacist note: Asthma/COPD clinic");
                 let c8Lines = [];
                 const ind = document.querySelector('input[name="c8Indication"]:checked')?.value;
-                const score = document.getElementById('c8Score')?.value;
-                const er = document.getElementById('c8Er')?.value;
-                const admit = document.getElementById('c8Admit')?.value;
+                const score = document.getElementById('c8Score')?.value?.trim();
+                const er = document.getElementById('c8Er')?.value?.trim();
+                const admit = document.getElementById('c8Admit')?.value?.trim();
                 const isNew = document.getElementById('c8NewPt')?.checked;
 
                 if (isNew) notes.push("⭐ ผู้ป่วยใหม่ (พึ่งเคยเข้าคลินิกครั้งแรก)");
                 if (ind) c8Lines.push(`Dx: ${ind}`);
                 if (score) c8Lines.push(`Score: ${score}`);
-                if (er || admit) c8Lines.push(`History: ER ${er||0} ครั้ง/ปี, Admit ${admit||0} ครั้ง/ปี`);
+                if (er !== '' || admit !== '') {
+                    c8Lines.push(`History: ER ${er || 0} ครั้ง, Admit ${admit || 0} ครั้ง`);
+                }
             
                 if (c8Lines.length > 0) notes.push(c8Lines.join(' | '));
             
                 let symps = [];
                 document.querySelectorAll('.c8-symp:checked').forEach(cb => {
-                    if (cb.checked) symps.push(cb.value)
+                    if (cb.checked) symps.push(cb.value);
                 });
                 if (symps.length > 0) notes.push(`Symptoms: ${symps.join(', ')}`);
                 else notes.push(`Symptoms: Well-controlled`);
 
-                let devLines = [];
+                // Current Medication & Device Technique Summary
+                let medSectionLines = [];
                 asthmaDevicesDef.forEach(dev => {
-                    if(document.getElementById(`c8_dev_${dev.id}`)?.checked) {
-                        const pct = document.getElementById(`c8_dev_${dev.id}_percent`)?.innerText;
-                        devLines.push(`${dev.title} (Tech: ${pct}%)`);
+                    const isDevChecked = document.getElementById(`c8_dev_${dev.id}`)?.checked;
+                    const checkedDrugs = (dev.drugs || []).filter(med => document.getElementById(`c8_med_${med.id}`)?.checked);
+
+                    if (isDevChecked || checkedDrugs.length > 0) {
+                        const evalObj = getC8DeviceEvalSummary(dev.id);
+                        const missingStr = evalObj.missingSteps.length > 0 ? ` ขาด ${evalObj.missingSteps.join(', ')}` : '';
+                        const techStr = `(Technique: ${evalObj.pct}%${missingStr})`;
+
+                        medSectionLines.push(dev.noteHeader || `${dev.title} :`);
+
+                        if (checkedDrugs.length > 0) {
+                            checkedDrugs.forEach(med => {
+                                const puffSel = document.getElementById(`c8_med_${med.id}_puff`)?.value || '';
+                                const puffCustom = document.getElementById(`c8_med_${med.id}_puff_custom`)?.value?.trim() || '';
+                                const finalPuff = puffSel === 'custom' ? puffCustom : puffSel;
+
+                                const freqSel = document.getElementById(`c8_med_${med.id}_freq`)?.value || '';
+                                const freqCustom = document.getElementById(`c8_med_${med.id}_freq_custom`)?.value?.trim() || '';
+                                const finalFreq = freqSel === 'custom' ? freqCustom : freqSel;
+
+                                let usageParts = [];
+                                if (finalPuff) usageParts.push(`${finalPuff} puff`);
+                                if (finalFreq) usageParts.push(finalFreq);
+                                if (med.suffix) usageParts.push(med.suffix);
+
+                                const usageText = usageParts.length > 0 ? ' ' + usageParts.join(' ') : '';
+                                medSectionLines.push(`– ${med.name}${usageText} ${techStr}`);
+                            });
+                        } else {
+                            medSectionLines.push(`– ${techStr}`);
+                        }
                     }
                 });
-                if (devLines.length > 0) notes.push(`Devices: ${devLines.join(', ')}`);
 
-                const drp = document.getElementById('c8Drp')?.value;
-                const pharm = document.getElementById('c8PharmName')?.value;
+                if (medSectionLines.length > 0) {
+                    notes.push("Current Medication:");
+                    medSectionLines.forEach(l => notes.push(l));
+                }
+
+                const comp = document.getElementById('c8Compliance')?.value?.trim();
+                const drp = document.getElementById('c8Drp')?.value?.trim();
+                const pharm = document.getElementById('c8PharmName')?.value?.trim();
+
+                if (comp) notes.push(`Compliance: ${comp.replace(/%/g, '').trim()} %`);
                 if (drp) notes.push(`DRP/Note: ${drp}`);
                 if (pharm) notes.push(`/${pharm}`);
             }
@@ -5167,8 +5271,9 @@
                 rowData[12] = document.getElementById('c8Symp4')?.checked ? '1' : '0';
                 
                 asthmaDevicesDef.forEach(dev => {
+                    if (dev.excelOffset === null || dev.excelOffset === undefined) return; // ข้ามอุปกรณ์ใหม่ที่ยังไม่ได้เพิ่มคอลัมน์ใน Google Sheet
                     const isActive = document.getElementById(`c8_dev_${dev.id}`)?.checked;
-                    rowData[dev.excelOffset] = isActive ? 'TRUE' : 'FALSE'; 
+                    rowData[dev.excelOffset] = isActive ? 'TRUE' : 'FALSE';
                 
                     if(isActive) {
                         let total = 0;
@@ -5850,40 +5955,104 @@
         // ==========================================
         //         ASTHMA COPD DEVICES LOGIC
         // ==========================================
+        function appendC8Drp(text) {
+            const inp = document.getElementById('c8Drp');
+            if (!inp) return;
+            const cur = inp.value.trim();
+            if (!cur) {
+                inp.value = text;
+            } else if (!cur.includes(text)) {
+                inp.value = `${cur} / ${text}`;
+            }
+            generateOutput();
+        }
+
         function renderC8Devices() {
             const container = document.getElementById('c8DeviceContainer');
             if(!container) return;
-            let html = '<h4 class="font-bold text-blue-700 mb-3 border-b pb-2"><i class="fa-solid fa-list-check"></i> ประเมินเทคนิคการใช้ยาพ่น (Checklist)</h4>';
+            let html = '<h3 class="font-semibold text-base text-blue-800 mb-3 border-b pb-2"><i class="fa-solid fa-spray-can-sparkles mr-2"></i>3. รายการยาพ่นปัจจุบัน (Current Medication) & ประเมินเทคนิคการพ่นยา</h3>';
             
             asthmaDevicesDef.forEach(dev => {
                 let regimenOptions = dev.regimens.map(r => `<option value="${r.v}">${r.t}</option>`).join('');
+                
+                // สร้างรายการยาให้ติ๊กเลือก พร้อมตัวเลือกจำนวน puff และวิธีใช้ (OD / BID / prn / กรอกเอง)
+                let drugsHtml = (dev.drugs || []).map(med => {
+                    const puffOpts = ['1', '2', '1-2', 'custom'].map(p => 
+                        `<option value="${p}" ${med.defaultPuff === p ? 'selected' : ''}>${p === 'custom' ? 'ระบุเอง...' : p + ' puff'}</option>`
+                    ).join('');
+                    const freqOpts = ['OD', 'BID', 'prn', 'OD/BID', 'SMART', 'custom'].map(f => 
+                        `<option value="${f}" ${med.defaultFreq === f ? 'selected' : ''}>${f === 'custom' ? 'ระบุเอง...' : f}</option>`
+                    ).join('');
+
+                    return `
+                        <div class="flex flex-wrap items-center justify-between gap-2 bg-white p-2.5 rounded-lg border border-gray-200 hover:border-teal-300 transition">
+                            <label class="inline-flex items-center cursor-pointer font-semibold text-sm text-gray-800 flex-1 min-w-[180px]">
+                                <input type="checkbox" id="c8_med_${med.id}" class="w-4 h-4 text-teal-600 rounded mr-2 c8-med-cb-${dev.id}" onchange="onC8MedCheck('${dev.id}', '${med.id}')">
+                                <span>${med.name} ${med.suffix ? '<span class="text-xs text-gray-500 font-normal">' + med.suffix + '</span>' : ''}</span>
+                            </label>
+                            <div class="flex flex-wrap items-center gap-1.5 text-xs">
+                                <select id="c8_med_${med.id}_puff" onchange="onC8MedUsageChange('${dev.id}', '${med.id}')" class="rounded border-gray-300 border px-2 py-1 bg-gray-50 font-medium text-gray-700">
+                                    ${puffOpts}
+                                </select>
+                                <input type="text" id="c8_med_${med.id}_puff_custom" placeholder="จำนวน puff" class="hidden w-16 rounded border-gray-300 border px-2 py-1 text-center" oninput="generateOutput()">
+                                <select id="c8_med_${med.id}_freq" onchange="onC8MedUsageChange('${dev.id}', '${med.id}')" class="rounded border-gray-300 border px-2 py-1 bg-gray-50 font-bold text-teal-700">
+                                    ${freqOpts}
+                                </select>
+                                <input type="text" id="c8_med_${med.id}_freq_custom" placeholder="วิธีใช้..." class="hidden w-20 rounded border-gray-300 border px-2 py-1" oninput="generateOutput()">
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
                 let stepsHtml = dev.steps.map((step, idx) => `
-                    <label class="flex items-start gap-2 text-sm text-gray-700 mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
-                        <input type="checkbox" id="c8_dev_${dev.id}_step_${idx}" class="mt-1 w-4 h-4 text-blue-600 c8-dev-step-${dev.id}" onchange="updateC8Score('${dev.id}')">
-                        <span class="flex-1">${step}</span>
+                    <label class="flex items-start gap-2 text-xs md:text-sm text-gray-700 mb-1.5 cursor-pointer hover:bg-gray-50 p-1.5 rounded transition">
+                        <input type="checkbox" id="c8_dev_${dev.id}_step_${idx}" class="mt-0.5 w-4 h-4 text-blue-600 rounded c8-dev-step-${dev.id}" onchange="updateC8Score('${dev.id}')">
+                        <span class="flex-1">${idx + 1}. ${step}</span>
                     </label>
                 `).join('');
 
                 html += `
-                <div class="bg-gray-50 border border-gray-300 rounded-lg p-4 mb-3 shadow-sm">
-                    <div class="flex flex-wrap items-center gap-4 mb-2">
-                        <label class="font-bold text-gray-800 text-base md:text-lg flex items-center gap-2 cursor-pointer select-none">
-                            <input type="checkbox" id="c8_dev_${dev.id}" onchange="toggleC8Device('${dev.id}')" class="w-5 h-5 text-blue-600 rounded"> 
+                <div class="bg-slate-50 border border-gray-200 rounded-xl p-4 shadow-sm">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-2.5">
+                        <label class="font-bold text-teal-900 text-base flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" id="c8_dev_${dev.id}" onchange="toggleC8Device('${dev.id}')" class="w-5 h-5 text-teal-600 rounded"> 
                             ${dev.title}
                         </label>
-                        <select id="c8_dev_${dev.id}_regimen" class="rounded border-gray-300 border px-3 py-1.5 text-sm bg-white hidden focus:ring-blue-300 shadow-sm" onchange="updateC8Score('${dev.id}')">
-                            ${regimenOptions}
-                        </select>
+                        <div class="flex items-center gap-2">
+                            <select id="c8_dev_${dev.id}_regimen" class="rounded-lg border-gray-300 border px-2.5 py-1 text-xs bg-white hidden focus:ring-blue-300 shadow-sm font-medium" onchange="updateC8Score('${dev.id}')">
+                                ${regimenOptions}
+                            </select>
+                            <button type="button" id="c8_dev_${dev.id}_toggle_btn" onclick="document.getElementById('c8_dev_${dev.id}_checklist').classList.toggle('hidden')" class="hidden text-xs bg-white hover:bg-gray-100 text-gray-600 border border-gray-300 px-2.5 py-1 rounded-lg">
+                                ซ่อน/แสดงขั้นตอน
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- รายการยาภายใต้กลุ่มอุปกรณ์นี้ -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+                        ${drugsHtml}
                     </div>
                     
-                    <div id="c8_dev_${dev.id}_checklist" class="hidden md:ml-7 pl-4 border-l-4 border-blue-200 mt-3 bg-white p-3 rounded">
-                        <button class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded mb-3 font-bold transition shadow-sm" onclick="checkAllC8('${dev.id}')">
-                            <i class="fa-solid fa-check-double"></i> ติ๊กถูกทั้งหมด (ทำได้ถูกต้อง 100%)
-                        </button>
+                    <!-- Checklist ประเมินเทคนิคการพ่นยา -->
+                    <div id="c8_dev_${dev.id}_checklist" class="hidden md:ml-4 pl-3 border-l-4 border-teal-300 mt-3 bg-white p-3.5 rounded-lg shadow-inner">
+                        <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+                            <span class="text-xs font-bold text-gray-600">ติ๊กข้อที่ผู้ป่วยทำได้ถูกต้อง (ข้อที่ไม่ได้ติ๊กจะถูกนำไปสรุปหลังคำว่า "ขาด ..."):</span>
+                            <div class="flex gap-1.5">
+                                <button type="button" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg font-bold transition shadow-sm" onclick="checkAllC8('${dev.id}')">
+                                    <i class="fa-solid fa-check-double mr-1"></i> ทำได้ถูกต้องทั้งหมด (100%)
+                                </button>
+                                <button type="button" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-2.5 py-1 rounded-lg transition" onclick="uncheckAllC8('${dev.id}')">
+                                    ล้างติ๊ก
+                                </button>
+                            </div>
+                        </div>
                         ${stepsHtml}
-                        <div class="mt-3 bg-blue-50 border border-blue-200 p-3 rounded text-blue-900 font-bold text-sm text-center">
-                            ประเมินผล: ทำถูกต้อง <span id="c8_dev_${dev.id}_score" class="text-lg text-blue-600">0</span> / <span id="c8_dev_${dev.id}_max">0</span> ข้อ 
-                            <span class="bg-white px-2 py-1 rounded ml-2 shadow-sm border border-blue-100">คิดเป็น <span id="c8_dev_${dev.id}_percent" class="text-lg text-green-600">0</span>%</span>
+                        <div class="mt-3 bg-blue-50 border border-blue-200 p-2.5 rounded-lg text-blue-900 font-bold text-xs md:text-sm flex flex-wrap justify-between items-center gap-2">
+                            <div>
+                                ประเมินผล: ทำถูกต้อง <span id="c8_dev_${dev.id}_score" class="text-base text-blue-700">0</span> / <span id="c8_dev_${dev.id}_max">0</span> ข้อ 
+                                <span class="bg-white px-2.5 py-0.5 rounded-full ml-2 shadow-sm border border-blue-200">Technique: <span id="c8_dev_${dev.id}_percent" class="text-base text-emerald-600">0</span>%</span>
+                            </div>
+                            <div id="c8_dev_${dev.id}_missing_preview" class="text-xs font-normal text-rose-600"></div>
                         </div>
                     </div>
                 </div>`;
@@ -5891,18 +6060,93 @@
             container.innerHTML = html;
         }
 
-        function toggleC8Device(id) {
-            const isChecked = document.getElementById(`c8_dev_${id}`).checked;
+        function onC8MedCheck(devId, medId) {
+            const medCb = document.getElementById(`c8_med_${medId}`);
+            const devCb = document.getElementById(`c8_dev_${devId}`);
+            const anyMedChecked = document.querySelectorAll(`.c8-med-cb-${devId}:checked`).length > 0;
+
+            if (medCb && medCb.checked && devCb && !devCb.checked) {
+                devCb.checked = true;
+                toggleC8Device(devId, true);
+            } else if (!anyMedChecked && devCb && devCb.checked) {
+                // หากยกเลิกติ๊กยาทั้งหมดในอุปกรณ์นั้น ให้ซ่อนอุปกรณ์อัตโนมัติ
+                devCb.checked = false;
+                toggleC8Device(devId, false);
+            }
+            syncC8RegimenFromMeds(devId);
+            updateC8Score(devId);
+        }
+
+        function onC8MedUsageChange(devId, medId) {
+            const puffSel = document.getElementById(`c8_med_${medId}_puff`);
+            const puffCus = document.getElementById(`c8_med_${medId}_puff_custom`);
+            const freqSel = document.getElementById(`c8_med_${medId}_freq`);
+            const freqCus = document.getElementById(`c8_med_${medId}_freq_custom`);
+
+            if (puffSel && puffCus) puffCus.classList.toggle('hidden', puffSel.value !== 'custom');
+            if (freqSel && freqCus) freqCus.classList.toggle('hidden', freqSel.value !== 'custom');
+
+            // หากเปลี่ยนวิธีใช้ของยาตัวนั้น ให้ติ๊กเลือกยาตัวนั้นอัตโนมัติ
+            const medCb = document.getElementById(`c8_med_${medId}`);
+            if (medCb && !medCb.checked) {
+                medCb.checked = true;
+                onC8MedCheck(devId, medId);
+                return;
+            }
+            syncC8RegimenFromMeds(devId);
+            updateC8Score(devId);
+        }
+
+        function syncC8RegimenFromMeds(devId) {
+            const devDef = asthmaDevicesDef.find(d => d.id === devId);
+            const regimenEl = document.getElementById(`c8_dev_${devId}_regimen`);
+            if (!devDef || !regimenEl) return;
+
+            const checkedDrugs = (devDef.drugs || []).filter(m => document.getElementById(`c8_med_${m.id}`)?.checked);
+            if (checkedDrugs.length === 0) return;
+
+            let hasMultiPuff = false;
+            let allPrn = true;
+            checkedDrugs.forEach(m => {
+                const pVal = document.getElementById(`c8_med_${m.id}_puff`)?.value || '1';
+                const fVal = document.getElementById(`c8_med_${m.id}_freq`)?.value || 'BID';
+                if (pVal === '2' || pVal === '1-2' || parseFloat(pVal) > 1) hasMultiPuff = true;
+                if (fVal.toLowerCase() !== 'prn') allPrn = false;
+            });
+
+            if (devId === 'mdi') {
+                if (allPrn) regimenEl.value = hasMultiPuff ? 'prn>1' : 'prn1';
+                else regimenEl.value = hasMultiPuff ? '>1' : '1';
+            } else if (regimenEl.querySelector('option[value=">1"]')) {
+                regimenEl.value = hasMultiPuff ? '>1' : '1';
+            }
+        }
+
+        function toggleC8Device(id, autoCheckAllOnFirstOpen = true) {
+            const isChecked = document.getElementById(`c8_dev_${id}`)?.checked;
             const checklist = document.getElementById(`c8_dev_${id}_checklist`);
             const regimen = document.getElementById(`c8_dev_${id}_regimen`);
+            const toggleBtn = document.getElementById(`c8_dev_${id}_toggle_btn`);
+
             if(isChecked) {
-                checklist.classList.remove('hidden');
-                regimen.classList.remove('hidden');
+                if (checklist) checklist.classList.remove('hidden');
+                if (regimen) regimen.classList.remove('hidden');
+                if (toggleBtn) toggleBtn.classList.remove('hidden');
+                syncC8RegimenFromMeds(id);
+                // ตั้งค่าเริ่มต้นให้ติ๊กถูกทุกข้อเมื่อเปิดครั้งแรก เพื่อให้เภสัชกรเพียงติ๊กออกเฉพาะข้อที่ผู้ป่วยทำผิด/ขาดไป
+                const anyStepChecked = document.querySelectorAll(`.c8-dev-step-${id}:checked`).length > 0;
+                if (autoCheckAllOnFirstOpen && !anyStepChecked) {
+                    document.querySelectorAll(`.c8-dev-step-${id}`).forEach(cb => {
+                        if(!cb.disabled) cb.checked = true;
+                    });
+                }
                 updateC8Score(id);
             } else {
-                checklist.classList.add('hidden');
-                regimen.classList.add('hidden');
+                if (checklist) checklist.classList.add('hidden');
+                if (regimen) regimen.classList.add('hidden');
+                if (toggleBtn) toggleBtn.classList.add('hidden');
                 document.querySelectorAll(`.c8-dev-step-${id}`).forEach(cb => cb.checked = false);
+                document.querySelectorAll(`.c8-med-cb-${id}`).forEach(cb => cb.checked = false);
             }
             if(typeof generateOutput === 'function') generateOutput();
         }
@@ -5914,14 +6158,49 @@
             updateC8Score(id);
         }
 
-        function updateC8Score(id) {
+        function uncheckAllC8(id) {
+            document.querySelectorAll(`.c8-dev-step-${id}`).forEach(cb => {
+                cb.checked = false;
+            });
+            updateC8Score(id);
+        }
+
+        function getC8DeviceEvalSummary(id) {
             const devDef = asthmaDevicesDef.find(d => d.id === id);
+            if (!devDef) return { total: 0, max: 0, pct: 0, missingSteps: [] };
+
             const regimenEl = document.getElementById(`c8_dev_${id}_regimen`);
             const regimen = regimenEl ? regimenEl.value : '1';
             const isMulti = regimen.includes('>1');
-            
+
             let max = devDef.steps.length;
             let total = 0;
+            let missingSteps = [];
+
+            devDef.steps.forEach((step, idx) => {
+                const cb = document.getElementById(`c8_dev_${id}_step_${idx}`);
+                const isWaitStep = step.includes('เว้น 1-2 นาที');
+                if (isWaitStep && !isMulti) {
+                    max--;
+                } else {
+                    if (cb && cb.checked) {
+                        total++;
+                    } else {
+                        missingSteps.push(step);
+                    }
+                }
+            });
+
+            const pct = max > 0 ? Math.round((total / max) * 100) : 0;
+            return { total, max, pct, missingSteps };
+        }
+
+        function updateC8Score(id) {
+            const devDef = asthmaDevicesDef.find(d => d.id === id);
+            if (!devDef) return;
+            const regimenEl = document.getElementById(`c8_dev_${id}_regimen`);
+            const regimen = regimenEl ? regimenEl.value : '1';
+            const isMulti = regimen.includes('>1');
             
             devDef.steps.forEach((step, idx) => {
                 const cb = document.getElementById(`c8_dev_${id}_step_${idx}`);
@@ -5932,18 +6211,26 @@
                     cb.checked = false;
                     cb.disabled = true;
                     cb.parentElement.classList.add('opacity-40', 'line-through', 'bg-gray-100');
-                    max--;
                 } else {
                     cb.disabled = false;
                     cb.parentElement.classList.remove('opacity-40', 'line-through', 'bg-gray-100');
-                    if (cb.checked) total++;
                 }
             });
             
-            const pct = max > 0 ? Math.round((total / max) * 100) : 0;
-            document.getElementById(`c8_dev_${id}_score`).innerText = total;
-            document.getElementById(`c8_dev_${id}_max`).innerText = max;
-            document.getElementById(`c8_dev_${id}_percent`).innerText = pct;
+            const evalObj = getC8DeviceEvalSummary(id);
+            const scoreEl = document.getElementById(`c8_dev_${id}_score`);
+            const maxEl = document.getElementById(`c8_dev_${id}_max`);
+            const pctEl = document.getElementById(`c8_dev_${id}_percent`);
+            const missingPrevEl = document.getElementById(`c8_dev_${id}_missing_preview`);
+
+            if (scoreEl) scoreEl.innerText = evalObj.total;
+            if (maxEl) maxEl.innerText = evalObj.max;
+            if (pctEl) pctEl.innerText = evalObj.pct;
+            if (missingPrevEl) {
+                missingPrevEl.innerText = evalObj.missingSteps.length > 0
+                    ? `ขาด: ${evalObj.missingSteps.join(', ')}`
+                    : '✅ ทำได้ครบทุกขั้นตอน';
+            }
             
             if(typeof generateOutput === 'function') generateOutput();
         }
