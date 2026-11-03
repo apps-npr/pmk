@@ -409,10 +409,11 @@
                         <h3 class="font-bold text-lg text-rose-700"><i class="fa-solid fa-allergies mr-2"></i>1. ข้อมูลการรับยาและประเภทอาการไม่พึงประสงค์ (ADR / Side Effect)</h3>
                         <div class="flex flex-wrap gap-1.5">
                             <span class="text-xs text-gray-500 self-center mr-1">ปุ่มด่วนเคสพบบ่อย:</span>
+                            <button type="button" onclick="applyAdrPreset('nsaid_angioedema')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-full transition font-semibold">NSAIDs ตาบวม/ปากบวม</button>
+                            <button type="button" onclick="applyAdrPreset('abx_rash')" class="text-xs bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 px-2.5 py-1 rounded-full transition">ผื่นแพ้ยา (MP rash)</button>
                             <button type="button" onclick="applyAdrPreset('statin_myalgia')" class="text-xs bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 px-2.5 py-1 rounded-full transition">Statin ปวดกล้ามเนื้อ</button>
                             <button type="button" onclick="applyAdrPreset('acei_cough')" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full transition">ACEI ไอแห้ง</button>
                             <button type="button" onclick="applyAdrPreset('ccb_edema')" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-2.5 py-1 rounded-full transition">CCB เท้าบวม</button>
-                            <button type="button" onclick="applyAdrPreset('abx_rash')" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-full transition">ผื่นแพ้ยา (MP rash)</button>
                         </div>
                     </div>
 
@@ -435,11 +436,11 @@
                             <label class="block text-xs font-bold text-amber-900 mb-2">การจำแนกตามกลไก (Classification)</label>
                             <div class="flex flex-wrap gap-3 text-sm">
                                 <label class="inline-flex items-center cursor-pointer">
-                                    <input type="radio" name="adrMechType" value="Type A (Side Effect / ผลข้างเคียงตามฤทธิ์ยา)" class="form-radio text-amber-600" checked onchange="generateOutput()">
+                                    <input type="radio" name="adrMechType" value="Type A (Side Effect / ผลข้างเคียงตามฤทธิ์ยา)" class="form-radio text-amber-600" checked onchange="onAdrMechTypeChange(); generateOutput();">
                                     <span class="ml-1.5 font-medium text-gray-800">Type A (Side Effect)</span>
                                 </label>
                                 <label class="inline-flex items-center cursor-pointer">
-                                    <input type="radio" name="adrMechType" value="Type B (Drug Allergy / แพ้ยาจากภูมิคุ้มกัน)" class="form-radio text-rose-600" onchange="generateOutput()">
+                                    <input type="radio" name="adrMechType" value="Type B (Drug Allergy / แพ้ยาจากภูมิคุ้มกัน)" class="form-radio text-rose-600" onchange="onAdrMechTypeChange(); generateOutput();">
                                     <span class="ml-1.5 font-medium text-gray-800">Type B (แพ้ยา/Allergy)</span>
                                 </label>
                             </div>
@@ -452,41 +453,78 @@
                                 <label class="block text-sm font-medium text-gray-700">ผู้ป่วยรับยาจาก</label>
                                 <div class="flex gap-1">
                                     <button type="button" onclick="document.getElementById('adrPlace').value='รพ.นพรัตนฯ'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded text-gray-700">รพ.นพรัตนฯ</button>
-                                    <button type="button" onclick="document.getElementById('adrPlace').value='รพ.อื่น/คลินิก'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded text-gray-700">รพ.อื่น/คลินิก</button>
+                                    <button type="button" onclick="document.getElementById('adrPlace').value='คลินิกใกล้บ้าน'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded text-gray-700">คลินิกใกล้บ้าน</button>
                                     <button type="button" onclick="document.getElementById('adrPlace').value='ร้านยา'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded text-gray-700">ร้านยา</button>
                                 </div>
                             </div>
-                            <input type="text" id="adrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น รพ.นพรัตนฯ, คลินิก, ร้านยา" oninput="generateOutput()">
+                            <input type="text" id="adrPlace" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น คลินิกใกล้บ้าน, รพ.นพรัตนฯ, ร้านยา" oninput="generateOutput()">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">วันที่รับยา / แหล่งข้อมูลอ้างอิง</label>
-                            <input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 18/09/69 หรือ ผู้ป่วยแจ้ง/ดูซองยา" oninput="generateOutput()">
+                            <input type="text" id="adrDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 30/10/69 หรือ ผู้ป่วยแจ้ง/ดูซองยา" oninput="generateOutput()">
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. อาการไม่พึงประสงค์ & Red Flags -->
-                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-                    <h3 class="font-bold text-lg text-blue-800 border-b pb-2 mb-3"><i class="fa-solid fa-heart-circle-exclamation mr-2"></i>2. อาการไม่พึงประสงค์และการคัดกรองอาการรุนแรง (Reaction & Severity)</h3>
+                <!-- 2. อาการไม่พึงประสงค์, การรักษาเบื้องต้น & การเชื่อมโยงเหตุผลตาม Timeline -->
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-lg text-blue-800 border-b pb-2"><i class="fa-solid fa-heart-circle-exclamation mr-2"></i>2. อาการไม่พึงประสงค์ การรักษาที่ได้รับ และเหตุผลทางคลินิก (Reaction & Timeline Reasoning)</h3>
                     
-                    <div class="mb-3">
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">คลิกเลือกอาการที่พบบ่อย (หรือพิมพ์รายละเอียดด้านล่าง):</label>
+                    <!-- 2.1 อาการหลัก (คลิกปุ่มจะเลือกกลไก Syndrome ให้อัตโนมัติ) -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1.5">อาการหลักที่พบ (คลิกปุ่มเพื่อระบุอาการและตั้งค่ากลไกอัตโนมัติ):</label>
                         <div class="flex flex-wrap gap-1.5 mb-2">
-                            <button type="button" onclick="appendAdrSymptom('ผื่นแดงคัน (MP rash)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ผื่นคัน (MP rash)</button>
-                            <button type="button" onclick="appendAdrSymptom('ผื่นลมพิษ (Urticaria)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ลมพิษ (Urticaria)</button>
-                            <button type="button" onclick="appendAdrSymptom('ตาบวม/ปากบวม (Angioedema)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ตาบวม/ปากบวม</button>
-                            <button type="button" onclick="appendAdrSymptom('ปวดกล้ามเนื้อ (Myalgia)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ปวดกล้ามเนื้อ</button>
-                            <button type="button" onclick="appendAdrSymptom('ไอแห้งระคายคอ (Dry cough)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ไอแห้ง</button>
-                            <button type="button" onclick="appendAdrSymptom('ข้อเท้า/ขาบวมทั้ง 2 ข้าง (Pedal edema)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ขา/เท้าบวม</button>
-                            <button type="button" onclick="appendAdrSymptom('เวียนศีรษะ/หน้ามืด (Dizziness)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ เวียนศีรษะ/หน้ามืด</button>
-                            <button type="button" onclick="appendAdrSymptom('คลื่นไส้/อาเจียน (N/V)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ คลื่นไส้/อาเจียน</button>
-                            <button type="button" onclick="appendAdrSymptom('เอนไซม์ตับขึ้นสูง (Transaminitis)')" class="text-xs bg-slate-100 hover:bg-blue-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ตับอักเสบ (AST/ALT สูง)</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('ตาบวม/ปากบวม', 'Angioedema (type I hypersensitivity)', 'B')" class="text-xs bg-slate-100 hover:bg-rose-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ตาบวม/ปากบวม (Angioedema)</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('ผื่นลมพิษ', 'Urticaria (type I hypersensitivity)', 'B')" class="text-xs bg-slate-100 hover:bg-rose-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ลมพิษ (Urticaria)</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('แน่นหน้าอก/หอบเหนื่อย/ความดันตก', 'Anaphylaxis (type I hypersensitivity)', 'B')" class="text-xs bg-slate-100 hover:bg-rose-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ Anaphylaxis</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('ผื่นแดงคันตามตัว', 'Maculopapular rash (type IV hypersensitivity)', 'B')" class="text-xs bg-slate-100 hover:bg-rose-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ผื่นคัน (MP rash)</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('ผื่นวงกลมซ้ำที่เดิม', 'Fixed drug eruption (type IV hypersensitivity)', 'B')" class="text-xs bg-slate-100 hover:bg-rose-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ผื่น FDE</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('ปวดกล้ามเนื้อ', 'Statin-associated muscle symptoms (Type A side effect)', 'A')" class="text-xs bg-slate-100 hover:bg-amber-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ปวดกล้ามเนื้อ (Myalgia)</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('ไอแห้งระคายคอ', 'Bradykinin-mediated dry cough (Type A side effect)', 'A')" class="text-xs bg-slate-100 hover:bg-amber-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ไอแห้ง</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('ข้อเท้า/ขาบวมทั้ง 2 ข้าง', 'Vasodilatory pedal edema (Type A side effect)', 'A')" class="text-xs bg-slate-100 hover:bg-amber-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ขา/เท้าบวม</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('เวียนศีรษะ/หน้ามืด', 'ผลข้างเคียงตามฤทธิ์ทางเภสัชวิทยา (Type A side effect)', 'A')" class="text-xs bg-slate-100 hover:bg-amber-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ เวียนศีรษะ/หน้ามืด</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('คลื่นไส้/อาเจียน', 'GI irritation (Type A side effect)', 'A')" class="text-xs bg-slate-100 hover:bg-amber-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ คลื่นไส้/อาเจียน</button>
+                            <button type="button" onclick="selectAdrSymptomAndSyndrome('เอนไซม์ตับขึ้นสูง (Transaminitis)', 'Drug-induced liver injury (DILI)', 'A')" class="text-xs bg-slate-100 hover:bg-amber-100 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition">+ ตับอักเสบ (AST/ALT สูง)</button>
                         </div>
-                        <input type="text" id="adrSymptomText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm font-medium text-gray-800" placeholder="ระบุลักษณะอาการ ตำแหน่งที่เป็น หรือผล Lab ที่ผิดปกติ..." oninput="generateOutput()">
+                        <input type="text" id="adrSymptomText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm font-semibold text-gray-800" placeholder="อาการหลักที่ใช้สรุปใน Timeline เช่น ตาบวม/ปากบวม" oninput="generateOutput()">
                     </div>
 
-                    <!-- ช่วงเวลาเกิดอาการ (สำหรับคำนวณ Latency & วาด Gantt Chart) -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-blue-50/50 p-3.5 rounded-lg border border-blue-100 mb-3">
+                    <!-- 2.2 รายละเอียดเหตุการณ์ อาการร่วม และการรักษาที่ได้รับ (สำหรับบรรทัดเหตุการณ์ยาที่สงสัย) -->
+                    <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                        <div class="flex flex-wrap justify-between items-center mb-1.5 gap-1">
+                            <label class="text-xs font-bold text-slate-800">รายละเอียดเหตุการณ์ อาการที่เกิด และการรักษาที่ได้รับ (คลิกปุ่มเพื่อต่อประโยค หรือพิมพ์เอง):</label>
+                            <div class="flex flex-wrap gap-1">
+                                <button type="button" onclick="appendAdrEventDetail('เกิดอาการบวมที่ตา ปาก')" class="text-[11px] bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded">+ เกิดอาการบวมที่ตา ปาก</button>
+                                <button type="button" onclick="appendAdrEventDetail('และเริ่มแน่นหน้าอก')" class="text-[11px] bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded">+ และเริ่มแน่นหน้าอก</button>
+                                <button type="button" onclick="appendAdrEventDetail('มารักษาที่ รพน')" class="text-[11px] bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded">+ มารักษาที่ รพน</button>
+                                <button type="button" onclick="appendAdrEventDetail('ได้ยา CPM')" class="text-[11px] bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded">+ ได้ยา CPM</button>
+                                <button type="button" onclick="appendAdrEventDetail('Dexa')" class="text-[11px] bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded">+ Dexa</button>
+                                <button type="button" onclick="appendAdrEventDetail('Adrenaline')" class="text-[11px] bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded">+ Adrenaline</button>
+                                <button type="button" onclick="appendAdrEventDetail('Hydroxyzine')" class="text-[11px] bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded">+ Hydroxyzine</button>
+                                <button type="button" onclick="appendAdrEventDetail('Prednisolone')" class="text-[11px] bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded">+ Prednisolone</button>
+                                <button type="button" onclick="appendAdrEventDetail('อาการทุเลาลง')" class="text-[11px] bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded">+ อาการทุเลาลง</button>
+                                <button type="button" onclick="appendAdrEventDetail('หยุดยาแล้วอาการดีขึ้น')" class="text-[11px] bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded">+ หยุดยาแล้วดีขึ้น</button>
+                            </div>
+                        </div>
+                        <input type="text" id="adrEventDetail" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-white" placeholder="เช่น เกิดอาการบวมที่ตา ปาก และเริ่มแน่นหน้าอก มารักษาที่ รพน ได้ยา CPM Dexa Adrenaline อาการทุเลาลง" oninput="generateOutput()">
+                    </div>
+
+                    <!-- 2.3 ช่วงเวลาเกิดอาการ & เวลาเริ่มทานยา -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-blue-50/50 p-3.5 rounded-lg border border-blue-100">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-bold text-blue-900">เวลาที่เริ่มทานยา (ถ้าทราบ)</label>
+                                <button type="button" onclick="document.getElementById('adrDrugStartTime').value='เวลาประมาณ '; document.getElementById('adrDrugStartTime').focus(); generateOutput();" class="text-[10px] bg-white hover:bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200">เวลาประมาณ...</button>
+                            </div>
+                            <input type="text" id="adrDrugStartTime" class="w-full rounded border-gray-300 border px-2.5 py-1.5 text-sm bg-white" placeholder="เช่น เวลาประมาณ 10.00" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-bold text-blue-900">ระยะเวลาเกิดอาการหลังได้ยา</label>
+                                <button type="button" onclick="document.getElementById('adrOnsetManual').value='หลังทานยา 30นาที'; generateOutput();" class="text-[10px] bg-white hover:bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200">30นาที</button>
+                            </div>
+                            <input type="text" id="adrOnsetManual" class="w-full rounded border-gray-300 border px-2.5 py-1.5 text-sm bg-white font-semibold text-blue-900" placeholder="เช่น หลังทานยา 30นาที" oninput="generateOutput()">
+                        </div>
                         <div>
                             <label class="block text-xs font-bold text-blue-900 mb-1">วันที่เริ่มมีอาการ (Onset Date)</label>
                             <input type="date" id="adrSympOnsetDate" class="w-full rounded border-gray-300 border px-2.5 py-1.5 text-sm bg-white" onchange="renderAdrGanttChart(); generateOutput();">
@@ -495,14 +533,54 @@
                             <div class="flex justify-between items-center mb-1">
                                 <label class="block text-xs font-bold text-blue-900">วันที่อาการหาย/ดีขึ้น</label>
                                 <label class="inline-flex items-center text-xs text-rose-600 font-semibold cursor-pointer">
-                                    <input type="checkbox" id="adrSympOngoing" class="form-checkbox text-rose-600 rounded mr-1" onchange="toggleAdrSympOngoing(); renderAdrGanttChart(); generateOutput();"> ยังมีอาการอยู่
+                                    <input type="checkbox" id="adrSympOngoing" class="form-checkbox text-rose-600 rounded mr-1" onchange="toggleAdrSympOngoing(); renderAdrGanttChart(); generateOutput();"> ยังมีอาการ
                                 </label>
                             </div>
                             <input type="date" id="adrSympResolveDate" class="w-full rounded border-gray-300 border px-2.5 py-1.5 text-sm bg-white" onchange="renderAdrGanttChart(); generateOutput();">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-blue-900 mb-1">ระยะเวลาเกิดอาการหลังได้ยา (พิมพ์เสริมได้)</label>
-                            <input type="text" id="adrOnsetManual" class="w-full rounded border-gray-300 border px-2.5 py-1.5 text-sm bg-white" placeholder="เช่น หลังกินเม็ดแรก 30 นาที" oninput="generateOutput()">
+                    </div>
+
+                    <!-- 2.4 การเชื่อมโยงเหตุผลทางคลินิก (สร้างประโยค "จาก time line ผู้ป่วยเกิด ... คล้ายภาวะ ... ยา ... มีรายงาน ... สงสัยแพ้ยา ... > สาเหตุอื่นๆ") -->
+                    <div class="bg-emerald-50/60 p-3.5 rounded-lg border border-emerald-200">
+                        <div class="text-xs font-bold text-emerald-900 mb-2"><i class="fa-solid fa-brain mr-1"></i>สรุปเหตุผลความสัมพันธ์เชิงเวลาและกลไก (แสดงในบรรทัด "จาก time line ผู้ป่วยเกิด..."):</div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">คล้ายภาวะ / กลไกการเกิด (พิมพ์หรือเลือก):</label>
+                                <input type="text" id="adrSyndrome" list="adrSyndromeList" class="w-full rounded border-gray-300 border px-2.5 py-1.5 bg-white font-medium text-emerald-900" placeholder="เช่น Angioedema (type I hypersensitivity)" oninput="generateOutput()">
+                                <datalist id="adrSyndromeList">
+                                    <option value="Angioedema (type I hypersensitivity)"></option>
+                                    <option value="Urticaria (type I hypersensitivity)"></option>
+                                    <option value="Anaphylaxis (type I hypersensitivity)"></option>
+                                    <option value="Maculopapular rash (type IV hypersensitivity)"></option>
+                                    <option value="Fixed drug eruption (type IV hypersensitivity)"></option>
+                                    <option value="SJS/TEN (severe type IV hypersensitivity)"></option>
+                                    <option value="DRESS (severe type IV hypersensitivity)"></option>
+                                    <option value="AGEP (severe type IV hypersensitivity)"></option>
+                                    <option value="Statin-associated muscle symptoms (Type A side effect)"></option>
+                                    <option value="Bradykinin-mediated dry cough (Type A side effect)"></option>
+                                    <option value="Vasodilatory pedal edema (Type A side effect)"></option>
+                                    <option value="ผลข้างเคียงตามฤทธิ์ทางเภสัชวิทยา (Type A side effect)"></option>
+                                </datalist>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">ข้อมูลรายงานการเกิดของยา:</label>
+                                <select id="adrLitReport" class="w-full rounded border-gray-300 border px-2.5 py-1.5 bg-white" onchange="generateOutput()">
+                                    <option value="มีรายงานการเกิดผื่นลักษณะดังกล่าว">มีรายงานการเกิดผื่นลักษณะดังกล่าว</option>
+                                    <option value="มีรายงานการเกิดอาการลักษณะดังกล่าว">มีรายงานการเกิดอาการลักษณะดังกล่าว</option>
+                                    <option value="มีรายงานการเกิดผลข้างเคียงดังกล่าว">มีรายงานการเกิดผลข้างเคียงดังกล่าว</option>
+                                    <option value="ไม่ค่อยมีรายงานการเกิดอาการดังกล่าว">ไม่ค่อยมีรายงานการเกิดอาการดังกล่าว</option>
+                                    <option value="">(ไม่ระบุประโยครายงาน)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">สรุปเปรียบเทียบสาเหตุ:</label>
+                                <select id="adrSuspectRank" class="w-full rounded border-gray-300 border px-2.5 py-1.5 bg-white font-semibold text-rose-800" onchange="generateOutput()">
+                                    <option value="สงสัยแพ้ยา {drug} > สาเหตุอื่นๆ">สงสัยแพ้ยา (ชื่อยา) &gt; สาเหตุอื่นๆ</option>
+                                    <option value="สงสัยผลข้างเคียงจากยา {drug} > สาเหตุอื่นๆ">สงสัยผลข้างเคียงจากยา (ชื่อยา) &gt; สาเหตุอื่นๆ</option>
+                                    <option value="สงสัยจากสาเหตุอื่น/โรคประจำตัว > ยา {drug}">สงสัยจากสาเหตุอื่น/โรคประจำตัว &gt; ยา</option>
+                                    <option value="">(ไม่ระบุ)</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -534,7 +612,7 @@
                     <!-- ช่องพิมพ์รายการยาแบบด่วน (ซิงค์กับตารางด้านล่างอัตโนมัติ) -->
                     <div class="mb-3">
                         <label class="block text-xs font-medium text-gray-600 mb-1">สรุปรายการยาที่สงสัย (พิมพ์ด่วนตรงนี้ หรือกรอกในตารางไทม์ไลน์ด้านล่าง ระบบจะเชื่อมข้อมูลให้เอง):</label>
-                        <input type="text" id="adrDrug" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm font-bold text-indigo-900 bg-indigo-50/40" placeholder="เช่น Atorvastatin 40mg, Enalapril 5mg, Amoxicillin 500mg" oninput="generateOutput()">
+                        <input type="text" id="adrDrug" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm font-bold text-indigo-900 bg-indigo-50/40" placeholder="เช่น Ibuprofen 400mg, Atorvastatin 40mg, Enalapril 5mg" oninput="generateOutput()">
                     </div>
 
                     <!-- ตารางรายการยาสำหรับทำ Gantt Chart -->
@@ -668,8 +746,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">สรุปการประเมินเพิ่มเติม / ข้อความอิสระ (จะนำไปรวมใน Note และคอลัมน์ DRP/อาการแพ้ยา)</label>
-                        <input type="text" id="adrAssessment" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น ปวดกล้ามเนื้อหลังปรับเพิ่มขนาดยา ไม่พบ CK สูง หรือ ไม่ค่อยสงสัยจากยา..." oninput="generateOutput()">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">สรุปการประเมินเพิ่มเติม / ข้อความอิสระ (ถ้ามี)</label>
+                        <input type="text" id="adrAssessment" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เว้นว่างไว้ได้หากใช้ประโยคเหตุผลอัตโนมัติด้านบนแล้ว หรือพิมพ์หมายเหตุเพิ่มเติม..." oninput="generateOutput()">
                     </div>
 
                     <div>
@@ -679,7 +757,6 @@
                 </div>
 
             </div>
-
             <!-- 4. HIV Form -->
             <div id="form-HIV" class="space-y-6 clinic-form hidden">
                 
@@ -3711,6 +3788,62 @@
             generateOutput();
         }
 
+        function selectAdrSymptomAndSyndrome(symp, syndrome, mechCode) {
+            appendAdrSymptom(symp);
+            const synInp = document.getElementById('adrSyndrome');
+            if (synInp && syndrome) synInp.value = syndrome;
+
+            if (mechCode === 'B') {
+                const radB = document.querySelector('input[name="adrMechType"][value*="Type B"]');
+                if (radB) radB.checked = true;
+            } else if (mechCode === 'A') {
+                const radA = document.querySelector('input[name="adrMechType"][value*="Type A"]');
+                if (radA) radA.checked = true;
+            }
+            onAdrMechTypeChange();
+            generateOutput();
+        }
+
+        function appendAdrEventDetail(text) {
+            const inp = document.getElementById('adrEventDetail');
+            if (!inp) return;
+            const cur = inp.value.trim();
+            if (!cur) {
+                inp.value = text;
+            } else if (!cur.includes(text)) {
+                inp.value = `${cur} ${text}`;
+            }
+            generateOutput();
+        }
+
+        function onAdrMechTypeChange() {
+            const mech = document.querySelector('input[name="adrMechType"]:checked')?.value || '';
+            const isTypeB = mech.includes('Type B');
+            const litSel = document.getElementById('adrLitReport');
+            const rankSel = document.getElementById('adrSuspectRank');
+            if (litSel) {
+                if (isTypeB && litSel.value === 'มีรายงานการเกิดผลข้างเคียงดังกล่าว') {
+                    litSel.value = 'มีรายงานการเกิดผื่นลักษณะดังกล่าว';
+                } else if (!isTypeB && litSel.value === 'มีรายงานการเกิดผื่นลักษณะดังกล่าว') {
+                    litSel.value = 'มีรายงานการเกิดผลข้างเคียงดังกล่าว';
+                }
+            }
+            if (rankSel) {
+                if (isTypeB && rankSel.value.includes('ผลข้างเคียง')) {
+                    rankSel.value = 'สงสัยแพ้ยา {drug} > สาเหตุอื่นๆ';
+                } else if (!isTypeB && rankSel.value.includes('สงสัยแพ้ยา')) {
+                    rankSel.value = 'สงสัยผลข้างเคียงจากยา {drug} > สาเหตุอื่นๆ';
+                }
+            }
+        }
+
+        function extractAdrDrugShortName(drugFull) {
+            if (!drugFull) return '';
+            const firstPart = drugFull.split(',')[0].trim();
+            const match = firstPart.match(/^([A-Za-zก-๙\-\/\s]+?)(?:\s+\d+\s*(?:mg|g|mcg|ml|tab|cap|เม็ด).*)?$/i);
+            return match ? match[1].trim() : firstPart;
+        }
+
         function toggleAdrSympOngoing() {
             const cb = document.getElementById('adrSympOngoing');
             const resInp = document.getElementById('adrSympResolveDate');
@@ -4051,27 +4184,54 @@
         }
 
         function applyAdrPreset(type) {
-            if (type === 'statin_myalgia') {
+            if (type === 'nsaid_angioedema') {
+                document.querySelector('input[name="adrMechType"][value*="Type B"]').checked = true;
+                document.getElementById('adrDrug').value = 'Ibuprofen 400mg';
+                document.getElementById('adrSymptomText').value = 'ตาบวม/ปากบวม';
+                document.getElementById('adrEventDetail').value = 'เกิดอาการบวมที่ตา ปาก และเริ่มแน่นหน้าอก มารักษาที่ รพน ได้ยา CPM Dexa Adrenaline อาการทุเลาลง';
+                document.getElementById('adrOnsetManual').value = 'หลังทานยา 30นาที';
+                document.getElementById('adrSyndrome').value = 'Angioedema (type I hypersensitivity)';
+                document.getElementById('adrLitReport').value = 'มีรายงานการเกิดผื่นลักษณะดังกล่าว';
+                document.getElementById('adrSuspectRank').value = 'สงสัยแพ้ยา {drug} > สาเหตุอื่นๆ';
+                adrTimelineDrugs[0].name = 'Ibuprofen 400mg';
+                naranjoAnswers = { 1: 'yes', 2: 'yes', 3: 'yes', 4: 'unk', 5: 'no', 6: 'unk', 7: 'unk', 8: 'unk', 9: 'unk', 10: 'yes' };
+            } else if (type === 'statin_myalgia') {
                 document.querySelector('input[name="adrMechType"][value*="Type A"]').checked = true;
                 document.getElementById('adrDrug').value = 'Atorvastatin / Simvastatin';
-                document.getElementById('adrSymptomText').value = 'ปวดกล้ามเนื้อน่อง/ต้นขา (Myalgia) ไม่มีปัสสาวะสีเข้ม';
+                document.getElementById('adrSymptomText').value = 'ปวดกล้ามเนื้อน่อง/ต้นขา';
+                document.getElementById('adrEventDetail').value = 'เกิดอาการปวดกล้ามเนื้อน่องและต้นขา ไม่มีปัสสาวะสีเข้ม อาการดีขึ้นหลังหยุดยา';
+                document.getElementById('adrSyndrome').value = 'Statin-associated muscle symptoms (Type A side effect)';
+                document.getElementById('adrLitReport').value = 'มีรายงานการเกิดผลข้างเคียงดังกล่าว';
+                document.getElementById('adrSuspectRank').value = 'สงสัยผลข้างเคียงจากยา {drug} > สาเหตุอื่นๆ';
                 adrTimelineDrugs[0].name = 'Atorvastatin / Simvastatin';
                 naranjoAnswers = { 1: 'yes', 2: 'yes', 3: 'yes', 4: 'unk', 5: 'no', 6: 'unk', 7: 'unk', 8: 'unk', 9: 'unk', 10: 'unk' };
             } else if (type === 'acei_cough') {
                 document.querySelector('input[name="adrMechType"][value*="Type A"]').checked = true;
                 document.getElementById('adrDrug').value = 'Enalapril';
-                document.getElementById('adrSymptomText').value = 'ไอแห้งระคายคอเรื้อรัง (ACEI-induced dry cough) ไม่มีไข้ ไม่มีเสมหะ';
+                document.getElementById('adrSymptomText').value = 'ไอแห้งระคายคอเรื้อรัง';
+                document.getElementById('adrEventDetail').value = 'เกิดอาการไอแห้งระคายคอเรื้อรัง ไม่มีไข้ ไม่มีเสมหะ อาการดีขึ้นหลังหยุดยา';
+                document.getElementById('adrSyndrome').value = 'Bradykinin-mediated dry cough (Type A side effect)';
+                document.getElementById('adrLitReport').value = 'มีรายงานการเกิดผลข้างเคียงดังกล่าว';
+                document.getElementById('adrSuspectRank').value = 'สงสัยผลข้างเคียงจากยา {drug} > สาเหตุอื่นๆ';
                 adrTimelineDrugs[0].name = 'Enalapril';
                 naranjoAnswers = { 1: 'yes', 2: 'yes', 3: 'yes', 4: 'unk', 5: 'no', 6: 'unk', 7: 'unk', 8: 'unk', 9: 'unk', 10: 'unk' };
             } else if (type === 'ccb_edema') {
                 document.querySelector('input[name="adrMechType"][value*="Type A"]').checked = true;
                 document.getElementById('adrDrug').value = 'Amlodipine / Manidipine';
-                document.getElementById('adrSymptomText').value = 'ข้อเท้าและขาบวมทั้ง 2 ข้าง (CCB-induced pedal edema) ไม่มีหอบเหนื่อย';
+                document.getElementById('adrSymptomText').value = 'ข้อเท้าและขาบวมทั้ง 2 ข้าง';
+                document.getElementById('adrEventDetail').value = 'เกิดอาการข้อเท้าและขาบวมทั้ง 2 ข้าง ไม่มีหอบเหนื่อย อาการยุบบวมลงหลังหยุดยา';
+                document.getElementById('adrSyndrome').value = 'Vasodilatory pedal edema (Type A side effect)';
+                document.getElementById('adrLitReport').value = 'มีรายงานการเกิดผลข้างเคียงดังกล่าว';
+                document.getElementById('adrSuspectRank').value = 'สงสัยผลข้างเคียงจากยา {drug} > สาเหตุอื่นๆ';
                 adrTimelineDrugs[0].name = 'Amlodipine / Manidipine';
-                naranjoAnswers = { 1: 'yes', 2: 'yes', 3: 'yes', 4: 'unk', 5: 'no', 6: 'unk', 7: 'unk', 8: 'yes', 9: 'unk', 10: ' yes' };
+                naranjoAnswers = { 1: 'yes', 2: 'yes', 3: 'yes', 4: 'unk', 5: 'no', 6: 'unk', 7: 'unk', 8: 'yes', 9: 'unk', 10: 'yes' };
             } else if (type === 'abx_rash') {
                 document.querySelector('input[name="adrMechType"][value*="Type B"]').checked = true;
-                document.getElementById('adrSymptomText').value = 'ผื่นแดงคันตามตัว (MP rash) ไม่มีแผลเยื่อบุ ไม่มีตุ่มน้ำพอง';
+                document.getElementById('adrSymptomText').value = 'ผื่นแดงคันตามตัว';
+                document.getElementById('adrEventDetail').value = 'เกิดผื่นแดงคันตามตัว ไม่มีแผลเยื่อบุ ไม่มีตุ่มน้ำพอง อาการทุเลาลงหลังหยุดยาและได้รับยาแก้แพ้';
+                document.getElementById('adrSyndrome').value = 'Maculopapular rash (type IV hypersensitivity)';
+                document.getElementById('adrLitReport').value = 'มีรายงานการเกิดผื่นลักษณะดังกล่าว';
+                document.getElementById('adrSuspectRank').value = 'สงสัยแพ้ยา {drug} > สาเหตุอื่นๆ';
                 naranjoAnswers = { 1: 'yes', 2: 'yes', 3: 'yes', 4: 'unk', 5: 'no', 6: 'unk', 7: 'unk', 8: 'unk', 9: 'unk', 10: 'yes' };
             }
             renderAdrTimelineRows();
@@ -4336,11 +4496,16 @@
                 const date = document.getElementById('adrDate')?.value?.trim() || '';
                 const drug = document.getElementById('adrDrug')?.value?.trim() || '';
                 const symp = document.getElementById('adrSymptomText')?.value?.trim() || '';
+                const eventDetail = document.getElementById('adrEventDetail')?.value?.trim() || '';
+                const drugStartTime = document.getElementById('adrDrugStartTime')?.value?.trim() || '';
                 const onsetDate = document.getElementById('adrSympOnsetDate')?.value || '';
                 const resolveDate = document.getElementById('adrSympResolveDate')?.value || '';
                 const sympOngoing = document.getElementById('adrSympOngoing')?.checked || false;
                 const onsetManual = document.getElementById('adrOnsetManual')?.value?.trim() || '';
                 const mechType = document.querySelector('input[name="adrMechType"]:checked')?.value || '';
+                const syndrome = document.getElementById('adrSyndrome')?.value?.trim() || '';
+                const litReport = document.getElementById('adrLitReport')?.value || '';
+                const suspectRank = document.getElementById('adrSuspectRank')?.value || '';
                 const assess = document.getElementById('adrAssessment')?.value?.trim() || '';
                 const pharmName = document.getElementById('adrPharmName')?.value?.trim() || '';
 
@@ -4352,52 +4517,85 @@
 
                 const hasTimelineDrugs = adrTimelineDrugs.some(d => d.name.trim() !== '' || d.startDate !== '');
 
-                if (place || date || drug || symp || assess || pharmName || hasTimelineDrugs || narObj.anyAnswered || whoLevel) {
+                if (place || date || drug || symp || eventDetail || assess || pharmName || hasTimelineDrugs || narObj.anyAnswered || whoLevel) {
                     notes.push("pharmacist note (ADR / Side Effect Assessment)");
                     
+                    // บรรทัดที่ 1: แหล่งรับยา วันที่ และประเภทกลไก
                     let line1 = [];
                     if (place) line1.push(`ผู้ป่วยรับยาจาก ${place}`);
                     if (date) line1.push(`(${date})`);
                     if (mechType) line1.push(`[${mechType}]`);
                     if (line1.length > 0) notes.push(line1.join(' '));
 
-                    if (drug) notes.push(`ยาที่สงสัย: ${drug}`);
+                    // ดึงชื่อย่อของยาที่สงสัย (ตัดขนาดยา เช่น 400mg ออก เพื่อใช้ในประโยคเหตุผลและหน้าผลประเมิน)
+                    const primaryDrugObj = adrTimelineDrugs.find(d => d.suspected) || adrTimelineDrugs[0];
+                    const effectiveDrugFull = drug || primaryDrugObj?.name?.trim() || '';
+                    const drugShort = extractAdrDrugShortName(effectiveDrugFull) || 'ยาที่สงสัย';
 
-                    // แสดงไทม์ไลน์ยาแต่ละตัว (ถ้ามีการกรอกวันที่เริ่มยา)
-                    adrTimelineDrugs.forEach((d, idx) => {
-                        if (d.name.trim() || d.startDate) {
-                            let dLine = `  - ${d.suspected ? '[สงสัย]' : '[ยาร่วม]'} ${d.name || '-'}`;
-                            if (d.startDate) {
-                                dLine += ` | เริ่ม: ${formatThaiShortDate(d.startDate)} ถึง ${d.ongoing ? 'ทานต่อ' : formatThaiShortDate(d.stopDate)}`;
-                                if (onsetDate) {
-                                    const diffDays = Math.round((new Date(onsetDate).getTime() - new Date(d.startDate).getTime()) / 86400000);
-                                    dLine += ` (Latency: ${diffDays >= 0 ? '+' + diffDays : diffDays} วัน)`;
-                                }
-                            }
-                            if (d.dechallenge) dLine += ` | ${d.dechallenge}`;
-                            notes.push(dLine);
+                    // คำนวณระยะเวลาเกิดอาการ (ใช้ข้อความที่พิมพ์ใน onsetManual ก่อน หากไม่มีให้คำนวณจากวันเริ่มยา -> วันเกิดอาการ)
+                    let onsetPhrase = onsetManual;
+                    if (!onsetPhrase && primaryDrugObj?.startDate && onsetDate) {
+                        const diffDays = Math.round((new Date(onsetDate).getTime() - new Date(primaryDrugObj.startDate).getTime()) / 86400000);
+                        onsetPhrase = diffDays === 0 ? 'ในวันที่เริ่มยา' : (diffDays > 0 ? `หลังเริ่มยา ${diffDays} วัน` : `ก่อนเริ่มยา ${Math.abs(diffDays)} วัน`);
+                    }
+
+                    // บรรทัดที่ 2: ยาที่สงสัย + วันและเวลาเริ่มยา + ระยะเวลาเกิดอาการ + รายละเอียดเหตุการณ์และการรักษา
+                    let drugNarrative = [];
+                    if (effectiveDrugFull) drugNarrative.push(`ยาที่สงสัย: ${effectiveDrugFull}`);
+                    if (primaryDrugObj?.startDate) {
+                        drugNarrative.push(`เริ่ม: ${formatThaiShortDate(primaryDrugObj.startDate)}`);
+                    }
+                    if (drugStartTime) drugNarrative.push(drugStartTime);
+                    if (onsetPhrase) drugNarrative.push(onsetPhrase);
+
+                    if (eventDetail) {
+                        drugNarrative.push(eventDetail);
+                    } else if (symp) {
+                        let autoEvent = symp.startsWith('เกิด') ? symp : `เกิดอาการ${symp}`;
+                        if (primaryDrugObj?.dechallenge && primaryDrugObj.dechallenge !== 'ยังไม่ได้หยุดยา/ไม่ทราบ') {
+                            autoEvent += ` (${primaryDrugObj.dechallenge})`;
                         }
+                        drugNarrative.push(autoEvent);
+                    }
+                    if (drugNarrative.length > 0) notes.push(drugNarrative.join(' '));
+
+                    // กรณีมียาร่วมอื่นๆ เพิ่มเติมในตารางไทม์ไลน์ (ตั้งแต่ตัวที่ 2 เป็นต้นไป) ให้แสดงบรรทัดเปรียบเทียบด้วย
+                    const extraDrugs = adrTimelineDrugs.slice(1).filter(d => d.name.trim() !== '' || d.startDate !== '');
+                    extraDrugs.forEach(d => {
+                        let dLine = `  - ${d.suspected ? '[สงสัยร่วม]' : '[ยาร่วม]'} ${d.name || '-'}`;
+                        if (d.startDate) {
+                            dLine += ` | เริ่ม: ${formatThaiShortDate(d.startDate)} ถึง ${d.ongoing ? 'ทานต่อ' : formatThaiShortDate(d.stopDate)}`;
+                        }
+                        if (d.dechallenge) dLine += ` | ${d.dechallenge}`;
+                        notes.push(dLine);
                     });
 
-                    let sympParts = [];
-                    if (symp) sympParts.push(`อาการที่พบ: ${symp}`);
-                    if (onsetManual) sympParts.push(`(${onsetManual})`);
-                    if (onsetDate) sympParts.push(`เริ่มมีอาการ: ${formatThaiShortDate(onsetDate)}${sympOngoing ? ' (ยังมีอาการอยู่)' : (resolveDate ? ' หาย: ' + formatThaiShortDate(resolveDate) : '')}`);
-                    if (sympParts.length > 0) notes.push(sympParts.join(' | '));
+                    // บรรทัดที่ 3: ประโยคสรุปเหตุผลทางคลินิกจาก Timeline + อาการ + กลไก + รายงานการเกิด + การเปรียบเทียบสาเหตุ
+                    if (symp || syndrome || onsetPhrase) {
+                        const cleanSymp = symp ? symp.replace(/\s*\([^)]*\)\s*$/g, '').trim() : 'อาการไม่พึงประสงค์';
+                        let reasonParts = [`จาก time line ผู้ป่วยเกิด ${cleanSymp}`];
+                        if (onsetPhrase) reasonParts.push(onsetPhrase);
+                        if (syndrome) reasonParts.push(`คล้ายภาวะ ${syndrome}`);
+                        if (litReport && effectiveDrugFull) reasonParts.push(`ยา ${drugShort} ${litReport}`);
+                        if (suspectRank) reasonParts.push(suspectRank.replace('{drug}', drugShort));
+                        notes.push(reasonParts.join(' '));
+                    }
 
                     if (redFlags.length > 0) {
                         notes.push(`🚨 Red Flags: พบ ${redFlags.join(', ')}`);
                     }
 
-                    // ผลประเมินตามอัลกอริทึมที่เลือก
+                    // บรรทัดที่ 4: ชื่อยา + ผลประเมินตามอัลกอริทึมที่เลือก
+                    const prefixDrug = effectiveDrugFull ? `${drugShort} ` : '';
                     if (adrActiveAlgo === 'naranjo' && narObj.anyAnswered) {
-                        notes.push(`ผลประเมิน Naranjo's Algorithm: ${narObj.total} คะแนน -> ${narObj.level}`);
+                        notes.push(`${prefixDrug}ผลประเมิน Naranjo's Algorithm: ${narObj.total} คะแนน -> ${narObj.level}`);
                     } else if (adrActiveAlgo === 'who' && whoLevel) {
-                        notes.push(`ผลประเมิน WHO-UMC Criteria: ${whoLevel}`);
+                        notes.push(`${prefixDrug}ผลประเมิน WHO-UMC Criteria: ${whoLevel}`);
                     } else if (adrActiveAlgo === 'thai') {
-                        notes.push(`ผลประเมิน Thai Algorithm: ${thaiLevel}`);
+                        notes.push(`${prefixDrug}ผลประเมิน Thai Algorithm: ${thaiLevel}`);
                     }
 
+                    // บรรทัดที่ 5-6: การจัดการ, สรุปเพิ่มเติม และชื่อเภสัชกร
                     if (actions.length > 0) notes.push(`การจัดการ: ${actions.join(', ')}`);
                     if (assess) notes.push(`สรุปเพิ่มเติม: ${assess}`);
                     if (pharmName) notes.push(`/${pharmName}`);
