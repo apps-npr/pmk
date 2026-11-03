@@ -1130,7 +1130,7 @@
                                                 <option value="1|Warfarin 1 mg">⚪ Warfarin 1 mg (เม็ดขาว)</option>
                                                 <option value="2|Warfarin 2 mg">🟠 Warfarin 2 mg (เม็ดส้ม)</option>
                                                 <option value="3|Warfarin 3 mg" selected>🔵 Warfarin 3 mg (เม็ดฟ้า)</option>
-                                                <option value="5|Warfarin 5 mg">🟡 Warfarin 5 mg (เม็ดเหลือง)</option>
+                                                <option value="5|Warfarin 5 mg">🟡 Warfarin 5 mg (เม็ดชมพู)</option>
                                             </select>
                                         </div>
                                         <div class="md:col-span-3">
@@ -1801,7 +1801,7 @@
                             <input type="text" id="c7Bp" placeholder="เช่น 130/80" class="w-full rounded-lg border-gray-300 border px-3 py-1.5 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">HbA1c / DTX</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">HbA1c</label>
                             <input type="text" id="c7A1c" placeholder="เช่น A1c 7.2%" class="w-full rounded-lg border-gray-300 border px-3 py-1.5 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
@@ -2394,7 +2394,7 @@
             if (!text) return '';
             let formatted = text
                 // 1. แปลงรูปแบบเดิม W(1mg) เม็ดขาว หรือ Warfarin 1mg ให้เป็น Warfarin X mg
-                .replace(/W\(\s*([1235])\s*mg\s*\)\s*(?:เม็ดขาว|เม็ดส้ม|เม็ดฟ้า|เม็ดเหลือง)?/g, 'Warfarin $1 mg')
+                .replace(/W\(\s*([1235])\s*mg\s*\)\s*(?:เม็ดขาว|เม็ดส้ม|เม็ดฟ้า|เม็ดเชมพู)?/g, 'Warfarin $1 mg')
                 .replace(/Warfarin\s*([1235])\s*mg\b/g, 'Warfarin $1 mg')
                 // 2. จัดรูปแบบช่องว่างหน้าเครื่องหมาย : ของตารางมาตรฐาน เช่น "3 mg : 1x1" หรือ "5 mg 1x1"
                 .replace(/(^|[^(\w])([1235])\s*mg\s*:\s*/g, '$1Warfarin $2 mg : ')
