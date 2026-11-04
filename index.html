@@ -5495,6 +5495,19 @@
         function executePrintOpdSticker() {
             updateOpdStickerPreview();
 
+            // ดึงข้อมูลชื่อ, HN และ Note จากฟอร์มหลักมาใส่ในพื้นที่พิมพ์โดยตรง
+            const ptNameNode = document.getElementById('ptName');
+            const ptHnNode = document.getElementById('hn');
+            const outPmkNode = document.getElementById('outputPmk');
+
+            const stkPrintName = document.getElementById('stkPrintName');
+            const stkPrintHn = document.getElementById('stkPrintHn');
+            const stkPrintNote = document.getElementById('stkPrintNote');
+
+            if (stkPrintName) stkPrintName.innerText = ptNameNode ? ptNameNode.value || '-' : '-';
+            if (stkPrintHn) stkPrintHn.innerText = ptHnNode ? ptHnNode.value || '-' : '-';
+            if (stkPrintNote) stkPrintNote.innerText = outPmkNode ? outPmkNode.value || '' : '';
+
             const x = document.getElementById('stkX')?.value || 4;
             const y = document.getElementById('stkY')?.value || 3;
             const w = document.getElementById('stkW')?.value || 98;
@@ -5502,7 +5515,6 @@
 
             const printArea = document.getElementById('printStickerArea');
             if(printArea) {
-                // ย้าย printStickerArea ออกมาไว้ที่ body โดยตรง (ป้องกันกรณีติดอยู่ใน container ที่ถูกซ่อน)
                 if (printArea.parentElement !== document.body) {
                     document.body.appendChild(printArea);
                 }
@@ -5518,7 +5530,6 @@
 
             document.body.classList.add('print-mode-opd-stk');
             
-            // หน่วงเวลาเล็กน้อยให้ DOM เรนเดอร์เสร็จก่อนเปิดหน้าต่าง Print Preview
             setTimeout(() => {
                 window.print();
                 setTimeout(() => {
