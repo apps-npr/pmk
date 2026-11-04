@@ -127,10 +127,17 @@
             body.print-mode-warfarin-stk .extra:empty:before { content: none !important; }
 
             /* โหมด 3: พิมพ์ Pharmacist Note สติกเกอร์ (กำหนดขนาดเอง) */
-            body.print-mode-opd-stk #mainAppContainer { display: none !important; }
+            body.print-mode-opd-stk #mainAppContainer,
+            body.print-mode-opd-stk #printArea,
+            body.print-mode-opd-stk #printRifampinArea { display: none !important; }
             body.print-mode-opd-stk #printStickerArea, 
-            body.print-mode-opd-stk #printStickerArea * { visibility: visible; }
-            body.print-mode-opd-stk #printStickerArea { display: block !important; }
+            body.print-mode-opd-stk #printStickerArea * { visibility: visible !important; }
+            body.print-mode-opd-stk #printStickerArea { 
+                display: block !important; 
+                background: white !important;
+                color: black !important;
+                z-index: 99999 !important;
+            }
 
             /* โหมด 4: พิมพ์ใบคำแนะนำ Warfarin-Rifampin (A5 แนวตั้ง) */
             body.print-mode-rifampin-a5 #mainAppContainer { display: none !important; }
@@ -2068,7 +2075,8 @@
                     </div>
                 </div>
             </div>
-
+        </div>
+            
         <!-- Output & Actions -->
         <div id="opdOutputSection" class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK) <span class="text-xs text-red-500 font-normal">(แก้ไขข้อมูลเองได้หลังใส่ข้อมูลในช่องครบถ้วนแล้ว)</span></label>
@@ -5431,26 +5439,29 @@
         //         PRINTING SYSTEM
         // ==========================================
         function printOpdCard() {
+            const hnNode = document.getElementById('hn');
             const ptNameNode = document.getElementById('ptName');
-            const ptHnNode = document.getElementById('hn');
-            const ptName = ptNameNode ? ptNameNode.value || '-' : '-';
-            const ptHn = ptHnNode ? ptHnNode.value || '-' : '-';
+            const outNode = document.getElementById('outputPmk');
             
-            const pNameEl = document.getElementById('printName');
-            const pNoteEl = document.getElementById('printNote');
-            const outPmkEl = document.getElementById('outputPmk');
+            const printHn = document.getElementById('printHn');
+            const printName = document.getElementById('printName');
+            const printNote = document.getElementById('printNote');
+            const printArea = document.getElementById('printArea');
+
+            if(printHn && hnNode) printHn.innerText = hnNode.value;
+            if(printName && ptNameNode) printName.innerText = ptNameNode.value;
+            if(printNote && outNode) printNote.innerText = outNode.value;
             
-            if(pNameEl) pNameEl.innerText = `${ptName} HN: ${ptHn}`;
-            if(pNoteEl) pNoteEl.innerText = outPmkEl ? outPmkEl.value || 'ไม่มีข้อมูล' : 'ไม่มีข้อมูล';
-            
-            const printDiv = document.getElementById('printArea');
-            if(printDiv) printDiv.classList.remove('hidden');
-            
+            if(printArea) printArea.classList.remove('hidden');
             document.body.classList.add('print-mode-opd-a5');
-            window.print();
-            document.body.classList.remove('print-mode-opd-a5');
             
-            if(printDiv) printDiv.classList.add('hidden');
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    document.body.classList.remove('print-mode-opd-a5');
+                    if(printArea) printArea.classList.add('hidden');
+                }, 500);
+            }, 150);
         }
 
         function updateOpdStickerPreview() {
@@ -5482,50 +5493,39 @@
         }
 
         function executePrintOpdSticker() {
-            const ptNameNode = document.getElementById('ptName');
-            const ptHnNode = document.getElementById('hn');
-            const outPmkNode = document.getElementById('outputPmk');
-            
-            const ptName = ptNameNode ? ptNameNode.value || '-' : '-';
-            const ptHn = ptHnNode ? ptHnNode.value || '-' : '-';
-            const noteText = outPmkNode ? outPmkNode.value || 'ไม่มีข้อมูล' : 'ไม่มีข้อมูล';
+            updateOpdStickerPreview();
 
-            const stkXNode = document.getElementById('stkX');
-            const stkYNode = document.getElementById('stkY');
-            const stkWNode = document.getElementById('stkW');
-            const stkPtNode = document.getElementById('stkPt');
-            
-            const stkX = stkXNode ? stkXNode.value || 0 : 0;
-            const stkY = stkYNode ? stkYNode.value || 0 : 0;
-            const stkW = stkWNode ? stkWNode.value || 80 : 80;
-            const stkPt = stkPtNode ? stkPtNode.value || 11 : 11;
+            const x = document.getElementById('stkX')?.value || 4;
+            const y = document.getElementById('stkY')?.value || 3;
+            const w = document.getElementById('stkW')?.value || 98;
+            const pt = document.getElementById('stkPt')?.value || 11;
 
             const printArea = document.getElementById('printStickerArea');
-            const stkPrintName = document.getElementById('stkPrintName');
-            const stkPrintHn = document.getElementById('stkPrintHn');
-            const stkPrintNote = document.getElementById('stkPrintNote');
-
-            if(stkPrintName) stkPrintName.innerText = `${ptName}`;
-            if(stkPrintHn) stkPrintHn.innerText = `${ptHn}`;
-            if(stkPrintNote) stkPrintNote.innerText = noteText;
-
             if(printArea) {
+                // ย้าย printStickerArea ออกมาไว้ที่ body โดยตรง (ป้องกันกรณีติดอยู่ใน container ที่ถูกซ่อน)
+                if (printArea.parentElement !== document.body) {
+                    document.body.appendChild(printArea);
+                }
                 printArea.style.position = 'absolute';
-                printArea.style.left = `${stkX}mm`;
-                printArea.style.top = `${stkY}mm`;
-                printArea.style.width = `${stkW}mm`;
-                printArea.style.fontSize = `${stkPt}pt`;
+                printArea.style.left = x + 'mm';
+                printArea.style.top = y + 'mm';
+                printArea.style.width = w + 'mm';
+                printArea.style.fontSize = pt + 'pt';
                 printArea.style.fontFamily = "'Prompt', sans-serif";
-                printArea.style.color = "black";
                 printArea.style.lineHeight = "1.3";
-                printArea.classList.remove('hidden'); 
+                printArea.classList.remove('hidden');
             }
-            
+
             document.body.classList.add('print-mode-opd-stk');
-            window.print();
-            document.body.classList.remove('print-mode-opd-stk');
             
-            if(printArea) printArea.classList.add('hidden'); 
+            // หน่วงเวลาเล็กน้อยให้ DOM เรนเดอร์เสร็จก่อนเปิดหน้าต่าง Print Preview
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    document.body.classList.remove('print-mode-opd-stk');
+                    if(printArea) printArea.classList.add('hidden');
+                }, 500);
+            }, 150);
         }
 
         function showToast(msg) {
