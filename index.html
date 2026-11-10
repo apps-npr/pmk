@@ -6637,6 +6637,53 @@
             initAdrModule();
             generateOutput();
         });
+            // ================= ระบบแอบเก็บเวลาการทำเคส =================
+        let caseTracking = {
+            startTime: null,
+            hn: null
+        };
+        
+        // เริ่มจับเวลาเมื่อมีการพิมพ์ HN ครั้งแรกของเคสนั้น
+        document.getElementById('hn').addEventListener('input', function(e) { // หากช่องใส่ HN ของคุณใช้ id อื่น ให้เปลี่ยน 'hn' เป็น id นั้น
+            if (!caseTracking.startTime && this.value.trim() !== '') {
+                caseTracking.startTime = new Date();
+            }
+            caseTracking.hn = this.value.trim();
+        });
+        
+        function sendCaseTrackingData() {
+            if (!caseTracking.startTime) return; // ถ้าไม่มีเวลาเริ่ม (ไม่ได้กรอก HN) ไม่ต้องส่ง
+            
+            let endTime = new Date();
+            let durationSeconds = Math.round((endTime - caseTracking.startTime) / 1000);
+            
+            // ดึงชื่อเภสัชกร และ คลินิก (จุดนี้ต้องแก้ id ให้ตรงกับ dropdown ใน HTML ของคุณ)
+            let pharmacistName = document.getElementById('pharmacistName') ? document.getElementById('pharmacistName').value : 'ไม่ระบุ';
+            let clinicName = document.getElementById('clinicSelect') ? document.getElementById('clinicSelect').value : 'ไม่ระบุ';
+            
+            let payload = {
+                hn: caseTracking.hn,
+                pharmacist: pharmacistName,
+                clinic: clinicName,
+                startTime: caseTracking.startTime.toISOString(),
+                endTime: endTime.toISOString(),
+                duration: durationSeconds
+            };
+    
+            fetch("https://script.google.com/macros/s/AKfycbx4sXVMBzKtgRKAZATFbyKQiO-g6vxd2qQ-mUTzmJ-8kL0Uq5M7_dFRRM6vRxVBKRY11Q/exec", {
+                method: "POST",
+                body: JSON.stringify(payload)
+            }).catch(err => console.error("Tracking err:", err));
+    
+            // ส่งเสร็จแล้วรีเซ็ตเวลา สำหรับเคสต่อไปทันที
+            resetCaseTracking();
+        }
+
+        function resetCaseTracking() {
+            caseTracking.startTime = null;
+            caseTracking.hn = null;
+        }
+        // ==========================================================
     </script>
 </body>
 </html>
