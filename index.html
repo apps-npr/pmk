@@ -6659,9 +6659,37 @@
             let endTime = new Date();
             let durationSeconds = Math.round((endTime - caseTracking.startTime) / 1000);
             
-            // ดึงชื่อเภสัชกร และ คลินิก (จุดนี้ต้องแก้ id ให้ตรงกับ dropdown ใน HTML ของคุณ)
-            let pharmacistName = document.getElementById('pharmacistName') ? document.getElementById('pharmacistName').value : 'ไม่ระบุ';
-            let clinicName = document.getElementById('clinicSelect') ? document.getElementById('clinicSelect').value : 'ไม่ระบุ';
+            // 1. ดึงชื่อคลินิกจากตัวแปรแท็บที่กำลังเปิดอยู่
+            let clinicName = currentTab || 'ไม่ระบุ';
+
+            // 2. ดึงชื่อเภสัชกรตามคลินิกที่กำลังเปิดอยู่
+            let pharmacistName = '';
+    
+            if (currentTab === 'MR') {
+                pharmacistName = document.getElementById('mrPharmName') ? document.getElementById('mrPharmName').value : '';
+            } else if (currentTab === 'PREOP') {
+                pharmacistName = document.getElementById('preopPharmName') ? document.getElementById('preopPharmName').value : '';
+            } else if (currentTab === 'ADR') {
+                pharmacistName = document.getElementById('adrPharmName') ? document.getElementById('adrPharmName').value : '';
+            } else if (currentTab === 'HIV') {
+                // คลินิก HIV มีชื่อเภสัช 2 จุด (Refill และ Refer) เช็คว่าช่องไหนมีข้อมูล
+                let refillName = document.getElementById('hivPharmName') ? document.getElementById('hivPharmName').value : '';
+                let referName = document.getElementById('hivPharmNameRefer') ? document.getElementById('hivPharmNameRefer').value : '';
+                pharmacistName = refillName || referName;
+            } else if (currentTab === 'WARFARIN') {
+                pharmacistName = document.getElementById('wfNotePharm') ? document.getElementById('wfNotePharm').value : '';
+            } else if (currentTab === 'CKD') {
+               pharmacistName = document.getElementById('c7PharmName') ? document.getElementById('c7PharmName').value : '';
+            } else if (currentTab === 'ASTHMA') {
+                pharmacistName = document.getElementById('c8PharmName') ? document.getElementById('c8PharmName').value : '';
+            } else if (currentTab === 'HF') {
+                pharmacistName = 'ไม่ระบุ (HF)'; // หน้า HF ไม่มีช่องกรอกชื่อเภสัชกร
+            }
+        
+            // ถ้าหาไม่เจอ หรือเภสัชกรไม่ได้กรอกชื่อ ให้ใส่ว่า "ไม่ระบุ"
+            if (!pharmacistName || pharmacistName.trim() === '') {
+                pharmacistName = 'ไม่ระบุ';
+            }
             
             let payload = {
                 hn: caseTracking.hn,
