@@ -4454,6 +4454,7 @@
                 toggleHivType();
                 generateOutput();
             }
+            resetCaseTracking();
         }
 
         function getMrNoteArray(excludeSignature = false) {
@@ -5433,6 +5434,7 @@
                 btn.innerHTML = originalHTML; 
                 btn.disabled = false; 
             });
+            sendCaseTrackingData();
         }
 
         // ==========================================
