@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- PWA Setup for Warfarin -->
     <link rel="manifest" href="manifest.json">
@@ -215,10 +216,15 @@
                     <img src="icon_512x512.jpg" alt="Icon" class="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
                     <h1 class="text-2xl font-semibold">OPD Online</h1>
                 </div>
-                <button onclick="resetForm(); resetCaseTracking();" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                    ล้างข้อมูล
-                </button>
+                <div class="flex gap-2">
+                    <button onclick="openAdminLogin()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center text-sm">
+                        <i class="fa-solid fa-chart-pie mr-1.5"></i> สถิติ
+                    </button>
+                    <button onclick="resetForm(); resetCaseTracking();" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        ล้างข้อมูล
+                    </button>
+                </div>
             </div>
             <div id="mainPatientInfo" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -2207,6 +2213,79 @@
         </div>
     </div>
 
+    <!-- ================= ADMIN MODALS ================= -->
+    <!-- Login Modal -->
+    <div id="adminLoginModal" class="modal-overlay">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-96 max-w-full">
+            <div class="text-center mb-4">
+                <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-lock text-slate-600 text-xl"></i></div>
+                <h3 class="font-bold text-lg text-slate-800">Admin Login</h3>
+                <p class="text-xs text-slate-500">เข้าสู่ระบบเพื่อดูสถิติและ Dashboard</p>
+            </div>
+            <div class="space-y-3">
+                <div><label class="block text-sm font-medium text-slate-700 mb-1">Username</label><input type="text" id="adminUser" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-slate-700 mb-1">Password</label><input type="password" id="adminPass" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" onkeypress="if(event.key === 'Enter') loginAdmin()"></div>
+                <button onclick="loginAdmin()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg transition mt-2 shadow-md">เข้าสู่ระบบ</button>
+                <button onclick="closeAdminLogin()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 rounded-lg transition mt-2">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Modal -->
+    <div id="adminStatsModal" class="modal-overlay">
+        <div class="bg-slate-50 rounded-xl shadow-2xl w-[95%] max-w-6xl max-h-[95vh] flex flex-col overflow-hidden">
+            <div class="bg-slate-800 p-4 flex justify-between items-center text-white shadow-md z-10">
+                <h3 class="font-bold text-lg"><i class="fa-solid fa-chart-line mr-2"></i> Dashboard สถิติการให้บริการ (Ambulatory Care)</h3>
+                <button onclick="closeAdminStats()" class="text-white hover:text-red-400 text-2xl font-bold leading-none">&times;</button>
+            </div>
+            <div class="p-5 flex-1 overflow-y-auto">
+                <!-- Data Input Area -->
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm mb-4">
+                    <label class="block text-sm font-bold text-blue-800 mb-2"><i class="fa-solid fa-paste mr-1"></i> วางข้อมูลจาก Excel (ก๊อปปี้ข้อมูล 8 คอลัมน์มาวาง: Timestamp, HN, ชื่อเภสัชกร, คลินิก, เวลาเริ่ม, เวลาจบ, ใช้เวลาวิ, ใช้เวลานาที)</label>
+                    <textarea id="adminDataPaste" rows="4" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-xs font-mono bg-slate-50 focus:ring-2 focus:ring-blue-300" placeholder="คัดลอกข้อมูลทั้งตารางจาก Excel แล้วคลิกขวา Paste (วาง) ลงที่นี่..."></textarea>
+                    
+                    <div class="flex flex-wrap items-end gap-4 mt-3">
+                        <div><label class="block text-xs font-medium text-gray-600 mb-1">กรองเวลา (เริ่ม)</label><input type="time" id="filterTimeStart" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50"></div>
+                        <div><label class="block text-xs font-medium text-gray-600 mb-1">กรองเวลา (สิ้นสุด)</label><input type="time" id="filterTimeEnd" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50"></div>
+                        <button onclick="generateStats()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1.5 rounded-lg text-sm font-bold shadow-sm transition flex items-center"><i class="fa-solid fa-bolt mr-2"></i> ประมวลผลข้อมูล</button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="bg-white p-4 rounded-xl border-l-4 border-blue-500 shadow-sm text-center">
+                        <p class="text-sm font-medium text-gray-500 mb-1">จำนวนเคสทั้งหมดในกรอบเวลา</p>
+                        <p id="statTotalCases" class="text-3xl font-bold text-blue-600">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border-l-4 border-emerald-500 shadow-sm text-center">
+                        <p class="text-sm font-medium text-gray-500 mb-1">ระยะเวลาเฉลี่ยรวม (นาที/เคส)</p>
+                        <p id="statAvgTime" class="text-3xl font-bold text-emerald-600">0.00</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border-l-4 border-orange-500 shadow-sm text-center">
+                        <p class="text-sm font-medium text-gray-500 mb-1">ช่วงเวลาที่คนไข้เยอะที่สุด (Peak Hour)</p>
+                        <p id="statPeakHour" class="text-3xl font-bold text-orange-600">-</p>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <h4 class="text-sm font-bold text-gray-700 mb-2 text-center">ระยะเวลาเฉลี่ยรายคลินิก (นาที/เคส)</h4>
+                        <div class="h-64"><canvas id="chartClinic"></canvas></div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <h4 class="text-sm font-bold text-gray-700 mb-2 text-center">ระยะเวลาเฉลี่ยรายบุคคล (นาที/เคส)</h4>
+                        <div class="h-64"><canvas id="chartPharm"></canvas></div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm md:col-span-2">
+                        <h4 class="text-sm font-bold text-gray-700 mb-2 text-center">ปริมาณเคสตามช่วงเวลา (จำนวนเคส)</h4>
+                        <div class="h-64"><canvas id="chartHours"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Modals -->
     <div id="imageModal" class="modal-overlay" onclick="closeModal()">
         <span class="modal-close">&times;</span>
@@ -6714,6 +6793,191 @@
             caseTracking.hn = null;
         }
         // ==========================================================
+    // ================= ADMIN DASHBOARD LOGIC =================
+        let adminCharts = {};
+
+        function openAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'flex';
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+        }
+
+        function loginAdmin() {
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+            if (user === 'ambu' && pass === '7142') {
+                closeAdminLogin();
+                document.getElementById('adminStatsModal').style.display = 'flex';
+                document.getElementById('adminUser').value = '';
+                document.getElementById('adminPass').value = '';
+            } else {
+                alert('Username หรือ Password ไม่ถูกต้อง!');
+            }
+        }
+
+        function closeAdminStats() {
+            document.getElementById('adminStatsModal').style.display = 'none';
+        }
+
+        function generateStats() {
+            const rawData = document.getElementById('adminDataPaste').value.trim();
+            if (!rawData) {
+                alert('กรุณาวางข้อมูลจาก Excel ก่อนครับ');
+                return;
+            }
+
+            const lines = rawData.split('\n');
+            let parsedData = [];
+            
+            // ข้าม Header ถ้ามีคำว่า Timestamp, HN, เวลา
+            let startIndex = 0;
+            if (lines[0].toLowerCase().includes('timestamp') || lines[0].includes('เวลา') || lines[0].includes('HN')) {
+                startIndex = 1;
+            }
+
+            for (let i = startIndex; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                const cols = lines[i].split('\t'); // คัดลอกจาก Excel จะใช้ Tab กั้น
+                
+                // ถ้ารูปแบบครบตามที่กำหนด
+                if (cols.length >= 6) {
+                    let minIndex = cols.length - 1; // สมมติว่าคอลัมน์สุดท้ายคือนาที (8 คอลัมน์ index 7)
+                    let minVal = parseFloat(cols[minIndex].replace(/,/g, ''));
+                    if (isNaN(minVal)) minVal = parseFloat(cols[minIndex - 1]); // ดักเผื่อก๊อปมาเกิน
+                    if (isNaN(minVal)) minVal = 0;
+
+                    parsedData.push({
+                        timestamp: cols[0],
+                        pharmacist: cols[2] || 'ไม่ระบุ',
+                        clinic: cols[3] || 'ไม่ระบุ',
+                        start: cols[4] || '',
+                        min: minVal
+                    });
+                }
+            }
+
+            if (parsedData.length === 0) {
+                alert('ไม่พบข้อมูลที่สามารถประมวลผลได้ โปรดตรวจสอบว่าก๊อปปี้จาก Excel มาครบถ้วนหรือไม่');
+                return;
+            }
+
+            // --- กรองข้อมูลด้วยเวลา (Filter) ---
+            const fStart = document.getElementById('filterTimeStart').value;
+            const fEnd = document.getElementById('filterTimeEnd').value;
+            
+            let filteredData = parsedData.filter(d => {
+                if (!fStart && !fEnd) return true;
+                
+                // ดึงเวลา HH:MM ออกมาเทียบ
+                let timeMatch = d.start.match(/(\d{1,2}):(\d{2})/);
+                if (!timeMatch) timeMatch = d.timestamp.match(/(\d{1,2}):(\d{2})/);
+                
+                if (timeMatch) {
+                    let h = timeMatch[1].padStart(2, '0');
+                    let m = timeMatch[2];
+                    let tStr = `${h}:${m}`;
+                    
+                    if (fStart && tStr < fStart) return false;
+                    if (fEnd && tStr > fEnd) return false;
+                    return true;
+                }
+                return true; 
+            });
+
+            // --- คำนวณสถิติ ---
+            let clinicStats = {};
+            let pharmStats = {};
+            let hourStats = {};
+            let totalMin = 0;
+
+            filteredData.forEach(d => {
+                totalMin += d.min;
+
+                // 1. คลินิก
+                if (!clinicStats[d.clinic]) clinicStats[d.clinic] = { sum: 0, count: 0 };
+                clinicStats[d.clinic].sum += d.min;
+                clinicStats[d.clinic].count += 1;
+
+                // 2. เภสัชกร
+                if (!pharmStats[d.pharmacist]) pharmStats[d.pharmacist] = { sum: 0, count: 0 };
+                pharmStats[d.pharmacist].sum += d.min;
+                pharmStats[d.pharmacist].count += 1;
+
+                // 3. Peak Hour (ชั่วโมงที่ทำงาน)
+                let timeMatch = d.start.match(/(\d{1,2}):(\d{2})/);
+                if (!timeMatch) timeMatch = d.timestamp.match(/(\d{1,2}):(\d{2})/);
+                if (timeMatch) {
+                    let hour = parseInt(timeMatch[1]);
+                    if (!hourStats[hour]) hourStats[hour] = 0;
+                    hourStats[hour] += 1;
+                }
+            });
+
+            // อัปเดตตัวเลขในการ์ดสรุปผล
+            document.getElementById('statTotalCases').innerText = filteredData.length;
+            document.getElementById('statAvgTime').innerText = filteredData.length > 0 ? (totalMin / filteredData.length).toFixed(2) : "0.00";
+            
+            let peakH = "-";
+            let maxCount = 0;
+            for (let [h, count] of Object.entries(hourStats)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    peakH = `${String(h).padStart(2,'0')}:00 - ${String(h).padStart(2,'0')}:59`;
+                }
+            }
+            document.getElementById('statPeakHour').innerText = peakH;
+
+            // --- วาดกราฟ ---
+            const renderChart = (canvasId, type, labels, data, labelTitle, color) => {
+                if (adminCharts[canvasId]) adminCharts[canvasId].destroy();
+                const ctx = document.getElementById(canvasId).getContext('2d');
+                adminCharts[canvasId] = new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: labelTitle,
+                            data: data,
+                            backgroundColor: color,
+                            borderColor: color,
+                            borderWidth: 1,
+                            borderRadius: type === 'bar' ? 4 : 0,
+                            fill: type === 'line' ? true : false,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            };
+
+            let cLabels = Object.keys(clinicStats);
+            let cData = cLabels.map(k => (clinicStats[k].sum / clinicStats[k].count).toFixed(2));
+            renderChart('chartClinic', 'bar', cLabels, cData, 'นาทีเฉลี่ย/เคส', 'rgba(59, 130, 246, 0.8)');
+
+            // ตัดคำนำหน้า ภก. ภญ. ออกให้กราฟดูสะอาดตาขึ้น
+            let pLabels = Object.keys(pharmStats).map(p => p.replace('ภก.', '').replace('ภญ.', '').trim()); 
+            let pData = Object.keys(pharmStats).map(k => (pharmStats[k].sum / pharmStats[k].count).toFixed(2));
+            renderChart('chartPharm', 'bar', pLabels, pData, 'นาทีเฉลี่ย/เคส', 'rgba(16, 185, 129, 0.8)');
+
+            let hKeys = Object.keys(hourStats).map(Number).sort((a,b) => a-b);
+            let hLabels = hKeys.map(h => `${String(h).padStart(2,'0')}:00`);
+            let hData = hKeys.map(k => hourStats[k]);
+            renderChart('chartHours', 'line', hLabels, hData, 'จำนวนเคส', 'rgba(245, 158, 11, 0.5)'); 
+            
+            // ทำให้กราฟเส้นมีสีโปร่งแสงสวยงาม
+            if (adminCharts['chartHours']) {
+                adminCharts['chartHours'].data.datasets[0].backgroundColor = 'rgba(245, 158, 11, 0.2)';
+                adminCharts['chartHours'].data.datasets[0].borderColor = 'rgba(245, 158, 11, 1)';
+                adminCharts['chartHours'].update();
+            }
+        }
     </script>
 </body>
 </html>
