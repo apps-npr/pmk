@@ -2235,7 +2235,7 @@
     <div id="adminStatsModal" class="modal-overlay">
         <div class="bg-slate-50 rounded-xl shadow-2xl w-[95%] max-w-6xl max-h-[95vh] flex flex-col overflow-hidden">
             <div class="bg-slate-800 p-4 flex justify-between items-center text-white shadow-md z-10">
-                <h3 class="font-bold text-lg"><i class="fa-solid fa-chart-line mr-2"></i> Dashboard สถิติการให้บริการ (Ambulatory Care)</h3>
+                <h3 class="font-bold text-lg"><i class="fa-solid fa-chart-line mr-2"></i> Dashboard สถิติการให้บริการ</h3>
                 <button onclick="closeAdminStats()" class="text-white hover:text-red-400 text-2xl font-bold leading-none">&times;</button>
             </div>
             <div class="p-5 flex-1 overflow-y-auto">
@@ -2244,21 +2244,39 @@
                     <label class="block text-sm font-bold text-blue-800 mb-2"><i class="fa-solid fa-paste mr-1"></i> วางข้อมูลจาก Excel </label>
                     <textarea id="adminDataPaste" rows="4" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-xs font-mono bg-slate-50 focus:ring-2 focus:ring-blue-300" placeholder="คัดลอกข้อมูลทั้งตารางจาก Excel แล้วคลิกขวา Paste (วาง) ลงที่นี่..."></textarea>
                     
-                    <div class="flex flex-wrap items-end gap-4 mt-3">
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">กรองเวลา (เริ่ม)</label><input type="time" id="filterTimeStart" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50"></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">กรองเวลา (สิ้นสุด)</label><input type="time" id="filterTimeEnd" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50"></div>
-                        <button onclick="generateStats()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1.5 rounded-lg text-sm font-bold shadow-sm transition flex items-center"><i class="fa-solid fa-bolt mr-2"></i> ประมวลผลข้อมูล</button>
+                    <div class="flex flex-wrap items-end gap-3 mt-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เลือกวันที่</label>
+                            <input type="date" id="filterDate" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">คลินิก</label>
+                            <select id="filterClinic" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50 w-36">
+                                <option value="all">รวมทั้งหมด</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เวลาเริ่ม</label>
+                            <input type="time" id="filterTimeStart" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เวลาสิ้นสุด</label>
+                            <input type="time" id="filterTimeEnd" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50">
+                        </div>
+                        <button onclick="processRawData()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-1.5 rounded-lg text-sm font-bold shadow-sm transition flex items-center">
+                            <i class="fa-solid fa-bolt mr-2"></i> ประมวลผล
+                        </button>
                     </div>
                 </div>
 
                 <!-- Summary Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div class="bg-white p-4 rounded-xl border-l-4 border-blue-500 shadow-sm text-center">
-                        <p class="text-sm font-medium text-gray-500 mb-1">จำนวนเคสทั้งหมดในกรอบเวลา</p>
+                        <p class="text-sm font-medium text-gray-500 mb-1">จำนวนเคสตามตัวกรอง</p>
                         <p id="statTotalCases" class="text-3xl font-bold text-blue-600">0</p>
                     </div>
                     <div class="bg-white p-4 rounded-xl border-l-4 border-emerald-500 shadow-sm text-center">
-                        <p class="text-sm font-medium text-gray-500 mb-1">ระยะเวลาเฉลี่ยรวม (นาที/เคส)</p>
+                        <p class="text-sm font-medium text-gray-500 mb-1">เวลาเฉลี่ยรวม (นาที/เคส)</p>
                         <p id="statAvgTime" class="text-3xl font-bold text-emerald-600">0.00</p>
                     </div>
                     <div class="bg-white p-4 rounded-xl border-l-4 border-orange-500 shadow-sm text-center">
@@ -2267,18 +2285,22 @@
                     </div>
                 </div>
 
-                <!-- Charts Grid -->
+                <!-- Charts Grid (เพิ่มมาเป็น 4 กราฟ) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                        <h4 class="text-sm font-bold text-gray-700 mb-2 text-center">ระยะเวลาเฉลี่ยรายคลินิก (นาที/เคส)</h4>
-                        <div class="h-64"><canvas id="chartClinic"></canvas></div>
+                        <h4 class="text-sm font-bold text-gray-700 mb-2 text-center">จำนวนเคสที่ทำได้ รายบุคคล</h4>
+                        <div class="h-64"><canvas id="chartPharmCount"></canvas></div>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                        <h4 class="text-sm font-bold text-gray-700 mb-2 text-center">ระยะเวลาเฉลี่ยรายบุคคล (นาที/เคส)</h4>
-                        <div class="h-64"><canvas id="chartPharm"></canvas></div>
+                        <h4 class="text-sm font-bold text-gray-700 mb-2 text-center">ระยะเวลาเฉลี่ย รายบุคคล (นาที/เคส)</h4>
+                        <div class="h-64"><canvas id="chartPharmTime"></canvas></div>
                     </div>
-                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm md:col-span-2">
-                        <h4 class="text-sm font-bold text-gray-700 mb-2 text-center">ปริมาณเคสตามช่วงเวลา (จำนวนเคส)</h4>
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <h4 class="text-sm font-bold text-gray-700 mb-2 text-center">จำนวนเคส แยกรายคลินิก</h4>
+                        <div class="h-64"><canvas id="chartClinicCount"></canvas></div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <h4 class="text-sm font-bold text-gray-700 mb-2 text-center">ปริมาณเคสตามช่วงเวลา (Peak Hour)</h4>
                         <div class="h-64"><canvas id="chartHours"></canvas></div>
                     </div>
                 </div>
@@ -6821,7 +6843,9 @@
             document.getElementById('adminStatsModal').style.display = 'none';
         }
 
-        function generateStats() {
+        let rawParsedData = []; // เก็บ Data ดิบไว้เผื่อเปลี่ยน Filter ไปมา
+
+        function processRawData() {
             const rawData = document.getElementById('adminDataPaste').value.trim();
             if (!rawData) {
                 alert('กรุณาวางข้อมูลจาก Excel ก่อนครับ');
@@ -6829,64 +6853,105 @@
             }
 
             const lines = rawData.split('\n');
-            let parsedData = [];
+            rawParsedData = [];
+            let clinicsSet = new Set();
             
-            // ข้าม Header ถ้ามีคำว่า Timestamp, HN, เวลา
             let startIndex = 0;
             if (lines[0].toLowerCase().includes('timestamp') || lines[0].includes('เวลา') || lines[0].includes('HN')) {
-                startIndex = 1;
+                startIndex = 1; // ข้าม Header
             }
 
             for (let i = startIndex; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
-                const cols = lines[i].split('\t'); // คัดลอกจาก Excel จะใช้ Tab กั้น
+                const cols = lines[i].split('\t');
                 
-                // ถ้ารูปแบบครบตามที่กำหนด
                 if (cols.length >= 6) {
-                    let minIndex = cols.length - 1; // สมมติว่าคอลัมน์สุดท้ายคือนาที (8 คอลัมน์ index 7)
+                    let minIndex = cols.length - 1;
                     let minVal = parseFloat(cols[minIndex].replace(/,/g, ''));
-                    if (isNaN(minVal)) minVal = parseFloat(cols[minIndex - 1]); // ดักเผื่อก๊อปมาเกิน
+                    if (isNaN(minVal)) minVal = parseFloat(cols[minIndex - 1]);
                     if (isNaN(minVal)) minVal = 0;
 
-                    parsedData.push({
+                    let clinicName = cols[3] ? cols[3].trim() : 'ไม่ระบุ';
+                    clinicsSet.add(clinicName);
+
+                    rawParsedData.push({
                         timestamp: cols[0],
-                        pharmacist: cols[2] || 'ไม่ระบุ',
-                        clinic: cols[3] || 'ไม่ระบุ',
+                        pharmacist: cols[2] ? cols[2].trim() : 'ไม่ระบุ',
+                        clinic: clinicName,
                         start: cols[4] || '',
                         min: minVal
                     });
                 }
             }
 
-            if (parsedData.length === 0) {
-                alert('ไม่พบข้อมูลที่สามารถประมวลผลได้ โปรดตรวจสอบว่าก๊อปปี้จาก Excel มาครบถ้วนหรือไม่');
+            if (rawParsedData.length === 0) {
+                alert('ไม่พบข้อมูล โปรดตรวจสอบว่าคัดลอกมาครบถ้วนหรือไม่');
                 return;
             }
 
-            // --- กรองข้อมูลด้วยเวลา (Filter) ---
+            // ดึงรายชื่อคลินิกไปใส่ใน Dropdown อัตโนมัติ
+            const clinicSelect = document.getElementById('filterClinic');
+            const currentSelected = clinicSelect.value;
+            clinicSelect.innerHTML = '<option value="all">รวมทั้งหมด</option>';
+            Array.from(clinicsSet).sort().forEach(c => {
+                let opt = document.createElement('option');
+                opt.value = c;
+                opt.text = c;
+                clinicSelect.appendChild(opt);
+            });
+            // จำค่าเดิมไว้เผื่อกดประมวลผลซ้ำ
+            if (Array.from(clinicsSet).includes(currentSelected)) {
+                clinicSelect.value = currentSelected;
+            }
+
+            applyFiltersAndRender();
+        }
+
+        function applyFiltersAndRender() {
+            const fDate = document.getElementById('filterDate').value; // คืนค่ามาเป็น YYYY-MM-DD
+            const fClinic = document.getElementById('filterClinic').value;
             const fStart = document.getElementById('filterTimeStart').value;
             const fEnd = document.getElementById('filterTimeEnd').value;
             
-            let filteredData = parsedData.filter(d => {
-                if (!fStart && !fEnd) return true;
+            // สร้าง Format วันที่สำหรับเทียบกับ Timestamp จาก Excel (รองรับ พ.ศ. และ ค.ศ.)
+            let searchDates = [];
+            if (fDate) {
+                const [y, m, d] = fDate.split('-');
+                const thaiY = parseInt(y) + 543;
+                searchDates.push(`${d}/${m}/${y}`);
+                searchDates.push(`${parseInt(d)}/${parseInt(m)}/${y}`);
+                searchDates.push(`${d}/${m}/${thaiY}`);
+                searchDates.push(`${parseInt(d)}/${parseInt(m)}/${thaiY}`);
+                searchDates.push(`${y}-${m}-${d}`);
+            }
+
+            // กรองข้อมูลตามที่เลือก
+            let filteredData = rawParsedData.filter(d => {
+                // กรองคลินิก
+                if (fClinic !== 'all' && d.clinic !== fClinic) return false;
                 
-                // ดึงเวลา HH:MM ออกมาเทียบ
-                let timeMatch = d.start.match(/(\d{1,2}):(\d{2})/);
-                if (!timeMatch) timeMatch = d.timestamp.match(/(\d{1,2}):(\d{2})/);
-                
-                if (timeMatch) {
-                    let h = timeMatch[1].padStart(2, '0');
-                    let m = timeMatch[2];
-                    let tStr = `${h}:${m}`;
-                    
-                    if (fStart && tStr < fStart) return false;
-                    if (fEnd && tStr > fEnd) return false;
-                    return true;
+                // กรองวันที่
+                if (fDate) {
+                    let dateMatch = searchDates.some(sd => d.timestamp.includes(sd));
+                    if (!dateMatch) return false;
                 }
-                return true; 
+
+                // กรองเวลา
+                if (fStart || fEnd) {
+                    let timeMatch = d.start.match(/(\d{1,2}):(\d{2})/);
+                    if (!timeMatch) timeMatch = d.timestamp.match(/(\d{1,2}):(\d{2})/);
+                    if (timeMatch) {
+                        let h = timeMatch[1].padStart(2, '0');
+                        let m = timeMatch[2];
+                        let tStr = `${h}:${m}`;
+                        if (fStart && tStr < fStart) return false;
+                        if (fEnd && tStr > fEnd) return false;
+                    }
+                }
+                return true;
             });
 
-            // --- คำนวณสถิติ ---
+            // คำนวณสถิติ
             let clinicStats = {};
             let pharmStats = {};
             let hourStats = {};
@@ -6895,17 +6960,14 @@
             filteredData.forEach(d => {
                 totalMin += d.min;
 
-                // 1. คลินิก
                 if (!clinicStats[d.clinic]) clinicStats[d.clinic] = { sum: 0, count: 0 };
                 clinicStats[d.clinic].sum += d.min;
                 clinicStats[d.clinic].count += 1;
 
-                // 2. เภสัชกร
                 if (!pharmStats[d.pharmacist]) pharmStats[d.pharmacist] = { sum: 0, count: 0 };
                 pharmStats[d.pharmacist].sum += d.min;
                 pharmStats[d.pharmacist].count += 1;
 
-                // 3. Peak Hour (ชั่วโมงที่ทำงาน)
                 let timeMatch = d.start.match(/(\d{1,2}):(\d{2})/);
                 if (!timeMatch) timeMatch = d.timestamp.match(/(\d{1,2}):(\d{2})/);
                 if (timeMatch) {
@@ -6915,7 +6977,7 @@
                 }
             });
 
-            // อัปเดตตัวเลขในการ์ดสรุปผล
+            // อัปเดต Card สรุปผล
             document.getElementById('statTotalCases').innerText = filteredData.length;
             document.getElementById('statAvgTime').innerText = filteredData.length > 0 ? (totalMin / filteredData.length).toFixed(2) : "0.00";
             
@@ -6929,7 +6991,7 @@
             }
             document.getElementById('statPeakHour').innerText = peakH;
 
-            // --- วาดกราฟ ---
+            // ฟังก์ชันวาดกราฟ
             const renderChart = (canvasId, type, labels, data, labelTitle, color) => {
                 if (adminCharts[canvasId]) adminCharts[canvasId].destroy();
                 const ctx = document.getElementById(canvasId).getContext('2d');
@@ -6957,21 +7019,28 @@
                 });
             };
 
-            let cLabels = Object.keys(clinicStats);
-            let cData = cLabels.map(k => (clinicStats[k].sum / clinicStats[k].count).toFixed(2));
-            renderChart('chartClinic', 'bar', cLabels, cData, 'นาทีเฉลี่ย/เคส', 'rgba(59, 130, 246, 0.8)');
-
-            // ตัดคำนำหน้า ภก. ภญ. ออกให้กราฟดูสะอาดตาขึ้น
+            // เตรียมชื่อเภสัชกร (ลบคำนำหน้า)
             let pLabels = Object.keys(pharmStats).map(p => p.replace('ภก.', '').replace('ภญ.', '').trim()); 
-            let pData = Object.keys(pharmStats).map(k => (pharmStats[k].sum / pharmStats[k].count).toFixed(2));
-            renderChart('chartPharm', 'bar', pLabels, pData, 'นาทีเฉลี่ย/เคส', 'rgba(16, 185, 129, 0.8)');
 
+            // 1. กราฟ "จำนวนเคส" รายบุคคล (สีม่วง)
+            let pCountData = Object.keys(pharmStats).map(k => pharmStats[k].count);
+            renderChart('chartPharmCount', 'bar', pLabels, pCountData, 'จำนวนเคส', 'rgba(139, 92, 246, 0.8)'); 
+
+            // 2. กราฟ "เวลาเฉลี่ย" รายบุคคล (สีเขียว)
+            let pTimeData = Object.keys(pharmStats).map(k => (pharmStats[k].sum / pharmStats[k].count).toFixed(2));
+            renderChart('chartPharmTime', 'bar', pLabels, pTimeData, 'นาที/เคส', 'rgba(16, 185, 129, 0.8)'); 
+
+            // 3. กราฟ "จำนวนเคส" รายคลินิก (สีฟ้า)
+            let cLabels = Object.keys(clinicStats);
+            let cCountData = cLabels.map(k => clinicStats[k].count);
+            renderChart('chartClinicCount', 'bar', cLabels, cCountData, 'จำนวนเคส', 'rgba(59, 130, 246, 0.8)'); 
+
+            // 4. กราฟ Peak Hour (สีส้ม)
             let hKeys = Object.keys(hourStats).map(Number).sort((a,b) => a-b);
             let hLabels = hKeys.map(h => `${String(h).padStart(2,'0')}:00`);
             let hData = hKeys.map(k => hourStats[k]);
             renderChart('chartHours', 'line', hLabels, hData, 'จำนวนเคส', 'rgba(245, 158, 11, 0.5)'); 
             
-            // ทำให้กราฟเส้นมีสีโปร่งแสงสวยงาม
             if (adminCharts['chartHours']) {
                 adminCharts['chartHours'].data.datasets[0].backgroundColor = 'rgba(245, 158, 11, 0.2)';
                 adminCharts['chartHours'].data.datasets[0].borderColor = 'rgba(245, 158, 11, 1)';
