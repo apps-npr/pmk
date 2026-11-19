@@ -2721,8 +2721,8 @@
                     { id: 'mdi_sere125', name: 'Seretide EVO (25/125)', defaultPuff: '2', defaultFreq: 'BID' },
                     { id: 'mdi_sere250', name: 'Seretide EVO (25/250)', defaultPuff: '2', defaultFreq: 'BID' },
                     { id: 'mdi_sere50', name: 'Seretide EVO (25/50)', defaultPuff: '2', defaultFreq: 'BID' },
-                    { id: 'mdi_ventolin', name: 'Ventolin 100 mcg', defaultPuff: '1-2', defaultFreq: 'prn' },
-                    { id: 'mdi_berodual', name: 'Berodual', defaultPuff: '1-2', defaultFreq: 'prn' }
+                    { id: 'mdi_ventolin', name: 'Ventolin 100 mcg', defaultPuff: '1-2', defaultFreq: 'prn', isReliever: true },
+                    { id: 'mdi_berodual', name: 'Berodual', defaultPuff: '1-2', defaultFreq: 'prn', isReliever: true }
                 ],
                 steps: [
                     "ถือหลอดพ่นในแนวตั้ง เปิดฝาครอบปากขวดยาพ่นออก เขย่าขวดยาในแนวตั้ง 3-4 ครั้ง",
@@ -2734,6 +2734,17 @@
                     "หลังใช้เสร็จกลั้วภายในปากและคอด้วยน้ำสะอาด",
                     "เช็ดปากกระบอกหรือดึงขวดยาออก แล้วล้างทำความสะอาดอุปกรณ์พลาสติก โดยเปิดน้ำสะอาดให้ไหลผ่าน ผึ่งให้แห้งในที่ร่ม",
                     "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
+                ],
+                shortSteps: [
+                    "ไม่เขย่าขวดยา",
+                    "ไม่หายใจออกก่อนพ่น",
+                    "อมปากกระบอกไม่สนิท",
+                    "กดพร้อมสูดไม่สัมพันธ์/สูดไม่ลึก",
+                    "กลั้นหายใจไม่ถึง 10 วิ",
+                    "ไม่ผ่อนลมหายใจออกช้าๆ",
+                    "ไม่กลั้วปากหลังพ่น",
+                    "ไม่ล้างทำความสะอาดอุปกรณ์",
+                    "ไม่เว้น 1-2 นาทีระหว่างพ่น"
                 ],
                 excelOffset: 13
             },
@@ -2753,6 +2764,17 @@
                     "หลังพ่นยา กลั้วภายในปากและคอด้วยน้ำสะอาด",
                     "หลังใช้เสร็จ ทำความสะอาดปากขวดยาพ่นโดยใช้กระดาษ/ผ้าแห้งเช็ด",
                     "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
+                ],
+                shortSteps: [
+                    "ไม่วางแนวราบ/เปิดฝาไม่สุด",
+                    "ดันแกนบรรจุยาไม่สุด",
+                    "ไม่หายใจออกก่อนพ่น",
+                    "สูดไม่เร็วแรงลึก",
+                    "กลั้นหายใจไม่ถึง 10 วิ",
+                    "ปิดฝาเครื่องไม่สนิท",
+                    "ไม่กลั้วปากหลังพ่น",
+                    "ไม่เช็ดทำความสะอาดปากกระบอก",
+                    "ไม่เว้น 1-2 นาทีระหว่างพ่น"
                 ],
                 excelOffset: 29
             },
@@ -2774,6 +2796,18 @@
                     "ปิดปากกระบอกและฝาให้สนิท",
                     "หลังใช้เสร็จ ทำความสะอาดปากขวดยาพ่นโดยใช้กระดาษซับให้แห้ง"
                 ],
+                shortSteps: [
+                    "เปิดฝา/ปากกระบอกไม่ถูก",
+                    "ใส่แคปซูลไม่ถูกต้อง",
+                    "ปิดปากกระบอกไม่สนิท",
+                    "กดเจาะแคปซูลไม่ถูกวิธี",
+                    "ไม่หายใจออกก่อนพ่น",
+                    "สูดไม่เร็วแรงลึก",
+                    "ไม่ผ่อนลมหายใจออกช้าๆ",
+                    "ไม่ตรวจผงยาเหลือ/ไม่ทิ้งแคปซูล",
+                    "ปิดฝาเครื่องไม่สนิท",
+                    "ไม่เช็ดทำความสะอาดปากกระบอก"
+                ],
                 excelOffset: 42
             },
             {
@@ -2792,6 +2826,16 @@
                     "หลังใช้เสร็จ ทำความสะอาดปากขวดยาพ่นโดยใช้กระดาษซับให้แห้ง ก่อนปิดฝากระบอกยา",
                     "หลังพ่นยา กลั้วภายในปากและคอด้วยน้ำสะอาด",
                     "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
+                ],
+                shortSteps: [
+                    "ไม่ถือแนวตั้ง/เขย่าขวด",
+                    "เปิดฝาไม่สุด/ไม่ได้ยินเสียงคลิก",
+                    "ไม่หายใจออกก่อนพ่น",
+                    "สูดไม่เร็วแรงลึก",
+                    "กลั้นหายใจไม่ถึง 10 วิ",
+                    "ไม่เช็ดทำความสะอาดปากกระบอก",
+                    "ไม่กลั้วปากหลังพ่น",
+                    "ไม่เว้น 1-2 นาทีระหว่างพ่น"
                 ],
                 excelOffset: 54
             },
@@ -2812,6 +2856,17 @@
                     "เช็ดทำความสะอาดปากกระบอกด้วยผ้าหรือกระดาษทิชชู่แห้ง (ห้ามล้างน้ำ)",
                     "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
                 ],
+                shortSteps: [
+                    "ไม่เขย่าขวดยา",
+                    "ไม่หายใจออกก่อนพ่น",
+                    "อมปากกระบอกไม่สนิท",
+                    "กดพร้อมสูดไม่สัมพันธ์/สูดไม่ลึก",
+                    "กลั้นหายใจไม่ถึง 10 วิ",
+                    "ไม่ผ่อนลมหายใจออกช้าๆ",
+                    "ไม่กลั้วปากหลังพ่น",
+                    "ไม่เช็ดทำความสะอาดปากกระบอก",
+                    "ไม่เว้น 1-2 นาทีระหว่างพ่น"
+                ],
                 excelOffset: null
             },
             {
@@ -2829,6 +2884,15 @@
                     "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที",
                     "หลังใช้เสร็จ ทำความสะอาดปากขวดยาพ่นโดยใช้กระดาษเช็ดให้สะอาด ก่อนปิดฝากระบอกยา"
                 ],
+                shortSteps: [
+                    "ไม่หมุนบรรจุยาก่อนสูด",
+                    "ไม่หายใจออกก่อนพ่น",
+                    "อมปากกระบอกไม่สนิท/ปิดช่องระบายอากาศ",
+                    "กดพร้อมสูดไม่สัมพันธ์/สูดไม่ลึก",
+                    "กลั้นหายใจไม่ถึง 10 วิ",
+                    "ไม่เว้น 1-2 นาทีระหว่างพ่น",
+                    "ไม่เช็ดทำความสะอาดปากกระบอก"
+                ],
                 excelOffset: 66
             },
             {
@@ -2844,6 +2908,14 @@
                     "สูดยาเข้าปอดโดยหายใจเข้าเร็ว แรง ลึกจนสุด",
                     "เอาปากกระบอกออก งับปาก และกลั้นหายใจ 10 วินาที แล้วผ่อนลมหายใจออกทางจมูกช้าๆ",
                     "ทำความสะอาดปากกระบอกยาพ่นโดยใช้กระดาษทิชชู่หรือผ้าแห้งเช็ดให้สะอาด ก่อนปิดฝากระบอกยา"
+                ],
+                shortSteps: [
+                    "เปิดฝาไม่สุด/ไม่ได้ยินเสียงคลิก",
+                    "ไม่หายใจออกก่อนพ่น",
+                    "อมปากกระบอกไม่สนิท/ปิดช่องระบายอากาศ",
+                    "สูดไม่เร็วแรงลึก",
+                    "กลั้นหายใจไม่ถึง 10 วิ",
+                    "ไม่เช็ดทำความสะอาดปากกระบอก"
                 ],
                 excelOffset: 77
             },
@@ -2863,6 +2935,17 @@
                     "หลังใช้เสร็จกลั้วภายในปากและคอด้วยน้ำสะอาด",
                     "ล้างทำความสะอาดกระบอกพลาสติกสัปดาห์ละ 1 ครั้ง ผึ่งให้แห้งสนิท",
                     "กรณีพ่นยา 2 ครั้งให้เว้น 1-2 นาที"
+                ],
+                shortSteps: [
+                    "ไม่เขย่าขวดยา",
+                    "ไม่หายใจออกก่อนพ่น",
+                    "อมปากกระบอกไม่สนิท",
+                    "กดพร้อมสูดไม่สัมพันธ์/สูดไม่ลึก",
+                    "กลั้นหายใจไม่ถึง 10 วิ",
+                    "ไม่ผ่อนลมหายใจออกช้าๆ",
+                    "ไม่กลั้วปากหลังพ่น",
+                    "ไม่ล้างทำความสะอาดอุปกรณ์",
+                    "ไม่เว้น 1-2 นาทีระหว่างพ่น"
                 ],
                 excelOffset: 86
             }
@@ -5027,12 +5110,18 @@
                                 if (finalFreq) usageParts.push(finalFreq);
                                 if (med.suffix) usageParts.push(med.suffix);
 
+                                const relFreq = med.isReliever
+                                    ? (document.getElementById(`c8_med_${med.id}_reliever_freq`)?.value?.trim() || '')
+                                    : '';
+                                const relText = relFreq
+                                    ? ` (${relFreq.startsWith('ใช้') ? relFreq : 'ใช้ ' + relFreq})`
+                                    : '';
+
                                 const usageText = usageParts.length > 0 ? ' ' + usageParts.join(' ') : '';
-                                medSectionLines.push(`– ${med.name}${usageText} ${techStr}`);
+                                medSectionLines.push(`– ${med.name}${usageText}${relText}`);
                             });
-                        } else {
-                            medSectionLines.push(`– ${techStr}`);
                         }
+                        medSectionLines.push(techStr);
                     }
                 });
 
@@ -6060,6 +6149,20 @@
                         `<option value="${f}" ${med.defaultFreq === f ? 'selected' : ''}>${f === 'custom' ? 'ระบุเอง...' : f}</option>`
                     ).join('');
 
+                    const relieverHtml = med.isReliever ? `
+                        <div id="c8_med_${med.id}_reliever_box" class="hidden w-full mt-1.5 pt-2 border-t border-dashed border-amber-300 bg-amber-50/80 px-2.5 py-2 rounded-lg text-xs">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <span class="font-bold text-amber-900 whitespace-nowrap"><i class="fa-solid fa-gauge-high mr-1"></i>ความถี่ใช้ยาฉุกเฉิน:</span>
+                                <input type="text" id="c8_med_${med.id}_reliever_freq" placeholder="เช่น 2 ครั้ง/wk, 2-3 ครั้ง/วัน" class="flex-1 min-w-[140px] rounded border-amber-300 border px-2 py-1 bg-white text-gray-800 font-medium" oninput="generateOutput()">
+                            </div>
+                            <div class="flex flex-wrap gap-1 mt-1.5">
+                                ${['ไม่ใช้เลย', '<2 ครั้ง/wk', '2 ครั้ง/wk', '>2 ครั้ง/wk', '2-3 ครั้ง/วัน'].map(preset => 
+                                    `<button type="button" onclick="setC8RelieverFreq('${med.id}', '${preset}')" class="text-[11px] bg-white hover:bg-amber-100 text-amber-900 border border-amber-200 px-2 py-0.5 rounded transition">${preset}</button>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    ` : '';
+
                     return `
                         <div class="flex flex-wrap items-center justify-between gap-2 bg-white p-2.5 rounded-lg border border-gray-200 hover:border-teal-300 transition">
                             <label class="inline-flex items-center cursor-pointer font-semibold text-sm text-gray-800 flex-1 min-w-[180px]">
@@ -6076,6 +6179,7 @@
                                 </select>
                                 <input type="text" id="c8_med_${med.id}_freq_custom" placeholder="วิธีใช้..." class="hidden w-20 rounded border-gray-300 border px-2 py-1" oninput="generateOutput()">
                             </div>
+                            ${relieverHtml}
                         </div>
                     `;
                 }).join('');
@@ -6136,10 +6240,29 @@
             container.innerHTML = html;
         }
 
+        function setC8RelieverFreq(medId, val) {
+            const inp = document.getElementById(`c8_med_${medId}_reliever_freq`);
+            if (inp) {
+                inp.value = val;
+                generateOutput();
+            }
+        }
+
         function onC8MedCheck(devId, medId) {
             const medCb = document.getElementById(`c8_med_${medId}`);
             const devCb = document.getElementById(`c8_dev_${devId}`);
+            const relBox = document.getElementById(`c8_med_${medId}_reliever_box`);
+            const relInp = document.getElementById(`c8_med_${medId}_reliever_freq`);
             const anyMedChecked = document.querySelectorAll(`.c8-med-cb-${devId}:checked`).length > 0;
+
+            if (relBox) {
+                if (medCb && medCb.checked) {
+                    relBox.classList.remove('hidden');
+                } else {
+                    relBox.classList.add('hidden');
+                    if (relInp) relInp.value = '';
+                }
+            }
 
             if (medCb && medCb.checked && devCb && !devCb.checked) {
                 devCb.checked = true;
@@ -6223,6 +6346,13 @@
                 if (toggleBtn) toggleBtn.classList.add('hidden');
                 document.querySelectorAll(`.c8-dev-step-${id}`).forEach(cb => cb.checked = false);
                 document.querySelectorAll(`.c8-med-cb-${id}`).forEach(cb => cb.checked = false);
+                const devDef = asthmaDevicesDef.find(d => d.id === id);
+                (devDef?.drugs || []).forEach(m => {
+                    const rBox = document.getElementById(`c8_med_${m.id}_reliever_box`);
+                    const rInp = document.getElementById(`c8_med_${m.id}_reliever_freq`);
+                    if (rBox) rBox.classList.add('hidden');
+                    if (rInp) rInp.value = '';
+                });
             }
             if(typeof generateOutput === 'function') generateOutput();
         }
@@ -6262,7 +6392,8 @@
                     if (cb && cb.checked) {
                         total++;
                     } else {
-                        missingSteps.push(step);
+                        const shortLabel = (devDef.shortSteps && devDef.shortSteps[idx]) ? devDef.shortSteps[idx] : step;
+                        missingSteps.push(shortLabel);
                     }
                 }
             });
