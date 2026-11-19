@@ -150,14 +150,40 @@
                 padding: 8mm; box-sizing: border-box;
                 -webkit-print-color-adjust: exact; print-color-adjust: exact;
             }
+            
+            /* โหมด 5: พิมพ์ใบตารางทานยา Warfarin ภาพสี (A5 แนวตั้ง) */
+            body.print-mode-wf-color-a5 #mainAppContainer { display: none !important; }
+            body.print-mode-wf-color-a5 #printWfColorTableA5,
+            body.print-mode-wf-color-a5 #printWfColorTableA5 * { visibility: visible !important; }
+            body.print-mode-wf-color-a5 #printWfColorTableA5 {
+                position: absolute; left: 0; top: 0; width: 148mm;
+                display: block !important; background: white !important;
+                padding: 6mm; box-sizing: border-box;
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+            }
+
+            /* โหมด 6: พิมพ์ใบสรุปเทคนิคพ่นยาเฉพาะจุดที่ผิด (A5 แนวตั้ง) */
+            body.print-mode-asthma-a5 #mainAppContainer { display: none !important; }
+            body.print-mode-asthma-a5 #printAsthmaMistakeA5,
+            body.print-mode-asthma-a5 #printAsthmaMistakeA5 * { visibility: visible !important; }
+            body.print-mode-asthma-a5 #printAsthmaMistakeA5 {
+                position: absolute; left: 0; top: 0; width: 148mm;
+                display: block !important; background: white !important;
+                padding: 7mm; box-sizing: border-box;
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+            }
         }
         
         /* ตั้งค่าหน้ากระดาษ */
         @page { size: auto; margin: 0; }
         @page opdPageA5 { size: A5 landscape; margin: 0; }
         @page rifampinPageA5 { size: A5 portrait; margin: 5mm; }
+        @page wfColorPageA5 { size: A5 portrait; margin: 4mm; }
+        @page asthmaMistakePageA5 { size: A5 portrait; margin: 5mm; }
         body.print-mode-opd-a5 { page: opdPageA5; }
         body.print-mode-rifampin-a5 { page: rifampinPageA5; }
+        body.print-mode-wf-color-a5 { page: wfColorPageA5; }
+        body.print-mode-asthma-a5 { page: asthmaMistakePageA5; }
 
         /* สไตล์ Slider และ Animation สำหรับ Warfarin-Rifampin */
         @keyframes slideUpFade {
@@ -217,7 +243,12 @@
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center">
                     <img src="icon_512x512.jpg" alt="Icon" class="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
-                    <h1 class="text-2xl font-semibold">OPD Online</h1>
+                    <div>
+                        <h1 class="text-2xl font-semibold">OPD Online</h1>
+                        <div id="autoSaveStatus" class="text-[11px] text-blue-100 flex items-center gap-1.5 mt-0.5">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> <span>ระบบบันทึกแบบร่างอัตโนมัติพร้อมทำงาน</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="openAdminLogin()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center text-sm">
@@ -325,8 +356,13 @@
                     </div>
                 </div>
 
-                <div class="bg-cyan-100 hover:bg-cyan-200 transition border border-cyan-300 rounded-lg p-4 text-center cursor-pointer shadow-sm" onclick="openCapriniModal()">
-                    <h3 class="text-cyan-800 font-bold m-0"><i class="fa-solid fa-calculator"></i> ประเมินความเสี่ยง VTE (Caprini Score) คลิก!</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-cyan-100 hover:bg-cyan-200 transition border border-cyan-300 rounded-lg p-3.5 text-center cursor-pointer shadow-sm" onclick="openCapriniModal()">
+                        <h3 class="text-cyan-800 font-bold m-0 text-sm"><i class="fa-solid fa-calculator mr-1"></i> ประเมินความเสี่ยง VTE (Caprini Score)</h3>
+                    </div>
+                    <div class="bg-rose-100 hover:bg-rose-200 transition border border-rose-300 rounded-lg p-3.5 text-center cursor-pointer shadow-sm" onclick="openHasbledModal('PREOP')">
+                        <h3 class="text-rose-800 font-bold m-0 text-sm"><i class="fa-solid fa-droplet mr-1"></i> ประเมินความเสี่ยงเลือดออก (HAS-BLED Score)</h3>
+                    </div>
                 </div>
 
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
@@ -374,7 +410,12 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">การทำงานของไต (CrCl) <span class="text-red-500 text-xs">*สำคัญ</span></label>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-sm font-medium text-gray-700">การทำงานของไต (CrCl) <span class="text-red-500 text-xs">*สำคัญ</span></label>
+                                <button type="button" onclick="openRenalCalcModal('PREOP')" class="text-[11px] bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold px-2 py-0.5 rounded border border-blue-300 transition">
+                                    <i class="fa-solid fa-calculator mr-1"></i>คำนวณ CrCl / eGFR
+                                </button>
+                            </div>
                             <input type="number" id="renalFunction" class="w-full rounded-lg border-gray-300 border px-3 py-2" placeholder="ml/min (Default 90)" oninput="processResults()">
                         </div>
                         <div>
@@ -854,9 +895,20 @@
                         <input type="text" id="hivLabDate" placeholder="วันที่เจาะ Lab หลัก (วว/ดด/พศ)" class="w-full md:w-1/3 rounded-lg border-gray-300 border px-3 py-2 text-sm shadow-sm" oninput="generateOutput()">
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-white p-4 rounded-lg border border-indigo-200 shadow-sm">
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">Scr</label><input type="text" id="hivScr" placeholder="ระบุค่า Scr" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
-                        <div><label class="block text-xs font-medium text-gray-600 mb-1">eGFR (CKD-EPI)</label><input type="text" id="hivEgfr" placeholder="ระบุค่า eGFR" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="generateOutput()"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 bg-white p-4 rounded-lg border border-indigo-200 shadow-sm">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Scr (mg/dL)</label>
+                            <input type="text" id="hivScr" placeholder="ระบุค่า Scr" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="evaluateHivRenalAlert(); generateOutput();">
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-medium text-gray-600">eGFR (CKD-EPI)</label>
+                                <button type="button" onclick="openRenalCalcModal('HIV')" class="text-[10px] bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold px-2 py-0.5 rounded border border-indigo-300 transition">
+                                    <i class="fa-solid fa-calculator mr-0.5"></i>คำนวณ eGFR
+                                </button>
+                            </div>
+                            <input type="text" id="hivEgfr" placeholder="ระบุค่า eGFR" class="w-full rounded-lg border-gray-300 border px-3 py-2" oninput="evaluateHivRenalAlert(); generateOutput();">
+                        </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">UA protein</label>
                             <select id="hivUa" class="w-full rounded-lg border-gray-300 border px-3 py-2 bg-gray-50" onchange="generateOutput()">
@@ -868,6 +920,23 @@
                                 <option value="+3">+3</option>
                             </select>
                         </div>
+                    </div>
+
+                    <!-- กล่องแจ้งเตือน Renal Dose Alert อัตโนมัติ (HIV - TDF) -->
+                    <div id="hivRenalAlertBox" class="hidden mb-4 p-3.5 rounded-lg border-l-4 shadow-sm text-xs">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <div id="hivRenalAlertTitle" class="font-bold text-sm mb-1"></div>
+                                <div id="hivRenalAlertMsg" class="leading-relaxed"></div>
+                            </div>
+                        </div>
+                        <div class="mt-2.5 pt-2 border-t border-black/10 flex flex-wrap items-center justify-between gap-2">
+                            <label class="inline-flex items-center cursor-pointer font-bold">
+                                <input type="checkbox" id="chkHivRenalAdvice" class="form-checkbox rounded mr-2 h-4 w-4" checked onchange="generateOutput()">
+                                <span>แนะนำปรึกษาแพทย์ตามข้อความนี้ (แนบลง Pharmacist Note อัตโนมัติ)</span>
+                            </label>
+                        </div>
+                        <input type="text" id="hivRenalCustomAdvice" class="mt-2 w-full rounded border px-2.5 py-1.5 text-xs bg-white font-medium" oninput="generateOutput()">
                     </div>
 
                     <div class="bg-white p-3 rounded-lg border border-indigo-200">
@@ -1139,7 +1208,12 @@
                     <!-- Warfarin: บันทึก Note -->
                     <div id="wf-note" class="wf-tab-content">
                         <div class="bg-white p-5 border border-gray-200 rounded-lg shadow-sm">
-                            <h3 class="font-bold text-purple-800 mb-4 border-b pb-2"><i class="fa-solid fa-file-signature"></i> ข้อมูลประเมินผู้ป่วย (Pharmacist Note)</h3>
+                            <div class="flex flex-wrap justify-between items-center mb-4 border-b pb-2 gap-2">
+                                <h3 class="font-bold text-purple-800 m-0"><i class="fa-solid fa-file-signature"></i> ข้อมูลประเมินผู้ป่วย (Pharmacist Note)</h3>
+                                <button type="button" onclick="openHasbledModal('WARFARIN')" class="bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-300 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center">
+                                    <i class="fa-solid fa-droplet mr-1.5"></i> ประเมิน HAS-BLED Score
+                                </button>
+                            </div>
                             
                             <!-- WARFARIN NO & INR -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -1322,6 +1396,12 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">ผู้ประเมิน (เภสัชกร)</label>
                                 <input type="text" id="wfNotePharm" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 bg-white" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                            </div>
+                            <!-- ปุ่มพิมพ์ใบตารางทานยา Warfarin ภาพสี (A5 แยกอิสระ) -->
+                            <div class="mt-4 pt-4 border-t border-gray-200 flex flex-wrap gap-3">
+                                <button type="button" onclick="printWfColorTableA5()" class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+                                    <i class="fa-solid fa-palette"></i> พิมพ์ใบตารางทานยา Warfarin ภาพสี (A5)
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1589,7 +1669,12 @@
                             <input type="number" id="hfHr" placeholder="ขณะพัก (Target < 70)" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">eGFR (ล่าสุด)</label>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-medium text-gray-600">eGFR (ล่าสุด)</label>
+                                <button type="button" onclick="openRenalCalcModal('HF')" class="text-[10px] bg-green-100 hover:bg-green-200 text-green-800 font-bold px-2 py-0.5 rounded border border-green-300 transition">
+                                    <i class="fa-solid fa-calculator mr-0.5"></i>คำนวณ eGFR
+                                </button>
+                            </div>
                             <input type="number" id="hfEgfr" placeholder="mL/min" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm">
                         </div>
                         <div>
@@ -1868,7 +1953,12 @@
                             <input type="number" step="0.01" id="c7Scr" placeholder="เช่น 2.31" class="w-full rounded-lg border-orange-300 border-2 px-3 py-2 text-sm font-bold text-gray-900 bg-white" oninput="onC7LabChange()">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-orange-900 mb-1">eGFR วันนี้ (Col H) <span class="text-[11px] font-normal text-orange-700">(คำนวณ Stage อัตโนมัติ)</span></label>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-bold text-orange-900">eGFR วันนี้ (Col H)</label>
+                                <button type="button" onclick="openRenalCalcModal('CKD')" class="text-[10px] bg-orange-200 hover:bg-orange-300 text-orange-900 font-bold px-2 py-0.5 rounded border border-orange-400 transition">
+                                    <i class="fa-solid fa-calculator mr-0.5"></i>คำนวณ eGFR/CrCl
+                                </button>
+                            </div>
                             <input type="number" step="0.01" id="c7Egfr" placeholder="เช่น 23.10" class="w-full rounded-lg border-orange-300 border-2 px-3 py-2 text-sm font-bold text-blue-700 bg-white" oninput="onC7LabChange()">
                         </div>
                         <div>
@@ -1885,6 +1975,22 @@
                                 <option value="Glomerular disease">Glomerular disease</option>
                             </select>
                         </div>
+                    </div>
+                    <!-- กล่องตรวจสอบยาและแจ้งเตือนการปรับขนาดยาตามไตอัตโนมัติ (CKD Renal Dose Alert) -->
+                    <div class="mb-4 bg-rose-50/70 p-3.5 rounded-lg border border-rose-200">
+                        <div class="flex flex-wrap justify-between items-center gap-2 mb-2">
+                            <label class="text-xs font-bold text-rose-900"><i class="fa-solid fa-shield-halved mr-1"></i>ตรวจสอบยาที่ต้องปรับขนาด / ห้ามใช้ตามค่าไต (Renal Dose Alert):</label>
+                            <div class="flex flex-wrap gap-1">
+                                <button type="button" onclick="addC7DrugWatch('Metformin')" class="text-[10px] bg-white hover:bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded font-semibold">+ Metformin</button>
+                                <button type="button" onclick="addC7DrugWatch('Allopurinol')" class="text-[10px] bg-white hover:bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded font-semibold">+ Allopurinol</button>
+                                <button type="button" onclick="addC7DrugWatch('Colchicine')" class="text-[10px] bg-white hover:bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded font-semibold">+ Colchicine</button>
+                                <button type="button" onclick="addC7DrugWatch('NSAIDs')" class="text-[10px] bg-white hover:bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded font-semibold">+ NSAIDs</button>
+                                <button type="button" onclick="addC7DrugWatch('Gabapentin')" class="text-[10px] bg-white hover:bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded font-semibold">+ Gabapentin</button>
+                                <button type="button" onclick="addC7DrugWatch('Sitagliptin')" class="text-[10px] bg-white hover:bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded font-semibold">+ Sitagliptin</button>
+                            </div>
+                        </div>
+                        <input type="text" id="c7DrugWatchInput" placeholder="พิมพ์ชื่อยาที่ผู้ป่วยใช้อยู่ เช่น Metformin 1000mg, Allopurinol 300mg, Colchicine, Ibuprofen..." class="w-full rounded border-rose-300 border px-3 py-1.5 text-xs bg-white font-medium" oninput="evaluateCkdRenalAlerts(); generateOutput();">
+                        <div id="c7RenalAlertsContainer" class="mt-2.5 space-y-2"></div>
                     </div>
 
                     <!-- แถวที่ 3: ค่าทางคลินิกอื่นๆ เสริมใน Note -->
@@ -2082,6 +2188,11 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก (เภสัชกร)</label>
                         <input type="text" id="c8PharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
                     </div>
+                    <div class="pt-3 border-t border-gray-200 flex flex-wrap gap-3">
+                        <button type="button" onclick="printAsthmaMistakeA5()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-lungs-virus"></i> พิมพ์ใบสรุปเทคนิคพ่นยาเฉพาะจุดที่ผิด (A5)
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2215,6 +2326,217 @@
             </div>
         </div>
     </div>
+    <!-- Warfarin Color Medication Table A5 Print Area (สำหรับโหมด 5) -->
+    <div id="printWfColorTableA5" class="hidden w-full max-w-[148mm] mx-auto bg-white text-gray-900">
+        <div class="border-2 border-purple-800 rounded-xl p-3.5">
+            <div class="flex justify-between items-center border-b-2 border-purple-700 pb-2 mb-2.5">
+                <div>
+                    <h1 class="text-base font-bold text-purple-900"><i class="fa-solid fa-pills mr-1"></i> ตารางรับประทานยาวาร์ฟาริน (Warfarin)</h1>
+                    <p class="text-[11px] text-gray-600">กลุ่มงานเภสัชกรรม โรงพยาบาลนพรัตนราชธานี</p>
+                </div>
+                <div class="text-right text-[11px]">
+                    <div class="font-bold text-purple-800">Warfarin No: <span id="wfc-print-wfno">-</span></div>
+                    <div>วันที่: <span id="wfc-print-date">-</span></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-1.5 bg-purple-50 p-2 rounded-lg border border-purple-200 text-xs mb-2.5">
+                <div><span class="font-bold">ชื่อ-สกุล:</span> <span id="wfc-print-name">-</span></div>
+                <div><span class="font-bold">HN:</span> <span id="wfc-print-hn">-</span></div>
+                <div><span class="font-bold">ข้อบ่งใช้:</span> <span id="wfc-print-ind">-</span> (Target: <span id="wfc-print-target">-</span>)</div>
+                <div><span class="font-bold text-red-700">INR ล่าสุด:</span> <span id="wfc-print-inr" class="font-bold text-red-700">-</span> | <span class="font-bold text-blue-800">รวม: <span id="wfc-print-total">-</span> mg/wk</span></div>
+            </div>
+
+            <!-- ตาราง 7 วัน ภาพสีเม็ดยา -->
+            <table class="w-full border-collapse border border-gray-400 text-center text-xs mb-2.5">
+                <thead>
+                    <tr class="bg-purple-800 text-white">
+                        <th class="border border-gray-400 py-1.5 w-[14%]">จันทร์</th>
+                        <th class="border border-gray-400 py-1.5 w-[14%]">อังคาร</th>
+                        <th class="border border-gray-400 py-1.5 w-[14%]">พุธ</th>
+                        <th class="border border-gray-400 py-1.5 w-[14%]">พฤหัสฯ</th>
+                        <th class="border border-gray-400 py-1.5 w-[14%]">ศุกร์</th>
+                        <th class="border border-gray-400 py-1.5 w-[15%] bg-purple-900">เสาร์</th>
+                        <th class="border border-gray-400 py-1.5 w-[15%] bg-red-800">อาทิตย์</th>
+                    </tr>
+                </thead>
+                <tbody id="wfc-print-table-body"></tbody>
+            </table>
+
+            <!-- คำอธิบายสีเม็ดยา & ข้อความวิธีใช้ -->
+            <div class="flex flex-wrap justify-between items-center bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-1.5 text-[10px] mb-2.5 gap-1">
+                <span class="font-bold text-gray-700">สีเม็ดยา:</span>
+                <span class="inline-flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-white border border-gray-600"></span> 1 mg (ขาว)</span>
+                <span class="inline-flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-orange-400 border border-orange-700"></span> 2 mg (ส้ม)</span>
+                <span class="inline-flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-sky-400 border border-sky-700"></span> 3 mg (ฟ้า)</span>
+                <span class="inline-flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-pink-400 border border-pink-700"></span> 5 mg (ชมพู)</span>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-2 text-[11px] mb-2.5">
+                <div class="font-bold text-blue-900 mb-0.5">สรุปวิธีรับประทาน (ก่อนนอน วันละ 1 ครั้ง):</div>
+                <div id="wfc-print-raw-detail" class="whitespace-pre-line font-semibold text-gray-800 leading-snug"></div>
+            </div>
+
+            <div class="bg-red-50 border border-red-300 rounded-lg p-2 text-[10px] text-red-900 leading-snug">
+                <div class="font-bold text-red-700"><i class="fa-solid fa-triangle-exclamation mr-1"></i>อาการเลือดออกผิดปกติที่ต้องรีบมาพบแพทย์ทันที:</div>
+                <div>อาเจียนเป็นเลือด ไอเป็นเลือด ถ่ายอุจจาระสีดำ/ปนเลือด ปัสสาวะเป็นสีแดง/น้ำล้างเนื้อ เลือดกำเดาไหลหรือเลือดออกตามไรฟันไม่หยุด จ้ำเลือดขนาดใหญ่ตามตัว ปวดศีรษะรุนแรงเฉียบพลัน</div>
+            </div>
+
+            <div class="mt-2.5 flex justify-between items-end text-[10px] text-gray-600">
+                <div>*ห้ามหยุดยา ปรับขนาดยา หรือซื้อยา/สมุนไพรทานเอง</div>
+                <div class="text-right">เภสัชกร: <span id="wfc-print-pharm" class="font-semibold text-gray-800">-</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Asthma/COPD Inhaler Mistake Summary A5 Print Area (สำหรับโหมด 6) -->
+    <div id="printAsthmaMistakeA5" class="hidden w-full max-w-[148mm] mx-auto bg-white text-gray-900">
+        <div class="border-2 border-teal-700 rounded-xl p-4">
+            <div class="border-b-2 border-teal-700 pb-2 mb-3 flex justify-between items-center">
+                <div>
+                    <h1 class="text-base font-bold text-teal-900"><i class="fa-solid fa-lungs mr-1"></i> ใบสรุปจุดที่ควรแก้ไขในการพ่นยา</h1>
+                    <p class="text-[11px] text-gray-600">คลินิกโรคระบบทางเดินหายใจ โรงพยาบาลนพรัตนราชธานี</p>
+                </div>
+                <div class="text-right text-[11px] text-gray-600">
+                    <div>วันที่: <span id="ast-print-date">-</span></div>
+                </div>
+            </div>
+
+            <div class="bg-teal-50 border border-teal-200 rounded-lg p-2.5 text-xs mb-3 grid grid-cols-2 gap-1">
+                <div><span class="font-bold">ชื่อ-สกุล:</span> <span id="ast-print-name">-</span></div>
+                <div><span class="font-bold">HN:</span> <span id="ast-print-hn">-</span></div>
+                <div class="col-span-2"><span class="font-bold">การวินิจฉัย:</span> <span id="ast-print-dx">-</span></div>
+            </div>
+
+            <div id="ast-print-content" class="space-y-3 text-xs"></div>
+
+            <div class="mt-4 bg-amber-50 border border-amber-300 rounded-lg p-2.5 text-[11px] text-amber-900">
+                <div class="font-bold"><i class="fa-solid fa-circle-info mr-1"></i>คำแนะนำเพิ่มเติม:</div>
+                <ul class="list-disc pl-4 mt-1 space-y-0.5">
+                    <li>นำอุปกรณ์พ่นยามาด้วยทุกครั้งที่มาตรวจตามนัด</li>
+                    <li>หากพ่นยาที่มีส่วนผสมของสเตียรอยด์ (เช่น Seretide, Symbicort, Duoresp, Budesonide, Fluticasone) <strong>ต้องกลั้วปากและบ้วนทิ้งทุกครั้ง</strong> เพื่อป้องกันเชื้อราในช่องปากและเสียงแหบ</li>
+                </ul>
+            </div>
+
+            <div class="mt-3 text-right text-[11px] text-gray-700">
+                เภสัชกรผู้ประเมิน: <span id="ast-print-pharm" class="font-bold">-</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: เครื่องคิดเลข eGFR (CKD-EPI 2021) และ CrCl (Cockcroft-Gault) -->
+    <div id="renalCalcModal" class="modal-overlay">
+        <div class="modal-content-card" style="max-width: 460px;">
+            <div class="modal-header" style="background-color: #2563eb;">
+                <h3 class="font-bold"><i class="fa-solid fa-calculator mr-1.5"></i> คำนวณค่าการทำงานของไต (eGFR & CrCl)</h3>
+                <span class="cursor-pointer text-xl font-bold" onclick="closeRenalCalcModal()">&times;</span>
+            </div>
+            <div class="modal-body space-y-3">
+                <input type="hidden" id="renalCalcTargetTab" value="">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">เพศ (Sex)</label>
+                        <select id="rcSex" class="w-full rounded border-gray-300 border px-3 py-2 text-sm bg-gray-50" onchange="computeRenalValues()">
+                            <option value="M">ชาย (Male)</option>
+                            <option value="F">หญิง (Female)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">อายุ (ปี)</label>
+                        <input type="number" id="rcAge" placeholder="เช่น 65" class="w-full rounded border-gray-300 border px-3 py-2 text-sm" oninput="computeRenalValues()">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Serum Creatinine (mg/dL)</label>
+                        <input type="number" step="0.01" id="rcScr" placeholder="เช่น 1.25" class="w-full rounded border-blue-400 border-2 px-3 py-2 text-sm font-bold text-blue-900" oninput="computeRenalValues()">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">น้ำหนักตัว (kg) <span class="font-normal text-gray-400">(สำหรับ CrCl)</span></label>
+                        <input type="number" step="0.1" id="rcWeight" placeholder="เช่น 60" class="w-full rounded border-gray-300 border px-3 py-2 text-sm" oninput="computeRenalValues()">
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2.5 mt-2">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                        <div>
+                            <div class="text-xs font-bold text-indigo-900">eGFR (CKD-EPI 2021)</div>
+                            <div id="rcEgfrStageText" class="text-[11px] text-gray-500">mL/min/1.73m²</div>
+                        </div>
+                        <div id="rcEgfrResult" class="text-2xl font-extrabold text-indigo-700">-</div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <div class="text-xs font-bold text-emerald-900">CrCl (Cockcroft-Gault)</div>
+                            <div class="text-[11px] text-gray-500">mL/min (สำหรับปรับขนาดยา)</div>
+                        </div>
+                        <div id="rcCrclResult" class="text-2xl font-extrabold text-emerald-700">-</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer flex justify-end gap-2">
+                <button type="button" onclick="closeRenalCalcModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">ปิด</button>
+                <button type="button" onclick="applyRenalCalcResult()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow">นำค่าไปใช้</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: HAS-BLED Bleeding Risk Score (Pre-OP & Warfarin) -->
+    <div id="hasbledModal" class="modal-overlay">
+        <div class="modal-content-card" style="max-width: 500px;">
+            <div class="modal-header" style="background-color: #be123c;">
+                <h3 class="font-bold"><i class="fa-solid fa-droplet mr-1.5"></i> HAS-BLED Bleeding Risk Score</h3>
+                <span class="cursor-pointer text-xl font-bold" onclick="closeHasbledModal()">&times;</span>
+            </div>
+            <div class="modal-body space-y-2 text-xs">
+                <input type="hidden" id="hasbledTargetTab" value="">
+                <label class="flex items-start gap-2 p-2 rounded hover:bg-rose-50 border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="hb-cb mt-0.5 text-rose-600 rounded" onchange="calculateHasbled()">
+                    <div><strong>H - Hypertension (+1):</strong> ความดันโลหิตสูงที่ยังคุมไม่ได้ (SBP &gt; 160 mmHg)</div>
+                </label>
+                <label class="flex items-start gap-2 p-2 rounded hover:bg-rose-50 border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="hb-cb mt-0.5 text-rose-600 rounded" onchange="calculateHasbled()">
+                    <div><strong>A - Abnormal Renal Function (+1):</strong> ล้างไต, ปลูกถ่ายไต หรือ SCr &gt; 2.26 mg/dL</div>
+                </label>
+                <label class="flex items-start gap-2 p-2 rounded hover:bg-rose-50 border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="hb-cb mt-0.5 text-rose-600 rounded" onchange="calculateHasbled()">
+                    <div><strong>A - Abnormal Liver Function (+1):</strong> ตับแข็ง หรือ Bilirubin &gt; 2x ULN ร่วมกับ AST/ALT &gt; 3x ULN</div>
+                </label>
+                <label class="flex items-start gap-2 p-2 rounded hover:bg-rose-50 border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="hb-cb mt-0.5 text-rose-600 rounded" onchange="calculateHasbled()">
+                    <div><strong>S - Stroke History (+1):</strong> เคยมีประวัติโรคหลอดเลือดสมอง (Stroke)</div>
+                </label>
+                <label class="flex items-start gap-2 p-2 rounded hover:bg-rose-50 border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="hb-cb mt-0.5 text-rose-600 rounded" onchange="calculateHasbled()">
+                    <div><strong>B - Bleeding History/Predisposition (+1):</strong> เคยมีประวัติเลือดออกรุนแรง หรือภาวะโลหิตจาง/เลือดออกง่าย</div>
+                </label>
+                <label class="flex items-start gap-2 p-2 rounded hover:bg-rose-50 border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="hb-cb mt-0.5 text-rose-600 rounded" onchange="calculateHasbled()">
+                    <div><strong>L - Labile INRs (+1):</strong> ค่า INR แกว่งควบคุมยาก (TTR &lt; 60%)</div>
+                </label>
+                <label class="flex items-start gap-2 p-2 rounded hover:bg-rose-50 border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="hb-cb mt-0.5 text-rose-600 rounded" onchange="calculateHasbled()">
+                    <div><strong>E - Elderly (+1):</strong> อายุ &gt; 65 ปี</div>
+                </label>
+                <label class="flex items-start gap-2 p-2 rounded hover:bg-rose-50 border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="hb-cb mt-0.5 text-rose-600 rounded" onchange="calculateHasbled()">
+                    <div><strong>D - Drugs Concomitant (+1):</strong> ใช้ยาต้านเกล็ดเลือด (Aspirin, Clopidogrel) หรือ NSAIDs ร่วมด้วย</div>
+                </label>
+                <label class="flex items-start gap-2 p-2 rounded hover:bg-rose-50 border border-gray-100 cursor-pointer">
+                    <input type="checkbox" class="hb-cb mt-0.5 text-rose-600 rounded" onchange="calculateHasbled()">
+                    <div><strong>D - Alcohol Excess (+1):</strong> ดื่มแอลกอฮอล์ &ge; 8 แก้ว/สัปดาห์</div>
+                </label>
+                <div class="bg-rose-50 border border-rose-200 rounded-lg p-3 text-center mt-2">
+                    <div class="text-lg font-extrabold text-rose-700">HAS-BLED Score: <span id="hasbledTotalScore">0</span> / 9</div>
+                    <div id="hasbledRiskAdvice" class="text-xs font-bold text-emerald-700 mt-1">Low-Moderate Bleeding Risk (0-2 คะแนน)</div>
+                </div>
+            </div>
+            <div class="modal-footer flex justify-end gap-2">
+                <button type="button" onclick="closeHasbledModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm">ปิด</button>
+                <button type="button" onclick="applyHasbledScore()" class="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow">แนบผลลง Note (Apply)</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ================= ADMIN MODALS ================= -->
     <!-- Login Modal -->
@@ -2245,6 +2567,14 @@
                 <!-- Data Input Area -->
                 <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm mb-4">
                     <label class="block text-sm font-bold text-blue-800 mb-2"><i class="fa-solid fa-paste mr-1"></i> วางข้อมูลจาก Excel </label>
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2.5 border-b border-gray-200">
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="fetchAdminRealtimeData()" id="btnFetchAdminRealtime" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-rotate"></i> ดึงข้อมูล Real-time จาก Google Sheet
+                            </button>
+                            <span id="adminRealtimeStatus" class="text-xs text-gray-500">พร้อมเชื่อมต่อข้อมูลล่าสุด</span>
+                        </div>
+                    </div>
                     <textarea id="adminDataPaste" rows="4" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-xs font-mono bg-slate-50 focus:ring-2 focus:ring-blue-300" placeholder="คัดลอกข้อมูลทั้งตารางจาก Excel แล้วคลิกขวา Paste (วาง) ลงที่นี่..."></textarea>
                     
                     <div class="flex flex-wrap items-end gap-3 mt-3">
@@ -2415,7 +2745,6 @@
 
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec'; 
-        const ACCESS_CODE = "1234";
 
         let currentTab = 'MR';
         let mrSources = [ { place: '', date: '', drugs: [""] } ];
@@ -7205,6 +7534,782 @@
                 adminCharts['chartHours'].update();
             }
         }
+    // =========================================================================
+        //   UPGRADE MODULE: ข้อ 1 - ข้อ 8 (Auto-Save, Renal Calc/Alert, HAS-BLED,
+        //   Real-time Admin, Server Auth, Sticker Preserve, A5 Color Wf & Asthma)
+        // =========================================================================
+
+        // --- [ข้อ 2] รักษาค่าตั้งค่าสติกเกอร์ (4, 3, 98, 11) ไม่ให้ถูกลบเมื่อกดล้างข้อมูล ---
+        const STICKER_DEFAULTS = { stkX: '4', stkY: '3', stkW: '98', stkPt: '11' };
+
+        function saveStickerPrefs() {
+            const prefs = {
+                stkX: document.getElementById('stkX')?.value || STICKER_DEFAULTS.stkX,
+                stkY: document.getElementById('stkY')?.value || STICKER_DEFAULTS.stkY,
+                stkW: document.getElementById('stkW')?.value || STICKER_DEFAULTS.stkW,
+                stkPt: document.getElementById('stkPt')?.value || STICKER_DEFAULTS.stkPt
+            };
+            localStorage.setItem('opd_sticker_prefs_v1', JSON.stringify(prefs));
+        }
+
+        function restoreStickerPrefs() {
+            let prefs = { ...STICKER_DEFAULTS };
+            try {
+                const saved = JSON.parse(localStorage.getItem('opd_sticker_prefs_v1'));
+                if (saved) prefs = { ...prefs, ...saved };
+            } catch (e) {}
+            Object.keys(STICKER_DEFAULTS).forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = prefs[id] !== '' ? prefs[id] : STICKER_DEFAULTS[id];
+            });
+            if (typeof updateOpdStickerPreview === 'function') updateOpdStickerPreview();
+        }
+
+        ['stkX', 'stkY', 'stkW', 'stkPt'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', saveStickerPrefs);
+        });
+
+        // --- [ข้อ 1] ระบบ Auto-Save Draft ลง localStorage ---
+        let autoSaveTimer = null;
+        const DRAFT_STORAGE_KEY = 'opd_online_autosave_draft_v1';
+        const EXCLUDED_DRAFT_IDS = ['stkX', 'stkY', 'stkW', 'stkPt', 'accessCode', 'adminPass', 'adminUser', 'adminDataPaste'];
+
+        function triggerAutoSaveDraft() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                try {
+                    const fields = {};
+                    document.querySelectorAll('#mainAppContainer input, #mainAppContainer select, #mainAppContainer textarea').forEach(el => {
+                        if (!el.id || EXCLUDED_DRAFT_IDS.includes(el.id)) return;
+                        if (el.type === 'checkbox') fields[el.id] = { type: 'checkbox', checked: el.checked };
+                        else if (el.type === 'radio') {
+                            if (el.checked) fields[el.name] = { type: 'radio', value: el.value };
+                        } else {
+                            fields[el.id] = { type: 'value', value: el.value };
+                        }
+                    });
+                    const payload = {
+                        timestamp: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                        currentTab: typeof currentTab !== 'undefined' ? currentTab : 'MR',
+                        mrSources: typeof mrSources !== 'undefined' ? mrSources : [],
+                        selectedLabs: typeof selectedLabs !== 'undefined' ? selectedLabs : [],
+                        hivDrugs: typeof hivDrugs !== 'undefined' ? hivDrugs : [],
+                        selectedPreopDrugs: typeof selectedPreopDrugs !== 'undefined' ? selectedPreopDrugs : [],
+                        adrTimelineDrugs: typeof adrTimelineDrugs !== 'undefined' ? adrTimelineDrugs : [],
+                        fields
+                    };
+                    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(payload));
+                    const statusEl = document.getElementById('autoSaveStatus');
+                    if (statusEl) {
+                        statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-300"></i> <span>บันทึกแบบร่างอัตโนมัติแล้ว (${payload.timestamp})</span>`;
+                    }
+                } catch (e) { console.warn('AutoSave skipped:', e); }
+            }, 600);
+        }
+
+        function loadAutoSaveDraft() {
+            try {
+                const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+                if (!raw) return;
+                const data = JSON.parse(raw);
+                if (!data || !data.fields) return;
+
+                if (Array.isArray(data.mrSources) && data.mrSources.length) { mrSources = data.mrSources; if (typeof renderMrSources === 'function') renderMrSources(); }
+                if (Array.isArray(data.selectedLabs)) { selectedLabs = data.selectedLabs; if (typeof renderLabTags === 'function') renderLabTags(); }
+                if (Array.isArray(data.hivDrugs) && data.hivDrugs.length) { hivDrugs = data.hivDrugs; if (typeof renderHivDrugs === 'function') renderHivDrugs(); }
+                if (Array.isArray(data.selectedPreopDrugs)) { selectedPreopDrugs = data.selectedPreopDrugs; if (typeof renderSelectedPreopDrugs === 'function') renderSelectedPreopDrugs(); }
+                if (Array.isArray(data.adrTimelineDrugs) && data.adrTimelineDrugs.length) { adrTimelineDrugs = data.adrTimelineDrugs; if (typeof renderAdrTimelineRows === 'function') renderAdrTimelineRows(); }
+
+                Object.entries(data.fields).forEach(([key, item]) => {
+                    if (item.type === 'radio') {
+                        const rad = document.querySelector(`input[name="${key}"][value="${CSS.escape(item.value)}"]`);
+                        if (rad) rad.checked = true;
+                    } else {
+                        const el = document.getElementById(key);
+                        if (!el) return;
+                        if (item.type === 'checkbox') el.checked = !!item.checked;
+                        else el.value = item.value;
+                    }
+                });
+
+                if (data.currentTab && typeof switchTab === 'function') switchTab(data.currentTab);
+                evaluateHivRenalAlert();
+                evaluateCkdRenalAlerts();
+                if (typeof generateOutput === 'function') generateOutput();
+
+                const statusEl = document.getElementById('autoSaveStatus');
+                if (statusEl) {
+                    statusEl.innerHTML = `<i class="fa-solid fa-clock-rotate-left text-yellow-200"></i> <span>กู้คืนแบบร่างล่าสุด (${data.timestamp})</span>`;
+                }
+            } catch (e) { console.warn('Load draft error:', e); }
+        }
+
+        // --- [ข้อ 3] เครื่องคิดเลข eGFR (CKD-EPI 2021) และ CrCl (Cockcroft-Gault) ---
+        function openRenalCalcModal(targetTab) {
+            document.getElementById('renalCalcTargetTab').value = targetTab;
+            // ดึงค่า Scr เดิมจากแท็บปัจจุบันมาใส่ให้อัตโนมัติถ้ามี
+            let existingScr = '';
+            if (targetTab === 'HIV') existingScr = document.getElementById('hivScr')?.value || '';
+            if (targetTab === 'CKD') existingScr = document.getElementById('c7Scr')?.value || '';
+            if (existingScr) document.getElementById('rcScr').value = existingScr;
+
+            document.getElementById('renalCalcModal').style.display = 'flex';
+            computeRenalValues();
+        }
+
+        function closeRenalCalcModal() {
+            document.getElementById('renalCalcModal').style.display = 'none';
+        }
+
+        function computeRenalValues() {
+            const sex = document.getElementById('rcSex').value;
+            const age = parseFloat(document.getElementById('rcAge').value);
+            const scr = parseFloat(document.getElementById('rcScr').value);
+            const wt = parseFloat(document.getElementById('rcWeight').value);
+
+            const egfrEl = document.getElementById('rcEgfrResult');
+            const stageEl = document.getElementById('rcEgfrStageText');
+            const crclEl = document.getElementById('rcCrclResult');
+
+            if (!isNaN(age) && age > 0 && !isNaN(scr) && scr > 0) {
+                // CKD-EPI 2021 Creatinine Equation (Race-free)
+                const kappa = (sex === 'F') ? 0.7 : 0.9;
+                const alpha = (sex === 'F') ? -0.241 : -0.302;
+                const sexFactor = (sex === 'F') ? 1.012 : 1.0;
+                const ratio = scr / kappa;
+                const egfr = 142 * Math.pow(Math.min(ratio, 1), alpha) * Math.pow(Math.max(ratio, 1), -1.200) * Math.pow(0.9938, age) * sexFactor;
+                const egfrRounded = egfr.toFixed(2);
+                egfrEl.innerText = egfrRounded;
+
+                let st = 'Stage 1 (≥90)';
+                if (egfr < 15) st = 'Stage 5 (<15)';
+                else if (egfr < 30) st = 'Stage 4 (15-29)';
+                else if (egfr < 45) st = 'Stage 3b (30-44)';
+                else if (egfr < 60) st = 'Stage 3a (45-59)';
+                else if (egfr < 90) st = 'Stage 2 (60-89)';
+                stageEl.innerText = `mL/min/1.73m² • ${st}`;
+
+                // Cockcroft-Gault CrCl
+                if (!isNaN(wt) && wt > 0) {
+                    let crcl = ((140 - age) * wt) / (72 * scr);
+                    if (sex === 'F') crcl *= 0.85;
+                    crclEl.innerText = crcl.toFixed(1);
+                } else {
+                    crclEl.innerText = 'ระบุน้ำหนัก';
+                }
+            } else {
+                egfrEl.innerText = '-';
+                stageEl.innerText = 'mL/min/1.73m²';
+                crclEl.innerText = '-';
+            }
+        }
+
+        function applyRenalCalcResult() {
+            const target = document.getElementById('renalCalcTargetTab').value;
+            const scr = document.getElementById('rcScr').value;
+            const egfr = document.getElementById('rcEgfrResult').innerText;
+            const crcl = document.getElementById('rcCrclResult').innerText;
+
+            if (target === 'PREOP') {
+                const inp = document.getElementById('renalFunction');
+                const val = (!isNaN(parseFloat(crcl))) ? Math.round(parseFloat(crcl)) : Math.round(parseFloat(egfr));
+                if (inp && !isNaN(val)) { inp.value = val; if (typeof processResults === 'function') processResults(); }
+            } else if (target === 'HIV') {
+                if (scr && document.getElementById('hivScr')) document.getElementById('hivScr').value = scr;
+                if (!isNaN(parseFloat(egfr)) && document.getElementById('hivEgfr')) document.getElementById('hivEgfr').value = egfr;
+                evaluateHivRenalAlert();
+            } else if (target === 'HF') {
+                if (!isNaN(parseFloat(egfr)) && document.getElementById('hfEgfr')) document.getElementById('hfEgfr').value = Math.round(parseFloat(egfr));
+            } else if (target === 'CKD') {
+                if (scr && document.getElementById('c7Scr')) document.getElementById('c7Scr').value = scr;
+                if (!isNaN(parseFloat(egfr)) && document.getElementById('c7Egfr')) document.getElementById('c7Egfr').value = egfr;
+                if (typeof onC7LabChange === 'function') onC7LabChange();
+                evaluateCkdRenalAlerts();
+            }
+
+            closeRenalCalcModal();
+            if (typeof generateOutput === 'function') generateOutput();
+            triggerAutoSaveDraft();
+        }
+
+        // --- [ข้อ 4] แจ้งเตือนการปรับขนาดยาตามไตอัตโนมัติ (HIV & CKD) ---
+        function evaluateHivRenalAlert() {
+            const box = document.getElementById('hivRenalAlertBox');
+            if (!box) return;
+            const egfr = parseFloat(document.getElementById('hivEgfr')?.value);
+            const drugList = (typeof hivDrugs !== 'undefined' ? hivDrugs : []).map(d => (d.name || '').toUpperCase());
+            const hasTdf = drugList.some(n => n.includes('TLD') || n.includes('TDF') || n.includes('TENOFOVIR DISOPROXIL'));
+
+            if (!isNaN(egfr) && egfr < 50 && hasTdf) {
+                box.classList.remove('hidden', 'bg-amber-50', 'border-amber-500', 'text-amber-900', 'bg-red-50', 'border-red-600', 'text-red-900');
+                const titleEl = document.getElementById('hivRenalAlertTitle');
+                const msgEl = document.getElementById('hivRenalAlertMsg');
+                const customInp = document.getElementById('hivRenalCustomAdvice');
+
+                if (egfr < 30) {
+                    box.classList.add('bg-red-50', 'border-red-600', 'text-red-900');
+                    titleEl.innerHTML = `🚨 แจ้งเตือนค่าไตวิกฤต (eGFR = ${egfr} mL/min < 30): ห้ามใช้สูตรที่มี TDF`;
+                    msgEl.innerText = 'ผู้ป่วยได้รับสูตรยาที่มี TDF ร่วมกับ eGFR < 30 mL/min เสี่ยงพิษต่อไตและกระดูกสูง แนะนำปรึกษาแพทย์เปลี่ยนเป็นสูตรที่มี ABC (เช่น ALACOVIR + DTG) และปรับขนาด 3TC ตามค่าไต';
+                    if (!customInp.dataset.userEdited) {
+                        customInp.value = `ปรึกษาแพทย์: eGFR ${egfr} mL/min (<30) ผู้ป่วยได้รับสูตรยาที่มี TDF พิจารณาเปลี่ยนเป็นสูตรที่มี ABC (ALACOVIR + DTG) และปรับขนาด 3TC ตามค่าไต`;
+                    }
+                } else {
+                    box.classList.add('bg-amber-50', 'border-amber-500', 'text-amber-900');
+                    titleEl.innerHTML = `⚠️ แจ้งเตือนค่าไตลดลง (eGFR = ${egfr} mL/min < 50): พบการใช้สูตรยาที่มี TDF`;
+                    msgEl.innerText = 'ผู้ป่วยมีค่า eGFR < 50 mL/min และได้รับสูตรที่มี TDF แนะนำปรึกษาแพทย์พิจารณาเปลี่ยนเป็นสูตรที่มี TAF (เช่น TEDAVIR) หรือ ABC (ALACOVIR + DTG)';
+                    if (!customInp.dataset.userEdited) {
+                        customInp.value = `ปรึกษาแพทย์: eGFR ${egfr} mL/min (<50) ผู้ป่วยได้รับสูตรยาที่มี TDF พิจารณาเปลี่ยนเป็นสูตรที่มี TAF (TEDAVIR) หรือ ABC`;
+                    }
+                }
+            } else {
+                box.classList.add('hidden');
+            }
+        }
+
+        document.getElementById('hivRenalCustomAdvice')?.addEventListener('input', function() {
+            this.dataset.userEdited = '1';
+        });
+
+        function addC7DrugWatch(drugName) {
+            const inp = document.getElementById('c7DrugWatchInput');
+            if (!inp) return;
+            const cur = inp.value.trim();
+            if (!cur.toLowerCase().includes(drugName.toLowerCase())) {
+                inp.value = cur ? `${cur}, ${drugName}` : drugName;
+            }
+            evaluateCkdRenalAlerts();
+            if (typeof generateOutput === 'function') generateOutput();
+        }
+
+        const ckdRenalRules = [
+            {
+                id: 'metformin',
+                keywords: ['metformin', 'mfm', 'glucophage'],
+                check: (egfr, stage) => {
+                    if ((!isNaN(egfr) && egfr < 30) || stage === '4' || stage === '5' || stage === '5+HD') {
+                        return { level: 'danger', title: 'Metformin (eGFR < 30): ห้ามใช้ (Contraindicated)', advice: 'ปรึกษาแพทย์พิจารณาหยุดยา Metformin เนื่องจาก eGFR < 30 mL/min เสี่ยง Lactic acidosis' };
+                    }
+                    if ((!isNaN(egfr) && egfr >= 30 && egfr < 45) || stage === '3b') {
+                        return { level: 'warn', title: 'Metformin (eGFR 30-44): จำกัดขนาดสูงสุด ≤ 1,000 mg/วัน', advice: 'แนะนำจำกัดขนาด Metformin ไม่เกิน 1,000 mg/วัน และติดตามค่าไตใกล้ชิด (eGFR 30-44)' };
+                    }
+                    return null;
+                }
+            },
+            {
+                id: 'allopurinol',
+                keywords: ['allopurinol', 'zyloric'],
+                check: (egfr, stage) => {
+                    if ((!isNaN(egfr) && egfr < 60) || ['3a', '3b', '4', '5', '5+HD'].includes(stage)) {
+                        const maxDose = (!isNaN(egfr) && egfr < 15) ? '50-100 mg วันเว้นวัน' : (!isNaN(egfr) && egfr < 30) ? 'ไม่เกิน 100 mg/วัน' : 'ไม่เกิน 200 mg/วัน';
+                        return { level: 'warn', title: `Allopurinol (CKD Stage 3-5): ต้องปรับลดขนาดตามค่าไต (${maxDose})`, advice: `ปรึกษาแพทย์ปรับลดขนาด Allopurinol ตามค่าไต (${maxDose}) เพื่อลดความเสี่ยงผื่นแพ้ยารุนแรง (SCARs)` };
+                    }
+                    return null;
+                }
+            },
+            {
+                id: 'colchicine',
+                keywords: ['colchicine'],
+                check: (egfr, stage) => {
+                    if ((!isNaN(egfr) && egfr < 30) || ['4', '5', '5+HD'].includes(stage)) {
+                        return { level: 'danger', title: 'Colchicine (eGFR < 30): หลีกเลี่ยงการใช้ต่อเนื่อง / ลดขนาดยา', advice: 'ปรึกษาแพทย์หลีกเลี่ยงการใช้ Colchicine ต่อเนื่อง (หากใช้ป้องกันลดเหลือ 0.3 mg วันเว้นวัน) เสี่ยงพิษต่อกล้ามเนื้อและไขกระดูก' };
+                    }
+                    if ((!isNaN(egfr) && egfr < 60) || ['3a', '3b'].includes(stage)) {
+                        return { level: 'warn', title: 'Colchicine (eGFR 30-59): ระวังพิษสะสม', advice: 'ระวังการใช้ Colchicine ร่วมกับยาที่มี D/I (เช่น Statin, Clarithromycin, CCB) ในผู้ป่วยไตเสื่อม' };
+                    }
+                    return null;
+                }
+            },
+            {
+                id: 'nsaids',
+                keywords: ['nsaid', 'ibuprofen', 'naproxen', 'diclofenac', 'mefenamic', 'ponstan', 'meloxicam', 'piroxicam', 'celecoxib', 'etoricoxib', 'arcoxia', 'indomethacin'],
+                check: (egfr, stage) => {
+                    if ((!isNaN(egfr) && egfr < 60) || ['3a', '3b', '4', '5', '5+HD'].includes(stage)) {
+                        return { level: 'danger', title: 'กลุ่มยา NSAIDs / COX-2: ห้ามใช้ในผู้ป่วย CKD (Nephrotoxic)', advice: 'แนะนำหยุด/หลีกเลี่ยงยากลุ่ม NSAIDs ทุกชนิด เสี่ยงไตวายเฉียบพลัน บวมน้ำ และโพแทสเซียมสูง' };
+                    }
+                    return null;
+                }
+            },
+            {
+                id: 'gabapentin',
+                keywords: ['gabapentin', 'pregabalin', 'lyrica', 'neurontin'],
+                check: (egfr, stage) => {
+                    if ((!isNaN(egfr) && egfr < 60) || ['3a', '3b', '4', '5', '5+HD'].includes(stage)) {
+                        return { level: 'warn', title: 'Gabapentin / Pregabalin: ต้องปรับลดขนาดตาม eGFR', advice: 'ปรึกษาแพทย์ปรับลดขนาด Gabapentin/Pregabalin ตามค่าไต เพื่อลดอาการง่วงซึมและเวียนศีรษะ' };
+                    }
+                    return null;
+                }
+            },
+            {
+                id: 'sitagliptin',
+                keywords: ['sitagliptin', 'januvia', 'vildagliptin', 'galvus'],
+                check: (egfr, stage) => {
+                    if ((!isNaN(egfr) && egfr < 45) || ['3b', '4', '5', '5+HD'].includes(stage)) {
+                        const target = (!isNaN(egfr) && egfr < 30) ? '25 mg/วัน' : '50 mg/วัน';
+                        return { level: 'warn', title: `Sitagliptin: ปรับลดขนาดเหลือ ${target}`, advice: `ปรึกษาแพทย์ปรับลดขนาด Sitagliptin ตามค่าไต (eGFR < 45 เหลือ ${target})` };
+                    }
+                    return null;
+                }
+            }
+        ];
+
+        let ckdAlertSelectionState = {}; // จำสถานะการติ๊กเลือกของผู้ใช้
+
+        function evaluateCkdRenalAlerts() {
+            const container = document.getElementById('c7RenalAlertsContainer');
+            if (!container) return;
+            const egfr = parseFloat(document.getElementById('c7Egfr')?.value);
+            const stage = document.getElementById('c7CkdStage')?.value || '';
+            const combinedText = [
+                document.getElementById('c7DrugWatchInput')?.value || '',
+                document.getElementById('c7NephroText')?.value || '',
+                document.getElementById('c7DiText')?.value || ''
+            ].join(' ').toLowerCase();
+
+            // บันทึกสถานะ checkbox ปัจจุบันก่อนวาดใหม่
+            document.querySelectorAll('.c7-renal-alert-cb').forEach(cb => {
+                ckdAlertSelectionState[cb.dataset.ruleId] = cb.checked;
+            });
+
+            container.innerHTML = '';
+            ckdRenalRules.forEach(rule => {
+                const matched = rule.keywords.some(kw => combinedText.includes(kw));
+                if (!matched) return;
+                const res = rule.check(egfr, stage);
+                if (!res) return;
+
+                const isChecked = (rule.id in ckdAlertSelectionState) ? ckdAlertSelectionState[rule.id] : true;
+                const styleCls = res.level === 'danger'
+                    ? 'bg-red-100/90 border-red-500 text-red-950'
+                    : 'bg-amber-100/90 border-amber-500 text-amber-950';
+
+                container.innerHTML += `
+                    <div class="p-2.5 rounded-lg border-l-4 ${styleCls} text-xs shadow-sm">
+                        <div class="font-bold">${res.title}</div>
+                        <label class="inline-flex items-start gap-2 mt-1.5 cursor-pointer">
+                            <input type="checkbox" class="c7-renal-alert-cb form-checkbox mt-0.5 rounded" data-rule-id="${rule.id}" data-advice="${res.advice}" ${isChecked ? 'checked' : ''} onchange="ckdAlertSelectionState['${rule.id}']=this.checked; generateOutput();">
+                            <span class="font-medium">แนะนำรายการนี้: ${res.advice}</span>
+                        </label>
+                    </div>
+                `;
+            });
+        }
+
+        // --- [ข้อ 5] HAS-BLED Score Modal (Pre-OP & Warfarin) ---
+        function openHasbledModal(targetTab) {
+            document.getElementById('hasbledTargetTab').value = targetTab;
+            document.getElementById('hasbledModal').style.display = 'flex';
+            calculateHasbled();
+        }
+        function closeHasbledModal() {
+            document.getElementById('hasbledModal').style.display = 'none';
+        }
+        function calculateHasbled() {
+            const score = document.querySelectorAll('.hb-cb:checked').length;
+            document.getElementById('hasbledTotalScore').innerText = score;
+            const adv = document.getElementById('hasbledRiskAdvice');
+            if (score >= 3) {
+                adv.className = 'text-xs font-bold text-red-600 mt-1';
+                adv.innerText = '⚠️ High Bleeding Risk (≥ 3 คะแนน) — ควรติดตามใกล้ชิดและแก้ไขปัจจัยเสี่ยงที่ปรับได้';
+            } else {
+                adv.className = 'text-xs font-bold text-emerald-700 mt-1';
+                adv.innerText = 'Low-Moderate Bleeding Risk (0-2 คะแนน)';
+            }
+            return score;
+        }
+        function applyHasbledScore() {
+            const score = calculateHasbled();
+            const target = document.getElementById('hasbledTargetTab').value;
+            const riskLabel = score >= 3 ? 'High Bleeding Risk' : 'Low-Mod Bleeding Risk';
+            const textToInsert = `HAS-BLED Score = ${score}/9 (${riskLabel})`;
+
+            if (target === 'WARFARIN') {
+                const otherCb = document.getElementById('wfNoteOtherCb');
+                const otherTxt = document.getElementById('wfNoteOtherText');
+                if (otherCb) otherCb.checked = true;
+                if (otherTxt) {
+                    const cleaned = otherTxt.value.replace(/HAS-BLED Score\s*=\s*\d+\/9\s*\([^)]+\)\s*;?\s*/g, '').trim();
+                    otherTxt.value = cleaned ? `${textToInsert}; ${cleaned}` : textToInsert;
+                }
+            } else if (target === 'PREOP') {
+                const out = document.getElementById('outputPmk');
+                if (out) {
+                    const cleaned = out.value.replace(/\n?HAS-BLED Score\s*=\s*\d+\/9\s*\([^)]+\)/g, '');
+                    out.value = cleaned ? `${cleaned}\n${textToInsert}` : textToInsert;
+                }
+            }
+            closeHasbledModal();
+            if (typeof generateOutput === 'function') generateOutput();
+            triggerAutoSaveDraft();
+        }
+
+        // --- [ข้อ 6 & ข้อ 7] เชื่อมต่อ Admin Dashboard Real-time และย้ายตรวจสอบรหัสผ่านไปฝั่ง Server ---
+        let adminSessionToken = sessionStorage.getItem('opd_admin_token') || '';
+        let wfStickerToken = sessionStorage.getItem('opd_wf_sticker_token') || '';
+
+        // แทนที่ฟังก์ชัน loginAdmin เดิมให้ตรวจสอบกับ Server (Code.gs)
+        window.loginAdmin = async function() {
+            const username = document.getElementById('adminUser')?.value.trim() || '';
+            const password = document.getElementById('adminPass')?.value || '';
+            if (!username || !password) { alert('กรุณากรอก Username และ Password'); return; }
+
+            try {
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'verifyLogin', role: 'admin', username, password })
+                });
+                const data = await res.json();
+                if (data.status === 'success' && data.token) {
+                    adminSessionToken = data.token;
+                    sessionStorage.setItem('opd_admin_token', data.token);
+                    document.getElementById('adminPass').value = '';
+                    if (typeof closeAdminLogin === 'function') closeAdminLogin();
+                    document.getElementById('adminStatsModal').style.display = 'flex';
+                    fetchAdminRealtimeData(); // ดึงข้อมูล Real-time ทันทีหลัง Login สำเร็จ
+                } else {
+                    alert(data.message || 'Username หรือ Password ไม่ถูกต้อง');
+                }
+            } catch (err) {
+                alert('ไม่สามารถเชื่อมต่อ Server เพื่อตรวจสอบรหัสผ่านได้: ' + err.message);
+            }
+        };
+
+        async function fetchAdminRealtimeData() {
+            const btn = document.getElementById('btnFetchAdminRealtime');
+            const statusEl = document.getElementById('adminRealtimeStatus');
+            if (btn) btn.disabled = true;
+            if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-blue-600 mr-1"></i> กำลังดึงข้อมูลล่าสุดจาก Google Sheet...';
+
+            try {
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getAdminStats', token: adminSessionToken })
+                });
+                const data = await res.json();
+                if (data.status === 'success' && data.tsvText !== undefined) {
+                    const pasteBox = document.getElementById('adminDataPaste');
+                    if (pasteBox) pasteBox.value = data.tsvText;
+                    if (typeof processRawData === 'function') processRawData();
+                    if (statusEl) statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> อัปเดตข้อมูล Real-time สำเร็จ (${data.rowCount || 0} รายการ • ${new Date().toLocaleTimeString('th-TH')})`;
+                } else {
+                    if (statusEl) statusEl.innerHTML = `<span class="text-red-600 font-bold">${data.message || 'Session หมดอายุ กรุณา Login ใหม่'}</span>`;
+                }
+            } catch (e) {
+                if (statusEl) statusEl.innerHTML = `<span class="text-red-600">เชื่อมต่อล้มเหลว: ${e.message}</span>`;
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        // ย้ายระบบตรวจสอบ Access Code ของ Warfarin Sticker ไปฝั่ง Server
+        (function setupServerWarfarinStickerAuth() {
+            const codeInp = document.getElementById('accessCode');
+            const fetchBtn = document.getElementById('fetchBtn');
+            const gateMsg = document.getElementById('gateMsg');
+            const remCb = document.getElementById('rememberCode');
+            if (!codeInp || !fetchBtn) return;
+
+            if (wfStickerToken && remCb?.checked) {
+                fetchBtn.disabled = false;
+                if (gateMsg) { gateMsg.className = 'text-emerald-600 text-sm font-bold'; gateMsg.innerText = 'ยืนยันสิทธิ์แล้ว (Server)'; }
+            }
+
+            let verifyDebounce = null;
+            codeInp.addEventListener('input', () => {
+                clearTimeout(verifyDebounce);
+                const code = codeInp.value.trim();
+                if (!code) {
+                    fetchBtn.disabled = true;
+                    if (gateMsg) { gateMsg.className = 'text-red-500 text-sm'; gateMsg.innerText = 'ใส่รหัส'; }
+                    return;
+                }
+                if (gateMsg) { gateMsg.className = 'text-blue-600 text-sm'; gateMsg.innerText = 'กำลังตรวจสอบ...'; }
+                verifyDebounce = setTimeout(async () => {
+                    try {
+                        const res = await fetch(SCRIPT_URL, {
+                            method: 'POST',
+                            body: JSON.stringify({ action: 'verifyLogin', role: 'warfarin_sticker', code })
+                        });
+                        const data = await res.json();
+                        if (data.status === 'success' && data.token) {
+                            wfStickerToken = data.token;
+                            if (remCb?.checked) sessionStorage.setItem('opd_wf_sticker_token', data.token);
+                            fetchBtn.disabled = false;
+                            if (gateMsg) { gateMsg.className = 'text-emerald-600 text-sm font-bold'; gateMsg.innerText = 'ผ่านการตรวจสอบ ✓'; }
+                        } else {
+                            fetchBtn.disabled = true;
+                            if (gateMsg) { gateMsg.className = 'text-red-500 text-sm'; gateMsg.innerText = 'รหัสไม่ถูกต้อง'; }
+                        }
+                    } catch (e) {
+                        if (gateMsg) { gateMsg.className = 'text-red-500 text-sm'; gateMsg.innerText = 'เชื่อมต่อ Server ไม่ได้'; }
+                    }
+                }, 450);
+            });
+        })();
+
+        // --- [ข้อ 8] ใบตารางทานยา Warfarin ภาพสี (A5 แยกต่างหาก) ---
+        function parseWfScheduleToDays(rawText) {
+            const daysOrder = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา'];
+            const dayPills = [[], [], [], [], [], [], []]; // 7 วัน
+            if (!rawText) return dayPills;
+
+            const pillColors = {
+                1: { bg: '#ffffff', border: '#475569', text: '#0f172a', label: '1 mg (ขาว)' },
+                2: { bg: '#fb923c', border: '#9a3412', text: '#ffffff', label: '2 mg (ส้ม)' },
+                3: { bg: '#38bdf8', border: '#075985', text: '#ffffff', label: '3 mg (ฟ้า)' },
+                5: { bg: '#f472b6', border: '#9d174d', text: '#ffffff', label: '5 mg (ชมพู)' }
+            };
+
+            const segments = rawText.split(/\n|,(?=\s*(?:Warfarin|\d\s*mg))/i).map(s => s.trim()).filter(Boolean);
+
+            segments.forEach(seg => {
+                const mgMatch = seg.match(/\b([1235])\s*mg\b/i);
+                const qtyMatch = seg.match(/:\s*(\d+(?:\.\d+)?)\s*x/i) || seg.match(/\b(\d+(?:\.\d+)?)\s*(?:x\s*1|เม็ด)/i);
+                if (!mgMatch || !qtyMatch) return;
+
+                const mg = parseInt(mgMatch[1], 10);
+                const qty = parseFloat(qtyMatch[1]);
+                let activeDays = [];
+
+                if (seg.includes('ทุกวัน')) {
+                    activeDays = [0, 1, 2, 3, 4, 5, 6];
+                } else {
+                    const parenMatch = seg.match(/\(([^)]+)\)/);
+                    if (parenMatch) {
+                        const inside = parenMatch[1].trim();
+                        if (inside.includes('-')) {
+                            const [startD, endD] = inside.split('-').map(x => x.trim());
+                            const sIdx = daysOrder.indexOf(startD);
+                            const eIdx = daysOrder.indexOf(endD);
+                            if (sIdx !== -1 && eIdx !== -1 && sIdx <= eIdx) {
+                                for (let i = sIdx; i <= eIdx; i++) activeDays.push(i);
+                            }
+                        } else {
+                            // ตรวจจับวันเดี่ยวๆ (เช็ค 'พฤ' ก่อน 'พ')
+                            let temp = inside;
+                            if (temp.includes('พฤ')) { activeDays.push(3); temp = temp.replace(/พฤ/g, ''); }
+                            daysOrder.forEach((d, idx) => {
+                                if (d !== 'พฤ' && temp.includes(d)) activeDays.push(idx);
+                            });
+                        }
+                    }
+                }
+
+                activeDays.forEach(dIdx => {
+                    dayPills[dIdx].push({ mg, qty, color: pillColors[mg] });
+                });
+            });
+
+            return dayPills;
+        }
+
+        function renderTabletVisualHtml(mg, qty, color) {
+            const fullCount = Math.floor(qty);
+            const hasHalf = (qty - fullCount) >= 0.25;
+            let icons = '';
+            for (let i = 0; i < fullCount; i++) {
+                icons += `<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:9999px;background:${color.bg};border:1.8px solid ${color.border};color:${color.text};font-size:9px;font-weight:bold;margin:1px;box-shadow:0 1px 2px rgba(0,0,0,0.15);">${mg}</span>`;
+            }
+            if (hasHalf) {
+                icons += `<span style="display:inline-flex;align-items:center;justify-content:center;width:11px;height:20px;border-radius:10px 0 0 10px;background:${color.bg};border:1.8px solid ${color.border};border-right:2px dashed ${color.border};color:${color.text};font-size:8px;font-weight:bold;margin:1px;">½</span>`;
+            }
+            return `<div class="my-1 flex flex-wrap justify-center items-center">${icons}</div>
+                    <div class="text-[9px] font-bold text-gray-700">${mg}mg × ${qty} เม็ด</div>`;
+        }
+
+        function printWfColorTableA5() {
+            const name = document.getElementById('ptName')?.value || '-';
+            const hn = document.getElementById('hn')?.value || '-';
+            const wfno = document.getElementById('wfNoteNo')?.value || '-';
+            const ind = document.getElementById('wfNoteIndication')?.value || '-';
+            const target = document.querySelector('input[name="wfNoteTarget"]:checked')?.value || '2-3';
+            const inr = document.getElementById('wfNoteInrToday')?.value || '-';
+            const totalMg = document.getElementById('wfNoteDoseTotal')?.value || '-';
+            const rawDetail = document.getElementById('wfNoteDoseDetail')?.value.trim() || '';
+            const pharm = document.getElementById('wfNotePharm')?.value || 'เภสัชกรคลินิกวาร์ฟาริน';
+
+            document.getElementById('wfc-print-wfno').innerText = wfno;
+            document.getElementById('wfc-print-date').innerText = new Date().toLocaleDateString('th-TH');
+            document.getElementById('wfc-print-name').innerText = name;
+            document.getElementById('wfc-print-hn').innerText = hn;
+            document.getElementById('wfc-print-ind').innerText = ind;
+            document.getElementById('wfc-print-target').innerText = target;
+            document.getElementById('wfc-print-inr').innerText = inr;
+            document.getElementById('wfc-print-total').innerText = totalMg;
+            document.getElementById('wfc-print-raw-detail').innerText = rawDetail || '(โปรดระบุวิธีรับประทานยา)';
+            document.getElementById('wfc-print-pharm').innerText = pharm;
+
+            const schedule = parseWfScheduleToDays(rawDetail);
+            let rowCells = '';
+            let dailyTotalsRow = '';
+
+            schedule.forEach((items, dIdx) => {
+                if (items.length === 0) {
+                    rowCells += `<td class="border border-gray-400 p-1.5 align-middle bg-gray-50 text-gray-400 text-[10px]">หยุดยา<br>(0 mg)</td>`;
+                    dailyTotalsRow += `<td class="border border-gray-400 py-1 bg-gray-100 text-[10px] font-bold text-gray-500">0 mg</td>`;
+                } else {
+                    const cellHtml = items.map(it => renderTabletVisualHtml(it.mg, it.qty, it.color)).join('<hr class="my-1 border-gray-200">');
+                    const daySum = items.reduce((acc, it) => acc + (it.mg * it.qty), 0);
+                    rowCells += `<td class="border border-gray-400 p-1 align-top bg-white">${cellHtml}</td>`;
+                    dailyTotalsRow += `<td class="border border-gray-400 py-1 bg-purple-50 text-[10px] font-bold text-purple-900">${daySum} mg</td>`;
+                }
+            });
+
+            document.getElementById('wfc-print-table-body').innerHTML = `
+                <tr style="min-height: 75px;">${rowCells}</tr>
+                <tr>${dailyTotalsRow}</tr>
+            `;
+
+            document.body.className = 'print-mode-wf-color-a5';
+            window.print();
+            setTimeout(() => { document.body.className = 'bg-slate-100 min-h-screen p-4 md:p-8 relative'; }, 500);
+        }
+
+        // --- [ข้อ 8] ใบสรุปเทคนิคพ่นยาเฉพาะจุดที่ผิด (A5 แยกต่างหาก) ---
+        function printAsthmaMistakeA5() {
+            const name = document.getElementById('ptName')?.value || '-';
+            const hn = document.getElementById('hn')?.value || '-';
+            const dx = document.querySelector('input[name="c8Indication"]:checked')?.value || '-';
+            const pharm = document.getElementById('c8PharmName')?.value || 'เภสัชกรคลินิกโรคหืดและปอดอุดกั้นเรื้อรัง';
+
+            document.getElementById('ast-print-date').innerText = new Date().toLocaleDateString('th-TH');
+            document.getElementById('ast-print-name').innerText = name;
+            document.getElementById('ast-print-hn').innerText = hn;
+            document.getElementById('ast-print-dx').innerText = dx;
+            document.getElementById('ast-print-pharm').innerText = pharm;
+
+            const contentEl = document.getElementById('ast-print-content');
+            contentEl.innerHTML = '';
+            let foundAnyDevice = false;
+
+            if (typeof asthmaDevicesDef !== 'undefined') {
+                asthmaDevicesDef.forEach(dev => {
+                    // ตรวจว่ามีการเลือกยาในกลุ่มอุปกรณ์นี้หรือไม่
+                    const activeDrugs = [];
+                    dev.drugs.forEach(dr => {
+                        const cb = document.getElementById(dr.id) || document.querySelector(`input[value*="${dr.name}"]:checked`);
+                        if (cb && cb.checked) activeDrugs.push(dr.name);
+                    });
+
+                    // ตรวจหา checkbox ขั้นตอนของอุปกรณ์นี้ใน DOM
+                    const stepCbs = Array.from(document.querySelectorAll(`#c8DeviceContainer input[type="checkbox"]`)).filter(cb => {
+                        const idOrName = (cb.id + ' ' + cb.name + ' ' + cb.className).toLowerCase();
+                        return idOrName.includes(dev.id) && (idOrName.includes('step') || idOrName.includes('chk'));
+                    });
+
+                    const anyStepChecked = stepCbs.some(cb => cb.checked);
+                    if (activeDrugs.length === 0 && !anyStepChecked) return;
+
+                    foundAnyDevice = true;
+                    const mistakes = [];
+                    dev.steps.forEach((fullStep, idx) => {
+                        const stepCb = stepCbs[idx];
+                        if (stepCb && !stepCb.checked) {
+                            mistakes.push({
+                                stepNum: idx + 1,
+                                shortErr: dev.shortSteps?.[idx] || 'ปฏิบัติไม่ครบถ้วน',
+                                correctWay: fullStep
+                            });
+                        }
+                    });
+
+                    let cardHtml = `<div class="border border-teal-300 rounded-lg p-3 bg-white">
+                        <div class="font-bold text-sm text-teal-900 border-b border-teal-100 pb-1 mb-2">
+                            <i class="fa-solid fa-spray-can-sparkles mr-1"></i> อุปกรณ์: ${dev.title}
+                            ${activeDrugs.length ? `<span class="text-xs font-normal text-gray-600">(${activeDrugs.join(', ')})</span>` : ''}
+                        </div>`;
+
+                    if (mistakes.length === 0) {
+                        cardHtml += `<div class="text-emerald-700 font-bold text-xs"><i class="fa-solid fa-circle-check mr-1"></i> พ่นยาได้ถูกต้องครบถ้วนทุกขั้นตอน (ยอดเยี่ยม!)</div>`;
+                    } else {
+                        cardHtml += `<div class="text-rose-700 font-bold mb-1.5">จุดที่ควรปรับปรุงแก้ไข (${mistakes.length} จุด):</div><ul class="space-y-1.5">`;
+                        mistakes.forEach(m => {
+                            cardHtml += `<li class="bg-rose-50 border-l-4 border-rose-500 p-2 rounded">
+                                <div class="font-bold text-rose-800">❌ ขั้นตอนที่ ${m.stepNum}: ${m.shortErr}</div>
+                                <div class="text-gray-800 mt-0.5">✅ <strong>วิธีที่ถูกต้อง:</strong> ${m.correctWay}</div>
+                            </li>`;
+                        });
+                        cardHtml += `</ul>`;
+                    }
+                    cardHtml += `</div>`;
+                    contentEl.innerHTML += cardHtml;
+                });
+            }
+
+            if (!foundAnyDevice) {
+                contentEl.innerHTML = `<div class="text-center text-gray-500 py-4 border rounded-lg">ยังไม่ได้เลือกอุปกรณ์พ่นยาในแบบประเมิน กรุณาติ๊กเลือกยาพ่นและขั้นตอนที่ผู้ป่วยทำได้ก่อนสั่งพิมพ์</div>`;
+            }
+
+            document.body.className = 'print-mode-asthma-a5';
+            window.print();
+            setTimeout(() => { document.body.className = 'bg-slate-100 min-h-screen p-4 md:p-8 relative'; }, 500);
+        }
+
+        // --- เชื่อมต่อ Hook กับฟังก์ชันเดิม (resetForm & generateOutput) อย่างปลอดภัย ---
+        window.addEventListener('DOMContentLoaded', () => {
+            restoreStickerPrefs();
+            loadAutoSaveDraft();
+
+            // ดักฟังทุกการเปลี่ยนแปลงเพื่อ Auto-Save Draft
+            const appContainer = document.getElementById('mainAppContainer');
+            if (appContainer) {
+                appContainer.addEventListener('input', triggerAutoSaveDraft);
+                appContainer.addEventListener('change', triggerAutoSaveDraft);
+            }
+
+            // ห่อหุ้ม resetForm เดิม เพื่อไม่ให้ลบค่าตั้งค่าสติกเกอร์ (4, 3, 98, 11) และล้าง Draft เก่า
+            if (typeof window.resetForm === 'function') {
+                const origResetForm = window.resetForm;
+                window.resetForm = function(...args) {
+                    const savedSticker = {
+                        stkX: document.getElementById('stkX')?.value || STICKER_DEFAULTS.stkX,
+                        stkY: document.getElementById('stkY')?.value || STICKER_DEFAULTS.stkY,
+                        stkW: document.getElementById('stkW')?.value || STICKER_DEFAULTS.stkW,
+                        stkPt: document.getElementById('stkPt')?.value || STICKER_DEFAULTS.stkPt
+                    };
+                    origResetForm.apply(this, args);
+                    // คืนค่าสติกเกอร์กลับทันที
+                    Object.entries(savedSticker).forEach(([id, val]) => {
+                        const el = document.getElementById(id);
+                        if (el) el.value = val;
+                    });
+                    if (typeof updateOpdStickerPreview === 'function') updateOpdStickerPreview();
+                    localStorage.removeItem(DRAFT_STORAGE_KEY);
+                    const statusEl = document.getElementById('autoSaveStatus');
+                    if (statusEl) statusEl.innerHTML = `<i class="fa-solid fa-broom"></i> <span>ล้างข้อมูลฟอร์มแล้ว (คงค่าตั้งค่าสติกเกอร์ไว้)</span>`;
+                };
+            }
+
+            // ห่อหุ้ม generateOutput เดิม เพื่อแนบ Renal Dose Alert (HIV & CKD) เมื่อผู้ใช้ติ๊กเลือก
+            if (typeof window.generateOutput === 'function') {
+                const origGenerateOutput = window.generateOutput;
+                window.generateOutput = function(...args) {
+                    origGenerateOutput.apply(this, args);
+                    const out = document.getElementById('outputPmk');
+                    if (!out) return;
+
+                    // แนบคำแนะนำ HIV TDF Alert ถ้ากล่องเปิดอยู่และติ๊กเลือก
+                    if (typeof currentTab !== 'undefined' && currentTab === 'HIV') {
+                        const box = document.getElementById('hivRenalAlertBox');
+                        const chk = document.getElementById('chkHivRenalAdvice');
+                        const txt = document.getElementById('hivRenalCustomAdvice')?.value.trim();
+                        if (box && !box.classList.contains('hidden') && chk?.checked && txt && !out.value.includes(txt)) {
+                            out.value += `\n- ${txt}`;
+                        }
+                    }
+
+                    // แนบคำแนะนำ CKD Renal Alert เฉพาะรายการที่ผู้ใช้ติ๊กเลือก
+                    if (typeof currentTab !== 'undefined' && currentTab === 'CKD') {
+                        const checkedAlerts = Array.from(document.querySelectorAll('.c7-renal-alert-cb:checked')).map(cb => cb.dataset.advice);
+                        checkedAlerts.forEach(adv => {
+                            if (adv && !out.value.includes(adv)) {
+                                out.value += `\n- ${adv}`;
+                            }
+                        });
+                    }
+                };
+            }
+        });
     </script>
 </body>
 </html>
