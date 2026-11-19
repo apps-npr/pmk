@@ -4565,7 +4565,7 @@
             const hasAllergy = mrAllergyCheck ? mrAllergyCheck.checked : false;
             
             const mrHerbNode = document.getElementById('mrHerb');
-            const herb = mrHerbNode ? mrHerbNode.value : '';
+            const herb = mrHerbNode ? mrHerbNode.value.trim() : '';
             
             const mrExtraNode = document.getElementById('mrExtraNote');
             const extraNote = mrExtraNode ? mrExtraNode.value : '';
@@ -4591,7 +4591,7 @@
                 });
                 const detailNode = document.getElementById('mrAllergyDetail');
                 let allergyText = hasAllergy ? `แพ้ยา/แพ้อาหาร: ${detailNode ? detailNode.value : '' || 'ไม่ระบุ'}` : `แพ้ยา/แพ้อาหาร: ปฏิเสธ`;
-                let herbText = herb ? `สมุนไพร/อาหารเสริม: ${herb}` : `สมุนไพร/อาหารเสริม: -`;
+                let herbText = herb ? `สมุนไพร/อาหารเสริม: ${herb}` : `สมุนไพร/อาหารเสริม: ปฏิเสธ`;
                 notes.push(`${allergyText} | ${herbText}`);
                 if (extraNote) notes.push(extraNote);
                 if (pharmName && !excludeSignature) notes.push(`/${pharmName}`);
