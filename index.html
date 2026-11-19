@@ -6909,35 +6909,64 @@
         }
 
         function applyFiltersAndRender() {
-            const fDate = document.getElementById('filterDate').value; // คืนค่ามาเป็น YYYY-MM-DD
+            const fDate = document.getElementById('filterDate').value; // คืนค่าเป็น YYYY-MM-DD
             const fClinic = document.getElementById('filterClinic').value;
             const fStart = document.getElementById('filterTimeStart').value;
             const fEnd = document.getElementById('filterTimeEnd').value;
-            
-            // สร้าง Format วันที่สำหรับเทียบกับ Timestamp จาก Excel (รองรับ พ.ศ. และ ค.ศ.)
-            let searchDates = [];
+
+            // ตรวจสอบอัตโนมัติว่าข้อมูลในตารางเป็น เดือน/วัน/ปี (US) หรือ วัน/เดือน/ปี (TH)
+            let isUSFormat = true; // ค่าเริ่มต้นของ Google Sheets คือ เดือน/วัน/ปี (MM/DD/YYYY)
+            for (let item of rawParsedData) {
+                let dateStr = item.timestamp.trim().split(/\s+/)[0];
+                let parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    let p1 = parseInt(parts[0], 10);
+                    let p2 = parseInt(parts[1], 10);
+                    let p3 = parseInt(parts[2], 10);
+                    if (p3 > 2500 || p1 > 12) {
+                        isUSFormat = false; // ปี พ.ศ. หรือตัวแรก > 12 แสดงว่าเป็น วัน/เดือน/ปี
+                        break;
+                    }
+                    if (p2 > 12) {
+                        isUSFormat = true; // ตัวกลาง > 12 แสดงว่าเป็น เดือน/วัน/ปี แน่นอน
+                        break;
+                    }
+                }
+            }
+
+            // สร้างรูปแบบวันที่สำหรับเทียบแบบตรงตัว
+            let validDates = [];
             if (fDate) {
                 const [y, m, d] = fDate.split('-');
-                const thaiY = parseInt(y) + 543;
-                searchDates.push(`${d}/${m}/${y}`);
-                searchDates.push(`${parseInt(d)}/${parseInt(m)}/${y}`);
-                searchDates.push(`${d}/${m}/${thaiY}`);
-                searchDates.push(`${parseInt(d)}/${parseInt(m)}/${thaiY}`);
-                searchDates.push(`${y}-${m}-${d}`);
+                const numY = parseInt(y, 10);
+                const numM = parseInt(m, 10);
+                const numD = parseInt(d, 10);
+                const thaiY = numY + 543;
+
+                if (isUSFormat) {
+                    validDates.push(`${numM}/${numD}/${numY}`); // เช่น 11/13/2026 หรือ 1/5/2026
+                    validDates.push(`${m}/${d}/${y}`);          // เช่น 11/13/2026 หรือ 01/05/2026
+                    validDates.push(`${y}-${m}-${d}`);
+                } else {
+                    validDates.push(`${numD}/${numM}/${numY}`); // เช่น 13/11/2026
+                    validDates.push(`${d}/${m}/${y}`);
+                    validDates.push(`${numD}/${numM}/${thaiY}`);
+                    validDates.push(`${d}/${m}/${thaiY}`);
+                }
             }
 
             // กรองข้อมูลตามที่เลือก
             let filteredData = rawParsedData.filter(d => {
-                // กรองคลินิก
+                // 1. กรองคลินิก
                 if (fClinic !== 'all' && d.clinic !== fClinic) return false;
                 
-                // กรองวันที่
+                // 2. กรองวันที่ (ตัดเอาเฉพาะส่วนวันที่หน้าช่องว่างมาเทียบตรงๆ)
                 if (fDate) {
-                    let dateMatch = searchDates.some(sd => d.timestamp.includes(sd));
-                    if (!dateMatch) return false;
+                    let datePart = d.timestamp.trim().split(/\s+/)[0];
+                    if (!validDates.includes(datePart)) return false;
                 }
 
-                // กรองเวลา
+                // 3. กรองเวลา
                 if (fStart || fEnd) {
                     let timeMatch = d.start.match(/(\d{1,2}):(\d{2})/);
                     if (!timeMatch) timeMatch = d.timestamp.match(/(\d{1,2}):(\d{2})/);
@@ -7020,23 +7049,18 @@
                 });
             };
 
-            // เตรียมชื่อเภสัชกร (ลบคำนำหน้า)
             let pLabels = Object.keys(pharmStats).map(p => p.replace('ภก.', '').replace('ภญ.', '').trim()); 
 
-            // 1. กราฟ "จำนวนเคส" รายบุคคล (สีม่วง)
             let pCountData = Object.keys(pharmStats).map(k => pharmStats[k].count);
             renderChart('chartPharmCount', 'bar', pLabels, pCountData, 'จำนวนเคส', 'rgba(139, 92, 246, 0.8)'); 
 
-            // 2. กราฟ "เวลาเฉลี่ย" รายบุคคล (สีเขียว)
             let pTimeData = Object.keys(pharmStats).map(k => (pharmStats[k].sum / pharmStats[k].count).toFixed(2));
             renderChart('chartPharmTime', 'bar', pLabels, pTimeData, 'นาที/เคส', 'rgba(16, 185, 129, 0.8)'); 
 
-            // 3. กราฟ "จำนวนเคส" รายคลินิก (สีฟ้า)
             let cLabels = Object.keys(clinicStats);
             let cCountData = cLabels.map(k => clinicStats[k].count);
             renderChart('chartClinicCount', 'bar', cLabels, cCountData, 'จำนวนเคส', 'rgba(59, 130, 246, 0.8)'); 
 
-            // 4. กราฟ Peak Hour (สีส้ม)
             let hKeys = Object.keys(hourStats).map(Number).sort((a,b) => a-b);
             let hLabels = hKeys.map(h => `${String(h).padStart(2,'0')}:00`);
             let hData = hKeys.map(k => hourStats[k]);
