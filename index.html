@@ -7995,9 +7995,11 @@
             if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-blue-600 mr-1"></i> กำลังดึงข้อมูลล่าสุดจาก Google Sheet...';
 
             try {
+                // ส่ง token ผ่าน URL (GET) เพื่อป้องกัน Google Redirect ตัด body ทิ้ง
                 const url = `${SCRIPT_URL}?action=getAdminStats&token=${encodeURIComponent(token)}&t=${Date.now()}`;
                 const res = await fetch(url);
                 const data = await res.json();
+
                 if (data.status === 'success' && data.tsvText !== undefined) {
                     const pasteBox = document.getElementById('adminDataPaste');
                     if (pasteBox) pasteBox.value = data.tsvText;
