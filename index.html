@@ -5023,57 +5023,55 @@
         // ==========================================
         
         function resetForm() {
-            if(confirm('ต้องการล้างข้อมูลคนไข้ทั้งหมดหรือไม่?')) {
-                document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="date"]').forEach(el => el.value = '');
-                document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
-                document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
-                
-                const hivManualAdh = document.getElementById('hivManualAdherence');
-                if(hivManualAdh) hivManualAdh.value = '100%'; 
-                
-                const hivLabDateRef = document.getElementById('hivLabDateRef');
-                if(hivLabDateRef) hivLabDateRef.value = 'cd4';
-                
-                const refillRadio = document.querySelector('input[name="hivType"][value="refill"]');
-                if(refillRadio) refillRadio.checked = true;
-                const missRadio = document.querySelector('input[name="hivMissType"][value="ลืม"]');
-                if(missRadio) missRadio.checked = true;
-                toggleVlSameDateCd4();
+            document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="date"]').forEach(el => el.value = '');
+            document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
+            document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+            
+            const hivManualAdh = document.getElementById('hivManualAdherence');
+            if(hivManualAdh) hivManualAdh.value = '100%'; 
+            
+            const hivLabDateRef = document.getElementById('hivLabDateRef');
+            if(hivLabDateRef) hivLabDateRef.value = 'cd4';
+            
+            const refillRadio = document.querySelector('input[name="hivType"][value="refill"]');
+            if(refillRadio) refillRadio.checked = true;
+            const missRadio = document.querySelector('input[name="hivMissType"][value="ลืม"]');
+            if(missRadio) missRadio.checked = true;
+            toggleVlSameDateCd4();
 
-                // Reset defaults for Warfarin note
-                const wfTgt = document.querySelector('input[name="wfNoteTarget"][value="2-3"]'); if(wfTgt) wfTgt.checked = true;
-                const wfAdr = document.querySelector('input[name="wfNoteAdr"][value="NO"]'); if(wfAdr) wfAdr.checked = true;
-                const wfDi = document.querySelector('input[name="wfNoteDi"][value="NO"]'); if(wfDi) wfDi.checked = true;
-                
-                toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
-                
-                mrSources = [ { place: '', date: '', drugs: [""] } ]; 
-                selectedLabs = []; 
-                hivDrugs = [ { name: '', usage: '', time: '' } ];
-                selectedPreopDrugs = [];
-                // รีเซ็ตข้อมูล Clinic 3. ADR
-                adrTimelineDrugs = [{ name: '', startDate: '', stopDate: '', ongoing: false, suspected: true, dechallenge: 'ดีขึ้นหลังหยุดยา' }];
-                const adrActRadio = document.querySelector('input[name="adrRecordMode"][value="active"]'); if(adrActRadio) adrActRadio.checked = true;
-                const adrTypeARadio = document.querySelector('input[name="adrMechType"][value*="Type A"]'); if(adrTypeARadio) adrTypeARadio.checked = true;
-                resetNaranjoQuestions();
-                initAdrModule();
-                checkAdrRedFlags();
-                preopCalculatedNotes = [];
-                
-                // Hide dynamic HF sections safely
-                ['div_hf_raasi', 'div_hf_bb', 'div_hf_mra', 'div_hf_iva', 'div_hf_loop', 'wrap_hf_raasi_dose', 'wrap_hf_bb_dose', 'wrap_hf_mra_dose', 'hfResultArea'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) el.classList.add('hidden');
-                });
-                
-                renderLabTags(); 
-                renderMrSources(); 
-                renderHivDrugs(); 
-                renderSelectedPreopDrugs(); 
-                checkPreopSpecificQuestions();
-                toggleHivType();
-                generateOutput();
-            }
+            // Reset defaults for Warfarin note
+            const wfTgt = document.querySelector('input[name="wfNoteTarget"][value="2-3"]'); if(wfTgt) wfTgt.checked = true;
+            const wfAdr = document.querySelector('input[name="wfNoteAdr"][value="NO"]'); if(wfAdr) wfAdr.checked = true;
+            const wfDi = document.querySelector('input[name="wfNoteDi"][value="NO"]'); if(wfDi) wfDi.checked = true;
+            
+            toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
+            
+            mrSources = [ { place: '', date: '', drugs: [""] } ]; 
+            selectedLabs = []; 
+            hivDrugs = [ { name: '', usage: '', time: '' } ];
+            selectedPreopDrugs = [];
+            // รีเซ็ตข้อมูล Clinic 3. ADR
+            adrTimelineDrugs = [{ name: '', startDate: '', stopDate: '', ongoing: false, suspected: true, dechallenge: 'ดีขึ้นหลังหยุดยา' }];
+            const adrActRadio = document.querySelector('input[name="adrRecordMode"][value="active"]'); if(adrActRadio) adrActRadio.checked = true;
+            const adrTypeARadio = document.querySelector('input[name="adrMechType"][value*="Type A"]'); if(adrTypeARadio) adrTypeARadio.checked = true;
+            resetNaranjoQuestions();
+            initAdrModule();
+            checkAdrRedFlags();
+            preopCalculatedNotes = [];
+            
+            // Hide dynamic HF sections safely
+            ['div_hf_raasi', 'div_hf_bb', 'div_hf_mra', 'div_hf_iva', 'div_hf_loop', 'wrap_hf_raasi_dose', 'wrap_hf_bb_dose', 'wrap_hf_mra_dose', 'hfResultArea'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.classList.add('hidden');
+            });
+            
+            renderLabTags(); 
+            renderMrSources(); 
+            renderHivDrugs(); 
+            renderSelectedPreopDrugs(); 
+            checkPreopSpecificQuestions();
+            toggleHivType();
+            generateOutput();
             resetCaseTracking();
         }
 
