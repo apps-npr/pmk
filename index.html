@@ -1226,7 +1226,12 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                                 <div>
                                     <label class="block text-xs font-medium text-gray-600 mb-1">WARFARIN NO</label>
-                                    <input type="text" id="wfNoteNo" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50" placeholder="เช่น 844" oninput="generateOutput()">
+                                    <div class="flex gap-1.5">
+                                        <input type="text" id="wfNoteNo" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-50 font-bold text-purple-900" placeholder="เช่น 844" oninput="generateOutput()" onkeypress="if(event.key==='Enter'){ event.preventDefault(); fetchWarfarinNoteAutoFill(); }">
+                                        <button type="button" id="btnFetchWfNote" onclick="fetchWarfarinNoteAutoFill()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow-sm transition whitespace-nowrap flex items-center gap-1" title="ดึงชื่อ, HN, Indication, Target INR อัตโนมัติ">
+                                            <i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล
+                                        </button>
+                                    </div>
                                 </div>
                                 <div>
                                     <div class="flex flex-wrap items-center justify-between gap-1 mb-1">
@@ -3047,6 +3052,78 @@
             if (totalInp) totalInp.value = '';
             if (box) { box.innerHTML = ''; box.classList.add('hidden'); }
             generateOutput();
+        }
+
+        // ==========================================
+        //   ดึงข้อมูลผู้ป่วย Warfarin อัตโนมัติจาก Sheet
+        // ==========================================
+        async function fetchWarfarinNoteAutoFill() {
+            const wfNo = document.getElementById('wfNoteNo')?.value.trim();
+            if (!wfNo) {
+                alert('กรุณากรอกเลข WARFARIN NO ก่อนกดดึงข้อมูลครับ');
+                document.getElementById('wfNoteNo')?.focus();
+                return;
+            }
+
+            const btn = document.getElementById('btnFetchWfNote');
+            const origHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังค้นหา...';
+            }
+
+            try {
+                const res = await fetch(`${SCRIPT_URL}?warfarin=${encodeURIComponent(wfNo)}&t=${Date.now()}`);
+                const data = await res.json();
+
+                if (data && (data.fullName || data.hn || data.indication || data.inr)) {
+                    // 1. เติมชื่อ-นามสกุล และ HN ด้านบนสุดของหน้าเว็บ
+                    if (data.fullName && document.getElementById('ptName')) {
+                        document.getElementById('ptName').value = data.fullName.trim();
+                    }
+                    if (data.hn && document.getElementById('hn')) {
+                        document.getElementById('hn').value = data.hn.trim();
+                    }
+
+                    // 2. เติม Indication
+                    if (data.indication && document.getElementById('wfNoteIndication')) {
+                        document.getElementById('wfNoteIndication').value = data.indication.trim();
+                    }
+
+                    // 3. เลือก Target INR อัตโนมัติ (รองรับทั้งรูปแบบ 2-3, 2.0-3.0, 2.5-3.5 และอื่นๆ)
+                    if (data.inr) {
+                        const rawTarget = String(data.inr).trim().replace(/\s+/g, '');
+                        if (rawTarget === '2-3' || rawTarget === '2.0-3.0') {
+                            const r1 = document.querySelector('input[name="wfNoteTarget"][value="2-3"]');
+                            if (r1) r1.checked = true;
+                        } else if (rawTarget === '2.5-3.5') {
+                            const r2 = document.querySelector('input[name="wfNoteTarget"][value="2.5-3.5"]');
+                            if (r2) r2.checked = true;
+                        } else {
+                            const rOther = document.querySelector('input[name="wfNoteTarget"][value="อื่นๆ"]');
+                            const otherInp = document.getElementById('wfNoteTargetOther');
+                            if (rOther) rOther.checked = true;
+                            if (otherInp) otherInp.value = String(data.inr).trim();
+                        }
+                    }
+
+                    // อัปเดตกล่อง Pharmacist Note ทันที
+                    if (typeof generateOutput === 'function') generateOutput();
+                    if (typeof updateOpdStickerPreview === 'function') updateOpdStickerPreview();
+                    if (typeof showToast === 'function') {
+                        showToast(`ดึงข้อมูล Warfarin No ${wfNo} สำเร็จ!`);
+                    }
+                } else {
+                    alert(`ไม่พบข้อมูล Warfarin No: ${wfNo} ในฐานข้อมูลครับ`);
+                }
+            } catch (err) {
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล: ' + err.message);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }
+            }
         }
         
         const asthmaDevicesDef = [
