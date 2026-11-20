@@ -8512,6 +8512,46 @@
 
         // โหลดรายการเคสที่พักไว้ทันทีเมื่อเปิดหน้าเว็บ
         window.addEventListener('DOMContentLoaded', renderParkedCasesBar);
+    async function fetchAdminRealtimeData() {
+        const btn = document.getElementById('btnFetchAdminRealtime');
+        const statusEl = document.getElementById('adminRealtimeStatus');
+        const pasteArea = document.getElementById('adminDataPaste');
+
+        if (btn) btn.disabled = true;
+        if (statusEl) {
+            statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-blue-600 mr-1"></i> กำลังดึงข้อมูลจาก Google Sheet...';
+        }
+
+        try {
+            const response = await fetch(`${SCRIPT_URL}?action=getAdminStats`);
+            const result = await response.json();
+
+            if (result && result.data) {
+                if (Array.isArray(result.data)) {
+                    pasteArea.value = result.data.map(row => row.join('\t')).join('\n');
+                } else {
+                    pasteArea.value = result.data;
+                }
+
+                if (statusEl) {
+                    statusEl.innerHTML = `<span class="text-emerald-600 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i> อัปเดตข้อมูลล่าสุดเรียบร้อย</span>`;
+                }
+
+                if (typeof processRawData === 'function') {
+                    processRawData();
+                }
+            } else {
+                throw new Error(result.message || 'ไม่พบข้อมูลในระบบ');
+            }
+        } catch (error) {
+            console.error('Fetch Admin Realtime Error:', error);
+            if (statusEl) {
+                statusEl.innerHTML = `<span class="text-red-600 font-semibold"><i class="fa-solid fa-circle-exclamation mr-1"></i> ดึงข้อมูลไม่สำเร็จ: ${error.message}</span>`;
+            }
+        } finally {
+            if (btn) btn.disabled = false;
+        }
+    }
     </script>
 </body>
 </html>
