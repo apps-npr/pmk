@@ -5043,6 +5043,13 @@
             const wfTgt = document.querySelector('input[name="wfNoteTarget"][value="2-3"]'); if(wfTgt) wfTgt.checked = true;
             const wfAdr = document.querySelector('input[name="wfNoteAdr"][value="NO"]'); if(wfAdr) wfAdr.checked = true;
             const wfDi = document.querySelector('input[name="wfNoteDi"][value="NO"]'); if(wfDi) wfDi.checked = true;
+
+            // คืนค่าเริ่มต้นให้ INR รอบนี้ (วันนี้) และ Adherence (Good)
+            const wfInrToday = document.getElementById('wfNoteInrToday') || document.querySelector('input[name="wfNoteInrDateType"][value="วันนี้"]') || document.querySelector('input[name="wfNoteInrType"][value="วันนี้"]');
+            if (wfInrToday) wfInrToday.checked = true;
+
+            const wfAdhGood = document.getElementById('wfNoteAdhGood') || document.querySelector('input[name="wfNoteAdh"][value="Good"]') || document.querySelector('input[name="wfNoteAdherence"][value="Good"]');
+            if (wfAdhGood) wfAdhGood.checked = true;
             
             toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
             
