@@ -261,7 +261,7 @@
                     <button onclick="openAdminLogin()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center text-sm">
                         <i class="fa-solid fa-chart-pie mr-1.5"></i> Admin
                     </button>
-                    <button onclick="resetForm(); resetCaseTracking();" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center">
+                    <button type="button" onclick="confirmResetForm()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                         ล้างข้อมูล
                     </button>
@@ -2752,7 +2752,27 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- Custom Modern Confirm / Alert Modal -->
+    <div id="customConfirmModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-100 transform transition-all scale-100">
+            <div class="p-6 text-center">
+                <div id="ccmIconWrap" class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl shadow-inner bg-amber-100 text-amber-600">
+                    <i id="ccmIcon" class="fa-solid fa-pause-circle"></i>
+                </div>
+                <h3 id="ccmTitle" class="text-lg font-bold text-slate-800 mb-1.5">ยืนยันการทำรายการ</h3>
+                <p id="ccmMessage" class="text-sm text-slate-500 leading-relaxed whitespace-pre-line">รายละเอียดข้อความ...</p>
+            </div>
+            <div id="ccmFooter" class="bg-slate-50 px-5 py-3.5 flex gap-2.5 justify-center border-t border-slate-100">
+                <button type="button" id="ccmCancelBtn" class="flex-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-semibold py-2.5 px-4 rounded-xl text-sm transition">
+                    ยกเลิก
+                </button>
+                <button type="button" id="ccmConfirmBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm shadow-sm transition">
+                    ยืนยัน
+                </button>
+            </div>
+        </div>
+    </div>
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
 
     <script>
@@ -8442,7 +8462,7 @@
                 };
             }
         });
-    // =========================================================================
+        // =========================================================================
         //   MULTI-DRAFT QUEUE: ระบบพักเคสรอผล Lab และสลับเคสได้ไม่จำกัด
         // =========================================================================
         const PARKED_CASES_KEY = 'opd_online_parked_cases_v1';
@@ -8489,34 +8509,57 @@
         }
 
         // กดปุ่ม "พักเคสนี้ไว้ (รอผล Lab) & เริ่มเคสใหม่"
+        // กดปุ่ม "พักเคสนี้ไว้ (รอผล Lab) & เริ่มเคสใหม่" (แบบ Custom Modal สวยงาม)
         function parkCurrentCaseDraft() {
             const snap = captureCurrentFormSnapshot();
             if (!snap.ptName && !snap.hn) {
-                alert('กรุณากรอก ชื่อ-สกุล หรือ HN ของผู้ป่วยก่อนกดพักเคสครับ');
+                showModernDialog({
+                    type: 'info',
+                    title: 'ยังไม่มีข้อมูลผู้ป่วย',
+                    message: 'กรุณากรอก ชื่อ-สกุล หรือ HN ของผู้ป่วยก่อนกดพักเคสครับ',
+                    confirmText: 'ตกลง',
+                    showCancel: false
+                });
                 return;
             }
 
-            const list = getParkedCases();
-            // ถ้ามี HN หรือชื่อซ้ำในคิวพัก ให้เขียนทับเคสเดิมของคนนั้นเพื่อไม่ให้ซ้ำซ้อน
-            const existingIdx = list.findIndex(c => (snap.hn && c.hn === snap.hn) || (snap.ptName && c.ptName === snap.ptName));
-            if (existingIdx !== -1) {
-                snap.id = list[existingIdx].id;
-                list[existingIdx] = snap;
-            } else {
-                list.push(snap);
-            }
+            const displayName = snap.ptName || 'ไม่ระบุชื่อ';
+            const displayHn = snap.hn ? `HN: ${snap.hn}` : 'ไม่ระบุ HN';
 
-            saveParkedCases(list);
+            showModernDialog({
+                type: 'warning',
+                title: 'พักเคสนี้ไว้รอผล Lab?',
+                message: `ผู้ป่วย: ${displayName} (${displayHn})\nคลินิก: ${snap.currentTab}\n\nระบบจะเก็บข้อมูลเคสนี้ไว้ที่แถบด้านบน และล้างฟอร์มเพื่อรับเคสใหม่ทันที (ค่าสติกเกอร์ยังคงเดิม)`,
+                confirmText: 'พักเคส & เริ่มเคสใหม่',
+                cancelText: 'ทำเคสนี้ต่อ',
+                showCancel: true,
+                onConfirm: () => {
+                    const list = getParkedCases();
+                    // ถ้ามี HN หรือชื่อซ้ำในคิวพัก ให้เขียนทับเคสเดิมของคนนั้นเพื่อไม่ให้ซ้ำซ้อน
+                    const existingIdx = list.findIndex(c => (snap.hn && c.hn === snap.hn) || (snap.ptName && c.ptName === snap.ptName));
+                    if (existingIdx !== -1) {
+                        snap.id = list[existingIdx].id;
+                        list[existingIdx] = snap;
+                    } else {
+                        list.push(snap);
+                    }
 
-            // ล้างฟอร์มเพื่อเริ่มทำเคสใหม่ทันที (ค่าสติกเกอร์ 4, 3, 98, 11 ยังอยู่ครบ)
-            if (typeof window.resetForm === 'function') {
-                window.resetForm();
-            }
+                    saveParkedCases(list);
 
-            const statusEl = document.getElementById('autoSaveStatus');
-            if (statusEl) {
-                statusEl.innerHTML = `<i class="fa-solid fa-folder-plus text-amber-300"></i> <span>พักเคส "${snap.ptName || snap.hn}" ไว้เรียบร้อย พร้อมรับเคสใหม่</span>`;
-            }
+                    // ล้างฟอร์มเพื่อเริ่มทำเคสใหม่ทันที (ค่าสติกเกอร์ 4, 3, 98, 11 ยังอยู่ครบ)
+                    if (typeof window.resetForm === 'function') {
+                        window.resetForm();
+                    }
+
+                    const statusEl = document.getElementById('autoSaveStatus');
+                    if (statusEl) {
+                        statusEl.innerHTML = `<i class="fa-solid fa-folder-plus text-amber-300"></i> <span>พักเคส "${snap.ptName || snap.hn}" ไว้เรียบร้อย พร้อมรับเคสใหม่</span>`;
+                    }
+                    if (typeof showToast === 'function') {
+                        showToast(`พักเคส "${snap.ptName || snap.hn}" ไว้เรียบร้อย`);
+                    }
+                }
+            });
         }
 
         // กดเรียกเคสที่พักไว้กลับมาทำต่อ
@@ -8592,6 +8635,97 @@
                     </div>
                 `;
             }).join('');
+        }
+        // ==========================================
+        //   ระบบ Custom Modal สวยงาม (แทน alert/confirm เดิม)
+        // ==========================================
+        function showModernDialog({
+            title = 'ยืนยันการทำรายการ',
+            message = '',
+            type = 'warning', // 'warning' | 'danger' | 'info'
+            confirmText = 'ยืนยัน',
+            cancelText = 'ยกเลิก',
+            showCancel = true,
+            onConfirm = null
+        }) {
+            const modal = document.getElementById('customConfirmModal');
+            const iconWrap = document.getElementById('ccmIconWrap');
+            const iconEl = document.getElementById('ccmIcon');
+            const titleEl = document.getElementById('ccmTitle');
+            const msgEl = document.getElementById('ccmMessage');
+            const cancelBtn = document.getElementById('ccmCancelBtn');
+            const confirmBtn = document.getElementById('ccmConfirmBtn');
+
+            if (!modal) return;
+
+            const themes = {
+                warning: {
+                    wrap: 'w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl shadow-inner bg-amber-100 text-amber-600',
+                    icon: 'fa-solid fa-pause-circle',
+                    btn: 'flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 px-4 rounded-xl text-sm shadow-sm transition'
+                },
+                danger: {
+                    wrap: 'w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl shadow-inner bg-rose-100 text-rose-600',
+                    icon: 'fa-solid fa-rotate-left',
+                    btn: 'flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm shadow-sm transition'
+                },
+                info: {
+                    wrap: 'w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl shadow-inner bg-blue-100 text-blue-600',
+                    icon: 'fa-solid fa-circle-info',
+                    btn: 'flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm shadow-sm transition'
+                }
+            };
+
+            const t = themes[type] || themes.info;
+            iconWrap.className = t.wrap;
+            iconEl.className = t.icon;
+            confirmBtn.className = t.btn;
+
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+            cancelBtn.textContent = cancelText;
+            confirmBtn.textContent = confirmText;
+
+            if (showCancel) {
+                cancelBtn.classList.remove('hidden');
+            } else {
+                cancelBtn.classList.add('hidden');
+            }
+
+            const closeDialog = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+
+            cancelBtn.onclick = closeDialog;
+            confirmBtn.onclick = () => {
+                closeDialog();
+                if (typeof onConfirm === 'function') onConfirm();
+            };
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // ยืนยันการ "ล้างข้อมูล" แบบใหม่ (เรียกใช้ resetForm() เดิมของคุณโดยไม่กระทบระบบอื่น)
+        function confirmResetForm() {
+            const hn = document.getElementById('hn')?.value.trim();
+            const ptName = document.getElementById('ptName')?.value.trim();
+            const patientLabel = (ptName || hn) ? `\n(${ptName || 'ไม่ระบุชื่อ'} ${hn ? 'HN: ' + hn : ''})` : '';
+
+            showModernDialog({
+                type: 'danger',
+                title: 'ล้างข้อมูลฟอร์มทั้งหมด?',
+                message: `ข้อมูลที่กรอกไว้ในหน้านี้จะถูกรีเซ็ตเป็นค่าว่าง${patientLabel}`,
+                confirmText: 'ล้างข้อมูลเลย',
+                cancelText: 'ยกเลิก',
+                showCancel: true,
+                onConfirm: () => {
+                    if (typeof window.resetForm === 'function') window.resetForm();
+                    if (typeof resetCaseTracking === 'function') resetCaseTracking();
+                    if (typeof showToast === 'function') showToast('ล้างข้อมูลเรียบร้อยแล้ว');
+                }
+            });
         }
 
         // โหลดรายการเคสที่พักไว้ทันทีเมื่อเปิดหน้าเว็บ
