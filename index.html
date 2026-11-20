@@ -248,6 +248,13 @@
                         <div id="autoSaveStatus" class="text-[11px] text-blue-100 flex items-center gap-1.5 mt-0.5">
                             <i class="fa-solid fa-cloud-arrow-up"></i> <span>ระบบบันทึกแบบร่างอัตโนมัติพร้อมทำงาน</span>
                         </div>
+                        <!-- แถบระบบพักเคสรอผล Lab (Multi-Draft Queue) -->
+                        <div class="mt-2 flex flex-wrap items-center gap-2">
+                            <button type="button" onclick="parkCurrentCaseDraft()" class="bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-pause-circle"></i> พักเคสนี้ไว้ (รอผล Lab) &amp; เริ่มเคสใหม่
+                            </button>
+                            <div id="parkedCasesBar" class="flex flex-wrap items-center gap-1.5"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -8351,6 +8358,160 @@
                 };
             }
         });
+    // =========================================================================
+        //   MULTI-DRAFT QUEUE: ระบบพักเคสรอผล Lab และสลับเคสได้ไม่จำกัด
+        // =========================================================================
+        const PARKED_CASES_KEY = 'opd_online_parked_cases_v1';
+
+        function getParkedCases() {
+            try {
+                return JSON.parse(localStorage.getItem(PARKED_CASES_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveParkedCases(list) {
+            localStorage.setItem(PARKED_CASES_KEY, JSON.stringify(list));
+            renderParkedCasesBar();
+        }
+
+        // จับภาพข้อมูลทั้งหมดในฟอร์มปัจจุบัน (ใช้ร่วมกับ Auto-Save)
+        function captureCurrentFormSnapshot() {
+            const fields = {};
+            document.querySelectorAll('#mainAppContainer input, #mainAppContainer select, #mainAppContainer textarea').forEach(el => {
+                if (!el.id || EXCLUDED_DRAFT_IDS.includes(el.id)) return;
+                if (el.type === 'checkbox') fields[el.id] = { type: 'checkbox', checked: el.checked };
+                else if (el.type === 'radio') {
+                    if (el.checked) fields[el.name] = { type: 'radio', value: el.value };
+                } else {
+                    fields[el.id] = { type: 'value', value: el.value };
+                }
+            });
+
+            return {
+                id: 'CASE_' + Date.now(),
+                savedAt: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+                ptName: document.getElementById('ptName')?.value.trim() || '',
+                hn: document.getElementById('hn')?.value.trim() || '',
+                currentTab: typeof currentTab !== 'undefined' ? currentTab : 'MR',
+                mrSources: typeof mrSources !== 'undefined' ? [...mrSources] : [],
+                selectedLabs: typeof selectedLabs !== 'undefined' ? [...selectedLabs] : [],
+                hivDrugs: typeof hivDrugs !== 'undefined' ? [...hivDrugs] : [],
+                selectedPreopDrugs: typeof selectedPreopDrugs !== 'undefined' ? [...selectedPreopDrugs] : [],
+                adrTimelineDrugs: typeof adrTimelineDrugs !== 'undefined' ? [...adrTimelineDrugs] : [],
+                fields
+            };
+        }
+
+        // กดปุ่ม "พักเคสนี้ไว้ (รอผล Lab) & เริ่มเคสใหม่"
+        function parkCurrentCaseDraft() {
+            const snap = captureCurrentFormSnapshot();
+            if (!snap.ptName && !snap.hn) {
+                alert('กรุณากรอก ชื่อ-สกุล หรือ HN ของผู้ป่วยก่อนกดพักเคสครับ');
+                return;
+            }
+
+            const list = getParkedCases();
+            // ถ้ามี HN หรือชื่อซ้ำในคิวพัก ให้เขียนทับเคสเดิมของคนนั้นเพื่อไม่ให้ซ้ำซ้อน
+            const existingIdx = list.findIndex(c => (snap.hn && c.hn === snap.hn) || (snap.ptName && c.ptName === snap.ptName));
+            if (existingIdx !== -1) {
+                snap.id = list[existingIdx].id;
+                list[existingIdx] = snap;
+            } else {
+                list.push(snap);
+            }
+
+            saveParkedCases(list);
+
+            // ล้างฟอร์มเพื่อเริ่มทำเคสใหม่ทันที (ค่าสติกเกอร์ 4, 3, 98, 11 ยังอยู่ครบ)
+            if (typeof window.resetForm === 'function') {
+                window.resetForm();
+            }
+
+            const statusEl = document.getElementById('autoSaveStatus');
+            if (statusEl) {
+                statusEl.innerHTML = `<i class="fa-solid fa-folder-plus text-amber-300"></i> <span>พักเคส "${snap.ptName || snap.hn}" ไว้เรียบร้อย พร้อมรับเคสใหม่</span>`;
+            }
+        }
+
+        // กดเรียกเคสที่พักไว้กลับมาทำต่อ
+        function resumeParkedCase(caseId) {
+            const list = getParkedCases();
+            const target = list.find(c => c.id === caseId);
+            if (!target) return;
+
+            // เคลียร์ค่าฟอร์มปัจจุบันก่อนโหลดเคสที่พักไว้ (ไม่ลบคิวพัก)
+            if (typeof window.resetForm === 'function') {
+                window.resetForm();
+            }
+
+            // กู้คืน Array ข้อมูลย่อย
+            if (Array.isArray(target.mrSources)) { mrSources = target.mrSources; if (typeof renderMrSources === 'function') renderMrSources(); }
+            if (Array.isArray(target.selectedLabs)) { selectedLabs = target.selectedLabs; if (typeof renderLabTags === 'function') renderLabTags(); }
+            if (Array.isArray(target.hivDrugs)) { hivDrugs = target.hivDrugs; if (typeof renderHivDrugs === 'function') renderHivDrugs(); }
+            if (Array.isArray(target.selectedPreopDrugs)) { selectedPreopDrugs = target.selectedPreopDrugs; if (typeof renderSelectedPreopDrugs === 'function') renderSelectedPreopDrugs(); }
+            if (Array.isArray(target.adrTimelineDrugs)) { adrTimelineDrugs = target.adrTimelineDrugs; if (typeof renderAdrTimelineRows === 'function') renderAdrTimelineRows(); }
+
+            // กู้คืนค่า Input/Select/Checkbox/Radio ทุกช่อง
+            Object.entries(target.fields || {}).forEach(([key, item]) => {
+                if (item.type === 'radio') {
+                    const rad = document.querySelector(`input[name="${key}"][value="${CSS.escape(item.value)}"]`);
+                    if (rad) rad.checked = true;
+                } else {
+                    const el = document.getElementById(key);
+                    if (!el) return;
+                    if (item.type === 'checkbox') el.checked = !!item.checked;
+                    else el.value = item.value;
+                }
+            });
+
+            if (target.currentTab && typeof switchTab === 'function') switchTab(target.currentTab);
+            if (typeof evaluateHivRenalAlert === 'function') evaluateHivRenalAlert();
+            if (typeof evaluateCkdRenalAlerts === 'function') evaluateCkdRenalAlerts();
+            if (typeof generateOutput === 'function') generateOutput();
+            triggerAutoSaveDraft();
+
+            const statusEl = document.getElementById('autoSaveStatus');
+            if (statusEl) {
+                statusEl.innerHTML = `<i class="fa-solid fa-folder-open text-emerald-300"></i> <span>ดึงเคส "${target.ptName || target.hn}" กลับมาทำต่อแล้ว</span>`;
+            }
+        }
+
+        // ลบเคสออกจากคิวพัก (เมื่อทำเสร็จและบันทึกเรียบร้อยแล้ว)
+        function deleteParkedCase(caseId, event) {
+            if (event) event.stopPropagation();
+            const list = getParkedCases().filter(c => c.id !== caseId);
+            saveParkedCases(list);
+        }
+
+        // วาดปุ่มรายการเคสที่พักไว้บน Header
+        function renderParkedCasesBar() {
+            const bar = document.getElementById('parkedCasesBar');
+            if (!bar) return;
+            const list = getParkedCases();
+            if (list.length === 0) {
+                bar.innerHTML = '';
+                return;
+            }
+
+            bar.innerHTML = list.map(c => {
+                const label = c.ptName ? `${c.ptName}${c.hn ? ' (' + c.hn + ')' : ''}` : c.hn;
+                return `
+                    <div onclick="resumeParkedCase('${c.id}')" title="คลิกเพื่อดึงข้อมูลเคสนี้กลับมาทำต่อ"
+                         class="cursor-pointer bg-white/95 hover:bg-blue-50 text-blue-900 border border-blue-200 rounded-lg px-2.5 py-1 text-xs font-bold shadow-sm flex items-center gap-1.5 transition">
+                        <span class="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded text-[10px]">${c.currentTab}</span>
+                        <span>${label}</span>
+                        <span class="text-[10px] font-normal text-gray-500">${c.savedAt}</span>
+                        <button type="button" onclick="deleteParkedCase('${c.id}', event)" title="ลบเคสนี้จากคิวพัก"
+                                class="ml-1 text-gray-400 hover:text-red-600 font-bold px-1">&times;</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // โหลดรายการเคสที่พักไว้ทันทีเมื่อเปิดหน้าเว็บ
+        window.addEventListener('DOMContentLoaded', renderParkedCasesBar);
     </script>
 </body>
 </html>
