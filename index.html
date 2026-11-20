@@ -7984,10 +7984,10 @@
         async function fetchAdminRealtimeData() {
             const btn = document.getElementById('btnFetchAdminRealtime');
             const statusEl = document.getElementById('adminRealtimeStatus');
-            const currentToken = adminSessionToken || sessionStorage.getItem('opd_admin_token') || '';
+            const token = adminSessionToken || sessionStorage.getItem('opd_admin_token') || '';
 
-            if (!currentToken) {
-                if (statusEl) statusEl.innerHTML = '<span class="text-red-600 font-bold">ไม่พบ Token กรุณาเข้าสู่ระบบใหม่</span>';
+            if (!token) {
+                if (statusEl) statusEl.innerHTML = '<span class="text-red-600 font-bold">Session หมดอายุ กรุณา Login ใหม่</span>';
                 return;
             }
 
@@ -7995,10 +7995,8 @@
             if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-blue-600 mr-1"></i> กำลังดึงข้อมูลล่าสุดจาก Google Sheet...';
 
             try {
-                const res = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'getAdminStats', token: currentToken })
-                });
+                const url = `${SCRIPT_URL}?action=getAdminStats&token=${encodeURIComponent(token)}&t=${Date.now()}`;
+                const res = await fetch(url);
                 const data = await res.json();
                 if (data.status === 'success' && data.tsvText !== undefined) {
                     const pasteBox = document.getElementById('adminDataPaste');
@@ -8007,9 +8005,6 @@
                     if (statusEl) statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> อัปเดตข้อมูล Real-time สำเร็จ (${data.rowCount || 0} รายการ • ${new Date().toLocaleTimeString('th-TH')})`;
                 } else {
                     if (statusEl) statusEl.innerHTML = `<span class="text-red-600 font-bold">${data.message || 'Session หมดอายุ กรุณา Login ใหม่'}</span>`;
-                    // ล้าง Token เก่าที่ใช้งานไม่ได้
-                    adminSessionToken = '';
-                    sessionStorage.removeItem('opd_admin_token');
                 }
             } catch (e) {
                 if (statusEl) statusEl.innerHTML = `<span class="text-red-600">เชื่อมต่อล้มเหลว: ${e.message}</span>`;
