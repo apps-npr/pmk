@@ -5045,10 +5045,13 @@
             const wfDi = document.querySelector('input[name="wfNoteDi"][value="NO"]'); if(wfDi) wfDi.checked = true;
 
             // คืนค่าเริ่มต้นให้ INR รอบนี้ (วันนี้) และ Adherence (Good)
-            const wfInrToday = document.getElementById('wfNoteInrToday') || document.querySelector('input[name="wfNoteInrDateType"][value="วันนี้"]') || document.querySelector('input[name="wfNoteInrType"][value="วันนี้"]');
-            if (wfInrToday) wfInrToday.checked = true;
+            const wfInrTodayRadio = document.querySelector('input[name="wfNoteInrMode"][value="today"]');
+            if (wfInrTodayRadio) {
+                wfInrTodayRadio.checked = true;
+                wfInrTodayRadio.dispatchEvent(new Event('change')); // สั่งให้ซ่อนช่องวันที่ของโหมด "ล่าสุด" อัตโนมัติด้วย
+            }
 
-            const wfAdhGood = document.getElementById('wfNoteAdhGood') || document.querySelector('input[name="wfNoteAdh"][value="Good"]') || document.querySelector('input[name="wfNoteAdherence"][value="Good"]');
+            const wfAdhGood = document.querySelector('input[name="wfNoteAdherence"][value="Good"]');
             if (wfAdhGood) wfAdhGood.checked = true;
             
             toggleVlInput(); toggleNextLabInput(); toggleAdherence(); toggleLabDateCustom();
