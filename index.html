@@ -28,6 +28,12 @@
         .tab-btn:not(.active) { background-color: #f3f4f6; color: #4b5563; }
         .tab-btn:not(.active):hover { background-color: #e5e7eb; }
 
+        /* Parkinson clinic drug images */
+        .c9-drug-img { width: 52px; height: 52px; object-fit: contain; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 2px; cursor: zoom-in; }
+        .c9-drug-img:hover { box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        .c9-drug-img-empty { cursor: default; opacity: 0.7; }
+
+
         /* --- PRE-OP Styles Converted for Tailwind Compatibility --- */
         .drug-list-container { max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 0.5rem; margin-top: 5px; background: white; position: absolute; z-index: 10; width: 100%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .drug-item { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f9fafb; transition: background 0.2s; font-size: 0.875rem; }
@@ -297,6 +303,9 @@
                 </button>
                 <button onclick="switchTab('ASTHMA')" id="tab-ASTHMA" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">
                     <i class="fa-solid fa-lungs mr-1"></i> 8. Asthma/COPD
+                </button>
+                <button onclick="switchTab('PARKINSON')" id="tab-PARKINSON" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100">
+                    <i class="fa-solid fa-brain mr-1"></i> 9. Parkinson
                 </button>
             </div>
         </div>
@@ -2207,6 +2216,195 @@
                     </div>
                 </div>
             </div>
+            <!-- 9. Parkinson Clinic -->
+            <div id="form-PARKINSON" class="space-y-6 clinic-form hidden">
+                <div class="bg-violet-50 p-4 border border-violet-200 rounded-xl mb-4 text-sm">
+                    <h3 class="font-bold text-violet-800 mb-1"><i class="fa-solid fa-brain mr-1.5"></i>9. คลินิกโรคพาร์กินสัน (Parkinson Clinic)</h3>
+                    <p class="text-violet-700 text-xs">จัดตารางยา ดูรูปยา (เม็ดยาและกล่องยา) ประเมิน motor complications / DRP แล้วคัดลอก Pharmacist Note ไปวางใน PMK — แท็บนี้ไม่บันทึกลง Google Sheet และไม่ส่ง LINE OA</p>
+                </div>
+
+                <!-- 1. Drug catalog & regimen -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-base text-violet-800 mb-1 border-b pb-2">1. รายการยาพาร์กินสันและตารางยาปัจจุบัน (Current Medication)</h3>
+                    <p class="text-xs text-gray-500 mt-2 mb-3">คลิกการ์ดยาเพื่อเลือก จากนั้นใส่ขนาดและเวลากิน แล้วกดเพิ่มลงตาราง — คลิกรูปเพื่อขยาย</p>
+                    <div id="c9DrugCatalog" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4"></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end bg-violet-50/60 border border-violet-100 rounded-xl p-3">
+                        <div class="md:col-span-5">
+                            <label class="block text-xs font-bold text-gray-700 mb-1">ยา</label>
+                            <select id="c9Drug" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" onchange="highlightC9DrugCard()"></select>
+                        </div>
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-bold text-gray-700 mb-1">ขนาดยา (Dose)</label>
+                            <input type="text" id="c9Dose" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 1 tab หรือ 1/2 tab">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-700 mb-1">เวลา</label>
+                            <input type="text" id="c9Time" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 0800" maxlength="5">
+                        </div>
+                        <div class="md:col-span-2">
+                            <button type="button" onclick="addC9Med()" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold px-3 py-2 rounded-lg text-sm shadow-sm">
+                                <i class="fa-solid fa-plus mr-1"></i> เพิ่มยา
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="c9MedList" class="mt-4 space-y-2"></div>
+                    <div id="c9LeddBox" class="mt-3 text-sm text-violet-900 font-semibold hidden"></div>
+                </div>
+
+                <!-- 2. Meals -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-base text-violet-800 mb-3 border-b pb-2">2. เวลามื้ออาหาร (ใช้ประเมิน food-interaction กับ Levodopa)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เช้า</label>
+                            <input type="text" id="c9MealBreak" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เว้นว่างได้" value="07:00" maxlength="5" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เที่ยง</label>
+                            <input type="text" id="c9MealLunch" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เว้นว่างได้" value="12:00" maxlength="5" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เย็น</label>
+                            <input type="text" id="c9MealDinner" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เว้นว่างได้" value="17:00" maxlength="5" oninput="generateOutput()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Motor complications -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-base text-violet-800 mb-3 border-b pb-2">3. ภาวะแทรกซ้อนด้านการเคลื่อนไหว (Motor Complications)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700 mb-4">
+                        <label class="flex items-start cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100">
+                            <input type="checkbox" id="c9Mc1" class="c9-drp mt-1 mr-2.5 h-4 w-4 text-violet-600 rounded" value="Wearing-off (ยาหมดฤทธิ์ก่อนกำหนด)" data-suggest="พบ Wearing-off: พิจารณาเพิ่มยา COMT inhibitor, MAO-B inhibitor หรือลดระยะห่างมื้อยา Levodopa (Fractionation)" onchange="generateOutput()">
+                            <span><b>Wearing-off</b><br><span class="text-xs text-gray-500">ยาหมดฤทธิ์ก่อนกำหนด</span></span>
+                        </label>
+                        <label class="flex items-start cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100">
+                            <input type="checkbox" id="c9Mc2" class="c9-drp mt-1 mr-2.5 h-4 w-4 text-violet-600 rounded" value="Delayed ON (ยาออกฤทธิ์ช้า)" data-suggest="พบ Delayed ON: แนะนำเคี้ยว/บดยาก่อนกลืน ดื่มน้ำตามมากๆ ทานขณะท้องว่าง หรือเปลี่ยนเป็นยา Dispersible" onchange="generateOutput()">
+                            <span><b>Delayed ON</b><br><span class="text-xs text-gray-500">ยาออกฤทธิ์ช้ากว่าปกติ</span></span>
+                        </label>
+                        <label class="flex items-start cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100">
+                            <input type="checkbox" id="c9Mc3" class="c9-drp mt-1 mr-2.5 h-4 w-4 text-violet-600 rounded" value="Morning Akinesia (แข็งเกร็งตอนเช้า)" data-suggest="พบ Morning Akinesia: พิจารณาให้ยา Levodopa ชนิดออกฤทธิ์เนิ่น (CR) ก่อนนอน หรือเพิ่ม Dopamine Agonist" onchange="generateOutput()">
+                            <span><b>Morning Akinesia</b><br><span class="text-xs text-gray-500">ตื่นมาแข็งเกร็ง/ช้า ก่อนกินยามื้อแรก</span></span>
+                        </label>
+                        <label class="flex items-start cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100">
+                            <input type="checkbox" id="c9Mc4" class="c9-drp mt-1 mr-2.5 h-4 w-4 text-violet-600 rounded" value="Dyskinesia (ภาวะยุกยิก)" data-suggest="พบ Dyskinesia: พิจารณาลดขนาดยา Levodopa ต่อมื้อ ควบคู่กับเพิ่มความถี่ หรือพิจารณาเพิ่มยา Amantadine" onchange="generateOutput()">
+                            <span><b>Dyskinesia</b><br><span class="text-xs text-gray-500">เคลื่อนไหวผิดปกติควบคุมไม่ได้ มักเกิดช่วงยาออกฤทธิ์เต็มที่</span></span>
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ระยะเวลา Wearing-off / OFF-Time (ชั่วโมง)</label>
+                            <input type="number" id="c9OffHours" min="0" step="0.5" placeholder="เช่น 3" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ระยะเวลา Dyskinesia (ชั่วโมง)</label>
+                            <input type="number" id="c9DysHours" min="0" step="0.5" placeholder="เช่น 1" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                    </div>
+                    <p class="text-xs font-bold text-gray-700 mb-2">ลักษณะอาการ OFF-Time</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <label class="flex items-center cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mr-2 h-4 w-4 text-rose-600 rounded" value="OFF-Time: อาการสั่นขณะพัก (Resting tremor)" onchange="generateOutput()"><span>อาการสั่นขณะพัก (Resting tremor)</span></label>
+                        <label class="flex items-center cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mr-2 h-4 w-4 text-rose-600 rounded" value="OFF-Time: อาการแข็งเกร็ง (Rigidity)" onchange="generateOutput()"><span>อาการแข็งเกร็ง (Rigidity)</span></label>
+                        <label class="flex items-center cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mr-2 h-4 w-4 text-rose-600 rounded" value="OFF-Time: เคลื่อนไหวช้า (Bradykinesia)" onchange="generateOutput()"><span>เคลื่อนไหวช้า (Bradykinesia)</span></label>
+                        <label class="flex items-center cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mr-2 h-4 w-4 text-rose-600 rounded" value="OFF-Time: ทรงตัวลำบาก (Postural instability)" data-suggest="ผู้ป่วยมีปัญหาทรงตัวลำบากในช่วงยาหมดฤทธิ์ เสี่ยงต่อการหกล้มสูง ควรประเมินการปรับยาเพื่อลดรอยต่อมื้อยา" onchange="generateOutput()"><span>ทรงตัวลำบาก (Postural instability)</span></label>
+                    </div>
+                </div>
+
+                <!-- 4. Falls & NMS -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-base text-violet-800 mb-3 border-b pb-2">4. ประวัติหกล้มและอาการนอกระบบการเคลื่อนไหว (Falls &amp; NMS)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <label class="flex items-center font-medium text-rose-700 cursor-pointer">
+                            <input type="checkbox" id="c9Fall" class="form-checkbox text-rose-600 rounded mr-2" onchange="generateOutput()"> มีประวัติหกล้ม (6 เดือนย้อนหลัง)
+                        </label>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">จำนวนครั้ง</label>
+                            <input type="number" id="c9FallCount" min="0" step="1" placeholder="เช่น 1" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">สาเหตุ</label>
+                            <select id="c9FallCause" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" onchange="generateOutput()">
+                                <option value="">-- เลือกสาเหตุ --</option>
+                                <option value="ก้าวขาไม่ออก/เกร็ง (Freezing)">ก้าวขาไม่ออก/เกร็ง (Freezing)</option>
+                                <option value="หน้ามืด/วิงเวียน (Orthostatic)">หน้ามืด/วิงเวียน (Orthostatic)</option>
+                                <option value="สะดุด/ลื่น/อุบัติเหตุ (Accident)">สะดุด/ลื่น/อุบัติเหตุ (Accident)</option>
+                                <option value="ตัวยุกยิกมากไป (Dyskinesia)">ตัวยุกยิกมากไป (Dyskinesia)</option>
+                                <option value="อื่นๆ (Others)">อื่นๆ (Others)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="text-xs font-bold text-gray-700 mb-2">อาการนอกระบบการเคลื่อนไหว (NMS)</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="ซึมเศร้า/วิตกกังวล" onchange="generateOutput()"><span>ซึมเศร้า/วิตกกังวล</span></label>
+                        <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="นอนละเมอ (RBD)" onchange="generateOutput()"><span>นอนละเมอ (RBD)</span></label>
+                        <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="ปัญหาปัสสาวะ" onchange="generateOutput()"><span>ปัญหาปัสสาวะ (กลางคืน/กลั้นไม่อยู่)</span></label>
+                        <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="ท้องผูกรุนแรง" onchange="generateOutput()"><span>ท้องผูกรุนแรง</span></label>
+                        <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="หน้ามืดวิงเวียน" onchange="generateOutput()"><span>หน้ามืดวิงเวียนเวลาเปลี่ยนท่า</span></label>
+                        <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="กลืนลำบาก/สำลัก" onchange="generateOutput()"><span>กลืนลำบาก/สำลัก</span></label>
+                    </div>
+                </div>
+
+                <!-- 5. DRP / ADR / Compliance -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-base text-violet-800 mb-3 border-b pb-2">5. แบบคัดกรอง DRPs / การบริหารยา / อาการข้างเคียง</h3>
+
+                    <p class="text-xs font-bold text-blue-800 mb-2">ปัญหาด้านวิธีการบริหารยา และอาหาร</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm mb-4">
+                        <label class="flex items-start cursor-pointer hover:bg-blue-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-blue-600 rounded" value="ทานยาก่อนอาหารน้อยกว่า 30 นาที หรือหลังอาหารไม่ถึง 1 ชม." data-suggest="แนะนำรับประทานยาก่อนอาหารอย่างน้อย 30 นาที หรือหลังอาหาร 1-2 ชั่วโมง" onchange="generateOutput()"><span>ทานยาก่อนอาหารน้อยกว่า 30 นาที หรือหลังอาหารไม่ถึง 1 ชม.</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-blue-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-blue-600 rounded" value="รับประทานยาพร้อมอาหารโปรตีนสูง" data-suggest="หลีกเลี่ยงการรับประทานยาพร้อมอาหารโปรตีนสูง เนื่องจากแย่งยาดูดซึมที่ลำไส้" onchange="generateOutput()"><span>รับประทานยาพร้อมอาหารโปรตีนสูง</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-blue-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-blue-600 rounded" value="บริหารยาทางสายยาง (NG Tube)" data-suggest="ตรวจสอบข้อห้ามในการบดยา (เช่น ห้ามบด Madopar HBS, Requip PD 24h) และพิจารณาปรับรูปแบบยาเป็น Dispersible" onchange="generateOutput()"><span>บริหารยาทางสายยาง (NG Tube)</span></label>
+                    </div>
+
+                    <p class="text-xs font-bold text-amber-800 mb-2">ความร่วมมือในการใช้ยา (Non-Compliance)</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm mb-4">
+                        <label class="flex items-start cursor-pointer hover:bg-amber-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-amber-600 rounded" value="ลืมกินยาบ่อย (ขาดผู้ดูแลกำกับ)" data-suggest="ผู้ป่วยลืมทานยาบ่อย/ขาดผู้ดูแลกำกับ เสนอแพทย์ปรับตารางยาให้ง่ายขึ้น" onchange="generateOutput()"><span>ลืมกินยาบ่อย (ขาดผู้ดูแลกำกับ)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-amber-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-amber-600 rounded" value="รับประทานยาผิดขนาด/ไม่อ่านฉลาก" data-suggest="เภสัชกรอธิบายวิธีใช้ยาซ้ำและเน้นย้ำให้อ่านฉลากทุกครั้ง" onchange="generateOutput()"><span>รับประทานยาผิดขนาด/ไม่อ่านฉลาก</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-amber-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-amber-600 rounded" value="ปรับเพิ่มขนาดยาเอง (เพื่อหวังผลการรักษา)" data-suggest="ผู้ป่วยปรับเพิ่มยาเอง เสี่ยงต่อ Dyskinesia เภสัชกรเน้นย้ำอันตราย" onchange="generateOutput()"><span>ปรับเพิ่มขนาดยาเอง (เพื่อหวังผลการรักษา)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-amber-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-amber-600 rounded" value="ปรับลดขนาดยาเอง (ทนผลข้างเคียงไม่ได้)" data-suggest="ผู้ป่วยปรับลดยาเองเนื่องจากอาการข้างเคียง บันทึกเพื่อให้แพทย์พิจารณาปรับขนาดยา" onchange="generateOutput()"><span>ปรับลดขนาดยาเอง (ทนผลข้างเคียงไม่ได้)</span></label>
+                    </div>
+
+                    <p class="text-xs font-bold text-rose-800 mb-2">อาการข้างเคียง (ADR &amp; Safety)</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="หน้ามืด/วูบเวลาเปลี่ยนท่า (Orthostatic Hypotension)" data-suggest="ระวังภาวะความดันตกขณะเปลี่ยนท่า แนะนำให้ลุกช้าๆ หรือแพทย์พิจารณาปรับยา" onchange="generateOutput()"><span>หน้ามืด/วูบเวลาเปลี่ยนท่า (Orthostatic Hypotension)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="วิงเวียนศีรษะ (Dizziness)" data-suggest="พบอาการวิงเวียนศีรษะ: ระวังความเสี่ยงในการหกล้ม ควรประเมินความดันโลหิตตกขณะเปลี่ยนท่าร่วมด้วย" onchange="generateOutput()"><span>วิงเวียนศีรษะ (Dizziness)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="คลื่นไส้/อาเจียน" data-suggest="แนะนำรับประทานยาพร้อมของว่างเล็กน้อย หรือพิจารณาให้ Domperidone" onchange="generateOutput()"><span>คลื่นไส้/อาเจียน</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="กลืนลำบาก (Dysphagia)" data-suggest="พบปัญหากลืนลำบาก: ระวังการสำลัก แนะนำประเมินการกลืน หรือปรับรูปแบบยาให้กลืนง่ายขึ้น (เป็นยาน้ำ/บดยา)" onchange="generateOutput()"><span>กลืนลำบาก (Dysphagia)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="ภาพหลอน/สับสน (Hallucinations)" data-suggest="ระวังการใช้ยา Anti-cholinergic ในผู้สูงอายุ หรือลด Dose Dopamine Agonist" onchange="generateOutput()"><span>ภาพหลอน/สับสน (Hallucinations)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="นอนไม่หลับ (Insomnia)" data-suggest="พิจารณาขยับเวลายามื้อเย็นให้เร็วขึ้น หลีกเลี่ยง MAO-B มื้อเย็น" onchange="generateOutput()"><span>นอนไม่หลับ (Insomnia)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="ท้องผูกรุนแรง (Constipation)" data-suggest="แนะนำดื่มน้ำมากๆ เพิ่มกากใย หรือพิจารณาเพิ่มยาระบาย" onchange="generateOutput()"><span>ท้องผูกรุนแรง (Constipation)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="ง่วงซึมมากผิดปกติช่วงกลางวัน (EDS)" data-suggest="ระวังผลข้างเคียงจากยา Dopamine Agonist พิจารณาปรับลดยา" onchange="generateOutput()"><span>ง่วงซึมมากผิดปกติช่วงกลางวัน (EDS)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="น้ำลายไหล (Drooling)" data-suggest="พบปัญาน้ำลายไหล: แนะนำให้ผู้ป่วยกลืนน้ำลายบ่อยๆ อมลูกอม/หมากฝรั่ง หรือแพทย์อาจพิจารณาปรับยา" onchange="generateOutput()"><span>น้ำลายไหล (Drooling)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="ปัสสาวะสีส้ม/แดง" data-suggest="เป็นผลข้างเคียงปกติของยา Entacapone ให้อธิบายผู้ป่วย" onchange="generateOutput()"><span>ปัสสาวะสีส้ม/แดง (จาก Entacapone)</span></label>
+                    </div>
+                </div>
+
+                <!-- 6. DRP class, recommendations, note, pharmacist -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-4">
+                    <h3 class="font-semibold text-base text-violet-800 border-b pb-2">6. สรุป DRP ข้อเสนอแนะ และผู้บันทึก</h3>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">ประเภทปัญหาด้านยา (DRP Class)</label>
+                        <select id="c9DrpClass" class="w-full md:w-2/3 rounded-lg border-gray-300 border px-3 py-2 text-sm" onchange="generateOutput()">
+                            <option value="ไม่พบปัญหาด้านยา (None)">ไม่พบปัญหาด้านยา (None)</option>
+                            <option value="Need for additional drug therapy (ND)">Need for additional drug therapy (ND)</option>
+                            <option value="Adverse drug reaction (ADR)">Adverse drug reaction (ADR)</option>
+                            <option value="Non-Compliance (NC)">Non-Compliance (NC)</option>
+                            <option value="Drug interaction (DI)">Drug interaction (DI) (รวม Food-Interaction)</option>
+                            <option value="พบหลายปัญหา (Multiple DRPs)">พบหลายปัญหา (Multiple DRPs)</option>
+                        </select>
+                    </div>
+                    <div id="c9RecoBox" class="hidden bg-violet-50 border border-violet-200 rounded-xl p-3 text-sm"></div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">บันทึกเพิ่มเติม (Note)</label>
+                        <textarea id="c9Note" rows="2" placeholder="เช่น ให้ความรู้เรื่องเวลายากับอาหารแล้ว / นัดติดตาม..." class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก (เภสัชกร)</label>
+                        <input type="text" id="c9PharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                    </div>
+                </div>
+            </div>
         </div>
             
         <!-- Output & Actions -->
@@ -2247,7 +2445,7 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     1. คัดลอกลง PMK
                 </button>
-                <button onclick="copyToSheet(); sendCaseTrackingData();" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                <button id="btnCopySheet" onclick="copyToSheet(); sendCaseTrackingData();" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     2. คัดลอกลง Google Sheet (Manual)
                 </button>
@@ -3395,7 +3593,7 @@
                 el.classList.add('hidden');
                 el.classList.remove('block');
             });
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50', 'bg-green-50', 'bg-orange-50', 'bg-teal-50'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50', 'bg-green-50', 'bg-orange-50', 'bg-teal-50', 'bg-violet-50'));
             
             const targetForm = document.getElementById('form-' + tab);
             if(targetForm) {
@@ -3410,6 +3608,7 @@
             if(tab === 'HF') activeBtn.classList.remove('text-green-700');
             if(tab === 'CKD') activeBtn.classList.remove('text-orange-700');
             if(tab === 'ASTHMA') activeBtn.classList.remove('text-teal-700');
+            if(tab === 'PARKINSON') activeBtn.classList.remove('text-violet-700');
 
             const mergeCheck = document.getElementById('mergeMrOption');
             if(mergeCheck) {
@@ -3434,6 +3633,12 @@
                 if(mainPat) mainPat.classList.remove('hidden');
                 if (typeof generateOutput === 'function') generateOutput();
             }
+
+            const hideSheet = (tab === 'PARKINSON');
+            ['btnCopySheet', 'btnSendDb'].forEach(id => {
+                const b = document.getElementById(id);
+                if (b) b.classList.toggle('hidden', hideSheet);
+            });
         }
 
         function switchWfTab(wftab) {
@@ -5125,6 +5330,387 @@
             return notes;
         }
 
+        // ==========================================
+        //   9. PARKINSON CLINIC (copy-to-PMK only)
+        //   No Google Sheet save, no LINE OA / LIFF
+        // ==========================================
+        const PD_IMG = 'images/parkinson/';
+        const PD_DRUGS = [
+            { id: 'D01', name: 'Madopar HBS 100/25', onset: 120, duration: 5, type: 'L-Dopa (CR)', pill: 'MadoparHBS.jpg', pack: 'P-MadoparHBS.jpg' },
+            { id: 'D02', name: 'Madopar dispersible 100/25', onset: 15, duration: 2.5, type: 'L-Dopa (Fast)', pill: 'Madopar-dispersible.jpg', pack: 'P-Madopar-dispersible.jpg' },
+            { id: 'D03', name: 'Sinemet 25/100', onset: 30, duration: 3.5, type: 'L-Dopa (IR)', pill: 'Sinemet.jpg', pack: '' },
+            { id: 'D04', name: 'Levopar 200/50', onset: 30, duration: 4, type: 'L-Dopa (IR)', pill: 'Levopar.jpg', pack: 'P-Levopar.jpg' },
+            { id: 'D05', name: 'Requip PD 24h (2mg)', onset: 120, duration: 23.5, type: 'Agonist (ER)', pill: '', pack: '' },
+            { id: 'D06', name: 'Suplac (Bromocriptine 2.5mg)', onset: 60, duration: 6, type: 'Agonist', pill: 'Bromocriptine.jpg', pack: 'P-Bromocriptine.jpg' },
+            { id: 'D07', name: 'Comtan 200mg', onset: 60, duration: 1.5, type: 'COMT', pill: 'Comtan.jpg', pack: 'P-Comtan.jpg' },
+            { id: 'D08', name: 'Trihexyphenidyl 2mg', onset: 60, duration: 6, type: 'Anti-cholinergic', pill: 'Trihexyphenidyl.jpg', pack: '' },
+            { id: 'D09', name: 'Rasagiline 1mg', onset: 60, duration: 23.5, type: 'MAO-B', pill: 'Rasagiline.jpg', pack: 'P-Rasagiline.jpg' }
+        ];
+        let c9Meds = [];
+        let c9MedSeq = 0;
+
+        function pdImgSrc(file) {
+            return file ? (PD_IMG + file) : '';
+        }
+
+        function pdPlaceholderSvg() {
+            return "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><rect width="80" height="80" rx="8" fill="#f3f4f6" stroke="#d1d5db"/><text x="40" y="44" text-anchor="middle" font-size="11" fill="#9ca3af" font-family="sans-serif">ไม่มีรูป</text></svg>');
+        }
+
+        function initC9Parkinson() {
+            const sel = document.getElementById('c9Drug');
+            if (!sel || sel.options.length > 0) return;
+            PD_DRUGS.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                opt.textContent = d.name + ' — ' + d.type;
+                sel.appendChild(opt);
+            });
+            renderC9Catalog();
+            document.querySelectorAll('.c9-time-input').forEach(inp => {
+                inp.addEventListener('input', function () {
+                    let v = this.value.replace(/[^0-9]/g, '');
+                    if (v.length >= 3) v = v.substring(0, 2) + ':' + v.substring(2, 4);
+                    this.value = v;
+                });
+                inp.addEventListener('blur', function () {
+                    let v = this.value.replace(/[^0-9]/g, '');
+                    if (v.length === 0) return;
+                    if (v.length === 3) v = '0' + v;
+                    if (v.length === 4) this.value = v.substring(0, 2) + ':' + v.substring(2, 4);
+                    if (typeof generateOutput === 'function') generateOutput();
+                });
+            });
+            ['c9Dose', 'c9Time'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') { e.preventDefault(); addC9Med(); }
+                });
+            });
+        }
+
+        function renderC9Catalog() {
+            const box = document.getElementById('c9DrugCatalog');
+            if (!box) return;
+            const selected = document.getElementById('c9Drug')?.value;
+            box.innerHTML = PD_DRUGS.map(d => {
+                const pill = d.pill ? pdImgSrc(d.pill) : pdPlaceholderSvg();
+                const packHtml = d.pack
+                    ? `<img src="${pdImgSrc(d.pack)}" alt="กล่องยา ${d.name}" class="c9-drug-img" onclick="event.stopPropagation(); openModal(this.src)">`
+                    : `<img src="${pdPlaceholderSvg()}" alt="ไม่มีรูปกล่องยา" class="c9-drug-img c9-drug-img-empty">`;
+                const active = selected === d.id ? 'ring-2 ring-violet-500 border-violet-400 bg-violet-50' : 'border-gray-200 bg-white hover:border-violet-300';
+                return `<button type="button" class="c9-drug-card text-left border rounded-xl p-2.5 flex gap-2 items-center ${active} transition shadow-sm" data-drug-id="${d.id}" onclick="selectC9Drug('${d.id}')">
+                    <img src="${pill}" alt="เม็ดยา ${d.name}" class="c9-drug-img" onclick="event.stopPropagation(); openModal(this.src)">
+                    ${packHtml}
+                    <div class="min-w-0">
+                        <div class="font-bold text-sm text-gray-800 leading-tight">${d.name}</div>
+                        <div class="text-[11px] text-gray-500">${d.type}</div>
+                    </div>
+                </button>`;
+            }).join('');
+        }
+
+        function selectC9Drug(id) {
+            const sel = document.getElementById('c9Drug');
+            if (sel) sel.value = id;
+            highlightC9DrugCard();
+            const dose = document.getElementById('c9Dose');
+            if (dose) dose.focus();
+        }
+
+        function highlightC9DrugCard() {
+            renderC9Catalog();
+        }
+
+        function addC9Med() {
+            const id = document.getElementById('c9Drug')?.value;
+            const dose = document.getElementById('c9Dose')?.value?.trim();
+            let time = document.getElementById('c9Time')?.value?.trim() || '';
+            if (!id) return;
+            if (!dose) { alert('กรุณาใส่ขนาดยา เช่น 1 tab'); return; }
+            if (!time) { alert('กรุณาใส่เวลากินยา เช่น 0800 หรือ 08:00'); return; }
+            time = time.replace(/[^0-9]/g, '');
+            if (time.length === 3) time = '0' + time;
+            if (time.length === 4) time = time.substring(0, 2) + ':' + time.substring(2, 4);
+            const info = PD_DRUGS.find(d => d.id === id);
+            if (!info) return;
+            c9Meds.push({ uid: 'm' + (++c9MedSeq), id: info.id, name: info.name, type: info.type, dose, time, pill: info.pill, pack: info.pack });
+            const doseEl = document.getElementById('c9Dose');
+            const timeEl = document.getElementById('c9Time');
+            if (doseEl) doseEl.value = '';
+            if (timeEl) timeEl.value = '';
+            renderC9Meds();
+            generateOutput();
+        }
+
+        function removeC9Med(uid) {
+            c9Meds = c9Meds.filter(m => m.uid !== uid);
+            renderC9Meds();
+            generateOutput();
+        }
+
+        function renderC9Meds() {
+            const box = document.getElementById('c9MedList');
+            const leddBox = document.getElementById('c9LeddBox');
+            if (!box) return;
+            if (c9Meds.length === 0) {
+                box.innerHTML = '<p class="text-xs text-gray-400 italic">ยังไม่มีรายการยาในตาราง กดเลือกยาด้านบนแล้วเพิ่มขนาดและเวลา</p>';
+                if (leddBox) { leddBox.classList.add('hidden'); leddBox.innerHTML = ''; }
+                return;
+            }
+            const grouped = {};
+            c9Meds.forEach(m => {
+                if (!grouped[m.name]) grouped[m.name] = [];
+                grouped[m.name].push(m);
+            });
+            let html = '';
+            Object.keys(grouped).forEach(name => {
+                const rows = grouped[name].slice().sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+                const first = rows[0];
+                const pill = first.pill ? `<img src="${pdImgSrc(first.pill)}" alt="เม็ดยา ${name}" class="c9-drug-img" onclick="openModal(this.src)">` : '';
+                const pack = first.pack ? `<img src="${pdImgSrc(first.pack)}" alt="กล่องยา ${name}" class="c9-drug-img" onclick="openModal(this.src)">` : '';
+                const items = rows.map(m =>
+                    `<span class="inline-flex items-center gap-1 bg-violet-100 text-violet-900 text-xs font-medium px-2 py-1 rounded-full mr-1 mb-1">${m.dose} (${m.time}) <button type="button" class="text-rose-600 hover:text-rose-800" onclick="removeC9Med('${m.uid}')" title="ลบ"><i class="fa-solid fa-xmark"></i></button></span>`
+                ).join('');
+                html += `<div class="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5 bg-gray-50">
+                    <div class="flex gap-1 shrink-0">${pill}${pack}</div>
+                    <div class="min-w-0 flex-1">
+                        <div class="font-bold text-sm text-gray-800">${name} <span class="font-normal text-xs text-gray-500">${first.type}</span></div>
+                        <div class="mt-1">${items}</div>
+                    </div>
+                </div>`;
+            });
+            box.innerHTML = html;
+            const ledd = calculateC9Ledd(c9Meds);
+            if (leddBox) {
+                if (ledd.ldopa > 0) {
+                    leddBox.classList.remove('hidden');
+                    leddBox.innerHTML = `💊 Total Levodopa Dose: <b>${ledd.ldopa} mg/day</b> <span class="font-normal text-gray-500 text-xs">(วิธีคิด: ${ledd.breakdown})</span>`;
+                } else {
+                    leddBox.classList.add('hidden');
+                    leddBox.innerHTML = '';
+                }
+            }
+        }
+
+        function calculateC9Ledd(medsList) {
+            let totalLdopa = 0;
+            let breakdowns = [];
+            let timeGroups = {};
+            medsList.forEach(m => {
+                let t = m.time || m.Time_Take || '00:00';
+                if (!timeGroups[t]) timeGroups[t] = [];
+                timeGroups[t].push(m);
+            });
+            for (let t in timeGroups) {
+                let medsAtTime = timeGroups[t];
+                let hasComtan = medsAtTime.some(m => {
+                    let n = (m.name || m.Trade_Name || '').toLowerCase();
+                    return n.includes('comtan') || n.includes('entacapone');
+                });
+                medsAtTime.forEach(m => {
+                    let name = (m.name || m.Trade_Name || '').toLowerCase();
+                    let doseStr = (m.dose || m.Dose || '').toString().toLowerCase();
+                    let multiplier = 1;
+                    let match = doseStr.match(/([0-9]*\.?[0-9]+)/);
+                    if (match) multiplier = parseFloat(match[1]);
+                    if (doseStr.includes('1/2') || doseStr.includes('ครึ่ง')) multiplier = 0.5;
+                    if (doseStr.includes('1/4')) multiplier = 0.25;
+                    let isLdopa = false;
+                    let baseDose = 0;
+                    if (name.includes('madopar') || name.includes('vopar')) {
+                        isLdopa = true;
+                        if (name.includes('hbs')) baseDose = 100 * 0.75;
+                        else if (name.includes('125') || name.includes('100/25') || name.includes(' 100')) baseDose = 100;
+                        else if (name.includes('250') || name.includes('200/50')) baseDose = 200;
+                        else baseDose = 100;
+                    } else if (name.includes('sinemet') || name.includes('levodopa')) {
+                        isLdopa = true;
+                        if (name.includes('250') || name.includes('200/50')) baseDose = 250;
+                        else if (name.includes('125') || name.includes('100/25') || name.includes('100')) baseDose = 100;
+                        else if (name.includes('cr')) baseDose = 200 * 0.75;
+                        else baseDose = 100;
+                    } else if (name.includes('stalevo')) {
+                        let stBase = 0;
+                        if (name.includes('50')) stBase = 50;
+                        else if (name.includes('100')) stBase = 100;
+                        else if (name.includes('150')) stBase = 150;
+                        else if (name.includes('200')) stBase = 200;
+                        if (stBase > 0) {
+                            let finalDose = Math.round(stBase * 1.33 * multiplier);
+                            totalLdopa += finalDose;
+                            breakdowns.push(finalDose);
+                        }
+                    }
+                    if (isLdopa && baseDose > 0) {
+                        let finalDose = baseDose * multiplier;
+                        if (hasComtan) finalDose = finalDose * 1.33;
+                        finalDose = Math.round(finalDose);
+                        totalLdopa += finalDose;
+                        breakdowns.push(finalDose);
+                    }
+                });
+            }
+            return { ldopa: Math.round(totalLdopa), breakdown: breakdowns.length > 0 ? breakdowns.join(' + ') : '0' };
+        }
+
+        function formatC9Severity(hours) {
+            const h = parseFloat(hours);
+            if (!h || h <= 0) return null;
+            const pct = ((h / 16) * 100).toFixed(1);
+            const sev = pct <= 25 ? 'เล็กน้อย' : (pct <= 50 ? 'ปานกลาง' : 'รุนแรง');
+            return { hours: h.toFixed(1), pct, sev };
+        }
+
+        function collectC9Drps() {
+            const items = [];
+            const advices = [];
+            document.querySelectorAll('#form-PARKINSON .c9-drp:checked').forEach(cb => {
+                if (cb.value) items.push(cb.value);
+                if (cb.dataset.suggest) advices.push(cb.dataset.suggest);
+            });
+            return { items, advices };
+        }
+
+        function getC9Recommendations() {
+            const recs = [];
+            const hasOff = document.getElementById('c9Mc1')?.checked || parseFloat(document.getElementById('c9OffHours')?.value || '0') > 0;
+            const hasDys = document.getElementById('c9Mc4')?.checked || parseFloat(document.getElementById('c9DysHours')?.value || '0') > 0;
+            if (hasOff && hasDys) {
+                recs.push("พิจารณา 'Fractionation': ลดขนาดยา L-dopa ต่อมื้อลง และเพิ่มความถี่มื้อยา");
+                recs.push('เพิ่มยา Dopamine Agonist (เช่น Requip PD) หรือ Amantadine เพื่อลด Dyskinesia');
+                recs.push('พิจารณาการใช้ยาในกลุ่ม COMT Inhibitor อย่างระมัดระวัง');
+            } else if (hasOff) {
+                recs.push('พิจารณาเพิ่มยา COMT Inhibitor (Comtan) หรือ MAO-B Inhibitor (Rasagiline)');
+                recs.push('ขยับมื้อยา L-dopa ให้ถี่ขึ้น (Shorten Interval)');
+                recs.push('เปลี่ยนรูปแบบยาเป็น Controlled Release (CR) ในมื้อก่อนนอน');
+            } else if (hasDys) {
+                recs.push('ลดขนาดยา L-dopa ในมื้อที่มีอาการลง');
+                recs.push('พิจารณาหยุดยา COMT Inhibitor หรือ MAO-B Inhibitor ชั่วคราว');
+                recs.push('เพิ่มยา Amantadine เพื่อคุมอาการยุกยิก');
+            }
+            const drps = collectC9Drps();
+            const hasFoodInt = drps.items.some(s => s.includes('ทานยาก่อนอาหาร'));
+            const hasNgTube = drps.items.some(s => s.includes('บริหารยาทางสายยาง'));
+            const hasPostural = drps.items.some(s => s.includes('ทรงตัวลำบาก'));
+            const hasFall = document.getElementById('c9Fall')?.checked || parseInt(document.getElementById('c9FallCount')?.value || '0', 10) > 0;
+            if (hasNgTube && c9Meds.some(m => (m.name || '').includes('HBS') || (m.name || '').includes('PD 24h'))) {
+                recs.push('[CRITICAL] ห้ามบดยา CR (HBS, PD 24h) ในผู้ป่วย NG Tube เปลี่ยนเป็น IR/Dispersible');
+            }
+            if (hasPostural || hasFall) recs.push('[Warning] เสี่ยงหกล้มสูง ควรประเมินและปรับยาเพื่อลดความเสี่ยง');
+            if (hasOff && hasFoodInt) recs.push('[Warning] OFF-time อาจเกิดจาก Food-Interaction เน้นย้ำเวลายา');
+            drps.advices.forEach(a => { if (!recs.includes(a)) recs.push(a); });
+            return recs;
+        }
+
+        function updateC9RecoBox() {
+            const box = document.getElementById('c9RecoBox');
+            if (!box) return;
+            const recs = getC9Recommendations();
+            if (recs.length === 0) {
+                box.classList.add('hidden');
+                box.innerHTML = '';
+                return;
+            }
+            box.classList.remove('hidden');
+            box.innerHTML = '<div class="font-bold text-violet-800 mb-1"><i class="fa-solid fa-lightbulb mr-1"></i>ข้อเสนอแนะเภสัชกร (จะถูกใส่ใน Note อัตโนมัติ)</div><ul class="list-disc pl-5 space-y-0.5">' +
+                recs.map(r => `<li>${r}</li>`).join('') + '</ul>';
+        }
+
+        function buildParkinsonNotes() {
+            const notes = [];
+            notes.push('pharmacist note Parkinson Clinic');
+
+            if (c9Meds.length > 0) {
+                notes.push('ตารางยา:');
+                const grouped = {};
+                c9Meds.forEach(m => {
+                    if (!grouped[m.name]) grouped[m.name] = [];
+                    grouped[m.name].push(m);
+                });
+                Object.keys(grouped).forEach(name => {
+                    const parts = grouped[name].slice().sort((a, b) => (a.time || '').localeCompare(b.time || ''))
+                        .map(m => `${m.dose} (${m.time})`);
+                    notes.push(`– ${name} ${parts.join(', ')}`);
+                });
+                const ledd = calculateC9Ledd(c9Meds);
+                if (ledd.ldopa > 0) notes.push(`Total Levodopa Dose: ${ledd.ldopa} mg/day`);
+            }
+
+            const meals = [];
+            const b = document.getElementById('c9MealBreak')?.value?.trim();
+            const l = document.getElementById('c9MealLunch')?.value?.trim();
+            const d = document.getElementById('c9MealDinner')?.value?.trim();
+            if (b) meals.push('เช้า ' + b);
+            if (l) meals.push('เที่ยง ' + l);
+            if (d) meals.push('เย็น ' + d);
+            if (meals.length > 0) notes.push('มื้ออาหาร: ' + meals.join(', '));
+
+            const motor = [];
+            const offSev = formatC9Severity(document.getElementById('c9OffHours')?.value);
+            const dysSev = formatC9Severity(document.getElementById('c9DysHours')?.value);
+            if (document.getElementById('c9Mc1')?.checked || offSev) {
+                motor.push(offSev ? `Wearing-off ${offSev.hours} ชม. (${offSev.pct}% - ${offSev.sev})` : 'Wearing-off');
+            }
+            if (document.getElementById('c9Mc2')?.checked) motor.push('Delayed ON');
+            if (document.getElementById('c9Mc3')?.checked) motor.push('Morning Akinesia');
+            if (document.getElementById('c9Mc4')?.checked || dysSev) {
+                motor.push(dysSev ? `Dyskinesia ${dysSev.hours} ชม. (${dysSev.pct}% - ${dysSev.sev})` : 'Dyskinesia');
+            }
+            if (motor.length > 0) notes.push('Motor Fluctuations: ' + motor.join(', '));
+
+            const offChars = [];
+            document.querySelectorAll('#form-PARKINSON .c9-drp:checked').forEach(cb => {
+                if ((cb.value || '').startsWith('OFF-Time:')) offChars.push((cb.value || '').replace('OFF-Time: ', ''));
+            });
+            if (offChars.length > 0) notes.push('ลักษณะ OFF-Time: ' + offChars.join(', '));
+
+            const fallOn = document.getElementById('c9Fall')?.checked;
+            const fallCount = document.getElementById('c9FallCount')?.value?.trim();
+            const fallCause = document.getElementById('c9FallCause')?.value || '';
+            if (fallOn || (fallCount && parseInt(fallCount, 10) > 0)) {
+                let fallLine = 'ประวัติหกล้ม (6 เดือนย้อนหลัง): พบ ' + (fallCount || (fallOn ? '1' : '0')) + ' ครั้ง';
+                if (fallCause) fallLine += ` (${fallCause})`;
+                notes.push(fallLine);
+            }
+
+            const nms = [];
+            document.querySelectorAll('#form-PARKINSON .c9-nms:checked').forEach(cb => { if (cb.value) nms.push(cb.value); });
+            if (nms.length > 0) notes.push('NMS: ' + nms.join(', '));
+
+            const drpClass = document.getElementById('c9DrpClass')?.value || 'ไม่พบปัญหาด้านยา (None)';
+            const drps = collectC9Drps();
+            const drpItems = drps.items.filter(s => !s.startsWith('OFF-Time:') && !s.startsWith('Wearing-off') && !s.startsWith('Delayed ON') && !s.startsWith('Morning Akinesia') && !s.startsWith('Dyskinesia'));
+            notes.push('DRPs [' + drpClass + ']:');
+            if (drpItems.length > 0) {
+                drpItems.forEach(s => notes.push('– ' + s));
+            } else {
+                notes.push('– ไม่พบปัญหา DRPs');
+            }
+
+            const recs = getC9Recommendations();
+            if (recs.length > 0) {
+                notes.push('ข้อเสนอแนะเภสัชกร:');
+                recs.forEach(r => notes.push('– ' + r));
+            }
+
+            const note = document.getElementById('c9Note')?.value?.trim();
+            if (note) notes.push('บันทึกเพิ่มเติม: ' + note);
+
+            const pharm = document.getElementById('c9PharmName')?.value?.trim();
+            if (pharm) notes.push('/' + pharm);
+
+            updateC9RecoBox();
+            return notes;
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initC9Parkinson);
+        } else {
+            initC9Parkinson();
+        }
+
+
         function generateOutput() {
             let notes = [];
             
@@ -5581,6 +6167,9 @@
                 if (drp) notes.push(`DRP/Note: ${drp}`);
                 if (pharm) notes.push(`/${pharm}`);
             }
+            else if (currentTab === 'PARKINSON') {
+                notes = notes.concat(buildParkinsonNotes());
+            }
             else if (currentTab === 'WARFARIN') {
                 const activeWf = document.querySelector('.wf-nav-link.active')?.id;
                 if (activeWf === 'wf-note-tab') {
@@ -6023,6 +6612,10 @@
         }
 
         function copyToSheet() {
+            if (currentTab === 'PARKINSON') {
+                if (typeof showToast === 'function') showToast('แท็บ Parkinson ใช้คัดลอกไปลง PMK เท่านั้น ไม่ได้เชื่อม Google Sheet');
+                return;
+            }
             const rowData = getRowDataArray();
             const tsvString = rowData.join('\t');
             navigator.clipboard.writeText(tsvString).then(() => { 
@@ -6031,6 +6624,10 @@
         }
 
         function sendToGoogleSheet() {
+            if (currentTab === 'PARKINSON') {
+                alert('แท็บ Parkinson ไม่ได้เชื่อมกับ Google Sheet ตามที่กำหนดไว้ จึงไม่มีการบันทึกอัตโนมัติ');
+                return;
+            }
             if (!SCRIPT_URL || SCRIPT_URL === 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่') { 
                 alert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); 
                 return; 
@@ -7358,6 +7955,8 @@
                pharmacistName = document.getElementById('c7PharmName') ? document.getElementById('c7PharmName').value : '';
             } else if (currentTab === 'ASTHMA') {
                 pharmacistName = document.getElementById('c8PharmName') ? document.getElementById('c8PharmName').value : '';
+            } else if (currentTab === 'PARKINSON') {
+                pharmacistName = document.getElementById('c9PharmName') ? document.getElementById('c9PharmName').value : '';
             } else if (currentTab === 'HF') {
                 pharmacistName = 'ไม่ระบุ (HF)'; // หน้า HF ไม่มีช่องกรอกชื่อเภสัชกร
             }
