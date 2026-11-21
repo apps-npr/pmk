@@ -307,6 +307,9 @@
                 <button onclick="switchTab('PARKINSON')" id="tab-PARKINSON" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100">
                     <i class="fa-solid fa-brain mr-1"></i> 9. Parkinson
                 </button>
+                <button onclick="switchTab('CAPD')" id="tab-CAPD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100">
+                    <i class="fa-solid fa-droplet mr-1"></i> 10. CAPD
+                </button>
             </div>
         </div>
 
@@ -2497,8 +2500,179 @@
                     </div>
                 </div>
             </div>
+
+            <div id="form-CAPD" class="space-y-6 clinic-form hidden">
+                <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-4">
+                    <h3 class="font-bold text-cyan-900 mb-1">10. CAPD Clinic</h3>
+                    <p class="text-sm text-cyan-800">บันทึกผลแล็บ ปัญหาด้านยา และคำแนะนำ EPO สำหรับลง PMK และแท็บ <span class="font-semibold">CAPD</span> ในชีต workload ambu 7141-2 โดยไม่เปลี่ยนโครงคอลัมน์ของชีตเดิม</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-4">
+                    <h4 class="font-semibold text-gray-800">1) ข้อมูลการมาคลินิก</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่มาคลินิก (คอลัมน์ date)</label>
+                            <input type="text" id="c10VisitDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 21/11/69" oninput="capdOnVisitChange()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Program (คอลัมน์ A, ไม่บังคับ)</label>
+                            <input type="text" id="c10Program" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="ว่างไว้ได้ ระบบจะใส่เลขให้ตอนบันทึกอัตโนมัติ" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เภสัชกรผู้บันทึก</label>
+                            <input type="text" id="c10PharmName" list="pharmList" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500">HN และชื่อ-นามสกุลใช้จากช่องด้านบนของหน้านี้ คอลัมน์ "new" และจำนวน DRP จะถูกใส่ให้อัตโนมัติ</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-4">
+                    <h4 class="font-semibold text-gray-800">2) สัญญาณชีพและผลแล็บวันนี้</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">BP (เช่น 140/80)</label>
+                            <input type="text" id="c10Bp" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="140/80" oninput="capdSyncBpFromCombined(); capdEvaluateAll(); generateOutput();">
+                            <p id="c10BpAlert" class="text-[11px] text-gray-400 mt-1">เฝ้าระวัง SBP &gt; 180</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">SBP</label>
+                            <input type="number" step="1" id="c10Sbp" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 140" oninput="capdSyncBpFromParts(); capdEvaluateAll(); generateOutput();">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">DBP</label>
+                            <input type="number" step="1" id="c10Dbp" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 80" oninput="capdSyncBpFromParts(); capdEvaluateAll(); generateOutput();">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Hb (g/dL)</label>
+                            <input type="number" step="0.1" id="c10Hb" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 10.5" oninput="capdSyncTodayHb(this.value); capdEvaluateAll(); generateOutput();">
+                            <p id="c10HbAlert" class="text-[11px] text-gray-400 mt-1">เกณฑ์ 10–12</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Hct (%)</label>
+                            <input type="number" step="0.1" id="c10Hct" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">K (mEq/L)</label>
+                            <input type="number" step="0.1" id="c10K" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="capdEvaluateAll(); generateOutput();">
+                            <p id="c10KAlert" class="text-[11px] text-gray-400 mt-1">เกณฑ์ 3.5–5.5</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">PO4 (mg/dL)</label>
+                            <input type="number" step="0.1" id="c10Po4" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="capdEvaluateAll(); generateOutput();">
+                            <p id="c10Po4Alert" class="text-[11px] text-gray-400 mt-1">เฝ้าระวัง &gt; 5.5</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Ca (mg/dL)</label>
+                            <input type="number" step="0.1" id="c10Ca" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Fe / Ferritin (ng/mL)</label>
+                            <input type="number" step="0.1" id="c10Fe" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="capdEvaluateAll(); generateOutput();">
+                            <p id="c10FeAlert" class="text-[11px] text-gray-400 mt-1">เฝ้าระวัง &gt; 1000 หรือ &lt; 100</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">TSAT (%)</label>
+                            <input type="number" step="0.1" id="c10Tsat" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="capdEvaluateAll(); generateOutput();">
+                            <p id="c10TsatAlert" class="text-[11px] text-gray-400 mt-1">เกณฑ์ต้อง ≥ 20%</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Glucose (mg/dL)</label>
+                            <input type="number" step="0.1" id="c10Glu" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">A1c (%)</label>
+                            <input type="number" step="0.1" id="c10A1c" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">iPTH</label>
+                            <input type="number" step="0.1" id="c10Ipth" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h4 class="font-semibold text-gray-800">3) ปัญหาด้านยา (DRP)</h4>
+                        <div class="flex items-center gap-4 text-sm">
+                            <label class="inline-flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="c10New" class="form-checkbox text-cyan-600 rounded" onchange="generateOutput()">
+                                <span>new (คนไข้ใหม่ / รายการใหม่)</span>
+                            </label>
+                            <span class="text-gray-600">จำนวน DRP: <span id="c10DrpCountLabel" class="font-semibold">0</span></span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2"><span class="font-bold text-gray-600 w-5">1.</span><input type="text" id="c10Drp1" class="flex-1 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="รายละเอียดปัญหาด้านยาข้อที่ 1" oninput="capdUpdateDrpCount(); generateOutput();"></div>
+                        <div class="flex items-center gap-2"><span class="font-bold text-gray-600 w-5">2.</span><input type="text" id="c10Drp2" class="flex-1 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="รายละเอียดปัญหาด้านยาข้อที่ 2" oninput="capdUpdateDrpCount(); generateOutput();"></div>
+                        <div class="flex items-center gap-2"><span class="font-bold text-gray-600 w-5">3.</span><input type="text" id="c10Drp3" class="flex-1 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="รายละเอียดปัญหาด้านยาข้อที่ 3" oninput="capdUpdateDrpCount(); generateOutput();"></div>
+                        <div class="flex items-center gap-2"><span class="font-bold text-gray-600 w-5">4.</span><input type="text" id="c10Drp4" class="flex-1 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="รายละเอียดปัญหาด้านยาข้อที่ 4 (ถ้ามี)" oninput="capdUpdateDrpCount(); generateOutput();"></div>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-600 mb-2">หมวด DRP (คอลัมน์ W–AF ของชีต ถ้ามีให้ติ๊ก จะลงเป็น 1)</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm">
+                            <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="UD" onchange="generateOutput()"> Unnecessary drug therapy (UD)</label>
+                            <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="ND" onchange="generateOutput()"> Need for additional drug therapy (ND)</label>
+                            <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="IDS" onchange="generateOutput()"> Improper drug selection (IDS)</label>
+                            <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="DTL" onchange="generateOutput()"> Dosage too low (DTL)</label>
+                            <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="ADR" onchange="generateOutput()"> ADR</label>
+                            <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="DTH" onchange="generateOutput()"> Dosage too high (DTH)</label>
+                            <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="NC" onchange="generateOutput()"> Non-Compliance (NC)</label>
+                            <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="DI" onchange="generateOutput()"> Drug interaction (DI)</label>
+                            <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="ect" onchange="generateOutput()"> ect</label>
+                            <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="ME" onchange="generateOutput()"> ME</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">4) แนวโน้ม Hb และขนาดยา EPO (12 ครั้ง)</h4>
+                            <p class="text-xs text-gray-500">ระบบใช้ข้อมูล 4 ครั้งล่าสุด (ช่องที่ 9–12) ในการคำนวณสิทธิ์และขนาดยา ค่า Hb วันนี้ผูกกับช่อง Hb ในส่วนที่ 2</p>
+                        </div>
+                        <button type="button" onclick="capdShiftMonthsLeft()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-lg text-xs font-semibold">เลื่อนข้อมูลเพื่อนัดครั้งใหม่</button>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg bg-slate-50/70 p-3">
+                        <div class="flex flex-wrap justify-between items-center text-xs text-gray-600 mb-1">
+                            <span class="font-semibold text-gray-700">กราฟแนวโน้มระดับ Hemoglobin (g/dL)</span>
+                            <div class="flex items-center gap-4">
+                                <span>Hb = 12 (เพดานสิทธิ์)</span>
+                                <span>Hb = 10 (เกณฑ์ปรับยา)</span>
+                            </div>
+                        </div>
+                        <div id="c10_hbTrendChartContainer" class="w-full overflow-x-auto"></div>
+                    </div>
+                    <div id="c10_tableScrollWrapper" class="overflow-x-auto border border-gray-200 rounded-lg">
+                        <table class="w-full text-sm border-collapse min-w-[1480px]">
+                            <thead id="c10_historyTableHead"></thead>
+                            <tbody id="c10_historyTableBody" class="divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="border-2 border-blue-200 rounded-xl p-4 bg-blue-50/40">
+                            <div class="flex justify-between items-center gap-2 mb-2">
+                                <span class="text-xs font-bold uppercase tracking-wider bg-blue-100 text-blue-800 px-2.5 py-1 rounded">สรุปเกณฑ์เบิกยา</span>
+                                <select id="c10_reimburseScope" onchange="capdEvaluateAll(); generateOutput();" class="text-xs border border-gray-300 rounded px-2 py-1">
+                                    <option value="3">คิดจาก 3 ครั้งล่าสุด (ช่อง 10–12)</option>
+                                    <option value="4" selected>คิดจาก 4 ครั้งล่าสุด (ช่อง 9–12)</option>
+                                    <option value="1">คิดเฉพาะ Hb วันนี้ (ช่อง 12)</option>
+                                </select>
+                            </div>
+                            <p id="c10_reimburseRuleBadge" class="text-sm font-semibold text-gray-600 mt-2">รอระบุค่า Hb...</p>
+                            <div id="c10_reimburseMainText" class="text-xl font-bold text-blue-900 mt-1">-</div>
+                            <p class="text-xs text-gray-500 mt-3 pt-3 border-t border-blue-100">เกณฑ์: (1) Hb &lt; 10 เบิกได้ไม่เกิน 8 เข็ม/ด. | (2) Hb 10–11.99 เบิกได้ไม่เกิน 4 เข็ม/ด. | (3) Hb ≥ 12 ตามสิทธิ์เบิกยาไม่ได้</p>
+                        </div>
+                        <div class="border-2 border-emerald-200 rounded-xl p-4 bg-emerald-50/40">
+                            <span class="text-xs font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded">ขนาด EPO แนะนำวันนี้</span>
+                            <p id="c10_epoConditionBadge" class="text-sm font-semibold text-gray-600 mt-3">รอระบุค่า Hb วันนี้ และขนาดยาเดิม...</p>
+                            <div id="c10_epoRecommendText" class="text-xl font-bold text-emerald-900 mt-1">-</div>
+                            <p class="text-xs text-gray-500 mt-3 pt-3 border-t border-emerald-100">ประเมินจากค่า Hb วันนี้ (ช่องที่ 12) เทียบกับขนาดยา EPO ปัจจุบัน</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-            
+
         <!-- Output & Actions -->
         <div id="opdOutputSection" class="bg-gray-100 p-6 border-t border-gray-200">
             <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK) <span class="text-xs text-red-500 font-normal">(แก้ไขข้อมูลเองได้หลังใส่ข้อมูลในช่องครบถ้วนแล้ว)</span></label>
@@ -3685,7 +3859,7 @@
                 el.classList.add('hidden');
                 el.classList.remove('block');
             });
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50', 'bg-green-50', 'bg-orange-50', 'bg-teal-50', 'bg-violet-50'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50', 'bg-green-50', 'bg-orange-50', 'bg-teal-50', 'bg-violet-50', 'bg-cyan-50'));
             
             const targetForm = document.getElementById('form-' + tab);
             if(targetForm) {
@@ -3701,6 +3875,7 @@
             if(tab === 'CKD') activeBtn.classList.remove('text-orange-700');
             if(tab === 'ASTHMA') activeBtn.classList.remove('text-teal-700');
             if(tab === 'PARKINSON') activeBtn.classList.remove('text-violet-700');
+            if(tab === 'CAPD') activeBtn.classList.remove('text-cyan-700');
 
             const mergeCheck = document.getElementById('mergeMrOption');
             if(mergeCheck) {
@@ -6021,6 +6196,539 @@
         }
 
 
+        const C10_TOTAL_MONTHS = 12;
+        const C10_EPO_STEPS = [
+            { value: '', label: '-- เลือก --' },
+            { value: 'Off / Hold', label: 'Off / Hold' },
+            { value: 'ทุก 1 เดือน (q 1 mo)', label: 'ทุก 1 เดือน (q 1 mo)' },
+            { value: 'ทุก 3 สัปดาห์ (q 3 wk)', label: 'ทุก 3 สัปดาห์ (q 3 wk)' },
+            { value: 'ทุก 15 วัน (q 15 d)', label: 'ทุก 15 วัน (q 15 d)' },
+            { value: 'ทุก 10 วัน (q 10 d)', label: 'ทุก 10 วัน (q 10 d)' },
+            { value: 'สัปดาห์ละ 1 เข็ม (q 1 wk)', label: 'สัปดาห์ละ 1 เข็ม (q 1 wk)' },
+            { value: 'ทุก 5 วัน (q 5 days)', label: 'ทุก 5 วัน (q 5 days)' },
+            { value: '2 เข็ม/สัปดาห์ (2 เข็ม/wk)', label: '2 เข็ม/สัปดาห์ (2 เข็ม/wk)' },
+            { value: '2-3 เข็ม/สัปดาห์ (3 เข็ม/wk)', label: '2-3 เข็ม/สัปดาห์ (3 เข็ม/wk)' }
+        ];
+        const C10_CLS_ORDER = ['UD', 'ND', 'IDS', 'DTL', 'ADR', 'DTH', 'NC', 'DI', 'ect', 'ME'];
+
+        function c10Val(id) {
+            return (document.getElementById(id)?.value || '').trim();
+        }
+
+        function capdTodayDateStr() {
+            return new Date().toLocaleDateString('th-TH', { year: '2-digit', month: '2-digit', day: '2-digit' });
+        }
+
+        function capdParseBp(raw) {
+            const m = String(raw || '').trim().match(/(\d+(?:\.\d+)?)\s*[\/\\]\s*(\d+(?:\.\d+)?)/);
+            return m ? { sbp: m[1], dbp: m[2] } : null;
+        }
+
+        function capdSyncBpFromCombined() {
+            const parsed = capdParseBp(c10Val('c10Bp'));
+            if (!parsed) return;
+            const sbp = document.getElementById('c10Sbp');
+            const dbp = document.getElementById('c10Dbp');
+            if (sbp) sbp.value = parsed.sbp;
+            if (dbp) dbp.value = parsed.dbp;
+        }
+
+        function capdSyncBpFromParts() {
+            const sbp = c10Val('c10Sbp');
+            const dbp = c10Val('c10Dbp');
+            const bp = document.getElementById('c10Bp');
+            if (bp && sbp && dbp) bp.value = sbp + '/' + dbp;
+        }
+
+        function capdResolvedBp() {
+            let sbp = c10Val('c10Sbp');
+            let dbp = c10Val('c10Dbp');
+            if ((!sbp || !dbp)) {
+                const parsed = capdParseBp(c10Val('c10Bp'));
+                if (parsed) {
+                    sbp = sbp || parsed.sbp;
+                    dbp = dbp || parsed.dbp;
+                }
+            }
+            return { sbp, dbp, combined: (sbp && dbp) ? (sbp + '/' + dbp) : c10Val('c10Bp') };
+        }
+
+        function capdSyncTodayHb(val) {
+            const m12 = document.getElementById('c10_m12_hb');
+            if (m12 && m12.value !== String(val)) m12.value = val;
+        }
+
+        function capdOnVisitChange() {
+            const label = document.getElementById('c10_m12_label');
+            if (label && !label.value.trim()) {
+                label.value = c10Val('c10VisitDate');
+            }
+            generateOutput();
+        }
+
+        function capdUpdateDrpCount() {
+            const n = [1, 2, 3, 4].filter(i => c10Val('c10Drp' + i)).length;
+            const el = document.getElementById('c10DrpCountLabel');
+            if (el) el.textContent = String(n);
+            return n;
+        }
+
+        function capdClassValue(key) {
+            const el = document.querySelector('#form-CAPD .c10-cls[data-cls="' + key + '"]');
+            return (el && el.checked) ? '1' : '';
+        }
+
+        function capdBuildHistoryTable() {
+            const thead = document.getElementById('c10_historyTableHead');
+            const tbody = document.getElementById('c10_historyTableBody');
+            if (!thead || !tbody) return;
+
+            let headRow = `<tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                <th class="p-2.5 text-left w-32 sticky left-0 bg-slate-100 z-10 border-r border-slate-200">ข้อมูล</th>`;
+            for (let i = 1; i <= C10_TOTAL_MONTHS; i++) {
+                const isCalcZone = i >= 9;
+                const isToday = i === 12;
+                if (isToday) {
+                    headRow += `<th class="p-2 text-center w-28 bg-teal-100 text-teal-950 font-bold border-l border-teal-300">ครั้งที่ ${i} (วันนี้)</th>`;
+                } else if (isCalcZone) {
+                    headRow += `<th class="p-2 text-center w-28 bg-blue-50 text-blue-900 font-semibold ${i === 9 ? 'border-l-2 border-blue-400' : ''}">ครั้งที่ ${i} <span class="block text-[10px] font-normal text-blue-600">(คิดคำนวณ)</span></th>`;
+                } else {
+                    headRow += `<th class="p-2 text-center w-28 text-slate-500 font-medium">ครั้งที่ ${i}</th>`;
+                }
+            }
+            headRow += `</tr>`;
+            thead.innerHTML = headRow;
+
+            const optionsHtml = C10_EPO_STEPS.map(s => `<option value="${s.value}">${s.label}</option>`).join('');
+            let dateRow = `<tr><td class="p-2.5 font-semibold text-slate-700 sticky left-0 bg-white z-10 border-r border-slate-200">เดือน / วันที่</td>`;
+            let epoRow = `<tr><td class="p-2.5 font-semibold text-slate-700 sticky left-0 bg-white z-10 border-r border-slate-200">ขนาด EPO เดิม</td>`;
+            let hbRow = `<tr><td class="p-2.5 font-semibold text-slate-700 sticky left-0 bg-white z-10 border-r border-slate-200">Hb (g/dL)</td>`;
+            for (let i = 1; i <= C10_TOTAL_MONTHS; i++) {
+                const isCalcZone = i >= 9;
+                const isToday = i === 12;
+                const tdBg = isToday ? 'bg-teal-50/50 border-l border-teal-200' : (isCalcZone ? `bg-blue-50/30 ${i === 9 ? 'border-l-2 border-blue-400' : ''}` : '');
+                const inputBorder = isToday ? 'border-teal-400 font-medium' : 'border-slate-300';
+                const selBorder = isToday ? 'border-2 border-teal-500 font-medium' : 'border-slate-300';
+                const hbBorder = isToday ? 'border-2 border-teal-500 font-bold text-teal-900' : 'border-slate-300';
+                dateRow += `<td class="p-1.5 ${tdBg}"><input id="c10_m${i}_label" type="text" placeholder="วว/ดด/ปป" oninput="capdEvaluateAll(); generateOutput();" class="w-full border ${inputBorder} rounded px-1.5 py-1.5 text-center text-xs"></td>`;
+                epoRow += `<td class="p-1.5 ${tdBg}"><select id="c10_m${i}_epo" onchange="capdEvaluateAll(); generateOutput();" class="w-full border ${selBorder} rounded px-1 py-1.5 text-xs">${optionsHtml}</select></td>`;
+                hbRow += `<td class="p-1.5 ${tdBg}"><input id="c10_m${i}_hb" type="number" step="0.1" placeholder="${isToday ? 'Hb วันนี้' : '-'}" oninput="capdOnMonthHbInput(${i});" class="w-full border ${hbBorder} rounded px-1.5 py-1.5 text-center text-sm"></td>`;
+            }
+            tbody.innerHTML = dateRow + `</tr>` + epoRow + `</tr>` + hbRow + `</tr>`;
+            const wrapper = document.getElementById('c10_tableScrollWrapper');
+            if (wrapper) wrapper.scrollLeft = wrapper.scrollWidth;
+        }
+
+        function capdOnMonthHbInput(i) {
+            if (i === 12) {
+                const todayHb = document.getElementById('c10Hb');
+                const m12 = document.getElementById('c10_m12_hb');
+                if (todayHb && m12 && todayHb.value !== m12.value) todayHb.value = m12.value;
+            }
+            capdEvaluateAll();
+            generateOutput();
+        }
+
+        function capdShiftMonthsLeft() {
+            for (let i = 1; i < C10_TOTAL_MONTHS; i++) {
+                const next = i + 1;
+                const curLabel = document.getElementById('c10_m' + i + '_label');
+                const nxtLabel = document.getElementById('c10_m' + next + '_label');
+                const curEpo = document.getElementById('c10_m' + i + '_epo');
+                const nxtEpo = document.getElementById('c10_m' + next + '_epo');
+                const curHb = document.getElementById('c10_m' + i + '_hb');
+                const nxtHb = document.getElementById('c10_m' + next + '_hb');
+                if (curLabel && nxtLabel) curLabel.value = nxtLabel.value;
+                if (curEpo && nxtEpo) curEpo.value = nxtEpo.value;
+                if (curHb && nxtHb) curHb.value = nxtHb.value;
+            }
+            const lastLabel = document.getElementById('c10_m12_label');
+            const lastEpo = document.getElementById('c10_m12_epo');
+            const lastHb = document.getElementById('c10_m12_hb');
+            if (lastLabel) lastLabel.value = c10Val('c10VisitDate') || capdTodayDateStr();
+            if (lastEpo) lastEpo.value = '';
+            if (lastHb) lastHb.value = '';
+            const todayHb = document.getElementById('c10Hb');
+            if (todayHb) todayHb.value = '';
+            capdEvaluateAll();
+            generateOutput();
+        }
+
+        function capdRenderHbTrendChart() {
+            const container = document.getElementById('c10_hbTrendChartContainer');
+            if (!container) return;
+            const pointsData = [];
+            for (let i = 1; i <= C10_TOTAL_MONTHS; i++) {
+                const lblEl = document.getElementById('c10_m' + i + '_label');
+                const hbEl = document.getElementById('c10_m' + i + '_hb');
+                const lbl = (lblEl?.value || '').trim() || ('ครั้งที่ ' + i);
+                const hbVal = parseFloat(hbEl?.value);
+                pointsData.push({ idx: i, lbl, hb: isNaN(hbVal) ? null : hbVal });
+            }
+            const validValues = pointsData.filter(d => d.hb !== null).map(d => d.hb);
+            if (validValues.length === 0) {
+                container.innerHTML = `<div class="h-28 flex items-center justify-center text-xs text-slate-400">กรอกค่า Hb ในตารางเพื่อแสดงกราฟแนวโน้ม 12 ครั้ง</div>`;
+                return;
+            }
+            const width = 940, height = 165, padLeft = 40, padRight = 25, padTop = 22, padBottom = 30;
+            const plotW = width - padLeft - padRight;
+            const plotH = height - padTop - padBottom;
+            const minY = Math.min(7, ...validValues) - 0.5;
+            const maxY = Math.max(14, ...validValues) + 0.5;
+            const getX = (i) => padLeft + ((i - 1) / (C10_TOTAL_MONTHS - 1)) * plotW;
+            const getY = (val) => padTop + ((maxY - val) / (maxY - minY)) * plotH;
+            const zoneX1 = getX(9) - 14;
+            const zoneX2 = getX(12) + 14;
+            let svg = `<svg viewBox="0 0 ${width} ${height}" class="w-full min-w-[760px] h-auto select-none">`;
+            svg += `<rect x="${zoneX1}" y="${padTop}" width="${zoneX2 - zoneX1}" height="${plotH}" fill="#ecfdf5" rx="4" />`;
+            svg += `<text x="${(zoneX1 + zoneX2) / 2}" y="${padTop + 11}" text-anchor="middle" font-size="9.5" fill="#047857" font-weight="bold">ช่วง 4 ครั้งล่าสุด (ใช้คำนวณ)</text>`;
+            [8, 10, 12, 14].forEach(refVal => {
+                if (refVal >= minY && refVal <= maxY) {
+                    const y = getY(refVal);
+                    const is10 = refVal === 10;
+                    const is12 = refVal === 12;
+                    const stroke = is12 ? '#f43f5e' : (is10 ? '#f59e0b' : '#e2e8f0');
+                    const dash = (is10 || is12) ? 'stroke-dasharray="4 3"' : '';
+                    svg += `<line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="${stroke}" stroke-width="1.2" ${dash} />`;
+                    svg += `<text x="${padLeft - 6}" y="${y + 3.5}" text-anchor="end" font-size="10" fill="#64748b">${refVal}</text>`;
+                }
+            });
+            const activePts = pointsData.filter(d => d.hb !== null);
+            if (activePts.length > 1) {
+                const polyPoints = activePts.map(d => `${getX(d.idx)},${getY(d.hb)}`).join(' ');
+                svg += `<polyline fill="none" stroke="#0d9488" stroke-width="2.5" points="${polyPoints}" />`;
+            }
+            pointsData.forEach(d => {
+                const x = getX(d.idx);
+                const isCalc = d.idx >= 9;
+                svg += `<text x="${x}" y="${height - 8}" text-anchor="middle" font-size="10" fill="${isCalc ? '#0f766e' : '#64748b'}" font-weight="${isCalc ? 'bold' : 'normal'}">${d.lbl}</text>`;
+                if (d.hb !== null) {
+                    const y = getY(d.hb);
+                    const ptColor = d.hb < 10 ? '#dc2626' : (d.hb >= 12 ? '#2563eb' : '#0d9488');
+                    svg += `<circle cx="${x}" cy="${y}" r="4.5" fill="${ptColor}" stroke="#ffffff" stroke-width="1.5" />`;
+                    svg += `<text x="${x}" y="${y - 8}" text-anchor="middle" font-size="11" font-weight="bold" fill="${ptColor}">${d.hb}</text>`;
+                }
+            });
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function capdSetAlert(id, text, danger) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.innerText = text;
+            el.className = danger ? 'text-[11px] text-red-600 font-semibold mt-1' : 'text-[11px] text-gray-400 mt-1';
+        }
+
+        function capdEvaluateOtherLabs() {
+            const ferritin = parseFloat(c10Val('c10Fe'));
+            const tsat = parseFloat(c10Val('c10Tsat'));
+            const po4 = parseFloat(c10Val('c10Po4'));
+            const k = parseFloat(c10Val('c10K'));
+            const hb = parseFloat(c10Val('c10Hb') || c10Val('c10_m12_hb'));
+            const bp = capdResolvedBp();
+            const sbp = parseFloat(bp.sbp);
+            const alerts = [];
+
+            if (!isNaN(ferritin)) {
+                if (ferritin > 1000) {
+                    capdSetAlert('c10FeAlert', 'สูงกว่า 1000 — เฝ้าระวังภาวะเหล็กเกิน', true);
+                    alerts.push('Ferritin > 1000 ng/mL');
+                } else if (ferritin < 100) {
+                    capdSetAlert('c10FeAlert', 'ต่ำกว่า 100 — อาจขาดธาตุเหล็ก', true);
+                    alerts.push('Ferritin < 100 ng/mL');
+                } else {
+                    capdSetAlert('c10FeAlert', 'อยู่ในช่วงเฝ้าระวังปกติ', false);
+                }
+            } else {
+                capdSetAlert('c10FeAlert', 'เฝ้าระวัง > 1000 หรือ < 100', false);
+            }
+
+            if (!isNaN(tsat)) {
+                if (tsat < 20) {
+                    capdSetAlert('c10TsatAlert', 'ต่ำกว่า 20% — ไม่ผ่านเกณฑ์', true);
+                    alerts.push('TSAT < 20%');
+                } else {
+                    capdSetAlert('c10TsatAlert', 'ผ่านเกณฑ์ ≥ 20%', false);
+                }
+            } else {
+                capdSetAlert('c10TsatAlert', 'เกณฑ์ต้อง ≥ 20%', false);
+            }
+
+            if (!isNaN(po4)) {
+                if (po4 > 5.5) {
+                    capdSetAlert('c10Po4Alert', 'สูงกว่า 5.5 — เฝ้าระวัง hyperphosphatemia', true);
+                    alerts.push('PO4 > 5.5 mg/dL');
+                } else {
+                    capdSetAlert('c10Po4Alert', 'ไม่เกินเกณฑ์ 5.5', false);
+                }
+            } else {
+                capdSetAlert('c10Po4Alert', 'เฝ้าระวัง > 5.5', false);
+            }
+
+            if (!isNaN(k)) {
+                if (k < 3.5 || k > 5.5) {
+                    capdSetAlert('c10KAlert', 'นอกเกณฑ์ 3.5–5.5', true);
+                    alerts.push('K นอกเกณฑ์ 3.5-5.5');
+                } else {
+                    capdSetAlert('c10KAlert', 'อยู่ในเกณฑ์ 3.5–5.5', false);
+                }
+            } else {
+                capdSetAlert('c10KAlert', 'เกณฑ์ 3.5–5.5', false);
+            }
+
+            if (!isNaN(hb)) {
+                if (hb < 10) {
+                    capdSetAlert('c10HbAlert', 'ต่ำกว่า 10 — พิจารณาปรับเพิ่ม EPO', true);
+                    alerts.push('Hb < 10 g/dL');
+                } else if (hb >= 12) {
+                    capdSetAlert('c10HbAlert', '≥ 12 — เพดานสิทธิ์เบิกยา', true);
+                    alerts.push('Hb ≥ 12 g/dL');
+                } else {
+                    capdSetAlert('c10HbAlert', 'อยู่ในช่วง 10–12', false);
+                }
+            } else {
+                capdSetAlert('c10HbAlert', 'เกณฑ์ 10–12', false);
+            }
+
+            if (!isNaN(sbp)) {
+                if (sbp > 180) {
+                    capdSetAlert('c10BpAlert', 'SBP > 180 mmHg — เฝ้าระวังความดันสูง', true);
+                    alerts.push('SBP > 180 mmHg');
+                } else {
+                    capdSetAlert('c10BpAlert', 'SBP ไม่เกิน 180 mmHg', false);
+                }
+            } else {
+                capdSetAlert('c10BpAlert', 'เฝ้าระวัง SBP > 180', false);
+            }
+            return alerts;
+        }
+
+        function capdGetSteppedEpo(currentVal, direction) {
+            if (!currentVal) return 'โปรดเลือกขนาดยา EPO เดิมในตาราง';
+            const order = [
+                'ทุก 1 เดือน (q 1 mo)',
+                'ทุก 3 สัปดาห์ (q 3 wk)',
+                'ทุก 15 วัน (q 15 d)',
+                'ทุก 10 วัน (q 10 d)',
+                'สัปดาห์ละ 1 เข็ม (q 1 wk)',
+                'ทุก 5 วัน (q 5 days)',
+                '2 เข็ม/สัปดาห์ (2 เข็ม/wk)',
+                '2-3 เข็ม/สัปดาห์ (3 เข็ม/wk)'
+            ];
+            const idx = order.indexOf(currentVal);
+            if (idx === -1) {
+                return direction === 'UP' ? 'พิจารณาเริ่มยา / ปรับเพิ่มจาก Off' : 'คงการ Off / Hold ยา';
+            }
+            if (direction === 'UP') {
+                const nextIdx = Math.min(idx + 1, order.length - 1);
+                return currentVal + '  ➔  ' + order[nextIdx];
+            }
+            const prevIdx = Math.max(idx - 1, 0);
+            return currentVal + '  ➔  ' + order[prevIdx];
+        }
+
+        function capdFormatEpoSentence(recEpo) {
+            const currentEpo = c10Val('c10_m12_epo') || c10Val('c10_m11_epo') || '-';
+            if (!recEpo || recEpo === '-') {
+                return 'ขนาด EPO เดิม: ' + currentEpo + '  พิจารณาปรับเป็น: -';
+            }
+            if (recEpo.includes('➔')) {
+                const parts = recEpo.split('➔');
+                return 'ขนาด EPO เดิม: ' + parts[0].trim() + '  พิจารณาปรับเป็น:  ' + parts[1].trim();
+            }
+            if (recEpo.startsWith('ให้ขนาดยาเดิม')) {
+                return 'ขนาด EPO เดิม: ' + currentEpo + '  พิจารณาปรับเป็น:  ' + currentEpo + ' (คงขนาดเดิม)';
+            }
+            return 'ขนาด EPO เดิม: ' + currentEpo + '  พิจารณาปรับเป็น:  ' + recEpo;
+        }
+
+        function capdEvaluateAll() {
+            if (!document.getElementById('c10_m12_hb')) return;
+            capdRenderHbTrendChart();
+
+            const hb9 = parseFloat(c10Val('c10_m9_hb'));
+            const hb10 = parseFloat(c10Val('c10_m10_hb'));
+            const hb11 = parseFloat(c10Val('c10_m11_hb'));
+            const hb12 = parseFloat(c10Val('c10_m12_hb') || c10Val('c10Hb'));
+            const scope = document.getElementById('c10_reimburseScope')?.value || '4';
+            let hbList = [];
+            if (scope === '3') hbList = [hb10, hb11, hb12].filter(v => !isNaN(v));
+            else if (scope === '4') hbList = [hb9, hb10, hb11, hb12].filter(v => !isNaN(v));
+            else hbList = [hb12].filter(v => !isNaN(v));
+
+            let ruleBadge = 'รอระบุค่า Hb...';
+            let reimburseText = '-';
+            let reimburseDetail = '';
+            if (hbList.length > 0) {
+                const minHb = Math.min(...hbList);
+                if (minHb < 10) {
+                    ruleBadge = 'ตกเกณฑ์ข้อที่ 1 (พบค่า Hb ต่ำสุด = ' + minHb + ' g/dL < 10)';
+                    reimburseText = 'เบิกได้ ไม่เกิน 8 เข็มต่อเดือน';
+                    reimburseDetail = '(ไม่เกิน 32,000 IU/เดือน)';
+                } else if (minHb >= 10 && minHb < 12) {
+                    ruleBadge = 'ตกเกณฑ์ข้อที่ 2 (ค่า Hb อยู่ในช่วง 10 - 11.99, ต่ำสุด = ' + minHb + ' g/dL)';
+                    reimburseText = 'เบิกได้ไม่เกิน 4 เข็มต่อเดือน';
+                    reimburseDetail = '(≤ 16,000 IU/เดือน)';
+                } else {
+                    ruleBadge = 'ตกเกณฑ์ข้อที่ 3 (ค่า Hb ≥ 12, ต่ำสุด = ' + minHb + ' g/dL)';
+                    reimburseText = 'ตามสิทธิ์เบิกยาไม่ได้';
+                    reimburseDetail = '';
+                }
+            }
+            const ruleEl = document.getElementById('c10_reimburseRuleBadge');
+            const mainEl = document.getElementById('c10_reimburseMainText');
+            if (ruleEl) ruleEl.innerText = ruleBadge;
+            if (mainEl) mainEl.innerText = reimburseText;
+
+            const currentEpo = c10Val('c10_m12_epo') || c10Val('c10_m11_epo');
+            let condBadge = 'รอระบุค่า Hb วันนี้ (ช่องที่ 12)...';
+            let recEpo = '-';
+            if (!isNaN(hb12)) {
+                if (hb12 < 10) {
+                    condBadge = 'เข้าเงื่อนไขที่ 1 : Hb วันนี้ (' + hb12 + ') < 10 → ปรับเพิ่มขนาดยา';
+                    recEpo = capdGetSteppedEpo(currentEpo, 'UP');
+                } else if (hb12 >= 10 && hb12 <= 11.5) {
+                    condBadge = 'เข้าเงื่อนไขที่ 2 : Hb วันนี้ (' + hb12 + ') อยู่ในช่วง 10 - 11.5 → ให้ขนาดยาเดิม';
+                    recEpo = currentEpo ? ('ให้ขนาดยาเดิม (' + currentEpo + ')') : 'ให้ขนาดยาเดิม (โปรดระบุขนาดยาเดิม)';
+                } else if (hb12 >= 11.6 && hb12 <= 12.9) {
+                    condBadge = 'เข้าเงื่อนไขที่ 3 : Hb วันนี้ (' + hb12 + ') อยู่ในช่วง 11.6 - 12.9 → ปรับลดขนาดยา';
+                    recEpo = capdGetSteppedEpo(currentEpo, 'DOWN');
+                } else if (hb12 >= 13) {
+                    condBadge = 'เข้าเงื่อนไขที่ 4 : Hb วันนี้ (' + hb12 + ') ≥ 13 → Hold ยา';
+                    recEpo = 'Hold ยา 2 wk - 1 mo, then F/U หาก Hb 10.6 - 12 ให้ Restart 50% dose';
+                } else {
+                    condBadge = 'เข้าเงื่อนไขที่ 3 : Hb วันนี้ (' + hb12 + ') → ปรับลดขนาดยา';
+                    recEpo = capdGetSteppedEpo(currentEpo, 'DOWN');
+                }
+            }
+            const condEl = document.getElementById('c10_epoConditionBadge');
+            const recEl = document.getElementById('c10_epoRecommendText');
+            if (condEl) condEl.innerText = condBadge;
+            if (recEl) recEl.innerText = recEpo;
+
+            const labAlerts = capdEvaluateOtherLabs();
+            capdUpdateDrpCount();
+            return { reimburseText, reimburseDetail, recEpo, labAlerts };
+        }
+
+        function buildCapdNotes() {
+            const evalResult = capdEvaluateAll() || { reimburseText: '-', reimburseDetail: '', recEpo: '-', labAlerts: [] };
+            const dateStr = c10Val('c10VisitDate') || capdTodayDateStr();
+            const hn = c10Val('hn');
+            const name = c10Val('ptName');
+            const bp = capdResolvedBp();
+            const notes = [];
+            notes.push('pharmacist note CAPD Clinic' + (hn ? ' [HN: ' + hn + (name ? ' ' + name : '') + ']' : ''));
+            notes.push('วันที่: ' + dateStr);
+
+            const labMap = [
+                ['SBP', bp.sbp, ''],
+                ['DBP', bp.dbp, ''],
+                ['Hb', c10Val('c10Hb') || c10Val('c10_m12_hb'), ' g/dL'],
+                ['Hct', c10Val('c10Hct'), '%'],
+                ['K', c10Val('c10K'), ''],
+                ['PO4', c10Val('c10Po4'), ' mg/dL'],
+                ['Ca', c10Val('c10Ca'), ''],
+                ['Ferritin', c10Val('c10Fe'), ' ng/mL'],
+                ['TSAT', c10Val('c10Tsat'), '%'],
+                ['Glucose', c10Val('c10Glu'), ' mg/dL'],
+                ['A1c', c10Val('c10A1c'), '%'],
+                ['iPTH', c10Val('c10Ipth'), '']
+            ];
+            const labParts = labMap.filter(x => x[1]).map(x => x[0] + '=' + x[1] + x[2]);
+            if (labParts.length) notes.push('ผลแล็บวันนี้: ' + labParts.join(' | '));
+
+            const drps = [1, 2, 3, 4].map(i => c10Val('c10Drp' + i)).filter(Boolean);
+            notes.push('DRP' + (drps.length ? ' (' + drps.length + '):' : ':'));
+            if (drps.length) {
+                drps.forEach((t, idx) => notes.push((idx + 1) + '. ' + t));
+            } else {
+                notes.push('- ไม่พบปัญหาด้านยาเพิ่มเติม');
+            }
+            if (document.getElementById('c10New')?.checked) notes.push('สถานะ: new');
+
+            const clsLabels = [];
+            C10_CLS_ORDER.forEach(key => {
+                if (capdClassValue(key)) clsLabels.push(key);
+            });
+            if (clsLabels.length) notes.push('หมวด DRP: ' + clsLabels.join(', '));
+
+            if (evalResult.labAlerts && evalResult.labAlerts.length) {
+                notes.push('ข้อควรระวังทางคลินิก: ' + evalResult.labAlerts.join(', '));
+            }
+
+            const hasHistory = [9, 10, 11, 12].some(i => c10Val('c10_m' + i + '_hb') || c10Val('c10_m' + i + '_epo') || c10Val('c10_m' + i + '_label'));
+            if (hasHistory || c10Val('c10Hb')) {
+                const recent4 = [9, 10, 11, 12].map((colIdx, idx) => {
+                    const lbl = c10Val('c10_m' + colIdx + '_label') || ('ครั้งที่ ' + (idx + 1));
+                    const hb = c10Val('c10_m' + colIdx + '_hb') || '-';
+                    const epo = c10Val('c10_m' + colIdx + '_epo') || '-';
+                    return lbl + ': Hb=' + hb + ' (' + epo + ')';
+                });
+                notes.push('ประวัติ Hb 4 ครั้งล่าสุด: ' + recent4.join(' | '));
+            }
+            if (evalResult.reimburseText && evalResult.reimburseText !== '-') {
+                notes.push('สิทธิ์การเบิก EPO: ' + evalResult.reimburseText + (evalResult.reimburseDetail ? ' ' + evalResult.reimburseDetail : ''));
+            }
+            if (evalResult.recEpo && evalResult.recEpo !== '-') {
+                notes.push(capdFormatEpoSentence(evalResult.recEpo));
+            }
+            const pharm = c10Val('c10PharmName');
+            if (pharm) notes.push('/' + pharm);
+            return notes;
+        }
+
+        function buildCapdRowData(dateStr) {
+            const bp = capdResolvedBp();
+            const visitDate = c10Val('c10VisitDate') || dateStr || capdTodayDateStr();
+            const drpCount = capdUpdateDrpCount();
+            const row = [
+                c10Val('c10Program'),
+                visitDate,
+                c10Val('hn'),
+                c10Val('ptName'),
+                bp.sbp,
+                bp.dbp,
+                c10Val('c10Hb') || c10Val('c10_m12_hb'),
+                c10Val('c10Hct'),
+                c10Val('c10K'),
+                c10Val('c10Po4'),
+                c10Val('c10Ca'),
+                c10Val('c10Fe'),
+                c10Val('c10Tsat'),
+                c10Val('c10Glu'),
+                c10Val('c10A1c'),
+                c10Val('c10Ipth'),
+                String(drpCount),
+                document.getElementById('c10New')?.checked ? 'new' : '',
+                c10Val('c10Drp1'),
+                c10Val('c10Drp2'),
+                c10Val('c10Drp3'),
+                c10Val('c10Drp4')
+            ];
+            C10_CLS_ORDER.forEach(key => row.push(capdClassValue(key)));
+            return row;
+        }
+
+        function initC10Capd() {
+            if (!document.getElementById('c10_historyTableBody')) return;
+            if (!document.getElementById('c10_m12_hb')) {
+                capdBuildHistoryTable();
+            }
+            const dateEl = document.getElementById('c10VisitDate');
+            if (dateEl && !dateEl.value) dateEl.value = capdTodayDateStr();
+            const m12Label = document.getElementById('c10_m12_label');
+            if (m12Label && !m12Label.value) m12Label.value = dateEl ? dateEl.value : capdTodayDateStr();
+            capdEvaluateAll();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initC10Capd);
+        } else {
+            initC10Capd();
+        }
+
         function generateOutput() {
             let notes = [];
             
@@ -6480,6 +7188,9 @@
             else if (currentTab === 'PARKINSON') {
                 notes = notes.concat(buildParkinsonNotes());
             }
+            else if (currentTab === 'CAPD') {
+                notes = notes.concat(buildCapdNotes());
+            }
             else if (currentTab === 'WARFARIN') {
                 const activeWf = document.querySelector('.wf-nav-link.active')?.id;
                 if (activeWf === 'wf-note-tab') {
@@ -6915,6 +7626,9 @@
             else if (currentTab === 'PARKINSON') {
                 rowData = buildParkinsonRowData(dateStr);
             }
+            else if (currentTab === 'CAPD') {
+                rowData = buildCapdRowData(dateStr);
+            }
             return rowData;
         }
         function copyToClipboard(elementId) {
@@ -6953,6 +7667,8 @@
                 targetClinicName = 'Asthma COPD';
             } else if (currentTab === 'PARKINSON') {
                 targetClinicName = 'Parkinson New';
+            } else if (currentTab === 'CAPD') {
+                targetClinicName = 'CAPD';
             }
 
             fetch(SCRIPT_URL, {
@@ -8264,6 +8980,8 @@
                 pharmacistName = document.getElementById('c8PharmName') ? document.getElementById('c8PharmName').value : '';
             } else if (currentTab === 'PARKINSON') {
                 pharmacistName = document.getElementById('c9PharmName') ? document.getElementById('c9PharmName').value : '';
+            } else if (currentTab === 'CAPD') {
+                pharmacistName = document.getElementById('c10PharmName') ? document.getElementById('c10PharmName').value : '';
             } else if (currentTab === 'HF') {
                 pharmacistName = 'ไม่ระบุ (HF)'; // หน้า HF ไม่มีช่องกรอกชื่อเภสัชกร
             }
