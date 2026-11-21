@@ -2277,7 +2277,7 @@
                     <h3 class="font-semibold text-base text-violet-800 mb-3 border-b pb-2">3. ภาวะแทรกซ้อนด้านการเคลื่อนไหว (Motor Complications)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700 mb-4">
                         <label class="flex items-start cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100">
-                            <input type="checkbox" id="c9Mc1" class="c9-drp mt-1 mr-2.5 h-4 w-4 text-violet-600 rounded" value="Wearing-off (ยาหมดฤทธิ์ก่อนกำหนด)" data-suggest="พบ Wearing-off: พิจารณาเพิ่มยา COMT inhibitor, MAO-B inhibitor หรือลดระยะห่างมื้อยา Levodopa (Fractionation)" onchange="generateOutput()">
+                            <input type="checkbox" id="c9Mc1" class="c9-drp mt-1 mr-2.5 h-4 w-4 text-violet-600 rounded" value="Wearing-off (ยาหมดฤทธิ์ก่อนกำหนด)" data-suggest="พบ Wearing-off: พิจารณาเพิ่มยา COMT inhibitor, MAO-B inhibitor หรือลดระยะห่างมื้อยา Levodopa (Fractionation)" onchange="syncC9SheetDropdowns(); generateOutput()">
                             <span><b>Wearing-off</b><br><span class="text-xs text-gray-500">ยาหมดฤทธิ์ก่อนกำหนด</span></span>
                         </label>
                         <label class="flex items-start cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100">
@@ -2289,18 +2289,59 @@
                             <span><b>Morning Akinesia</b><br><span class="text-xs text-gray-500">ตื่นมาแข็งเกร็ง/ช้า ก่อนกินยามื้อแรก</span></span>
                         </label>
                         <label class="flex items-start cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100">
-                            <input type="checkbox" id="c9Mc4" class="c9-drp mt-1 mr-2.5 h-4 w-4 text-violet-600 rounded" value="Dyskinesia (ภาวะยุกยิก)" data-suggest="พบ Dyskinesia: พิจารณาลดขนาดยา Levodopa ต่อมื้อ ควบคู่กับเพิ่มความถี่ หรือพิจารณาเพิ่มยา Amantadine" onchange="generateOutput()">
+                            <input type="checkbox" id="c9Mc4" class="c9-drp mt-1 mr-2.5 h-4 w-4 text-violet-600 rounded" value="Dyskinesia (ภาวะยุกยิก)" data-suggest="พบ Dyskinesia: พิจารณาลดขนาดยา Levodopa ต่อมื้อ ควบคู่กับเพิ่มความถี่ หรือพิจารณาเพิ่มยา Amantadine" onchange="syncC9SheetDropdowns(); generateOutput()">
                             <span><b>Dyskinesia</b><br><span class="text-xs text-gray-500">เคลื่อนไหวผิดปกติควบคุมไม่ได้ มักเกิดช่วงยาออกฤทธิ์เต็มที่</span></span>
                         </label>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">ระยะเวลา Wearing-off / OFF-Time (ชั่วโมง)</label>
-                            <input type="number" id="c9OffHours" min="0" step="0.5" placeholder="เช่น 3" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                            <input type="number" id="c9OffHours" min="0" step="0.5" placeholder="เช่น 3" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="syncC9SheetDropdowns(); generateOutput()">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">ระยะเวลา Dyskinesia (ชั่วโมง)</label>
-                            <input type="number" id="c9DysHours" min="0" step="0.5" placeholder="เช่น 1" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                            <input type="number" id="c9DysHours" min="0" step="0.5" placeholder="เช่น 1" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="syncC9SheetDropdowns(); generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เวลาที่เกิดอาการ OFF (ลงชีต คอลัมน์ H — ระบุได้หลายเวลา)</label>
+                            <input type="text" id="c9OffTimeText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 16.00-17.00 หรือไม่พบ" oninput="this.dataset.manual='1'; generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ช่วงเวลา OFF-time / wearing-off (ลงชีต คอลัมน์ I)</label>
+                            <select id="c9OffRatio" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" onchange="this.dataset.manual='1'; generateOutput()">
+
+                            <option value="ไม่พบ">ไม่พบ</option>
+                            <option value="ไม่เกิน 6 ชั่วโมงต่อวัน (1-25%day)">ไม่เกิน 6 ชั่วโมงต่อวัน (1-25%day)</option>
+                            <option value="มากกว่า 6 ถึง 12 ชั่วโมงต่อวัน (26-50%day)">มากกว่า 6 ถึง 12 ชั่วโมงต่อวัน (26-50%day)</option>
+                            <option value="มากกว่า 12 ถึง 18 ชั่วโมงต่อวัน (51-75%day)">มากกว่า 12 ถึง 18 ชั่วโมงต่อวัน (51-75%day)</option>
+                            <option value="มากกว่า 18 ถึง 24 ชั่วโมงต่อวัน (76-100%day)">มากกว่า 18 ถึง 24 ชั่วโมงต่อวัน (76-100%day)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เวลาที่เกิดอาการยุกยิก / dyskinesia (ลงชีต คอลัมน์ J)</label>
+                            <input type="text" id="c9DysTimeText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 15.00 หรือไม่พบ" oninput="this.dataset.manual='1'; generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ความรุนแรง dyskinesia (ลงชีต คอลัมน์ K)</label>
+                            <select id="c9DysSev" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" onchange="this.dataset.manual='1'; generateOutput()">
+
+                            <option value="ไม่พบ">ไม่พบ</option>
+                            <option value="มีผลต่อการใช้ชีวิตเล็กน้อย">มีผลต่อการใช้ชีวิตเล็กน้อย</option>
+                            <option value="มีผลต่อการใช้ชีวิตปานกลาง">มีผลต่อการใช้ชีวิตปานกลาง</option>
+                            <option value="มีผลต่อการใช้ชีวิตรุนแรง">มีผลต่อการใช้ชีวิตรุนแรง</option>
+                            <option value="มีผลต่อการใช้ชีวิตมาก จนไม่สามารถทำอะไรได้เลย">มีผลต่อการใช้ชีวิตมาก จนไม่สามารถทำอะไรได้เลย</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ระยะเวลา dyskinesia ตามสัดส่วนต่อวัน (ลงชีต คอลัมน์ L)</label>
+                            <select id="c9DysDur" class="w-full md:w-2/3 rounded-lg border-gray-300 border px-3 py-2 text-sm" onchange="this.dataset.manual='1'; generateOutput()">
+
+                            <option value="ไม่พบ">ไม่พบ</option>
+                            <option value="ไม่เกิน 6 ชั่วโมงต่อวัน (1-25%day)">ไม่เกิน 6 ชั่วโมงต่อวัน (1-25%day)</option>
+                            <option value="มากกว่า 6 ถึง 12 ชั่วโมงต่อวัน (26-50%day)">มากกว่า 6 ถึง 12 ชั่วโมงต่อวัน (26-50%day)</option>
+                            <option value="มากกว่า 12 ถึง 18 ชั่วโมงต่อวัน (51-75%day)">มากกว่า 12 ถึง 18 ชั่วโมงต่อวัน (51-75%day)</option>
+                            <option value="มากกว่า 18 ถึง 24 ชั่วโมงต่อวัน (76-100%day)">มากกว่า 18 ถึง 24 ชั่วโมงต่อวัน (76-100%day)</option>
+                            </select>
                         </div>
                     </div>
                     <p class="text-xs font-bold text-gray-700 mb-2">ลักษณะอาการ OFF-Time</p>
@@ -2402,6 +2443,57 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ผู้บันทึก (เภสัชกร)</label>
                         <input type="text" id="c9PharmName" list="pharmList" class="w-full md:w-1/2 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
+                    </div>
+                </div>
+
+                <!-- 7. ข้อมูลสำหรับลงชีต Parkinson New -->
+                <div class="bg-white border border-violet-200 rounded-xl p-5 shadow-sm space-y-4">
+                    <h3 class="font-semibold text-base text-violet-800 border-b pb-2">7. ข้อมูลสำหรับคัดลอก/บันทึกลงชีต Parkinson New</h3>
+                    <p class="text-xs text-gray-500">ชื่อ-นามสกุลดึงจากช่องด้านบนอัตโนมัติ แก้ได้ถ้าแยกไม่ถูก — คอลัมน์ I, K, L ใช้ตัวเลือกตามชีต และจะถูกเลือกให้อัตโนมัติจากจำนวนชั่วโมง</p>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่มาคลินิก</label>
+                            <input type="date" id="c9ClinicDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่ตอบแบบสอบถาม / บันทึกอาการ</label>
+                            <input type="date" id="c9SurveyDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ชื่อ (ไม่ต้องระบุคำนำหน้า)</label>
+                            <input type="text" id="c9FirstName" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="ชื่อ" oninput="this.dataset.manual='1'; generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">นามสกุล</label>
+                            <input type="text" id="c9LastName" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="นามสกุล" oninput="this.dataset.manual='1'; generateOutput()">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Compliance</label>
+                            <div class="flex gap-1 mb-1">
+                                <button type="button" onclick="document.getElementById('c9Compliance').value='100'; generateOutput();" class="text-[11px] bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200 px-2 py-0.5 rounded">100</button>
+                                <button type="button" onclick="document.getElementById('c9Compliance').value='90'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-0.5 rounded">90</button>
+                                <button type="button" onclick="document.getElementById('c9Compliance').value='80'; generateOutput();" class="text-[11px] bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-0.5 rounded">80</button>
+                            </div>
+                            <input type="text" id="c9Compliance" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 100 หรือ ลืมกินยาบ่อย" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ADR (ชื่อยา อาการ)</label>
+                            <input type="text" id="c9AdrText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="ดึงจากช่องคัดกรอง ADR อัตโนมัติ แก้ได้" oninput="generateOutput()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">DI</label>
+                            <input type="text" id="c9DiText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น DI levodopa-food" oninput="generateOutput()">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">การรักษาที่ปรับโดยแพทย์</label>
+                        <input type="text" id="c9DoctorAdj" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น แพทย์ปรับเพิ่ม Requip 1x1 เป็น 2x1" oninput="generateOutput()">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Doctor Plan</label>
+                        <input type="text" id="c9DoctorPlan" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="แผนการรักษาของแพทย์ (ถ้ามี)" oninput="generateOutput()">
                     </div>
                 </div>
             </div>
@@ -3634,11 +3726,6 @@
                 if (typeof generateOutput === 'function') generateOutput();
             }
 
-            const hideSheet = (tab === 'PARKINSON');
-            ['btnCopySheet', 'btnSendDb'].forEach(id => {
-                const b = document.getElementById(id);
-                if (b) b.classList.toggle('hidden', hideSheet);
-            });
         }
 
         function switchWfTab(wftab) {
@@ -5387,6 +5474,229 @@
                     if (e.key === 'Enter') { e.preventDefault(); addC9Med(); }
                 });
             });
+            const todayIso = new Date().toISOString().slice(0, 10);
+            const dClinic = document.getElementById('c9ClinicDate');
+            const dSurvey = document.getElementById('c9SurveyDate');
+            if (dClinic && !dClinic.value) dClinic.value = todayIso;
+            if (dSurvey && !dSurvey.value) dSurvey.value = todayIso;
+            syncC9NamesFromHeader();
+            syncC9SheetDropdowns();
+            const pt = document.getElementById('ptName');
+            if (pt && !pt.dataset.c9NameBound) {
+                pt.dataset.c9NameBound = '1';
+                pt.addEventListener('input', syncC9NamesFromHeader);
+            }
+        }
+
+        const C9_OFF_RATIO_OPTIONS = [
+            'ไม่พบ',
+            'ไม่เกิน 6 ชั่วโมงต่อวัน (1-25%day)',
+            'มากกว่า 6 ถึง 12 ชั่วโมงต่อวัน (26-50%day)',
+            'มากกว่า 12 ถึง 18 ชั่วโมงต่อวัน (51-75%day)',
+            'มากกว่า 18 ถึง 24 ชั่วโมงต่อวัน (76-100%day)'
+        ];
+        const C9_DYS_SEV_OPTIONS = [
+            'ไม่พบ',
+            'มีผลต่อการใช้ชีวิตเล็กน้อย',
+            'มีผลต่อการใช้ชีวิตปานกลาง',
+            'มีผลต่อการใช้ชีวิตรุนแรง',
+            'มีผลต่อการใช้ชีวิตมาก จนไม่สามารถทำอะไรได้เลย'
+        ];
+
+        function c9HoursToRatio(hours) {
+            const h = parseFloat(hours);
+            if (!h || h <= 0) return 'ไม่พบ';
+            if (h <= 6) return 'ไม่เกิน 6 ชั่วโมงต่อวัน (1-25%day)';
+            if (h <= 12) return 'มากกว่า 6 ถึง 12 ชั่วโมงต่อวัน (26-50%day)';
+            if (h <= 18) return 'มากกว่า 12 ถึง 18 ชั่วโมงต่อวัน (51-75%day)';
+            return 'มากกว่า 18 ถึง 24 ชั่วโมงต่อวัน (76-100%day)';
+        }
+
+        function c9HoursToDysSev(hours) {
+            const h = parseFloat(hours);
+            if (!h || h <= 0) return 'ไม่พบ';
+            if (h <= 6) return 'มีผลต่อการใช้ชีวิตเล็กน้อย';
+            if (h <= 12) return 'มีผลต่อการใช้ชีวิตปานกลาง';
+            if (h <= 18) return 'มีผลต่อการใช้ชีวิตรุนแรง';
+            return 'มีผลต่อการใช้ชีวิตมาก จนไม่สามารถทำอะไรได้เลย';
+        }
+
+        function splitC9Name(full) {
+            const s = (full || '').trim();
+            if (!s) return { first: '', last: '' };
+            const parts = s.split(/\s+/);
+            if (parts.length === 1) return { first: parts[0], last: '' };
+            return { first: parts[0], last: parts.slice(1).join(' ') };
+        }
+
+        function syncC9NamesFromHeader() {
+            const firstEl = document.getElementById('c9FirstName');
+            const lastEl = document.getElementById('c9LastName');
+            if (!firstEl || !lastEl) return;
+            if (firstEl.dataset.manual === '1' || lastEl.dataset.manual === '1') return;
+            const split = splitC9Name(document.getElementById('ptName')?.value || '');
+            firstEl.value = split.first;
+            lastEl.value = split.last;
+        }
+
+        function syncC9SheetDropdowns() {
+            const hasOff = !!(document.getElementById('c9Mc1')?.checked || parseFloat(document.getElementById('c9OffHours')?.value || '0') > 0);
+            const hasDys = !!(document.getElementById('c9Mc4')?.checked || parseFloat(document.getElementById('c9DysHours')?.value || '0') > 0);
+            const offH = document.getElementById('c9OffHours')?.value;
+            const dysH = document.getElementById('c9DysHours')?.value;
+            const ratioEl = document.getElementById('c9OffRatio');
+            const sevEl = document.getElementById('c9DysSev');
+            const durEl = document.getElementById('c9DysDur');
+            if (ratioEl && ratioEl.dataset.manual !== '1') ratioEl.value = hasOff ? c9HoursToRatio(offH) : 'ไม่พบ';
+            if (sevEl && sevEl.dataset.manual !== '1') sevEl.value = hasDys ? c9HoursToDysSev(dysH) : 'ไม่พบ';
+            if (durEl && durEl.dataset.manual !== '1') durEl.value = hasDys ? c9HoursToRatio(dysH) : 'ไม่พบ';
+            const offTime = document.getElementById('c9OffTimeText');
+            const dysTime = document.getElementById('c9DysTimeText');
+            if (offTime && offTime.dataset.manual !== '1' && !offTime.value) {
+                if (!hasOff) offTime.placeholder = 'ไม่พบ';
+            }
+            if (dysTime && dysTime.dataset.manual !== '1' && !dysTime.value) {
+                if (!hasDys) dysTime.placeholder = 'ไม่พบ';
+            }
+        }
+
+        function formatC9SheetDate(isoOrEmpty, fallbackStr) {
+            if (isoOrEmpty) {
+                const p = String(isoOrEmpty).split('-');
+                if (p.length === 3) {
+                    const d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+                    if (!isNaN(d)) return d.toLocaleDateString('th-TH', { year: '2-digit', month: '2-digit', day: '2-digit' });
+                }
+            }
+            return fallbackStr || '';
+        }
+
+        function formatC9MealTimes() {
+            const ids = ['c9MealBreak', 'c9MealLunch', 'c9MealDinner'];
+            const out = [];
+            ids.forEach(id => {
+                let t = document.getElementById(id)?.value?.trim() || '';
+                if (!t) return;
+                t = t.replace('.', ':');
+                const m = t.split(':');
+                if (m.length >= 2 && m[0] !== '') {
+                    const h = String(parseInt(m[0], 10));
+                    const min = String(m[1] || '00').replace(/\D/g, '').padStart(2, '0').slice(0, 2);
+                    out.push(h + '.' + min);
+                } else {
+                    out.push(t);
+                }
+            });
+            return out.join(', ');
+        }
+
+        function collectC9AdrForSheet() {
+            const typed = document.getElementById('c9AdrText')?.value?.trim();
+            if (typed) return typed;
+            const adrVals = [
+                'หน้ามืด/วูบเวลาเปลี่ยนท่า (Orthostatic Hypotension)',
+                'วิงเวียนศีรษะ (Dizziness)',
+                'คลื่นไส้/อาเจียน',
+                'กลืนลำบาก (Dysphagia)',
+                'ภาพหลอน/สับสน (Hallucinations)',
+                'นอนไม่หลับ (Insomnia)',
+                'ท้องผูกรุนแรง (Constipation)',
+                'ง่วงซึมมากผิดปกติช่วงกลางวัน (EDS)',
+                'น้ำลายไหล (Drooling)',
+                'ปัสสาวะสีส้ม/แดง'
+            ];
+            const found = [];
+            document.querySelectorAll('#form-PARKINSON .c9-drp:checked').forEach(cb => {
+                if (adrVals.includes(cb.value)) found.push(cb.value);
+            });
+            return found.join(', ');
+        }
+
+        function collectC9DiForSheet() {
+            const typed = document.getElementById('c9DiText')?.value?.trim();
+            if (typed) return typed;
+            const found = [];
+            document.querySelectorAll('#form-PARKINSON .c9-drp:checked').forEach(cb => {
+                const v = cb.value || '';
+                if (v.includes('ทานยาก่อนอาหาร') || v.includes('อาหารโปรตีนสูง')) found.push(v);
+            });
+            if (found.length === 0) return '';
+            return 'DI levodopa-food: ' + found.join(', ');
+        }
+
+        function collectC9DrpForSheet() {
+            const items = [];
+            document.querySelectorAll('#form-PARKINSON .c9-drp:checked').forEach(cb => {
+                const v = cb.value || '';
+                if (v.startsWith('OFF-Time:') || v.startsWith('Wearing-off') || v.startsWith('Delayed ON') || v.startsWith('Morning Akinesia') || v.startsWith('Dyskinesia')) return;
+                items.push(v);
+            });
+            const cls = document.getElementById('c9DrpClass')?.value || '';
+            const note = document.getElementById('c9Note')?.value?.trim() || '';
+            const parts = [];
+            if (cls && cls !== 'ไม่พบปัญหาด้านยา (None)') parts.push(cls);
+            if (items.length) parts.push(items.join(', '));
+            if (note) parts.push(note);
+            return parts.join(' | ');
+        }
+
+        function collectC9NmsForSheet() {
+            const nms = [];
+            document.querySelectorAll('#form-PARKINSON .c9-nms:checked').forEach(cb => { if (cb.value) nms.push(cb.value); });
+            const fallOn = document.getElementById('c9Fall')?.checked;
+            const fallCount = document.getElementById('c9FallCount')?.value?.trim();
+            const fallCause = document.getElementById('c9FallCause')?.value || '';
+            if (fallOn || (fallCount && parseInt(fallCount, 10) > 0)) {
+                let fallLine = 'หกล้ม ' + (fallCount || (fallOn ? '1' : '0')) + ' ครั้ง';
+                if (fallCause) fallLine += ' (' + fallCause + ')';
+                nms.push(fallLine);
+            }
+            return nms.join(', ');
+        }
+
+        function collectC9Compliance() {
+            const typed = document.getElementById('c9Compliance')?.value?.trim();
+            if (typed) return typed;
+            const comps = [];
+            document.querySelectorAll('#form-PARKINSON .c9-drp:checked').forEach(cb => {
+                const v = cb.value || '';
+                if (v.includes('ลืมกินยา') || v.includes('ผิดขนาด') || v.includes('ปรับเพิ่มขนาดยาเอง') || v.includes('ปรับลดขนาดยาเอง')) comps.push(v);
+            });
+            return comps.join(', ');
+        }
+
+        function buildParkinsonRowData(dateStr) {
+            syncC9NamesFromHeader();
+            const row = Array(19).fill('');
+            const clinicDate = formatC9SheetDate(document.getElementById('c9ClinicDate')?.value, dateStr);
+            const surveyDate = formatC9SheetDate(document.getElementById('c9SurveyDate')?.value, clinicDate);
+            const names = splitC9Name(document.getElementById('ptName')?.value || '');
+            const first = (document.getElementById('c9FirstName')?.value || '').trim() || names.first;
+            const last = (document.getElementById('c9LastName')?.value || '').trim() || names.last;
+            const hasOff = !!(document.getElementById('c9Mc1')?.checked || parseFloat(document.getElementById('c9OffHours')?.value || '0') > 0);
+            const hasDys = !!(document.getElementById('c9Mc4')?.checked || parseFloat(document.getElementById('c9DysHours')?.value || '0') > 0);
+            const offTime = (document.getElementById('c9OffTimeText')?.value || '').trim();
+            const dysTime = (document.getElementById('c9DysTimeText')?.value || '').trim();
+            row[0] = clinicDate;
+            row[1] = surveyDate;
+            row[2] = first;
+            row[3] = last;
+            row[4] = document.getElementById('hn')?.value?.trim() || '';
+            row[5] = surveyDate;
+            row[6] = formatC9MealTimes();
+            row[7] = offTime || (hasOff ? '' : 'ไม่พบ');
+            row[8] = document.getElementById('c9OffRatio')?.value || (hasOff ? c9HoursToRatio(document.getElementById('c9OffHours')?.value) : 'ไม่พบ');
+            row[9] = dysTime || (hasDys ? '' : 'ไม่พบ');
+            row[10] = document.getElementById('c9DysSev')?.value || (hasDys ? c9HoursToDysSev(document.getElementById('c9DysHours')?.value) : 'ไม่พบ');
+            row[11] = document.getElementById('c9DysDur')?.value || (hasDys ? c9HoursToRatio(document.getElementById('c9DysHours')?.value) : 'ไม่พบ');
+            row[12] = collectC9DrpForSheet();
+            row[13] = collectC9NmsForSheet();
+            row[14] = collectC9Compliance();
+            row[15] = collectC9AdrForSheet();
+            row[16] = collectC9DiForSheet();
+            row[17] = (document.getElementById('c9DoctorAdj')?.value || '').trim();
+            row[18] = (document.getElementById('c9DoctorPlan')?.value || '').trim();
+            return row;
         }
 
         function renderC9Catalog() {
@@ -6602,6 +6912,9 @@
                 
                 rowData[4] = extraData.join(', ');
             }
+            else if (currentTab === 'PARKINSON') {
+                rowData = buildParkinsonRowData(dateStr);
+            }
             return rowData;
         }
         function copyToClipboard(elementId) {
@@ -6612,10 +6925,6 @@
         }
 
         function copyToSheet() {
-            if (currentTab === 'PARKINSON') {
-                if (typeof showToast === 'function') showToast('แท็บ Parkinson ใช้คัดลอกไปลง PMK เท่านั้น ไม่ได้เชื่อม Google Sheet');
-                return;
-            }
             const rowData = getRowDataArray();
             const tsvString = rowData.join('\t');
             navigator.clipboard.writeText(tsvString).then(() => { 
@@ -6624,10 +6933,6 @@
         }
 
         function sendToGoogleSheet() {
-            if (currentTab === 'PARKINSON') {
-                alert('แท็บ Parkinson ไม่ได้เชื่อมกับ Google Sheet ตามที่กำหนดไว้ จึงไม่มีการบันทึกอัตโนมัติ');
-                return;
-            }
             if (!SCRIPT_URL || SCRIPT_URL === 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่') { 
                 alert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); 
                 return; 
@@ -6646,6 +6951,8 @@
                 targetClinicName = 'CKD';
             } else if (currentTab === 'ASTHMA') {
                 targetClinicName = 'Asthma COPD';
+            } else if (currentTab === 'PARKINSON') {
+                targetClinicName = 'Parkinson New';
             }
 
             fetch(SCRIPT_URL, {

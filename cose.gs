@@ -277,6 +277,8 @@ function saveOPDNoteToSheet(data) {
         targetSheetName = "NCD"; 
     } else if (clinic === "WARFARIN") {
         targetSheetName = "Warfarin";
+    } else if (clinic === "Parkinson New" || clinic === "PARKINSON") {
+        targetSheetName = "Parkinson New";
     }
 
     var sheet = ss.getSheetByName(targetSheetName);
@@ -297,7 +299,7 @@ function saveOPDNoteToSheet(data) {
       row = row.concat(rowData);
       sheet.appendRow(row);
     } else {
-      // สำหรับ CKD, Asthma COPD และ HF clinic ฝั่งเว็บไซต์ได้จัดเตรียมข้อมูลมาครบถ้วนแล้ว (รวมถึงวันที่)
+      // สำหรับ CKD, Asthma COPD, HF clinic และ Parkinson New ฝั่งเว็บไซต์ได้จัดเตรียมข้อมูลมาครบถ้วนแล้ว (รวมถึงวันที่)
       sheet.appendRow(rowData);
     }
 
