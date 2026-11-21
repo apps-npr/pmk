@@ -28,6 +28,17 @@
         .tab-btn:not(.active) { background-color: #f3f4f6; color: #4b5563; }
         .tab-btn:not(.active):hover { background-color: #e5e7eb; }
 
+        /* Clinic picker (sticky button + 2-column panel) */
+        #clinicTabScroller { -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+        .clinic-picker-item { min-height: 52px; }
+        .clinic-picker-item.is-active { background-color: #3b82f6; color: #fff; border-color: #3b82f6; }
+        .clinic-picker-item:not(.is-active) { background-color: #f9fafb; color: #1f2937; }
+        .clinic-picker-item:not(.is-active):hover { background-color: #eff6ff; border-color: #93c5fd; }
+        @media print {
+            #clinicPickerOverlay, #clinicPickerBtn { display: none !important; }
+        }
+
+
         /* Parkinson clinic drug images */
         .c9-drug-img { width: 52px; height: 52px; object-fit: contain; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 2px; cursor: zoom-in; }
         .c9-drug-img:hover { box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
@@ -286,8 +297,10 @@
         </div>
 
         <!-- Clinic Tabs -->
-        <div class="p-6 border-b border-gray-200 bg-gray-50 overflow-x-auto">
-            <div class="flex flex-wrap gap-2 min-w-max">
+        <div class="p-4 sm:p-6 border-b border-gray-200 bg-gray-50">
+            <div class="flex items-center gap-2">
+                <div id="clinicTabScroller" class="flex-1 overflow-x-auto min-w-0">
+                    <div id="clinicTabBar" class="flex flex-nowrap gap-2 min-w-max">
                 <button onclick="switchTab('MR')" id="tab-MR" class="tab-btn active px-5 py-2 rounded-full font-medium border shadow-sm">1. MR</button>
                 <button onclick="switchTab('PREOP')" id="tab-PREOP" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center">2. Pre-OP</button>
                 <button onclick="switchTab('ADR')" id="tab-ADR" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm">3. ADR/SE</button>
@@ -309,6 +322,13 @@
                 </button>
                 <button onclick="switchTab('CAPD')" id="tab-CAPD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100">
                     <i class="fa-solid fa-droplet mr-1"></i> 10. CAPD
+                </button>
+                    </div>
+                </div>
+                <button type="button" id="clinicPickerBtn" onclick="toggleClinicPicker(event)"
+                    class="shrink-0 px-3 sm:px-4 py-2 rounded-full font-medium border border-slate-700 shadow-sm bg-slate-800 hover:bg-slate-900 text-white flex items-center whitespace-nowrap text-sm"
+                    aria-haspopup="dialog" aria-controls="clinicPickerOverlay" aria-expanded="false">
+                    <span class="mr-1.5 leading-none" aria-hidden="true">☰</span> เลือกคลินิก
                 </button>
             </div>
         </div>
@@ -3217,6 +3237,17 @@
         </div>
     </div>
 
+
+    <div id="clinicPickerOverlay" class="fixed inset-0 z-[80] hidden items-center justify-center bg-slate-900/50 p-4 print:hidden" role="dialog" aria-modal="true" aria-labelledby="clinicPickerTitle" onclick="onClinicPickerOverlayClick(event)">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-100 max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+            <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between shrink-0">
+                <h3 id="clinicPickerTitle" class="text-base font-bold text-slate-800">เลือกคลินิก</h3>
+                <button type="button" id="clinicPickerCloseBtn" onclick="closeClinicPicker()" class="w-9 h-9 rounded-full hover:bg-slate-100 text-slate-500 text-xl leading-none flex items-center justify-center" aria-label="ปิด">×</button>
+            </div>
+            <div id="clinicPickerGrid" class="grid grid-cols-2 gap-3 p-4 overflow-y-auto"></div>
+        </div>
+    </div>
+
     <!-- Custom Modern Confirm / Alert Modal -->
     <div id="customConfirmModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 transition-opacity">
         <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-100 transform transition-all scale-100">
@@ -3853,6 +3884,87 @@
         // ==========================================
         //         UI & TABS LOGIC
         // ==========================================
+
+        function getClinicTabButtons() {
+            return Array.from(document.querySelectorAll('#clinicTabBar .tab-btn'));
+        }
+
+        function clinicIdFromTabButton(tabBtn) {
+            return String(tabBtn && tabBtn.id ? tabBtn.id : '').replace(/^tab-/, '');
+        }
+
+        function isClinicPickerOpen() {
+            const el = document.getElementById('clinicPickerOverlay');
+            return !!(el && !el.classList.contains('hidden'));
+        }
+
+        function buildClinicPickerGrid() {
+            const grid = document.getElementById('clinicPickerGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            getClinicTabButtons().forEach(tabBtn => {
+                const id = clinicIdFromTabButton(tabBtn);
+                if (!id) return;
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'clinic-picker-item w-full px-3 py-3 rounded-xl border shadow-sm text-left font-medium text-sm flex items-center gap-2 leading-snug transition';
+                item.dataset.clinic = id;
+                const isActive = (typeof currentTab !== 'undefined' && currentTab === id) || tabBtn.classList.contains('active');
+                if (isActive) item.classList.add('is-active');
+                item.innerHTML = tabBtn.innerHTML;
+                item.addEventListener('click', () => {
+                    closeClinicPicker();
+                    switchTab(id);
+                });
+                grid.appendChild(item);
+            });
+        }
+
+        function openClinicPicker() {
+            const overlay = document.getElementById('clinicPickerOverlay');
+            const btn = document.getElementById('clinicPickerBtn');
+            if (!overlay) return;
+            buildClinicPickerGrid();
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            if (btn) btn.setAttribute('aria-expanded', 'true');
+            const active = overlay.querySelector('.clinic-picker-item.is-active') || overlay.querySelector('.clinic-picker-item');
+            if (active) active.focus();
+        }
+
+        function closeClinicPicker() {
+            const overlay = document.getElementById('clinicPickerOverlay');
+            const btn = document.getElementById('clinicPickerBtn');
+            if (!overlay || overlay.classList.contains('hidden')) return;
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+
+        function toggleClinicPicker(event) {
+            if (event) event.stopPropagation();
+            if (isClinicPickerOpen()) closeClinicPicker();
+            else openClinicPicker();
+        }
+
+        function onClinicPickerOverlayClick(event) {
+            if (event.target === event.currentTarget) closeClinicPicker();
+        }
+
+        function scrollActiveClinicTabIntoView() {
+            const scroller = document.getElementById('clinicTabScroller');
+            const activeBtn = document.getElementById('tab-' + currentTab);
+            if (!scroller || !activeBtn) return;
+            activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && isClinicPickerOpen()) {
+                e.preventDefault();
+                closeClinicPicker();
+            }
+        });
+
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.clinic-form').forEach(el => {
@@ -3901,6 +4013,7 @@
                 if (typeof generateOutput === 'function') generateOutput();
             }
 
+            scrollActiveClinicTabIntoView();
         }
 
         function switchWfTab(wftab) {
