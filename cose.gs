@@ -279,6 +279,8 @@ function saveOPDNoteToSheet(data) {
         targetSheetName = "Warfarin";
     } else if (clinic === "Parkinson New" || clinic === "PARKINSON") {
         targetSheetName = "Parkinson New";
+    } else if (clinic === "CAPD") {
+        targetSheetName = "CAPD";
     }
 
     var sheet = ss.getSheetByName(targetSheetName);
@@ -298,6 +300,9 @@ function saveOPDNoteToSheet(data) {
       var row = [new Date()];
       row = row.concat(rowData);
       sheet.appendRow(row);
+    } else if (clinic === "CAPD") {
+      // แท็บ CAPD เป็นบล็อกรายเดือนซ้อนกัน ต้องเขียนลงแถวว่างแถวแรกของบล็อกล่าสุด ไม่ใช้ appendRow
+      writeCapdRowToLatestBlock_(sheet, rowData);
     } else {
       // สำหรับ CKD, Asthma COPD, HF clinic และ Parkinson New ฝั่งเว็บไซต์ได้จัดเตรียมข้อมูลมาครบถ้วนแล้ว (รวมถึงวันที่)
       sheet.appendRow(rowData);
@@ -311,3 +316,122 @@ function saveOPDNoteToSheet(data) {
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
+
+// หาแถวที่ควรเขียนในแท็บ CAPD ซึ่งเป็นบล็อกรายเดือนซ้อนกัน ไม่ใช้ appendRow ตรง ๆ
+// เพราะ appendRow จะไปตกหลังเลข Program ที่เว้นไว้ (หรือหลังแถวสรุป mean/sd)
+function findCapdInsertPosition_(values) {
+  function cell(r, i) {
+    if (!r || r[i] === undefined || r[i] === null || r[i] === '') return '';
+    if (Object.prototype.toString.call(r[i]) === '[object Date]') return 'DATE';
+    return String(r[i]).trim();
+  }
+  function isHeaderRow(r) {
+    var a = cell(r, 0).toLowerCase();
+    var b = cell(r, 1).toLowerCase();
+    var c = cell(r, 2).toLowerCase();
+    if (b === 'date' && c === 'hn') return true;
+    if (a === 'program' && b === 'date') return true;
+    if (a.indexOf('capd-ruby.vercel.app') !== -1 && b === 'date') return true;
+    return false;
+  }
+  function isSummaryRow(r) {
+    var a = cell(r, 0).toLowerCase();
+    return a === 'mean' || a === 'sd' || a.indexOf('เกินเกณฑ์') !== -1 ||
+      a === 'สรุป' || a === 'จำนวน' || a === 'ร้อยละ' ||
+      a.indexOf('ค่าเฉลี่ย') !== -1 || a.indexOf('mean') === 0;
+  }
+  function isEmptyDataRow(r) {
+    if (!r) return true;
+    if (Object.prototype.toString.call(r[1]) === '[object Date]') return false;
+    return !cell(r, 1) && !cell(r, 2) && !cell(r, 3);
+  }
+  function programNum(r) {
+    var n = parseInt(cell(r, 0), 10);
+    return isNaN(n) ? 0 : n;
+  }
+
+  if (!values || !values.length) return { mode: 'append', program: 1 };
+
+  var lastHeader = -1;
+  var i;
+  for (i = 0; i < values.length; i++) {
+    if (isHeaderRow(values[i])) lastHeader = i;
+  }
+  if (lastHeader === -1) return { mode: 'append', program: 1 };
+
+  var start = lastHeader + 1;
+  var end = values.length;
+  for (i = start; i < values.length; i++) {
+    if (isHeaderRow(values[i]) || isSummaryRow(values[i])) {
+      end = i;
+      break;
+    }
+  }
+
+  var lastProgram = 0;
+  var firstEmpty = -1;
+  for (i = start; i < end; i++) {
+    var n = programNum(values[i]);
+    if (n > lastProgram) lastProgram = n;
+    if (isEmptyDataRow(values[i]) && firstEmpty === -1) firstEmpty = i;
+  }
+
+  if (firstEmpty !== -1) {
+    var existing = cell(values[firstEmpty], 0);
+    var keep = !!(existing && !isNaN(parseInt(existing, 10)));
+    return {
+      mode: 'write',
+      rowIndex0: firstEmpty,
+      program: keep ? existing : String(lastProgram + 1),
+      keepProgram: keep
+    };
+  }
+
+  return {
+    mode: 'insert',
+    rowIndex0: end,
+    program: String(lastProgram + 1)
+  };
+}
+
+function writeCapdRowToLatestBlock_(sheet, rowData) {
+  var COLS = 32;
+  var out = [];
+  var c;
+  for (c = 0; c < COLS; c++) {
+    out.push((rowData && rowData[c] !== undefined && rowData[c] !== null) ? rowData[c] : '');
+  }
+
+  var lastRow = Math.max(sheet.getLastRow(), 1);
+  var lastCol = Math.max(sheet.getLastColumn(), COLS);
+  var values = sheet.getRange(1, 1, lastRow, lastCol).getValues();
+  var pos = findCapdInsertPosition_(values);
+
+  if (pos.mode === 'write') {
+    if (pos.keepProgram || !String(out[0]).trim()) {
+      out[0] = pos.program;
+    }
+    sheet.getRange(pos.rowIndex0 + 1, 1, 1, COLS).setValues([out]);
+    return pos;
+  }
+
+  if (!String(out[0]).trim()) out[0] = pos.program;
+
+  if (pos.mode === 'insert') {
+    var insertAt = pos.rowIndex0 + 1; // 1-based row number to occupy
+    if (insertAt <= sheet.getMaxRows() && insertAt <= lastRow + 1) {
+      // แทรกก่อนแถวสรุป (หรือต่อท้ายบล็อก) แล้วเขียนข้อมูลลงแถวใหม่
+      if (insertAt <= lastRow) {
+        sheet.insertRowBefore(insertAt);
+      }
+      sheet.getRange(insertAt, 1, 1, COLS).setValues([out]);
+    } else {
+      sheet.appendRow(out);
+    }
+    return pos;
+  }
+
+  sheet.appendRow(out);
+  return pos;
+}
+
