@@ -34,6 +34,10 @@
         .clinic-picker-item.is-active { background-color: #3b82f6; color: #fff; border-color: #3b82f6; }
         .clinic-picker-item:not(.is-active) { background-color: #f9fafb; color: #1f2937; }
         .clinic-picker-item:not(.is-active):hover { background-color: #eff6ff; border-color: #93c5fd; }
+
+        .clinic-icon { display: inline-block; flex-shrink: 0; overflow: visible; }
+        .tab-btn .clinic-icon { width: 1rem; height: 1rem; }
+        .clinic-picker-item .clinic-icon { width: 1.4rem; height: 1.4rem; }
         @media print {
             #clinicPickerOverlay, #clinicPickerBtn { display: none !important; }
         }
@@ -301,28 +305,16 @@
             <div class="flex items-center gap-2">
                 <div id="clinicTabScroller" class="flex-1 overflow-x-auto min-w-0">
                     <div id="clinicTabBar" class="flex flex-nowrap gap-2 min-w-max">
-                <button onclick="switchTab('MR')" id="tab-MR" class="tab-btn active px-5 py-2 rounded-full font-medium border shadow-sm">1. MR</button>
-                <button onclick="switchTab('PREOP')" id="tab-PREOP" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center">2. Pre-OP</button>
-                <button onclick="switchTab('ADR')" id="tab-ADR" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm">3. ADR/SE</button>
-                <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm">4. Clinic HIV</button>
-                <button onclick="switchTab('WARFARIN')" id="tab-WARFARIN" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-red-50 text-red-700 border-red-200 hover:bg-red-100">
-                    <i class="fa-solid fa-capsules mr-1"></i> 5. Warfarin
-                </button>
-                <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-green-50 text-green-700 border-green-200 hover:bg-green-100">
-                    <i class="fa-solid fa-heart-pulse mr-1"></i> 6. Heart Failure
-                </button>
-                <button onclick="switchTab('CKD')" id="tab-CKD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">
-                    <i class="fa-solid fa-notes-medical mr-1"></i> 7. CKD
-                </button>
-                <button onclick="switchTab('ASTHMA')" id="tab-ASTHMA" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">
-                    <i class="fa-solid fa-lungs mr-1"></i> 8. Asthma/COPD
-                </button>
-                <button onclick="switchTab('PARKINSON')" id="tab-PARKINSON" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100">
-                    <i class="fa-solid fa-brain mr-1"></i> 9. Parkinson
-                </button>
-                <button onclick="switchTab('CAPD')" id="tab-CAPD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100">
-                    <i class="fa-solid fa-droplet mr-1"></i> 10. CAPD
-                </button>
+                <button onclick="switchTab('MR')" id="tab-MR" class="tab-btn active px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">1. MR</button>
+                <button onclick="switchTab('PREOP')" id="tab-PREOP" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">2. Pre-OP</button>
+                <button onclick="switchTab('ADR')" id="tab-ADR" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">3. ADR/SE</button>
+                <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">4. Clinic HIV</button>
+                <button onclick="switchTab('WARFARIN')" id="tab-WARFARIN" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-red-50 text-red-700 border-red-200 hover:bg-red-100">5. Warfarin</button>
+                <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-green-50 text-green-700 border-green-200 hover:bg-green-100">6. Heart Failure</button>
+                <button onclick="switchTab('CKD')" id="tab-CKD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">7. CKD</button>
+                <button onclick="switchTab('ASTHMA')" id="tab-ASTHMA" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">8. Asthma/COPD</button>
+                <button onclick="switchTab('PARKINSON')" id="tab-PARKINSON" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100">9. Parkinson</button>
+                <button onclick="switchTab('CAPD')" id="tab-CAPD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100">10. CAPD</button>
                     </div>
                 </div>
                 <button type="button" id="clinicPickerBtn" onclick="toggleClinicPicker(event)"
@@ -3885,6 +3877,51 @@
         //         UI & TABS LOGIC
         // ==========================================
 
+
+        // Inline SVG clinic symbols (no icon CDN). currentColor follows the active/inactive tab text.
+        const CLINIC_ICON_INNER = {
+            MR: '<rect x="7" y="5" width="10" height="15" rx="1.8"/><path d="M9.2 5.2V4.4A1.6 1.6 0 0 1 10.8 2.8h2.4A1.6 1.6 0 0 1 14.8 4.4v.8"/><path d="M9.5 11h5M9.5 14.5h3.5"/>',
+            PREOP: '<path d="M3.8 11L12 3.4 20.2 11"/><path d="M5.8 10.8V21h12.4V10.8"/><path d="M12 11.6v4.8M9.6 14h4.8" stroke-width="2.2"/>',
+            ADR: '<path d="M12 3.8L21.4 20.2H2.6L12 3.8z"/><path d="M12 10v5.2"/><circle cx="12" cy="17.6" r="0.85" fill="currentColor" stroke="none"/>',
+            HIV: '<path fill="currentColor" stroke="none" fill-rule="evenodd" d="M12 2.6c-2.2 0-4 1.7-4 4 0 1.3.5 2.3 1.8 3.5L4.2 21.4h3.6L12 12.2l4.2 9.2h3.6l-5.6-11.3c1.3-1.2 1.8-2.2 1.8-3.5 0-2.3-1.8-4-4-4zm0 2.2c1 0 1.8.8 1.8 1.8S13 8.4 12 8.4 10.2 7.6 10.2 6.6 11 4.8 12 4.8z"/>',
+            WARFARIN: '<path fill="currentColor" stroke="none" d="M12 2.4S5.4 9.6 5.4 15a6.6 6.6 0 1 0 13.2 0C18.6 9.6 12 2.4 12 2.4z"/>',
+            HF: '<path fill="currentColor" stroke="none" d="M12 21.2S3.6 15.8 2.1 11.4C.8 7.8 3.2 4.4 7.1 4.4c1.9 0 3.3 1 4.9 2.8 1.6-1.8 3-2.8 4.9-2.8 3.9 0 6.3 3.4 5 7-1.5 4.4-9.9 9.8-9.9 9.8z"/>',
+            CKD: '<path fill="currentColor" stroke="none" d="M16 3.2c3.5 1 5.5 4.8 4.6 8.8-.9 4.2-4.2 7.4-8.2 7.6-2.2.1-3.1-1.4-2.5-2.8.5-1.3-.5-2.1-2-1.6-2.5.6-4.2-1.8-3.2-4.6C5.6 6.8 9.4 3.6 13.4 3c.9-.2 1.8-.1 2.6.2z"/><path d="M7.2 15.4c-.6 1.8-1.6 3.2-3 4.6" stroke-width="1.8"/>',
+            ASTHMA: '<path d="M12 2.6v5"/><path d="M12 7.6L9.4 9.4"/><path d="M12 7.6L14.6 9.4"/><path fill="currentColor" stroke="none" d="M9.4 9.4c-2.4.6-4.8 2.6-5.1 5.8-.3 2.8 1.6 5.4 4.2 5.1 2-.2 2.8-2.6 2.6-5.4-.2-2.2-.7-4.4-1.7-5.5z"/><path fill="currentColor" stroke="none" d="M14.6 9.4c2.4.6 4.8 2.6 5.1 5.8.3 2.8-1.6 5.4-4.2 5.1-2-.2-2.8-2.6-2.6-5.4.2-2.2.7-4.4 1.7-5.5z"/>',
+            PARKINSON: '<path d="M12 3.8c-2.1 0-3.4.7-4.4 1.8C6 4.9 4.2 6 4.2 8.8c0 1.2.4 2 1.1 2.6-.7.5-1.3 1.4-1.3 2.7 0 2 1.6 3.3 3.6 3.3.4 0 .8 0 1.1-.1.6 1.4 1.7 2.7 3.3 2.7s2.7-1.3 3.3-2.7c.3.1.7.1 1.1.1 2 0 3.6-1.3 3.6-3.3 0-1.3-.6-2.2-1.3-2.7.7-.6 1.1-1.4 1.1-2.6 0-2.8-1.8-3.9-3.4-3.2C15.4 4.5 14.1 3.8 12 3.8z"/><path d="M12 5v14.2"/><path d="M7.8 9.2c.9-.4 1.8-.3 2.6.3M16.2 9.2c-.9-.4-1.8-.3-2.6.3M7.8 13.2c.9-.3 1.8.1 2.5.6M16.2 13.2c-.9-.3-1.8.1-2.5.6"/>',
+            CAPD: '<path d="M9 3.4h6v2.2"/><rect x="6.4" y="5.6" width="11.2" height="14.2" rx="2"/><path d="M7.4 12h9.2"/>',
+            _fallback: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/>'
+        };
+
+        function getClinicIconSvg(clinicId, sizePx) {
+            const size = sizePx || 16;
+            const inner = CLINIC_ICON_INNER[clinicId] || CLINIC_ICON_INNER._fallback;
+            return '<svg class="clinic-icon" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
+        }
+
+        function escapeClinicLabel(s) {
+            return String(s).replace(/[&<>"']/g, function (c) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+            });
+        }
+
+        function getClinicTabLabel(tabBtn) {
+            if (!tabBtn) return '';
+            const clone = tabBtn.cloneNode(true);
+            clone.querySelectorAll('.clinic-icon, i, svg').forEach(el => el.remove());
+            return (clone.textContent || '').replace(/\s+/g, ' ').trim();
+        }
+
+        function applyClinicIcons() {
+            getClinicTabButtons().forEach(btn => {
+                const id = clinicIdFromTabButton(btn);
+                const label = getClinicTabLabel(btn);
+                if (!label) return;
+                btn.classList.add('flex', 'items-center');
+                btn.innerHTML = getClinicIconSvg(id, 16) + '<span class="clinic-tab-label">' + escapeClinicLabel(label) + '</span>';
+            });
+        }
+
         function getClinicTabButtons() {
             return Array.from(document.querySelectorAll('#clinicTabBar .tab-btn'));
         }
@@ -3911,7 +3948,8 @@
                 item.dataset.clinic = id;
                 const isActive = (typeof currentTab !== 'undefined' && currentTab === id) || tabBtn.classList.contains('active');
                 if (isActive) item.classList.add('is-active');
-                item.innerHTML = tabBtn.innerHTML;
+                const label = getClinicTabLabel(tabBtn);
+                item.innerHTML = getClinicIconSvg(id, 22) + '<span class="clinic-picker-label">' + escapeClinicLabel(label) + '</span>';
                 item.addEventListener('click', () => {
                     closeClinicPicker();
                     switchTab(id);
@@ -3964,6 +4002,12 @@
                 closeClinicPicker();
             }
         });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applyClinicIcons);
+        } else {
+            applyClinicIcons();
+        }
 
         function switchTab(tab) {
             currentTab = tab;
