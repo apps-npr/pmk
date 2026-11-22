@@ -38,7 +38,9 @@
         .hidden { display: none !important; }
         #pmkChrome { position: fixed; top: 0; left: 0; right: 0; z-index: 70; }
 
-        html:not(.pmk-authed) #mainAppContainer { display: none !important; }
+        /* Do not use display:none on #mainAppContainer before login: WebKit
+           then fails to show native <datalist> suggestions (pharmacist / HIV drugs).
+           The login overlay covers the app; inert blocks interaction. */
         html:not(.pmk-authed) body { overflow: hidden; }
         #pmkAppLogin {
             position: fixed; inset: 0; z-index: 60;
@@ -49,8 +51,34 @@
         }
         html:not(.pmk-authed) #pmkAppLogin { display: flex; }
         html.pmk-authed #pmkAppLogin { display: none !important; }
+        input[data-pmk-list] {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 20 20' fill='none'><path d='M5 7.5L10 12.5L15 7.5' stroke='%236b7280' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 0.65rem center;
+            background-size: 1rem;
+            padding-right: 2.1rem;
+        }
+        #pmkDatalistMenu {
+            position: fixed; z-index: 80;
+            max-height: min(280px, 50vh);
+            overflow-y: auto;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(15,23,42,0.18);
+            padding: 4px 0;
+        }
+        #pmkDatalistMenu button {
+            display: block; width: 100%; text-align: left;
+            padding: 8px 12px; font-size: 14px; line-height: 1.35;
+            color: #0f172a; background: transparent; border: 0; cursor: pointer;
+        }
+        #pmkDatalistMenu button:hover,
+        #pmkDatalistMenu button[aria-selected="true"] { background: #eff6ff; color: #1d4ed8; }
+        #pmkDatalistMenu .pmk-dl-empty { padding: 8px 12px; font-size: 13px; color: #64748b; }
         @media print {
-            #pmkAppLogin, #pmkAppLogoutBtn { display: none !important; }
+            #pmkAppLogin, #pmkAppLogoutBtn, #pmkDatalistMenu { display: none !important; }
+            html:not(.pmk-authed) #mainAppContainer { display: none !important; }
         }
         body { padding-top: 36px; }
         body:has(#pmkUpdateBar:not(.hidden)) { padding-top: 76px; }
@@ -487,8 +515,15 @@
             </div>
         </form>
     </div>
-    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden" id="mainAppContainer">
-        
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden" id="mainAppContainer" inert aria-hidden="true">
+        <script>
+            (function () {
+                if (document.documentElement.classList.contains('pmk-authed')) {
+                    var el = document.getElementById('mainAppContainer');
+                    if (el) { el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); }
+                }
+            })();
+        </script>
         <!-- Header -->
         <div class="bg-blue-600 p-6 text-white">
             <div class="flex justify-between items-center mb-4">
