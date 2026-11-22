@@ -5,23 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OPD Online - Pharmacist Note</title>
     <!-- Tailwind CSS & Fonts & FontAwesome -->
+    <link rel="stylesheet" href="pmk-tailwind.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- PWA Setup for Warfarin -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#007bff">
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="OPD Warfarin">
-    <link rel="apple-touch-icon" href="icon_512x512.jpg">
-    <link rel="icon" type="image/jpeg" sizes="512x512" href="icon_512x512.jpg">
+    <meta name="apple-mobile-web-app-title" content="PMK">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icon_32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon_192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon_512x512.png">
     
     <style>
         body { font-family: 'Prompt', sans-serif; }
+        .hidden { display: none !important; }
+        #pmkChrome { position: fixed; top: 0; left: 0; right: 0; z-index: 70; }
+        body { padding-top: 36px; }
+        body:has(#pmkUpdateBar:not(.hidden)) { padding-top: 76px; }
+        #pmkStatusBar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 6px 12px; font-size: 12px; font-weight: 600; }
+        #pmkStatusBar .pmk-dot { font-size: 8px; margin-right: 6px; vertical-align: middle; }
+        #pmkStatusBar.pmk-status-online { background: #059669; color: #fff; }
+        #pmkStatusBar.pmk-status-offline { background: #dc2626; color: #fff; }
+        #pmkStatusBar.pmk-status-amber { background: #d97706; color: #fff; }
+        #pmkStatusBar.pmk-status-checking { background: #475569; color: #fff; }
+        #pmkStatusBar button { background: rgba(255,255,255,0.18); color: inherit; border: 1px solid rgba(255,255,255,0.35); border-radius: 9999px; padding: 2px 10px; font-size: 11px; font-weight: 700; }
+        #pmkStatusBar button:hover { background: rgba(255,255,255,0.3); }
+        #pmkStatusBar button:disabled { opacity: 0.55; cursor: not-allowed; }
+        #pmkUpdateBar { display: none; background: #1d4ed8; color: #fff; padding: 8px 12px; font-size: 12px; font-weight: 600; align-items: center; justify-content: space-between; gap: 8px; }
+        #pmkUpdateBar:not(.hidden) { display: flex; }
+        #pmkUpdateBar button { background: #fff; color: #1d4ed8; border-radius: 9999px; padding: 4px 12px; font-weight: 700; }
+        @media print {
+            #pmkChrome, #pmkStatusBar, #pmkUpdateBar { display: none !important; }
+            body { padding-top: 0 !important; }
+        }
+
         html { scroll-behavior: smooth; }
         .tab-btn { transition: all 0.2s ease; }
         .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
@@ -392,13 +417,26 @@
         <option value="RPV 25mg"></option>
     </datalist>
 
+    <div id="pmkChrome" class="print:hidden">
+        <div id="pmkUpdateBar" class="hidden">
+            <span>มีเวอร์ชันใหม่ของแอป กดเพื่อโหลดของใหม่</span>
+            <button type="button" id="pmkReloadBtn">โหลดใหม่</button>
+        </div>
+        <div id="pmkStatusBar" class="pmk-status-checking">
+            <span id="pmkConnPill"><i class="fa-solid fa-circle pmk-dot"></i> กำลังตรวจการเชื่อมต่อ...</span>
+            <span id="pmkQueueInfo" class="hidden"></span>
+            <button type="button" id="pmkFlushQueueBtn" class="hidden">ส่งตอนนี้</button>
+            <button type="button" id="pmkInstallBtn" class="hidden">ติดตั้งแอป</button>
+            <span id="pmkIosHint" class="hidden font-medium opacity-95">บน iPhone/iPad: กดปุ่มแชร์ แล้วเลือก «เพิ่มไปยังหน้าโฮมสกรีน»</span>
+        </div>
+    </div>
     <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden" id="mainAppContainer">
         
         <!-- Header -->
         <div class="bg-blue-600 p-6 text-white">
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center">
-                    <img src="icon_512x512.jpg" alt="Icon" class="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
+                    <img src="icon_512x512.png" alt="Icon" class="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
                     <div>
                         <h1 class="text-2xl font-semibold">OPD Online</h1>
                         <div id="autoSaveStatus" class="text-[11px] text-blue-100 flex items-center gap-1.5 mt-0.5">
@@ -3624,7 +3662,9 @@
 
     <script src="preop-procedures.js"></script>
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEe0nsyYqYiCJhGEcFJRMyKDPodSBn-e7L7kPpl2jtlL_TGwnoFTVjdNgBOcP6lgkQ/exec';
+        window.SCRIPT_URL = SCRIPT_URL;
+        window.PMK_TRACKING_URL = 'https://script.google.com/macros/s/AKfycbx4sXVMBzKtgRKAZATFbyKQiO-g6vxd2qQ-mUTzmJ-8kL0Uq5M7_dFRRM6vRxVBKRY11Q/exec'; 
 
         let currentTab = 'MR';
         let mrSources = [ { place: '', date: '', drugs: [""] } ];
@@ -9527,23 +9567,23 @@
                 targetClinicName = 'CAPD';
             }
 
-            fetch(SCRIPT_URL, {
-                method: 'POST', 
-                mode: 'no-cors', 
-                headers: { 'Content-Type': 'text/plain', },
-                body: JSON.stringify({ action: "saveOPDNote", clinic: targetClinicName, payload: getRowDataArray() })
-            })
-            .then(() => { 
-                showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!'); 
-            })
-            .catch(error => { 
-                console.error('Error!', error); 
-                alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); 
-            })
-            .finally(() => { 
-                btn.innerHTML = originalHTML; 
-                btn.disabled = false; 
-            });
+            const savePayload = { action: "saveOPDNote", clinic: targetClinicName, payload: getRowDataArray() };
+            const finishBtn = () => { btn.innerHTML = originalHTML; btn.disabled = false; };
+            if (typeof pmkHandleSheetSave === 'function') {
+                Promise.resolve(pmkHandleSheetSave(savePayload, { label: 'บันทึก ' + targetClinicName }))
+                    .catch((error) => { console.error('Error!', error); alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
+                    .finally(finishBtn);
+            } else {
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(savePayload)
+                })
+                .then(() => { showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!'); })
+                .catch(error => { console.error('Error!', error); alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
+                .finally(finishBtn);
+            }
             sendCaseTrackingData();
         }
 
@@ -9765,6 +9805,9 @@
                     const submitBtn = document.getElementById('submitBtn');
                     const loadingSpinner = document.getElementById('loadingSpinner');
                     
+                    if (typeof pmkGuardOnlineAction === 'function' && !pmkGuardOnlineAction('ตอนนี้ยังติดต่อ Google Sheet ไม่ได้ครับ ยังออกเลข Warfarin ไม่ได้ กรุณาลองใหม่เมื่อแถบสถานะเป็นสีเขียว')) {
+                        return;
+                    }
                     if(submitBtn) submitBtn.style.display = 'none';
                     if(loadingSpinner) loadingSpinner.style.display = 'block';
                     
@@ -9944,6 +9987,9 @@
         function actionPending(id, actionType) {
             const form = document.getElementById('form-' + id);
             if(!form) return;
+            if (typeof pmkGuardOnlineAction === 'function' && !pmkGuardOnlineAction('ตอนนี้ยังติดต่อ Google Sheet ไม่ได้ครับ กรุณาอนุมัติหรือไม่อนุมัติเมื่อแถบสถานะเป็นสีเขียว')) {
+                return;
+            }
 
             const data = Object.fromEntries(new FormData(form).entries());
             data.action = actionType;
@@ -10860,10 +10906,14 @@
                 duration: durationSeconds
             };
     
-            fetch("https://script.google.com/macros/s/AKfycbx4sXVMBzKtgRKAZATFbyKQiO-g6vxd2qQ-mUTzmJ-8kL0Uq5M7_dFRRM6vRxVBKRY11Q/exec", {
-                method: "POST",
-                body: JSON.stringify(payload)
-            }).catch(err => console.error("Tracking err:", err));
+            if (typeof pmkHandleTrackingSave === 'function') {
+                pmkHandleTrackingSave(payload);
+            } else {
+                fetch(window.PMK_TRACKING_URL || "https://script.google.com/macros/s/AKfycbx4sXVMBzKtgRKAZATFbyKQiO-g6vxd2qQ-mUTzmJ-8kL0Uq5M7_dFRRM6vRxVBKRY11Q/exec", {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                }).catch(err => console.error("Tracking err:", err));
+            }
     
             // ส่งเสร็จแล้วรีเซ็ตเวลา สำหรับเคสต่อไปทันที
             resetCaseTracking();
@@ -12753,5 +12803,6 @@
         }
     }
     </script>
+    <script src="pwa-client.js"></script>
 </body>
 </html>
