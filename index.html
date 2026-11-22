@@ -110,6 +110,38 @@
             #hivKbModal .modal-body { font-size: 0.82rem; }
             .hivkb-table { font-size: 0.72rem; min-width: 480px; }
         }
+
+        /* Warfarin food–INR knowledge panel (same modal pattern as HIV knowledge) */
+        .wfkb-card { background: #fff1f2; border: 1px solid #fecaca; border-radius: 0.75rem; padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+        .wfkb-card h3 { font-size: 0.95rem; font-weight: 700; color: #9f1239; margin: 0 0 0.25rem; }
+        .wfkb-card .wfkb-lead { font-size: 0.75rem; color: #be123c; margin: 0 0 0.75rem; }
+        .wfkb-btn { display: inline-flex; align-items: center; gap: 0.35rem; background: #fff; color: #9f1239; border: 1px solid #fda4af; border-radius: 9999px; padding: 0.45rem 0.85rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .wfkb-btn:hover, .wfkb-btn:focus { background: #9f1239; color: #fff; outline: none; }
+        #wfFoodModal .modal-content-card { max-width: 920px; width: 96vw; max-height: 92vh; }
+        #wfFoodModal .modal-header { background-color: #be123c; }
+        #wfFoodModal .modal-close-btn { cursor: pointer; font-size: 2rem; font-weight: 700; line-height: 1; color: #fff; padding: 0 0.4rem; }
+        #wfFoodModal .modal-body { font-size: 0.875rem; line-height: 1.55; color: #1f2937; }
+        #wfFoodModal .hivkb-h { font-size: 0.92rem; font-weight: 700; color: #9f1239; margin: 0.9rem 0 0.35rem; border-bottom: 1px solid #fecaca; padding-bottom: 0.2rem; }
+        #wfFoodModal .hivkb-h:first-child { margin-top: 0; }
+        #wfFoodModal p { margin: 0.25rem 0 0.5rem; }
+        #wfFoodModal ul { margin: 0.2rem 0 0.6rem 1.15rem; padding: 0; }
+        #wfFoodModal li { margin: 0.15rem 0; }
+        #wfFoodModal .hivkb-table th, #wfFoodModal .hivkb-table td { border: 1px solid #fecaca; }
+        #wfFoodModal .hivkb-table th { background: #ffe4e6; color: #9f1239; }
+        #wfFoodModal .hivkb-table { min-width: 640px; }
+        #wfFoodModal details { border: 1px solid #fecaca; border-radius: 0.5rem; padding: 0.15rem 0.6rem 0.35rem; margin: 0.45rem 0; background: #fff; }
+        #wfFoodModal details + details { margin-top: 0.4rem; }
+        #wfFoodModal summary { cursor: pointer; font-weight: 700; color: #9f1239; padding: 0.45rem 0; list-style: none; }
+        #wfFoodModal summary::-webkit-details-marker { display: none; }
+        #wfFoodModal summary::before { content: "▸ "; color: #e11d48; }
+        #wfFoodModal details[open] summary::before { content: "▾ "; }
+        #wfFoodModal .wfkb-up { color: #b91c1c; }
+        #wfFoodModal .wfkb-down { color: #1d4ed8; }
+        @media (max-width: 640px) {
+            .wfkb-btn { font-size: 0.75rem; padding: 0.5rem 0.7rem; }
+            #wfFoodModal .modal-body { font-size: 0.82rem; }
+            #wfFoodModal .hivkb-table { font-size: 0.72rem; min-width: 520px; }
+        }
         #imageModal .modal-content { max-width: 90%; max-height: 90%; margin: auto; border-radius: 8px; display: block; }
         #imageModal .modal-close { position: absolute; top: 15px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; }
         .image-container img { cursor: zoom-in; }
@@ -1167,6 +1199,13 @@
 
             <!-- 5. Warfarin Form -->
             <div id="form-WARFARIN" class="space-y-4 clinic-form hidden">
+                <div class="wfkb-card" id="wfFoodKnowledgeCard">
+                    <h3>อาหาร ผัก ผลไม้ และสมุนไพร ที่มีผลต่อ INR</h3>
+                    <p class="wfkb-lead">เปิดดูรายการที่มีหลักฐานว่าทำให้อินาร์ขึ้นหรือลง พร้อมปริมาณวิตามินเคในผักที่กินบ่อยในไทย — จุดสำคัญคือกินให้สม่ำเสมอ ไม่ใช่การงดผักใบเขียว</p>
+                    <div class="hivkb-btns">
+                        <button type="button" class="wfkb-btn" onclick="openWfFoodKb()">ดูอาหารที่มีผลต่อ INR</button>
+                    </div>
+                </div>
                 <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm mb-4">
                     <h3 class="font-bold text-blue-800 mb-3 border-b pb-2"><i class="fa-solid fa-capsules"></i> เมนูจัดการคิว Warfarin</h3>
                     
@@ -3119,6 +3158,20 @@
             </div>
         </div>
     </div>
+
+    <div id="wfFoodModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="wfFoodTitle" onclick="onWfFoodOverlayClick(event)">
+        <div class="modal-content-card">
+            <div class="modal-header">
+                <h3 id="wfFoodTitle" class="font-bold text-base pr-4">อาหารที่มีผลต่อ INR</h3>
+                <span class="modal-close-btn" role="button" tabindex="0" aria-label="ปิด" onclick="closeWfFoodKb()">&times;</span>
+            </div>
+            <div class="modal-body" id="wfFoodBody"></div>
+            <div class="modal-footer flex justify-end">
+                <button type="button" onclick="closeWfFoodKb()" class="bg-rose-700 hover:bg-rose-800 text-white px-5 py-2 rounded-lg text-sm font-bold shadow">ปิด</button>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Modal: HAS-BLED Bleeding Risk Score (Pre-OP & Warfarin) -->
     <div id="hasbledModal" class="modal-overlay">
@@ -10164,10 +10217,112 @@
         function onHivKbOverlayClick(ev) {
             if (ev.target && ev.target.id === 'hivKbModal') closeHivKb();
         }
+
+        // --- Warfarin food–INR knowledge panel (no secrets; no sheet/cose.gs changes) ---
+        var WF_FOOD_KB = {
+            title: 'อาหาร ผัก ผลไม้ และสมุนไพร ที่มีผลต่อ INR',
+            source: 'Holbrook et al. Arch Intern Med. 2005;165(10):1095-1106 (ภาพรวมระบบของปฏิกิริยายาและอาหารกับ warfarin). Tan & Lee. Br J Clin Pharmacol. 2021;87(2):352-374 (ทบทวนระบบเรื่องอาหาร สมุนไพร และผลิตภัณฑ์เสริมอาหาร). Nutescu et al. Expert Opin Drug Saf. 2006;5(3):433-451. Violi et al. Medicine (Baltimore). 2016;95(10):e2895 (ทบทวนเรื่องวิตามินเคในอาหารกับยาต้านวิตามินเค). USDA FoodData Central / National Nutrient Database for Standard Reference, Legacy (2018) สำหรับค่าวิตามินเคต่อ 100 กรัม เว้นแต่ระบุเป็นอย่างอื่น. ญี่ปุ่น: 日本食品標準成分表（八訂）増補2023 สำหรับผักบุ้งและนาตโตะ. Jiang et al. Br J Clin Pharmacol. 2004;57(5):592-599 (เซนต์จอห์นเวิร์ต). Monterrey-Rodríguez. Ann Pharmacother. 2002;36(5) (มะม่วง). Theuwissen et al. J Thromb Haemost. 2013;11(6):1085-1092 (MK-7). เอกสารคำแนะนำผู้ป่วยฝ่ายเภสัชกรรม โรงพยาบาลศิริราช เรื่องอาหารที่มีผลต่อยาวาร์ฟาริน (ตรวจเนื้อหา พ.ศ. 2560) ใช้ประกอบข้อความเรื่องความสม่ำเสมอ ไม่ได้ใช้เป็นแหล่งตัวเลขวิตามินเค',
+            blocks: [
+                { type: 'note', text: 'ข้อความหลัก: ความสม่ำเสมอของการกินวิตามินเคสำคัญกว่าการงดผักใบเขียว ผู้ป่วยวาร์ฟารินกินผักได้ แต่ควรปริมาณใกล้เคียงกันในแต่ละวันหรือแต่ละสัปดาห์ หากจะเพิ่มหรือลดมาก เช่น ช่วงเทศกาล หรือเริ่มสมุนไพรหรืออาหารเสริม ควรแจ้งเภสัชกรหรือแพทย์ เพราะอาจต้องตรวจ INR ถี่ขึ้น การงดผักใบเขียวโดยไม่จำเป็นไม่ได้ช่วยให้อินาร์นิ่งขึ้น' },
+                { type: 'p', text: 'จัดกลุ่มด้านล่างตามทิศทางของ INR และน้ำหนักหลักฐาน รายการในส่วน “หลักฐานยืนยัน” ต้องมีแหล่งที่ตรวจสอบได้รองรับ ส่วนที่งานวิจัยขัดกันหรือมีแต่รายงานผู้ป่วยเดี่ยวๆ ไปไว้ในส่วน “หลักฐานยังไม่แน่นอน” ค่าวิตามินเคเป็นค่าโดยประมาณต่อส่วนที่กินได้ 100 กรัม เว้นแต่ระบุเป็นรายการต่อหน่วยบริโภค ค่าจริงแปรตามพันธุ์ ฤดูกาล และการปรุง ตารางองค์ประกอบอาหารไทยของกรมอนามัยที่ตรวจสอบในรอบนี้ไม่ได้ระบุวิตามินเคเป็นรายการหลัก จึงใช้ USDA และตารางญี่ปุ่นเป็นหลัก' },
+
+                { type: 'h', text: '↓ ผักและอาหารที่มีวิตามินเคสูง — INR ลดลงเมื่อกินเพิ่มกะทันหัน' },
+                { type: 'p', text: 'กลไกที่ยืนยันแล้ว: วิตามินเค 1 (phylloquinone) เป็นโคแฟกเตอร์ในการสร้างปัจจัยการแข็งตัวของเลือดที่ตับ วาร์ฟารินยับยั้งเอนไซม์ VKORC1 ทำให้วิตามินเคใช้การได้น้อยลง ถ้ากินวิตามินเคเพิ่มมาก INR จึงมักลดลง ถ้ากินน้อยลงกะทันหัน INR อาจสูงขึ้น' },
+                { type: 'p', text: 'ระดับหลักฐาน: Holbrook ปี 2005 จัดอาหารและอาหารเหลวที่มีวิตามินเคสูงเป็นระดับ I (highly probable) ว่าต้านฤทธิ์วาร์ฟาริน Tan ปี 2021 จัดบรอกโคลี กะหล่ำดาว ผักโขมฝรั่ง และซูชิ ในกลุ่ม highly probable ที่ทำให้ฤทธิ์ยาลดลง การศึกษาแบบควบคุมและแบบสังเกตสรุปคล้ายกันว่าผลมักปรากฏเมื่อปริมาณวิตามินเคเปลี่ยนมาก (งานบางชิ้นประมาณมากกว่าประมาณ 150 ไมโครกรัมต่อวัน) ส่วนการกินผักปริมาณปกติแต่คงที่มักไม่ทำให้อินาร์แกว่ง' },
+                { type: 'table', cols: ['อาหาร (ชื่อที่ใช้บ่อยในไทย)', 'วิตามินเคโดยประมาณ', 'แหล่งค่า', 'คำแนะนำสั้น'], rows: [
+                    ['ผักโขม (ใบอะมารันต์, Amaranthus)', 'สดประมาณ 1,140 ไมโครกรัมต่อ 100 กรัม', 'USDA SR Legacy (Amaranth leaves, raw)', 'สูงมาก ปริมาณต้องคงที่'],
+                    ['ผักโขมฝรั่ง / ปวยเล้ง (spinach)', 'สุกประมาณ 494 ไมโครกรัมต่อ 100 กรัม (ประมาณ 1 ถ้วยสุก 180 กรัม ได้ประมาณ 889 ไมโครกรัม)', 'USDA SR Legacy (spinach, cooked, boiled)', 'สูงมาก กินได้ถ้าปริมาณสม่ำเสมอ'],
+                    ['Kale / กะหล่ำใบ / คะน้าใบหยิก', 'สุกประมาณ 419 ไมโครกรัมต่อ 100 กรัม (ฐานข้อมูล USDA รุ่นเก่าเคยรายงานสูงกว่านี้)', 'USDA SR Legacy 2018 (kale, cooked, boiled)', 'อย่าสับสนกับคะน้าไทย ซึ่งมีวิตามินเคต่ำกว่ามาก'],
+                    ['คะน้าไทย (Chinese broccoli, kai-lan)', 'สดประมาณ 89 ไมโครกรัมต่อ 100 กรัม, สุกประมาณ 85 ไมโครกรัมต่อ 100 กรัม', 'USDA SR Legacy (Broccoli, chinese)', 'มีวิตามินเคระดับปานกลาง คงปริมาณให้สม่ำเสมอ'],
+                    ['ผักบุ้ง (water spinach, Ipomoea aquatica)', 'สดประมาณ 250 ไมโครกรัมต่อ 100 กรัม', 'ตารางองค์ประกอบอาหารญี่ปุ่น 八訂 増補 2023 (ようさい 茎葉 生) — USDA ไม่รายงานค่าวิตามินเคของผักบุ้ง', 'ค่อนข้างสูง ปริมาณต้องคงที่'],
+                    ['บรอกโคลี', 'สุกประมาณ 141 ไมโครกรัมต่อ 100 กรัม (ครึ่งถ้วยประมาณ 80 กรัม ได้ประมาณ 110 ไมโครกรัม)', 'USDA SR Legacy (broccoli, cooked, boiled)', 'Tan ปี 2021 จัดเป็น highly probable เมื่อปริมาณเปลี่ยนมาก'],
+                    ['กะหล่ำดาว (Brussels sprouts)', 'สุกประมาณ 140 ไมโครกรัมต่อ 100 กรัม', 'USDA SR Legacy (Brussels sprouts, cooked, boiled)', 'เช่นเดียวกับบรอกโคลี'],
+                    ['กะหล่ำปลี', 'สดประมาณ 76 ไมโครกรัมต่อ 100 กรัม, สุกประมาณ 109 ไมโครกรัมต่อ 100 กรัม', 'USDA SR Legacy (cabbage, raw / cooked)', 'ปานกลางถึงสูง'],
+                    ['ผักกาดขาว / ผักกาดฮ่องเต้ (ใกล้เคียง pak-choi)', 'ต้มประมาณ 58 ไมโครกรัมต่อ 1 ถ้วยหั่น', 'USDA SR Legacy (cabbage, chinese / pak-choi, cooked)', 'ปานกลาง'],
+                    ['ผักสลัดใบเขียว (green leaf lettuce)', 'สดประมาณ 126 ไมโครกรัมต่อ 100 กรัม (ไอซ์เบิร์กต่ำกว่ามาก ประมาณ 24 ไมโครกรัมต่อ 100 กรัม)', 'USDA SR Legacy', 'ชนิดใบมีวิตามินเคสูงกว่าไอซ์เบิร์ก'],
+                    ['ต้นหอม (รวมใบ)', 'สดประมาณ 207 ไมโครกรัมต่อ 100 กรัม', 'USDA SR Legacy (spring onions / scallions)', 'ใช้เป็นเครื่องเคียงปริมาณมากก็สะสมได้'],
+                    ['ผักชี (cilantro)', 'สดประมาณ 310 ไมโครกรัมต่อ 100 กรัม', 'USDA SR Legacy (coriander leaves, raw)', 'เครื่องปรุงปริมาณมากก็มีผลได้'],
+                    ['ผักชีฝรั่ง (parsley)', 'สดประมาณ 1,640 ไมโครกรัมต่อ 100 กรัม', 'USDA SR Legacy (parsley, fresh)', 'สูงมากแม้ใช้เป็นเครื่องตกแต่งปริมาณมาก'],
+                    ['น้ำมันถั่วเหลือง', 'ประมาณ 184 ไมโครกรัมต่อ 100 กรัม หรือประมาณ 25 ไมโครกรัมต่อ 1 ช้อนโต๊ะ', 'USDA SR Legacy (soybean oil)', 'น้ำมันพืชบางชนิดมีวิตามินเค ชนิดและปริมาณควรค่อนข้างคงที่'],
+                    ['ตับสัตว์', 'มีวิตามินเค (รวมวิตามินเค 2 ได้) ค่าแปรตามชนิดสัตว์', 'จัดเป็นแหล่งวิตามินเคในเอกสารคำแนะนำหลายฉบับ รวมเอกสารผู้ป่วยของศิริราช', 'ไม่ต้องงด แต่ปริมาณให้สม่ำเสมอ']
+                ]},
+                { type: 'p', text: 'ผักใบเขียวที่ใช้บ่อยในไทยแต่ยังไม่พบค่าวิตามินเคที่ตรวจสอบได้ใน USDA หรือตารางโภชนาการไทยในรอบนี้ ได้แก่ ตำลึง ชะอม สะเดา ใบยอ ชะพลู กระถิน กะเฉด ใบแมงลัก โหระพา และกะเพรา เอกสารคำแนะนำผู้ป่วยของศิริราชจัดผักพื้นบ้านหลายชนิดไว้ในกลุ่มที่มีผลต่อวาร์ฟารินผ่านวิตามินเค จึงควรแนะนำแบบเดียวกับผักใบเขียวอื่นๆ คือกินได้ แต่ปริมาณให้สม่ำเสมอ อย่าใส่ตัวเลขที่ยังไม่ยืนยันลงในคำแนะนำ' },
+
+                { type: 'h', text: '↓ รายการอื่นที่หลักฐานรองรับว่าทำให้ INR ลดลง' },
+                { type: 'table', cols: ['รายการ', 'กลไก', 'ระดับหลักฐาน', 'คำแนะนำ'], rows: [
+                    ['นาตโตะ (natto) และอาหารเสริมวิตามินเค 2 ชนิด MK-7', 'วิตามินเค 2 (menaquinone-7) ต้านฤทธิ์วาร์ฟารินได้แรงและอยู่ได้นาน ตารางญี่ปุ่นระบุวิตามินเคในนาตโตะเส้นประมาณ 600 ไมโครกรัมต่อ 100 กรัม', 'การทดลองในอาสาสมัคร (Theuwissen et al. 2013) พบว่า MK-7 ขนาดต่ำประมาณ 10–45 ไมโครกรัมต่อวันมีผลต่อความนิ่งของยาต้านวิตามินเค มีรายงานผู้ป่วยเรื่องนาตโตะ', 'ควรหลีกเลี่ยงนาตโตะและอาหารเสริมวิตามินเคทุกชนิด รวมอาหารหมักถั่วเหลืองลักษณะใกล้เคียง หากกินไปแล้วต้องติดตาม INR'],
+                    ['อะโวคาโดปริมาณมาก', 'เนื้ออะโวคาโดมีวิตามินเคเพียงประมาณ 21 ไมโครกรัมต่อ 100 กรัม (USDA) จึงอธิบายด้วยวิตามินเคได้ไม่หมด กลไกยังไม่สรุปทั้งหมด', 'Holbrook ปี 2005 ระดับ I (highly probable) สำหรับปริมาณมาก มีชุดกรณีศึกษา', 'ไม่ต้องงดทั้งก้อน ถ้ากินเป็นประจำหรือปริมาณมากให้คงที่'],
+                    ['นมถั่วเหลือง (soy milk)', 'ไม่ใช่จากวิตามินเคเป็นหลัก (นมถั่วเหลืองมีวิตามินเคต่ำ ประมาณ 3 ไมโครกรัมต่อ 100 กรัม หรือประมาณ 7 ไมโครกรัมต่อ 1 ถ้วย) มีรายงาน INR ต่ำหลังเริ่มกิน และมีข้อมูลในหลอดทดลองเรื่องผลต่อ CYP', 'Holbrook ปี 2005 ระดับ II (probable) Tan ปี 2021 จัดเป็น possible มีรายงานผู้ป่วย', 'กินได้ถ้าปริมาณสม่ำเสมอ หากเพิ่งเริ่มหรือหยุดควรติดตาม INR'],
+                    ['เซนต์จอห์นเวิร์ต / St John\'s wort (Hypericum perforatum)', 'ชักนำ CYP3A4 และอาจรวม CYP2C9 กับพี-ไกลโคโปรตีน ทำให้วาร์ฟารินถูกกำจัดเร็วขึ้น', 'การทดลองไขว้ในอาสาสมัคร (Jiang et al. 2004) พบพื้นที่ใต้กราฟของวาร์ฟารินลดลงประมาณ 25% Tan ปี 2021 จัดเป็น possible inhibition แต่มีทั้งกลไกและการทดลองรองรับ', 'ควรหลีกเลี่ยง หากใช้แล้วจะหยุด ต้องติดตาม INR เพราะผลชักนำเอนไซม์อาจอยู่หลายวัน'],
+                    ['อาหารเหลวหรือเอนเทอรัลที่มีวิตามินเค และวิตามินรวมที่มีวิตามินเค', 'เพิ่มวิตามินเคจากสูตรอาหารหรือผลิตภัณฑ์เสริมอาหาร', 'Holbrook ปี 2005 ระดับ I สำหรับอาหารเหลวที่มีวิตามินเคสูง และระดับ II สำหรับวิตามินรวมที่มีวิตามินเค', 'อ่านฉลาก ปริมาณให้คงที่ แจ้งเมื่อเปลี่ยนสูตรอาหารเหลวหรือวิตามินรวม']
+                ]},
+
+                { type: 'h', text: '↑ รายการที่หลักฐานรองรับว่าทำให้ INR สูงขึ้น' },
+                { type: 'table', cols: ['รายการ', 'กลไก', 'ระดับหลักฐาน', 'คำแนะนำ'], rows: [
+                    ['มะม่วง (Mangifera indica)', 'กลไกยังไม่สรุป อาจเกี่ยวกับเรตินอลที่ยับยั้ง CYP2C19 หรือผลต่อเกล็ดเลือด', 'Holbrook ปี 2005 ระดับ I (highly probable) ชุดกรณี 13 ราย (Monterrey-Rodríguez, Ann Pharmacother 2002) กินมะม่วงวันละประมาณ 1–6 ผล หลังงด 2 สัปดาห์ INR ลดเฉลี่ยประมาณ 18% และมีทดลองกินซ้ำใน 2 ราย', 'ไม่จำเป็นต้องงดทุกคน แต่ถ้ากินมะม่วงมากหรือไม่สม่ำเสมอควรติดตาม INR ข้อนี้ควรทวนกับแนวทางของโรงพยาบาล'],
+                    ['แดนเซิน / ตันเซิน / Danshen (Salvia miltiorrhiza)', 'อาจเสริมฤทธิ์ต้านการแข็งตัวและมีผลต่อเมแทบอลิซึมของวาร์ฟาริน', 'Holbrook ปี 2005 ระดับ II Tan ปี 2021 จัดเป็น probable', 'ควรหลีกเลี่ยงสมุนไพรและผลิตภัณฑ์ที่มีแดนเซิน'],
+                    ['ตังกุย / Dong quai (Angelica sinensis)', 'มีคูมารินธรรมชาติ อาจเสริมฤทธิ์วาร์ฟาริน', 'Holbrook ปี 2005 ระดับ II Tan ปี 2021 จัดเป็น possible', 'ควรหลีกเลี่ยง'],
+                    ['เก๋ากี้ / โกจิ / Lycium barbarum', 'กลไกยังไม่ชัด มีรายงาน INR สูงหลังดื่มน้ำเก๋ากี้', 'Holbrook ปี 2005 ระดับ II (probable)', 'หลีกเลี่ยงน้ำเก๋ากี้ปริมาณมาก หรือติดตาม INR หากใช้'],
+                    ['น้ำมันปลา / โอเมกา-3 (ผลิตภัณฑ์เสริมอาหาร)', 'อาจมีผลต่อเกล็ดเลือด และมีรายงาน INR สูง', 'Holbrook ปี 2005 ระดับ I (fish oil) Tan ปี 2021 จัดเป็น probable แต่การศึกษาภายหลังบางชิ้นไม่พบผลชัด', 'การกินปลาเป็นอาหารทั่วไปมักไม่เป็นปัญหา หากเริ่มน้ำมันปลาเป็นผลิตภัณฑ์เสริมอาหารควรติดตาม INR ข้อนี้เภสัชกรควรช่วยทวน'],
+                    ['แอลกอฮอล์ (ดื่มหนักเป็นครั้งคราว หรือมีโรคตับร่วม)', 'ดื่มหนักเฉียบพลันอาจยับยั้งการกำจัดวาร์ฟาริน ถ้ามีโรคตับร่วมยิ่งเสี่ยงที่ INR จะสูง ดื่มเรื้อรังอาจชักนำเอนไซม์แล้ว INR ต่ำได้ ส่วนการดื่มพอประมาณสม่ำเสมอมักไม่เปลี่ยน', 'Holbrook ปี 2005: ระดับ I ว่าเพิ่มฤทธิ์ถ้าร่วมกับโรคตับ และระดับ I ว่าไม่มีผลสำหรับแอลกอฮอล์ทั่วไป มีรายงานผู้ป่วยเมื่อดื่มหนัก', 'หลีกเลี่ยงการดื่มหนักเป็นครั้งคราว หากดื่ม ควรปริมาณคงที่และแจ้งคลินิก ผู้มีโรคตับต้องระวังเป็นพิเศษ']
+                ]},
+
+                { type: 'details', open: true, title: 'หลักฐานยังไม่แน่นอนหรือผลการศึกษาขัดกัน — อย่าจัดเป็น “ยืนยันแล้ว”', blocks: [
+                    { type: 'p', text: 'รายการในส่วนนี้มีรายงานหรือถูกกล่าวถึงในเอกสารคำแนะนำ แต่หลักฐานอ่อน ขัดกัน หรือผลมักจำกัดที่สารสกัดขนาดสูง ไม่ใช่อาหารปกติ' },
+                    { type: 'table', cols: ['รายการ', 'ทิศทางที่เคยมีรายงาน', 'ทำไมยังไม่ถือว่ายืนยัน', 'คำแนะนำปฏิบัติ'], rows: [
+                        ['น้ำแครนเบอร์รี / cranberry', 'เคยมีรายงาน INR สูงและเลือดออก', 'Holbrook ปี 2005 ระดับ III (possible) ต่อมามีการศึกษาแบบควบคุมหลายชิ้นไม่พบปฏิกิริยาที่มีนัยสำคัญ แนวทางบางแห่งสรุปว่าไม่มีปฏิกิริยาที่มีนัย', 'ปริมาณปกติไม่จำเป็นต้องงด หากดื่มน้ำเข้มข้นปริมาณมากหรือไม่สม่ำเสมอควรแจ้งคลินิก'],
+                        ['น้ำเกรปฟรุต', 'เคยมีรายงาน INR สูง เกรปฟรุตยับยั้ง CYP ได้', 'Holbrook ปี 2005 ระดับ II (probable) แต่ Tan ปี 2021 อ้างการทดลองสุ่มที่ไม่พบผลต่อวาร์ฟาริน ร่วมกับรายงานผู้ป่วย 2 ราย — หลักฐานขัดกัน', 'ไม่ต้องงดเด็ดขาด ถ้ากินเป็นประจำให้คงที่ และติดตาม INR เมื่อเริ่มหรือหยุด'],
+                        ['กระเทียม (อาหารกับสารสกัด)', 'มีรายงานเลือดออก', 'Tan ปี 2021 จัดว่าไม่มีผลต่อ INR ในงานวิจัยควบคุม ผลที่น่าเป็นห่วงมักเป็นผลต่อเกล็ดเลือดจากสารสกัด', 'กินเป็นอาหารได้ ระวังสารสกัดเข้มข้นแม้ INR อาจไม่ขึ้น'],
+                        ['ขิง', 'มีรายงาน INR สูงหรือเลือดออก', 'Tan ปี 2021 จัดเป็น possible ส่วนใหญ่เป็นรายงานผู้ป่วยหรือผลต่อเกล็ดเลือด', 'ใช้เป็นเครื่องเทศได้ สารสกัดขนาดสูงควรระวัง'],
+                        ['ขมิ้น / เคอร์คูมิน', 'มีรายงานว่าอาจเพิ่มฤทธิ์', 'Tan ปี 2021 จัดเป็น possible หลักฐานทางคลินิกยังจำกัด', 'กินเป็นอาหารได้ ผลิตภัณฑ์เสริมอาหารควรติดตาม INR'],
+                        ['แปะก๊วย (Ginkgo biloba)', 'มีรายงานเลือดออกหรือ INR สูง', 'Holbrook ปี 2005 จัดว่าไม่มีผลจากงานทดลองสุ่มที่ใช้ร่วมกับโคเอ็นไซม์คิวเท็น แต่ Tan ปี 2021 จัดเป็น probable — ขัดกัน', 'ระวังเลือดออกจากผลต่อเกล็ดเลือด แม้ INR อาจไม่ขึ้น'],
+                        ['โสม', 'โสมอเมริกันมีงานทดลองที่พบว่าลดฤทธิ์วาร์ฟาริน ส่วนโสมเกาหลีมีข้อมูลว่าไม่มีผล', 'Tan ปี 2021 จัดโสมอเมริกันเป็น possible ที่ยับยั้งฤทธิ์ยา และจัดโสมเกาหลีว่าไม่มีผล ชนิดของโสมจึงทำให้ข้อมูลไม่ลงตัว', 'ควรหลีกเลี่ยงผลิตภัณฑ์โสม หรือติดตาม INR เมื่อเริ่มและเมื่อหยุด'],
+                        ['ชาเขียว', 'มีรายงาน INR ลดเมื่อดื่มปริมาณมากมาก', 'ชาชงปริมาณปกติมีวิตามินเคต่ำ รายงานคลาสสิกเป็นผู้ป่วยที่ดื่มประมาณครึ่งถึง 1 แกลลอนต่อวัน (อ้างใน Nutescu ปี 2006) Tan ปี 2021 จัดชาเขียวขนาดสูงเป็น possible inhibition', 'ชาเขียวปริมาณปกติมักไม่เป็นปัญหา หากดื่มมากผิดปกติหรือใช้สารสกัดเข้มข้นควรติดตาม INR'],
+                        ['วิตามินอี', 'บางรายงานและเอกสารคำแนะนำเตือนว่าขนาดสูงอาจมีผล', 'Holbrook ปี 2005 จัดว่าไม่มีผลจากงานทดลองสุ่ม 25 คน Tan ปี 2021 จัดเป็น possible ที่ยับยั้งฤทธิ์ยา เอกสารบางฉบับเตือนขนาดมากกว่า 400 หน่วยสากล', 'วิตามินรวมขนาดปกติมักไม่ปัญหา ขนาดสูงควรปรึกษาก่อนและติดตาม INR'],
+                        ['ทับทิม / น้ำทับทิม', 'มีรายงานว่าอาจเพิ่มฤทธิ์', 'Tan ปี 2021 จัดเป็น possible จากรายงานจำกัด', 'ถ้ากินเป็นประจำให้คงที่ และแจ้งเมื่อเริ่มหรือหยุดน้ำทับทิมปริมาณมาก'],
+                        ['มะละกอ / สารสกัด papain', 'มีรายงานจำกัดว่าอาจเพิ่มฤทธิ์', 'หลักฐานเป็นรายงานเดี่ยว ไม่ถึงเกณฑ์ยืนยันในภาพรวมระบบหลัก', 'ไม่ต้องงดผลไม้ แต่ระวังสารสกัดเข้มข้น'],
+                        ['โคเอ็นไซม์คิวเท็น (CoQ10)', 'บางรายงาน INR ลด', 'ข้อมูลไม่ลงตัวและมีงานที่ไม่พบผล ยังไม่จัดเป็นยืนยัน', 'หากใช้ ควรติดตาม INR เมื่อเริ่มและเมื่อหยุด']
+                    ]}
+                ]},
+
+                { type: 'h', text: 'วิธีใช้ตอนให้คำแนะนำคนไข้' },
+                { type: 'ul', items: [
+                    'เปิดด้วยข้อความว่า “กินผักได้ แต่ให้ปริมาณค่อนข้างคงที่” อย่าขึ้นต้นด้วยรายการห้ามกินจนคนไข้เลิกกินผัก',
+                    'ถามการกินผักใบเขียว มะม่วง นมถั่วเหลือง แอลกอฮอล์ สมุนไพรจีน และผลิตภัณฑ์เสริมอาหารทุกครั้งที่ INR เปลี่ยนโดยไม่ทราบสาเหตุ',
+                    'คะน้าในครัวไทยคือ kai-lan ไม่ใช่ kale ของตะวันตก ค่าวิตามินเคต่างกันมาก อย่าใช้ตัวเลขของ kale ไปอธิบายคะน้า',
+                    'สมุนไพรและสารสกัดเข้มข้นเสี่ยงกว่าการกินเป็นอาหารเครื่องเทศในปริมาณปกติ',
+                    'ใช้สำหรับอ้างอิงในคลินิก โปรดทวนกับแนวทางของโรงพยาบาลและบริบทคนไข้ก่อนให้คำแนะนำรายบุคคล'
+                ]}
+            ]
+        };
+        function openWfFoodKb() {
+            var overlay = document.getElementById('wfFoodModal');
+            var title = document.getElementById('wfFoodTitle');
+            var body = document.getElementById('wfFoodBody');
+            if (!overlay || !title || !body) return;
+            title.textContent = WF_FOOD_KB.title;
+            body.innerHTML = hivKbBlocksHtml(WF_FOOD_KB.blocks) +
+                '<div class="hivkb-src"><strong>แหล่งข้อมูล:</strong> ' + hivKbEsc(WF_FOOD_KB.source) + '</div>' +
+                '<p class="hivkb-disc">ใช้สำหรับอ้างอิงในคลินิกเท่านั้น ไม่ได้ทดแทนแนวทางของโรงพยาบาล ค่าวิตามินเคเป็นค่าโดยประมาณจากตารางอาหารที่อ้าง ไม่ใช่ผลการวิเคราะห์ผักในท้องถิ่นทุกรายการ</p>';
+            overlay.style.display = 'flex';
+            body.scrollTop = 0;
+            var closeBtn = overlay.querySelector('.modal-close-btn');
+            if (closeBtn) closeBtn.focus();
+        }
+        function closeWfFoodKb() {
+            var overlay = document.getElementById('wfFoodModal');
+            if (overlay) overlay.style.display = 'none';
+        }
+        function onWfFoodOverlayClick(ev) {
+            if (ev.target && ev.target.id === 'wfFoodModal') closeWfFoodKb();
+        }
+
         document.addEventListener('keydown', function (ev) {
             if (ev.key === 'Escape') {
-                var overlay = document.getElementById('hivKbModal');
-                if (overlay && overlay.style.display === 'flex') closeHivKb();
+                var hivOverlay = document.getElementById('hivKbModal');
+                if (hivOverlay && hivOverlay.style.display === 'flex') closeHivKb();
+                var wfOverlay = document.getElementById('wfFoodModal');
+                if (wfOverlay && wfOverlay.style.display === 'flex') closeWfFoodKb();
             }
         });
 
