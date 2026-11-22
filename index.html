@@ -1838,6 +1838,10 @@
                             <label class="block text-xs font-medium text-gray-600 mb-1">Potassium (ล่าสุด)</label>
                             <input type="number" id="hfK" step="0.1" placeholder="mEq/L" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm">
                         </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">น้ำหนัก (กก.) <span class="font-normal text-gray-400">ไม่บังคับ ใช้คิดเป้า Carvedilol</span></label>
+                            <input type="number" id="hfWeight" step="0.1" placeholder="เช่น 70" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm">
+                        </div>
                     </div>
                     
                     <div class="flex flex-wrap gap-4 mt-2">
@@ -1868,9 +1872,13 @@
                         <div id="div_hf_raasi" class="hidden mt-2 ml-6">
                             <select id="sel_hf_raasi_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_raasi_drug', 'sel_hf_raasi_dose')">
                                 <option value="">-- เลือกตัวยา --</option>
-                                <option value="arni">Entresto FTC 100mg (49/51)</option>
-                                <option value="enalapril">Enalapril 5mg, 20mg</option>
-                                <option value="losartan">Losartan 50mg</option>
+                                <option value="arni">Sacubitril/valsartan (Entresto 50/100/200)</option>
+                                <option value="enalapril">Enalapril</option>
+                                <option value="lisinopril">Lisinopril</option>
+                                <option value="ramipril">Ramipril</option>
+                                <option value="losartan">Losartan</option>
+                                <option value="valsartan">Valsartan</option>
+                                <option value="candesartan">Candesartan</option>
                             </select>
                             <div id="wrap_hf_raasi_dose" class="hidden">
                                 <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
@@ -1888,9 +1896,10 @@
                         <div id="div_hf_bb" class="hidden mt-2 ml-6">
                             <select id="sel_hf_bb_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_bb_drug', 'sel_hf_bb_dose')">
                                 <option value="">-- เลือกตัวยา --</option>
-                                <option value="bisoprolol">Bisoprolol 5mg</option>
-                                <option value="carvedilol">Carvedilol 6.25mg, 25mg</option>
-                                <option value="metoprolol">Metoprolol tartrate 100mg (อนุโลมใช้)</option>
+                                <option value="bisoprolol">Bisoprolol</option>
+                                <option value="carvedilol">Carvedilol</option>
+                                <option value="metoprolol_succ">Metoprolol succinate (Betaloc ZOK)</option>
+                                <option value="metoprolol">Metoprolol tartrate (ไม่ใช่สูตรที่มีหลักฐานใน HFrEF)</option>
                             </select>
                             <div id="wrap_hf_bb_dose" class="hidden">
                                 <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
@@ -1903,12 +1912,13 @@
                     <div class="bg-gray-50 p-4 border-l-4 border-purple-400 rounded mb-3">
                         <label class="inline-flex items-center font-bold text-gray-700">
                             <input type="checkbox" id="chk_hf_mra" class="form-checkbox text-purple-600 rounded mr-2" onchange="toggleHfSub('chk_hf_mra', 'div_hf_mra')"> 
-                            3. MRA (Spironolactone)
+                            3. MRA (Spironolactone / Eplerenone)
                         </label>
                         <div id="div_hf_mra" class="hidden mt-2 ml-6">
                             <select id="sel_hf_mra_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_mra_drug', 'sel_hf_mra_dose')">
                                 <option value="">-- เลือกตัวยา --</option>
-                                <option value="spironolactone">Spironolactone 25mg, 100mg</option>
+                                <option value="spironolactone">Spironolactone</option>
+                                <option value="eplerenone">Eplerenone</option>
                             </select>
                             <div id="wrap_hf_mra_dose" class="hidden">
                                 <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
@@ -1917,19 +1927,33 @@
                         </div>
                     </div>
 
-                    <!-- 4. SGLT2i & Others -->
+                    <!-- 4. SGLT2i (pillar) -->
+                    <div class="bg-gray-50 p-4 border-l-4 border-amber-400 rounded mb-3">
+                        <label class="inline-flex items-center font-bold text-gray-700">
+                            <input type="checkbox" id="chk_hf_sglt2i" class="form-checkbox text-yellow-600 rounded mr-2" onchange="toggleHfSub('chk_hf_sglt2i', 'div_hf_sglt2i')">
+                            4. SGLT2 inhibitor
+                        </label>
+                        <div id="div_hf_sglt2i" class="hidden mt-2 ml-6">
+                            <select id="sel_hf_sglt2i_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_sglt2i_drug', 'sel_hf_sglt2i_dose')">
+                                <option value="">-- เลือกตัวยา --</option>
+                                <option value="empagliflozin">Empagliflozin (Jardiance) 10 mg</option>
+                                <option value="dapagliflozin">Dapagliflozin (Forxiga) 10 mg</option>
+                            </select>
+                            <div id="wrap_hf_sglt2i_dose" class="hidden">
+                                <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
+                                <select id="sel_hf_sglt2i_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Other GDMT & Diuretics -->
                     <div class="bg-gray-50 p-4 border-l-4 border-yellow-400 rounded mb-3">
-                        <label class="block font-bold text-gray-700 mb-2">4. ยาอื่นๆ (Other GDMT & Diuretics)</label>
+                        <label class="block font-bold text-gray-700 mb-2">5. ยาอื่นๆ (Ivabradine / ยาเสริม / ขับปัสสาวะ)</label>
                         <div class="ml-6 space-y-2">
-                            <label class="flex items-center">
-                                <input type="checkbox" id="chk_hf_sglt2i" class="form-checkbox text-yellow-600 rounded mr-2">
-                                <span class="text-sm">Empagliflozin 10mg (1 tab QD)</span>
-                            </label>
-                            
                             <div>
                                 <label class="flex items-center">
                                     <input type="checkbox" id="chk_hf_iva" class="form-checkbox text-yellow-600 rounded mr-2" onchange="toggleHfSub('chk_hf_iva', 'div_hf_iva')">
-                                    <span class="text-sm">Ivabradine 5mg</span>
+                                    <span class="text-sm">Ivabradine 5 mg</span>
                                 </label>
                                 <div id="div_hf_iva" class="hidden mt-1 ml-6">
                                     <select id="sel_hf_iva_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white">
@@ -1951,6 +1975,14 @@
                                     <input type="text" id="hf_loop_detail" placeholder="ระบุขนาดยา (เช่น 40mg 1 tab OD)" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white">
                                 </div>
                             </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chk_hf_hnisdn" class="form-checkbox text-yellow-600 rounded mr-2">
+                                <span class="text-sm">Hydralazine + isosorbide dinitrate</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chk_hf_vericiguat" class="form-checkbox text-yellow-600 rounded mr-2">
+                                <span class="text-sm">Vericiguat</span>
+                            </label>
                         </div>
                     </div>
 
@@ -1987,6 +2019,22 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div id="hfGdmtBox" class="bg-white border border-emerald-200 rounded-lg p-5 shadow-sm">
+                    <h3 class="font-semibold text-lg text-emerald-800 mb-1 border-b border-emerald-100 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-table-list text-emerald-600"></i>
+                        4. รายการเช็กยา GDMT 4 เสาหลัก
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-2 mb-3">อัปเดตตามยาและค่าแล็บที่กรอกด้านบน แสดงว่าแต่ละเสาได้ยาหรือยัง ขนาดปัจจุบันเทียบเป้า (% ของ target) ขั้นปรับยาถัดไป และเกณฑ์เตือนจาก K, eGFR, SBP, HR</p>
+                    <div id="hfGdmtPhenotype" class="mb-3"></div>
+                    <div id="hfGdmtGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                    <div id="hfGdmtAddons" class="mt-3 space-y-2"></div>
+                    <p id="hfGdmtSources" class="text-[11px] leading-relaxed text-gray-500 mt-4 pt-3 border-t border-gray-100">ขนาดยาเริ่ม/เป้าและเกณฑ์เตือนอ้างอิง <strong>2022 AHA/ACC/HFSA Guideline for the Management of Heart Failure</strong>, <strong>2024 ACC Expert Consensus Decision Pathway for HFrEF</strong>, <strong>2021 ESC HF Guidelines</strong> (รวม practical guidance) และ <strong>2023 ESC Focused Update</strong> เป็นเครื่องมือช่วยงานเภสัชกร ไม่ทดแทนดุลยพินิจแพทย์ และควรตรวจยืนยันกับผลิตภัณฑ์ใน รพ. ก่อนสั่งปรับยา</p>
+                    <label class="flex items-start gap-2 mt-3 text-sm text-gray-700 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                        <input type="checkbox" id="hfGdmtAddToNote" class="form-checkbox text-emerald-600 rounded mt-0.5">
+                        <span>ใส่บรรทัดสรุป GDMT ลง Pharmacist Note <strong>เมื่อกดคัดลอก</strong> (ไม่ใส่ให้อัตโนมัติ เพราะข้อเสนอแนะอาจยังไม่ตรงกับความเห็นแพทย์)</span>
+                    </label>
                 </div>
 
                 <button onclick="generateHfRecommendations()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition flex items-center justify-center text-lg">
@@ -4264,6 +4312,7 @@
             if(tab === 'ASTHMA') activeBtn.classList.remove('text-teal-700');
             if(tab === 'PARKINSON') activeBtn.classList.remove('text-violet-700');
             if(tab === 'CAPD') activeBtn.classList.remove('text-cyan-700');
+            if (tab === 'HF' && typeof bindHfGdmtHelper === 'function') bindHfGdmtHelper();
 
             const mergeCheck = document.getElementById('mergeMrOption');
             if(mergeCheck) {
@@ -4345,48 +4394,639 @@
         // ==========================================
         const doseSteps = {
             arni: [
-                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 100mg BID (50 mg/day)', next: '1/2 เม็ด 100mg BID (100 mg/day)'},
-                {val: 'start', text: 'Low: 1/2 เม็ด 100mg BID (100 mg/day)', next: '1 เม็ด 100mg BID (200 mg/day)'},
-                {val: 'mid', text: 'Mid: 1 เม็ด 100mg BID (200 mg/day)', next: '2 เม็ด 100mg BID (Target 400 mg/day)'},
-                {val: 'target', text: 'Target: 2 เม็ด 100mg BID (400 mg/day)', next: null}
+                {val: 'vlow', text: 'ต่ำกว่าขนาดเริ่ม: 1/4 เม็ด 100 mg BID (50 mg/วัน)', next: 'Entresto 50 (24/26) mg BID (100 mg/วัน)', dailyMg: 50},
+                {val: 'start', text: 'ขนาดเริ่มต่ำ: Entresto 50 (24/26) mg BID หรือ 1/2 เม็ด 100 mg BID (100 mg/วัน)', next: 'Entresto 100 (49/51) mg BID (200 mg/วัน)', dailyMg: 100},
+                {val: 'mid', text: 'ขนาดเริ่มมาตรฐาน: Entresto 100 (49/51) mg BID (200 mg/วัน)', next: 'Entresto 200 (97/103) mg BID (เป้า 400 mg/วัน)', dailyMg: 200},
+                {val: 'target', text: 'เป้า: Entresto 200 (97/103) mg BID (400 mg/วัน)', next: null, dailyMg: 400}
             ],
             enalapril: [
-                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 5mg OD (2.5 mg/day)', next: '1/2 เม็ด 5mg BID หรือ 1 เม็ด 5mg OD'},
-                {val: 'start', text: 'Low: 1/2 เม็ด 5mg BID (5 mg/day)', next: '1 เม็ด 5mg BID (10 mg/day)'},
-                {val: 'mid', text: 'Mid: 1 เม็ด 5mg BID (10 mg/day)', next: '1/2 - 1 เม็ด 20mg BID (Target)'},
-                {val: 'target', text: 'Target: 1/2 - 1 เม็ด 20mg BID', next: null}
+                {val: 'vlow', text: 'Sub-low: 2.5 mg OD (2.5 mg/วัน)', next: '2.5 mg BID (5 mg/วัน)', dailyMg: 2.5},
+                {val: 'start', text: 'ขนาดเริ่ม: 2.5 mg BID (5 mg/วัน)', next: '5 mg BID (10 mg/วัน)', dailyMg: 5},
+                {val: 'mid', text: '5 mg BID (10 mg/วัน)', next: '10 mg BID (เป้าขั้นต่ำ 20 mg/วัน)', dailyMg: 10},
+                {val: 'mid2', text: 'เป้าขั้นต่ำ: 10 mg BID (20 mg/วัน)', next: '20 mg BID (เป้าบน 40 mg/วัน)', dailyMg: 20},
+                {val: 'target', text: 'เป้าบน: 20 mg BID (40 mg/วัน)', next: null, dailyMg: 40}
+            ],
+            lisinopril: [
+                {val: 'vlow', text: 'ขนาดเริ่มต่ำ: 2.5 mg OD', next: '5 mg OD', dailyMg: 2.5},
+                {val: 'start', text: 'ขนาดเริ่ม: 5 mg OD', next: '10 mg OD', dailyMg: 5},
+                {val: 'mid', text: '10 mg OD', next: '20 mg OD (เป้าขั้นต่ำ)', dailyMg: 10},
+                {val: 'mid2', text: 'เป้าขั้นต่ำ: 20 mg OD', next: '40 mg OD (เป้าบน)', dailyMg: 20},
+                {val: 'target', text: 'เป้าบน: 40 mg OD', next: null, dailyMg: 40}
+            ],
+            ramipril: [
+                {val: 'vlow', text: 'ขนาดเริ่ม: 1.25 mg OD', next: '2.5 mg OD', dailyMg: 1.25},
+                {val: 'start', text: '2.5 mg OD', next: '5 mg OD', dailyMg: 2.5},
+                {val: 'mid', text: '5 mg OD', next: '10 mg OD (เป้า)', dailyMg: 5},
+                {val: 'target', text: 'เป้า: 10 mg OD', next: null, dailyMg: 10}
             ],
             losartan: [
-                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 50mg OD (12.5 mg/day)', next: '1/2 เม็ด 50mg OD (25 mg/day)'},
-                {val: 'start', text: 'Low: 1/2 เม็ด 50mg OD (25 mg/day)', next: '1 เม็ด 50mg OD (50 mg/day)'},
-                {val: 'mid', text: 'Mid: 1 เม็ด 50mg OD (50 mg/day)', next: '2-3 เม็ด 50mg OD (Target 100-150 mg/day)'},
-                {val: 'target', text: 'Target: 2-3 เม็ด 50mg OD', next: null}
+                {val: 'vlow', text: 'Sub-low: 12.5 mg OD', next: '25 mg OD', dailyMg: 12.5},
+                {val: 'start', text: 'ขนาดเริ่ม: 25 mg OD', next: '50 mg OD', dailyMg: 25},
+                {val: 'mid', text: '50 mg OD', next: '100 mg OD', dailyMg: 50},
+                {val: 'mid2', text: '100 mg OD', next: '150 mg OD (เป้า)', dailyMg: 100},
+                {val: 'target', text: 'เป้า: 150 mg OD', next: null, dailyMg: 150}
+            ],
+            valsartan: [
+                {val: 'start', text: 'ขนาดเริ่ม: 40 mg BID (80 mg/วัน)', next: '80 mg BID (160 mg/วัน)', dailyMg: 80},
+                {val: 'mid', text: '80 mg BID (160 mg/วัน)', next: '160 mg BID (เป้า 320 mg/วัน)', dailyMg: 160},
+                {val: 'target', text: 'เป้า: 160 mg BID (320 mg/วัน)', next: null, dailyMg: 320}
+            ],
+            candesartan: [
+                {val: 'vlow', text: 'ขนาดเริ่มต่ำ: 4 mg OD', next: '8 mg OD', dailyMg: 4},
+                {val: 'start', text: 'ขนาดเริ่ม: 8 mg OD', next: '16 mg OD', dailyMg: 8},
+                {val: 'mid', text: '16 mg OD', next: '32 mg OD (เป้า)', dailyMg: 16},
+                {val: 'target', text: 'เป้า: 32 mg OD', next: null, dailyMg: 32}
             ],
             bisoprolol: [
-                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 5mg OD (1.25 mg/day)', next: '1/2 เม็ด 5mg OD (2.5 mg/day)'},
-                {val: 'start', text: 'Low: 1/2 เม็ด 5mg OD (2.5 mg/day)', next: '1 เม็ด 5mg OD (5 mg/day)'},
-                {val: 'mid', text: 'Mid: 1 เม็ด 5mg OD (5 mg/day)', next: '2 เม็ด 5mg OD (Target 10 mg/day)'},
-                {val: 'target', text: 'Target: 2 เม็ด 5mg OD', next: null}
+                {val: 'vlow', text: 'ขนาดเริ่ม: 1.25 mg OD', next: '2.5 mg OD', dailyMg: 1.25},
+                {val: 'start', text: '2.5 mg OD', next: '5 mg OD', dailyMg: 2.5},
+                {val: 'mid', text: '5 mg OD', next: '10 mg OD (เป้า)', dailyMg: 5},
+                {val: 'target', text: 'เป้า: 10 mg OD', next: null, dailyMg: 10}
             ],
             carvedilol: [
-                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 6.25mg BID (6.25 mg/day)', next: '1 เม็ด 6.25mg BID (12.5 mg/day)'},
-                {val: 'start', text: 'Low: 1 เม็ด 6.25mg BID (12.5 mg/day)', next: '2 เม็ด 6.25mg BID หรือ 1/2 เม็ด 25mg BID (25 mg/day)'},
-                {val: 'mid', text: 'Mid: 2 เม็ด 6.25mg BID (25 mg/day)', next: '1 เม็ด 25mg BID (Target 50 mg/day)'},
-                {val: 'target', text: 'Target: 1 เม็ด 25mg BID', next: null}
+                {val: 'vlow', text: 'ขนาดเริ่ม: 3.125 mg BID (6.25 mg/วัน)', next: '6.25 mg BID (12.5 mg/วัน)', dailyMg: 6.25},
+                {val: 'start', text: '6.25 mg BID (12.5 mg/วัน)', next: '12.5 mg BID (25 mg/วัน)', dailyMg: 12.5},
+                {val: 'mid', text: '12.5 mg BID (25 mg/วัน)', next: '25 mg BID (50 mg/วัน; เป้าถ้าน้ำหนัก <85 กก.)', dailyMg: 25},
+                {val: 'target', text: 'เป้า (<85 กก.): 25 mg BID (50 mg/วัน)', next: '50 mg BID (100 mg/วัน; เป้าถ้าน้ำหนัก ≥85 กก.)', dailyMg: 50},
+                {val: 'target_high', text: 'เป้า (≥85 กก.): 50 mg BID (100 mg/วัน)', next: null, dailyMg: 100}
+            ],
+            metoprolol_succ: [
+                {val: 'vlow', text: 'ขนาดเริ่มต่ำ: 12.5 mg OD', next: '25 mg OD', dailyMg: 12.5},
+                {val: 'start', text: 'ขนาดเริ่ม: 25 mg OD', next: '50 mg OD', dailyMg: 25},
+                {val: 'mid', text: '50 mg OD', next: '100 mg OD', dailyMg: 50},
+                {val: 'mid2', text: '100 mg OD', next: '200 mg OD (เป้า)', dailyMg: 100},
+                {val: 'target', text: 'เป้า: 200 mg OD', next: null, dailyMg: 200}
             ],
             metoprolol: [
-                {val: 'vlow', text: 'Sub-low: 12.5 mg BID', next: '1/4 เม็ด 100mg BID (50 mg/day)'},
-                {val: 'start', text: 'Low: 1/4 เม็ด 100mg BID (50 mg/day)', next: '1/2 เม็ด 100mg BID (100 mg/day)'},
-                {val: 'mid', text: 'Mid: 1/2 เม็ด 100mg BID (100 mg/day)', next: '1 เม็ด 100mg BID (Target 200 mg/day)'},
-                {val: 'target', text: 'Target: 1 เม็ด 100mg BID', next: null}
+                {val: 'vlow', text: 'Sub-low: 12.5 mg BID (สูตร tartrate ไม่มีหลักฐานใน HFrEF)', next: '25 mg BID (50 mg/วัน)', dailyMg: 25},
+                {val: 'start', text: 'Low: 25 mg BID หรือ 1/4 เม็ด 100 mg BID (50 mg/วัน)', next: '50 mg BID (100 mg/วัน)', dailyMg: 50},
+                {val: 'mid', text: '50 mg BID หรือ 1/2 เม็ด 100 mg BID (100 mg/วัน)', next: '100 mg BID (200 mg/วัน)', dailyMg: 100},
+                {val: 'target', text: '200 mg/วัน แบ่ง BID (ยังแนะนำเปลี่ยนเป็น succinate / bisoprolol / carvedilol)', next: null, dailyMg: 200}
             ],
             spironolactone: [
-                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 25mg วันเว้นวัน', next: '1/2 เม็ด 25mg OD (12.5 mg/day)'},
-                {val: 'start', text: 'Low: 1/2 เม็ด 25mg OD (12.5 mg/day)', next: '1 เม็ด 25mg OD (25 mg/day - Target)'},
-                {val: 'mid', text: 'Mid: 1 เม็ด 25mg OD (25 mg/day - Target)', next: '2 เม็ด 25mg OD (Target 50 mg/day)'},
-                {val: 'target', text: 'Target: 1-2 เม็ด 25mg OD', next: null}
+                {val: 'vlow', text: 'Sub-low: 12.5 mg วันเว้นวัน', next: '12.5 mg OD', dailyMg: 6.25},
+                {val: 'start', text: 'ขนาดเริ่ม: 12.5 mg OD', next: '25 mg OD (เป้าขั้นต่ำ)', dailyMg: 12.5},
+                {val: 'mid', text: 'เป้าขั้นต่ำ: 25 mg OD', next: '50 mg OD (เป้าบน)', dailyMg: 25},
+                {val: 'target', text: 'เป้าบน: 50 mg OD', next: null, dailyMg: 50}
+            ],
+            eplerenone: [
+                {val: 'start', text: 'ขนาดเริ่ม: 25 mg OD', next: '50 mg OD (เป้า)', dailyMg: 25},
+                {val: 'target', text: 'เป้า: 50 mg OD', next: null, dailyMg: 50}
+            ],
+            empagliflozin: [
+                {val: 'target', text: '10 mg OD (เริ่มและเป้าเท่ากัน)', next: null, dailyMg: 10}
+            ],
+            dapagliflozin: [
+                {val: 'target', text: '10 mg OD (เริ่มและเป้าเท่ากัน)', next: null, dailyMg: 10}
             ]
         };
+
+        const hfDrugMeta = {
+            arni: { pillar:'raasi', klass:'ARNI', name:'Sacubitril/valsartan (Entresto)', short:'Entresto', targetDailyMg:400, lowerTargetDailyMg:400, targetText:'97/103 mg BID', startText:'24/26–49/51 mg BID', isAcei:false, isArni:true, evidenceBased:true },
+            enalapril: { pillar:'raasi', klass:'ACEI', name:'Enalapril', short:'Enalapril', targetDailyMg:40, lowerTargetDailyMg:20, targetText:'10–20 mg BID', startText:'2.5 mg BID', isAcei:true, isArni:false, evidenceBased:true },
+            lisinopril: { pillar:'raasi', klass:'ACEI', name:'Lisinopril', short:'Lisinopril', targetDailyMg:40, lowerTargetDailyMg:20, targetText:'20–40 mg OD', startText:'2.5–5 mg OD', isAcei:true, isArni:false, evidenceBased:true },
+            ramipril: { pillar:'raasi', klass:'ACEI', name:'Ramipril', short:'Ramipril', targetDailyMg:10, lowerTargetDailyMg:10, targetText:'10 mg OD', startText:'1.25 mg OD', isAcei:true, isArni:false, evidenceBased:true },
+            losartan: { pillar:'raasi', klass:'ARB', name:'Losartan', short:'Losartan', targetDailyMg:150, lowerTargetDailyMg:150, targetText:'150 mg OD', startText:'25–50 mg OD', isAcei:false, isArni:false, evidenceBased:true },
+            valsartan: { pillar:'raasi', klass:'ARB', name:'Valsartan', short:'Valsartan', targetDailyMg:320, lowerTargetDailyMg:320, targetText:'160 mg BID', startText:'40 mg BID', isAcei:false, isArni:false, evidenceBased:true },
+            candesartan: { pillar:'raasi', klass:'ARB', name:'Candesartan', short:'Candesartan', targetDailyMg:32, lowerTargetDailyMg:32, targetText:'32 mg OD', startText:'4–8 mg OD', isAcei:false, isArni:false, evidenceBased:true },
+            bisoprolol: { pillar:'bb', klass:'BB', name:'Bisoprolol', short:'Bisoprolol', targetDailyMg:10, lowerTargetDailyMg:10, targetText:'10 mg OD', startText:'1.25 mg OD', evidenceBased:true },
+            carvedilol: { pillar:'bb', klass:'BB', name:'Carvedilol', short:'Carvedilol', targetDailyMg:50, lowerTargetDailyMg:50, targetText:'25 mg BID (<85 กก.) หรือ 50 mg BID (≥85 กก.)', startText:'3.125 mg BID', evidenceBased:true },
+            metoprolol_succ: { pillar:'bb', klass:'BB', name:'Metoprolol succinate', short:'Metoprolol succinate', targetDailyMg:200, lowerTargetDailyMg:200, targetText:'200 mg OD', startText:'12.5–25 mg OD', evidenceBased:true },
+            metoprolol: { pillar:'bb', klass:'BB', name:'Metoprolol tartrate', short:'Metoprolol tartrate', targetDailyMg:200, lowerTargetDailyMg:200, targetText:'ไม่มีเป้าใน guideline (แนะนำเปลี่ยนเป็น succinate)', startText:'—', evidenceBased:false },
+            spironolactone: { pillar:'mra', klass:'MRA', name:'Spironolactone', short:'Spironolactone', targetDailyMg:50, lowerTargetDailyMg:25, targetText:'25–50 mg OD', startText:'12.5–25 mg OD', evidenceBased:true },
+            eplerenone: { pillar:'mra', klass:'MRA', name:'Eplerenone', short:'Eplerenone', targetDailyMg:50, lowerTargetDailyMg:50, targetText:'50 mg OD', startText:'25 mg OD', evidenceBased:true },
+            empagliflozin: { pillar:'sglt2i', klass:'SGLT2i', name:'Empagliflozin', short:'Empagliflozin', targetDailyMg:10, lowerTargetDailyMg:10, targetText:'10 mg OD', startText:'10 mg OD', evidenceBased:true },
+            dapagliflozin: { pillar:'sglt2i', klass:'SGLT2i', name:'Dapagliflozin', short:'Dapagliflozin', targetDailyMg:10, lowerTargetDailyMg:10, targetText:'10 mg OD', startText:'10 mg OD', evidenceBased:true }
+        };
+
+        function hfEsc(s) {
+            return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+        function hfNum(id) {
+            const el = document.getElementById(id);
+            if (!el) return NaN;
+            const v = parseFloat(el.value);
+            return v;
+        }
+        function hfChecked(id) {
+            const el = document.getElementById(id);
+            return !!(el && el.checked);
+        }
+        function hfSel(id) {
+            const el = document.getElementById(id);
+            return el ? el.value : '';
+        }
+        function hfStepInfo(drug, val) {
+            const steps = doseSteps[drug] || [];
+            return steps.find(s => s.val === val) || null;
+        }
+        function hfTargetDaily(drug, weight) {
+            if (drug === 'carvedilol' && !isNaN(weight) && weight >= 85) return 100;
+            const meta = hfDrugMeta[drug];
+            return meta ? meta.targetDailyMg : NaN;
+        }
+        function hfLowerTargetDaily(drug, weight) {
+            if (drug === 'carvedilol' && !isNaN(weight) && weight >= 85) return 100;
+            const meta = hfDrugMeta[drug];
+            return meta ? meta.lowerTargetDailyMg : NaN;
+        }
+
+        function getHfShortMeds() {
+            let shortMeds = [];
+            if (hfChecked('chk_hf_raasi')) {
+                const val = hfSel('sel_hf_raasi_drug');
+                const meta = hfDrugMeta[val];
+                if (meta) shortMeds.push(meta.short);
+            }
+            if (hfChecked('chk_hf_bb')) {
+                const val = hfSel('sel_hf_bb_drug');
+                const meta = hfDrugMeta[val];
+                if (meta) shortMeds.push(meta.short);
+                else if (val === 'metoprolol') shortMeds.push('Metoprolol');
+            }
+            if (hfChecked('chk_hf_mra')) {
+                const val = hfSel('sel_hf_mra_drug');
+                const meta = hfDrugMeta[val];
+                if (meta) shortMeds.push(meta.short);
+            }
+            if (hfChecked('chk_hf_sglt2i')) {
+                const val = hfSel('sel_hf_sglt2i_drug');
+                const meta = hfDrugMeta[val];
+                shortMeds.push(meta ? meta.short : 'Empagliflozin');
+            }
+            if (hfChecked('chk_hf_iva')) shortMeds.push('Ivabradine');
+            if (hfChecked('chk_hf_hnisdn')) shortMeds.push('Hydralazine-ISDN');
+            if (hfChecked('chk_hf_vericiguat')) shortMeds.push('Vericiguat');
+            if (hfChecked('chk_hf_loop')) shortMeds.push('Furosemide');
+            return shortMeds;
+        }
+
+        function collectHfClinical() {
+            return {
+                lvef: hfNum('hfLvef'),
+                nyha: parseInt(document.getElementById('hfNyha')?.value || '', 10),
+                sbp: hfNum('hfSbp'),
+                hr: hfNum('hfHr'),
+                egfr: hfNum('hfEgfr'),
+                k: hfNum('hfK'),
+                weight: hfNum('hfWeight'),
+                congestion: hfChecked('hfCongestion'),
+                pregnant: hfChecked('hfPregnant'),
+                hasRAASi: hfChecked('chk_hf_raasi'),
+                raasiDrug: hfSel('sel_hf_raasi_drug'),
+                raasiDose: hfSel('sel_hf_raasi_dose'),
+                hasBB: hfChecked('chk_hf_bb'),
+                bbDrug: hfSel('sel_hf_bb_drug'),
+                bbDose: hfSel('sel_hf_bb_dose'),
+                hasMRA: hfChecked('chk_hf_mra'),
+                mraDrug: hfSel('sel_hf_mra_drug'),
+                mraDose: hfSel('sel_hf_mra_dose'),
+                hasSGLT2i: hfChecked('chk_hf_sglt2i'),
+                sgltDrug: hfSel('sel_hf_sglt2i_drug') || 'empagliflozin',
+                sgltDose: hfSel('sel_hf_sglt2i_dose') || 'target',
+                hasIva: hfChecked('chk_hf_iva'),
+                ivaDose: hfSel('sel_hf_iva_dose'),
+                hasHnIsdn: hfChecked('chk_hf_hnisdn'),
+                hasVericiguat: hfChecked('chk_hf_vericiguat')
+            };
+        }
+
+        function evaluateHfGdmt(c) {
+            c = c || collectHfClinical();
+            let phenotype = 'unknown';
+            let phenotypeLabel = 'ยังไม่ระบุ LVEF — ประเมินยาได้จากรายการที่กรอก แต่คำแนะนำตาม phenotype จะครบเมื่อมี LVEF';
+            if (!isNaN(c.lvef)) {
+                if (c.lvef <= 40) {
+                    phenotype = 'HFrEF';
+                    phenotypeLabel = 'HFrEF (LVEF ≤ 40%): ยา 4 เสาหลักเป็น Class 1 ตาม 2022 AHA/ACC/HFSA และ 2021 ESC ควรเริ่มให้ครบและปรับถึงเป้าที่ทนได้';
+                } else if (c.lvef <= 49) {
+                    phenotype = 'HFmrEF';
+                    phenotypeLabel = 'HFmrEF (LVEF 41–49%): 2023 ESC Focused Update แนะนำ SGLT2i ระดับ Class I; 2022 AHA/ACC/HFSA ให้ SGLT2i ระดับ 2a และ ARNI/ACEI/ARB/MRA/BB ระดับ 2b';
+                } else {
+                    phenotype = 'HFpEF';
+                    phenotypeLabel = 'HFpEF (LVEF ≥ 50%): 2023 ESC Focused Update แนะนำ SGLT2i ระดับ Class I; 2022 AHA/ACC/HFSA ให้ SGLT2i ระดับ 2a, MRA และ ARNI ระดับ 2b';
+                }
+            }
+
+            const pillars = {
+                raasi: evalHfRaasi(c, phenotype),
+                bb: evalHfBb(c, phenotype),
+                mra: evalHfMra(c, phenotype),
+                sglt2i: evalHfSglt2i(c, phenotype)
+            };
+            const addons = evalHfAddons(c, phenotype, pillars);
+            const onCount = ['raasi','bb','mra','sglt2i'].filter(k => pillars[k].on).length;
+            const summaryLine = buildHfGdmtSummaryLine(pillars, onCount, c);
+            return { phenotype, phenotypeLabel, pillars, addons, onCount, summaryLine, clinical: c };
+        }
+
+        function hfAlert(level, text) { return { level, text }; }
+
+        function evalHfRaasi(c, phenotype) {
+            const p = { id:'raasi', title:'1. ARNI / ACEI / ARB', on:false, drug:'', klass:'', currentText:'ยังไม่ได้ยาเสานี้', dailyMg:NaN, targetText:'ARNI 97/103 mg BID (ตัวเลือกแรกใน HFrEF)', targetDailyMg:400, pct:null, nextStep:'พิจารณาเริ่ม ARNI เป็นตัวเลือกแรก', status:'missing', alerts:[], canTitrate:false };
+            if (c.pregnant) p.alerts.push(hfAlert('danger', 'ตั้งครรภ์/วางแผนตั้งครรภ์: ห้ามใช้ ARNI, ACEI, ARB (teratogenic)'));
+            if (c.hasRAASi && c.raasiDrug) {
+                const meta = hfDrugMeta[c.raasiDrug];
+                const step = hfStepInfo(c.raasiDrug, c.raasiDose);
+                p.on = true;
+                p.drug = c.raasiDrug;
+                p.klass = meta ? meta.klass : '';
+                p.currentText = step ? step.text : ((meta ? meta.name : c.raasiDrug) + (c.raasiDose && c.raasiDose !== 'none' && c.raasiDose !== 'naive' ? '' : ' (ยังไม่ระบุขนาด)'));
+                if (meta) {
+                    p.targetText = meta.targetText;
+                    p.targetDailyMg = hfTargetDaily(c.raasiDrug, c.weight);
+                    p.startText = meta.startText;
+                }
+                if (step && typeof step.dailyMg === 'number') {
+                    p.dailyMg = step.dailyMg;
+                    if (p.targetDailyMg) p.pct = Math.round(100 * p.dailyMg / p.targetDailyMg);
+                }
+                if (c.raasiDose === 'naive') {
+                    p.currentText = 'ติ๊กกลุ่มนี้ไว้ แต่เลือกว่าไม่เคยได้รับยามาก่อน';
+                    p.status = 'caution';
+                    p.nextStep = 'เริ่มขนาดต่ำตาม guideline' + (meta ? ' (' + meta.startText + ')' : '');
+                } else if (p.pct == null) {
+                    p.status = 'on';
+                    p.nextStep = 'ระบุขนาดปัจจุบัน เพื่อคิด % ของเป้าและขั้นถัดไป';
+                } else {
+                    const lower = hfLowerTargetDaily(c.raasiDrug, c.weight);
+                    if (p.dailyMg >= p.targetDailyMg) {
+                        p.status = 'target';
+                        p.nextStep = 'ถึงเป้าแล้ว คงขนาดที่ทนได้';
+                    } else if (lower && p.dailyMg >= lower) {
+                        p.status = 'inrange';
+                        p.nextStep = step && step.next ? step.next : 'อยู่ในช่วงเป้า ถ้าทนได้พิจารณาปรับถึงเป้าบน';
+                        p.canTitrate = true;
+                    } else {
+                        p.status = 'low';
+                        p.nextStep = (step && step.next) ? step.next : getHfNextStep(c.raasiDrug, c.raasiDose);
+                        p.canTitrate = true;
+                    }
+                }
+                if (meta && meta.isAcei) {
+                    p.alerts.push(hfAlert('warn', 'หากจะเปลี่ยนเป็น ARNI ต้องหยุด ACEI อย่างน้อย 36 ชม. เพื่อลดเสี่ยง angioedema (2022 AHA/ACC/HFSA และ 2021 ESC) — การเปลี่ยนจาก ARB เป็น ARNI ไม่ต้องเว้นช่วงนี้'));
+                    if (phenotype === 'HFrEF' && (c.nyha === 2 || c.nyha === 3)) {
+                        p.alerts.push(hfAlert('info', 'HFrEF NYHA II–III ที่ทน ACEI/ARB ได้ แนวทางแนะนำพิจารณาเปลี่ยนเป็น ARNI เพื่อลด morbidity/mortality เพิ่มเติม'));
+                    }
+                } else if (meta && !meta.isArni && phenotype === 'HFrEF' && (c.nyha === 2 || c.nyha === 3)) {
+                    p.alerts.push(hfAlert('info', 'กำลังใช้ ARB: ใน HFrEF NYHA II–III พิจารณาเปลี่ยนเป็น ARNI ได้โดยไม่ต้องเว้น 36 ชม.'));
+                }
+            } else {
+                if (phenotype === 'HFrEF' && !c.pregnant) {
+                    let start = '49/51 mg BID';
+                    if ((!isNaN(c.egfr) && c.egfr < 30) || (!isNaN(c.sbp) && c.sbp <= 110 && c.sbp >= 100)) start = '24/26 mg BID (eGFR <30 หรือ SBP 100–110 / ผู้ไม่เคยได้ ACEI-ARB)';
+                    p.nextStep = 'พิจารณาเริ่ม ARNI (Entresto) ' + start + ' เป็นตัวเลือกแรก';
+                } else if (phenotype === 'HFmrEF' || phenotype === 'HFpEF') {
+                    p.nextStep = 'เสานี้ใน HFmrEF/HFpEF มีระดับแนะนำอ่อนกว่า SGLT2i — พิจารณาตามอาการ ความดัน และไต';
+                }
+            }
+
+            if (!isNaN(c.sbp) && c.sbp < 90) {
+                p.alerts.push(hfAlert('danger', 'SBP < 90 mmHg: ESC 2021 ระบุเป็นข้อห้ามของ ARNI (PARADIGM-HF รับผู้มี SBP > 95) — ชะลอการเริ่ม/ปรับเพิ่ม และประเมินปริมาตรเลือด'));
+                p.canTitrate = false;
+                if (p.status === 'low' || p.status === 'inrange') p.status = 'alert';
+            } else if (!isNaN(c.sbp) && c.sbp < 100) {
+                p.alerts.push(hfAlert('warn', 'SBP < 100 mmHg: ชะลอการปรับเพิ่ม RAASi/ARNI (2024 ACC ECDP ระบุ SBP <100 เป็นข้อควรระวังของ sacubitril/valsartan)'));
+                p.canTitrate = false;
+                if (p.status === 'low' || p.status === 'inrange') p.status = 'caution';
+                if (p.on) p.nextStep = 'ชะลอการปรับเพิ่ม เนื่องจาก SBP < 100 mmHg';
+            }
+            if (!isNaN(c.k) && c.k > 5.5) {
+                p.alerts.push(hfAlert('danger', 'K > 5.5 mEq/L: ชะลอการปรับเพิ่ม และทบทวนขนาด RAASi/ARNI พร้อมติดตาม K และ eGFR'));
+                p.canTitrate = false;
+                if (p.on) {
+                    p.status = 'alert';
+                    p.nextStep = 'ชะลอการปรับเพิ่ม และทบทวนขนาด เนื่องจาก K > 5.5 mEq/L';
+                }
+            } else if (!isNaN(c.k) && c.k >= 5.0) {
+                p.alerts.push(hfAlert('warn', 'K ≥ 5.0 mEq/L: ใช้ RAASi/ARNI อย่างระวัง และติดตามเกลือแร่ใกล้ชิด (ESC ระบุ K >5.0 เป็นข้อควรระวังของ ARNI)'));
+            }
+            if (c.hasRAASi && c.raasiDrug === 'arni' && !isNaN(c.egfr) && c.egfr < 30) {
+                p.alerts.push(hfAlert('warn', 'eGFR < 30: หากเริ่ม/ใช้ ARNI ให้ใช้ขนาดเริ่ม 24/26 mg BID แล้วค่อยปรับขึ้น (2024 ACC ECDP) — ESC 2021 เคยตั้ง eGFR <30 เป็นข้อห้าม'));
+            }
+            if (!c.hasRAASi && !isNaN(c.egfr) && c.egfr < 30 && phenotype === 'HFrEF') {
+                p.alerts.push(hfAlert('warn', 'eGFR < 30: หากเริ่ม ARNI ให้เริ่ม 24/26 mg BID; ต้องชั่งประโยชน์กับความเสี่ยงทางไต'));
+            }
+            return p;
+        }
+
+        function evalHfBb(c, phenotype) {
+            const p = { id:'bb', title:'2. Evidence-based beta-blocker', on:false, drug:'', klass:'BB', currentText:'ยังไม่ได้ยาเสานี้', dailyMg:NaN, targetText:'Bisoprolol 10 mg OD, Carvedilol 25 mg BID (<85 กก.) หรือ 50 mg BID (≥85 กก.), Metoprolol succinate 200 mg OD', targetDailyMg:NaN, pct:null, nextStep:'พิจารณาเริ่ม bisoprolol, carvedilol หรือ metoprolol succinate เมื่อ euvolemic', status:'missing', alerts:[], canTitrate:false };
+            if (c.hasBB && c.bbDrug) {
+                const meta = hfDrugMeta[c.bbDrug];
+                const step = hfStepInfo(c.bbDrug, c.bbDose);
+                p.on = true;
+                p.drug = c.bbDrug;
+                p.currentText = step ? step.text : ((meta ? meta.name : c.bbDrug) + (!c.bbDose || c.bbDose === 'none' ? ' (ยังไม่ระบุขนาด)' : ''));
+                if (meta) {
+                    p.targetText = meta.targetText;
+                    p.targetDailyMg = hfTargetDaily(c.bbDrug, c.weight);
+                    if (c.bbDrug === 'carvedilol' && isNaN(c.weight)) p.targetText = '25 mg BID (ถ้าน้ำหนัก ≥85 กก. เป้าคือ 50 mg BID — กรอกน้ำหนักเพื่อคำนวณ % ให้ตรงเป้า)';
+                }
+                if (step && typeof step.dailyMg === 'number' && p.targetDailyMg) {
+                    p.dailyMg = step.dailyMg;
+                    p.pct = Math.round(100 * p.dailyMg / p.targetDailyMg);
+                }
+                if (p.pct == null) {
+                    p.status = 'on';
+                    p.nextStep = 'ระบุขนาดปัจจุบัน เพื่อคิด % ของเป้าและขั้นถัดไป';
+                } else if (!meta || !meta.evidenceBased) {
+                    p.status = 'caution';
+                    p.nextStep = 'พิจารณาเปลี่ยนเป็น metoprolol succinate, bisoprolol หรือ carvedilol (สูตรที่มีหลักฐานใน HFrEF)';
+                    p.alerts.push(hfAlert('warn', 'Metoprolol tartrate ไม่ใช่สูตรที่ guideline ใช้เป็น evidence-based beta-blocker ใน HFrEF (ใช้ succinate / carvedilol / bisoprolol)'));
+                } else if (p.dailyMg >= p.targetDailyMg) {
+                    p.status = 'target';
+                    p.nextStep = 'ถึงเป้าแล้ว คงขนาดที่ทนได้';
+                    if (c.bbDrug === 'carvedilol' && isNaN(c.weight)) {
+                        p.alerts.push(hfAlert('info', 'คิด % จากเป้า 25 mg BID หากน้ำหนัก ≥85 กก. เป้าคือ 50 mg BID'));
+                    }
+                } else {
+                    p.status = 'low';
+                    p.nextStep = (step && step.next) ? step.next : getHfNextStep(c.bbDrug, c.bbDose);
+                    p.canTitrate = true;
+                    if (c.bbDrug === 'carvedilol' && c.bbDose === 'target' && !isNaN(c.weight) && c.weight >= 85) {
+                        p.nextStep = '50 mg BID (เป้าเมื่อน้ำหนัก ≥85 กก.)';
+                    }
+                }
+            }
+
+            if (c.congestion) {
+                if (!p.on && phenotype === 'HFrEF') {
+                    p.alerts.push(hfAlert('warn', 'ยังมีภาวะคั่งน้ำ: ชะลอการเริ่ม beta-blocker จนกว่าจะ euvolemic (แนวปฏิบัติมาตรฐานในการเริ่มยา)'));
+                    p.nextStep = 'ชะลอการเริ่มยา รอให้น้ำไม่เกินก่อน';
+                    p.status = 'caution';
+                } else if (p.on && p.canTitrate) {
+                    p.alerts.push(hfAlert('warn', 'ยังมีภาวะคั่งน้ำ: ห้ามปรับเพิ่ม beta-blocker จนกว่าจะ euvolemic'));
+                    p.nextStep = 'ชะลอการปรับเพิ่ม เนื่องจากยังคั่งน้ำ';
+                    p.canTitrate = false;
+                    p.status = 'caution';
+                }
+            }
+            if (!isNaN(c.hr) && c.hr < 50) {
+                p.alerts.push(hfAlert('danger', 'HR < 50 bpm: พิจารณาลดขนาดหรือชะลอการปรับเพิ่ม beta-blocker และค้นหาสาเหตุของภาวะหัวใจเต้นช้า'));
+                p.canTitrate = false;
+                if (p.on) p.status = 'alert';
+            } else if (!isNaN(c.hr) && c.hr < 60) {
+                p.alerts.push(hfAlert('warn', 'HR < 60 bpm: ชะลอการปรับเพิ่ม beta-blocker'));
+                p.canTitrate = false;
+                if (p.on && (p.status === 'low' || p.status === 'inrange')) p.status = 'caution';
+                if (p.on && p.canTitrate === false && p.status !== 'target') p.nextStep = 'ชะลอการปรับเพิ่ม เนื่องจาก HR < 60';
+            }
+            if (!isNaN(c.sbp) && c.sbp < 90 && p.canTitrate) {
+                p.alerts.push(hfAlert('warn', 'SBP < 90 mmHg: ชะลอการปรับเพิ่ม beta-blocker และประเมินอาการ hypotension'));
+                p.canTitrate = false;
+            }
+            return p;
+        }
+
+        function evalHfMra(c, phenotype) {
+            const p = { id:'mra', title:'3. MRA', on:false, drug:'', klass:'MRA', currentText:'ยังไม่ได้ยาเสานี้', dailyMg:NaN, targetText:'Spironolactone 25–50 mg OD หรือ Eplerenone 50 mg OD', targetDailyMg:50, pct:null, nextStep:'พิจารณาเริ่ม spironolactone 12.5–25 mg OD หรือ eplerenone 25 mg OD หาก K <5.0 และ eGFR >30', status:'missing', alerts:[], canTitrate:false };
+            const labsMissing = isNaN(c.k) || isNaN(c.egfr);
+            if (labsMissing) p.alerts.push(hfAlert('info', 'กรอก K และ eGFR เพื่อประเมินว่าเริ่มหรือปรับ MRA ได้ปลอดภัยหรือไม่'));
+
+            if (c.pregnant) p.alerts.push(hfAlert('danger', 'ตั้งครรภ์/วางแผนตั้งครรภ์: ห้ามใช้ MRA'));
+
+            if (c.hasMRA && c.mraDrug) {
+                const meta = hfDrugMeta[c.mraDrug];
+                const step = hfStepInfo(c.mraDrug, c.mraDose);
+                p.on = true;
+                p.drug = c.mraDrug;
+                p.currentText = step ? step.text : ((meta ? meta.name : c.mraDrug) + (!c.mraDose || c.mraDose === 'none' ? ' (ยังไม่ระบุขนาด)' : ''));
+                if (meta) {
+                    p.targetText = meta.targetText;
+                    p.targetDailyMg = meta.targetDailyMg;
+                }
+                if (step && typeof step.dailyMg === 'number') {
+                    p.dailyMg = step.dailyMg;
+                    p.pct = Math.round(100 * p.dailyMg / p.targetDailyMg);
+                }
+                if (p.pct == null) {
+                    p.status = 'on';
+                    p.nextStep = 'ระบุขนาดปัจจุบัน เพื่อคิด % ของเป้าและขั้นถัดไป';
+                } else if (p.dailyMg >= p.targetDailyMg) {
+                    p.status = 'target';
+                    p.nextStep = 'ถึงเป้าบนแล้ว คงขนาดที่ทนได้';
+                } else if (p.dailyMg >= hfLowerTargetDaily(c.mraDrug, c.weight)) {
+                    p.status = 'inrange';
+                    p.nextStep = (step && step.next) ? step.next : 'อยู่ในช่วงเป้า ถ้า K และ eGFR ปลอดภัยพิจารณาปรับถึงเป้าบน';
+                    p.canTitrate = true;
+                } else {
+                    p.status = 'low';
+                    p.nextStep = (step && step.next) ? step.next : getHfNextStep(c.mraDrug, c.mraDose);
+                    p.canTitrate = true;
+                }
+            } else if (!c.pregnant) {
+                if (!labsMissing && (c.egfr <= 30 || c.k >= 5.0)) {
+                    p.nextStep = 'ห้ามเริ่ม MRA ขณะนี้';
+                    p.status = 'alert';
+                } else if (labsMissing) {
+                    p.nextStep = 'ระบุ K และ eGFR ก่อนเริ่ม MRA';
+                }
+            }
+
+            // Safety thresholds from 2022 AHA (do not initiate if eGFR ≤30 or K ≥5.0)
+            // and ESC practical guidance: reduce if K >5.5 or eGFR <30; stop if K >6.0 or eGFR <20
+            if (!isNaN(c.k) && c.k > 6.0) {
+                p.alerts.push(hfAlert('danger', 'K > 6.0 mEq/L: หยุด MRA ทันที และติดตาม K ใกล้ชิด (ESC practical guidance)'));
+                p.canTitrate = false;
+                if (p.on) { p.status = 'alert'; p.nextStep = 'หยุดยา MRA ทันที'; }
+            } else if ((!isNaN(c.egfr) && c.egfr < 20)) {
+                p.alerts.push(hfAlert('danger', 'eGFR < 20 mL/min/1.73 m²: หยุด MRA ทันที (ESC practical guidance)'));
+                p.canTitrate = false;
+                if (p.on) { p.status = 'alert'; p.nextStep = 'หยุดยา MRA ทันที'; }
+            } else if ((!isNaN(c.k) && c.k > 5.5) || (!isNaN(c.egfr) && c.egfr < 30 && p.on)) {
+                const bits = [];
+                if (!isNaN(c.k) && c.k > 5.5) bits.push('K > 5.5 mEq/L');
+                if (!isNaN(c.egfr) && c.egfr < 30) bits.push('eGFR < 30');
+                p.alerts.push(hfAlert('danger', bits.join(' และ ') + ': ลดขนาด MRA ลงครึ่งหนึ่งและติดตามใกล้ชิด (ESC practical guidance) — 2022 AHA/ACC/HFSA ห้ามเริ่มใหม่ถ้า eGFR ≤30 หรือ K ≥5.0'));
+                p.canTitrate = false;
+                if (p.on) { p.status = 'alert'; p.nextStep = 'ลดขนาดลงครึ่งหนึ่ง และติดตาม K/eGFR'; }
+            } else if (!p.on && !labsMissing && (c.egfr <= 30 || c.k >= 5.0) && !c.pregnant) {
+                const bits = [];
+                if (c.egfr <= 30) bits.push('eGFR ≤ 30');
+                if (c.k >= 5.0) bits.push('K ≥ 5.0 mEq/L');
+                p.alerts.push(hfAlert('danger', 'ห้ามเริ่ม MRA เพราะ ' + bits.join(' และ ') + ' (2022 AHA/ACC/HFSA และ 2021 ESC)'));
+            } else if (!isNaN(c.k) && c.k >= 5.0 && p.on) {
+                p.alerts.push(hfAlert('warn', 'K ≥ 5.0 mEq/L: ชะลอการปรับเพิ่ม MRA และติดตาม K กับ eGFR หลังเริ่มหรือปรับขนาดที่ 1 และ 4 สัปดาห์'));
+                p.canTitrate = false;
+                if (p.status === 'low' || p.status === 'inrange') p.status = 'caution';
+                p.nextStep = 'ชะลอการปรับเพิ่ม และติดตาม K/eGFR';
+            }
+            return p;
+        }
+
+        function evalHfSglt2i(c, phenotype) {
+            const p = { id:'sglt2i', title:'4. SGLT2 inhibitor', on:false, drug:'', klass:'SGLT2i', currentText:'ยังไม่ได้ยาเสานี้', dailyMg:NaN, targetText:'Dapagliflozin หรือ Empagliflozin 10 mg OD', targetDailyMg:10, pct:null, nextStep:'พิจารณาเริ่ม dapagliflozin หรือ empagliflozin 10 mg OD (ไม่ต้องไทเทรต)', status:'missing', alerts:[], canTitrate:false };
+            if (c.pregnant) p.alerts.push(hfAlert('danger', 'ตั้งครรภ์/วางแผนตั้งครรภ์: ห้ามใช้ SGLT2i'));
+            if (c.hasSGLT2i) {
+                const drug = c.sgltDrug || 'empagliflozin';
+                const meta = hfDrugMeta[drug] || hfDrugMeta.empagliflozin;
+                const step = hfStepInfo(drug, c.sgltDose) || (doseSteps[drug] || [])[0];
+                p.on = true;
+                p.drug = drug;
+                p.currentText = step ? (meta.name + ' ' + step.text) : meta.name;
+                p.targetText = meta.targetText;
+                p.dailyMg = step && typeof step.dailyMg === 'number' ? step.dailyMg : 10;
+                p.pct = Math.round(100 * p.dailyMg / 10);
+                p.status = p.pct >= 100 ? 'target' : 'low';
+                p.nextStep = p.pct >= 100 ? 'ถึงเป้าแล้ว (10 mg OD ไม่ต้องไทเทรต)' : 'ปรับเป็น 10 mg OD';
+                if (!isNaN(c.egfr) && c.egfr < 20) {
+                    p.alerts.push(hfAlert('warn', 'eGFR < 20: การเริ่มใหม่โดยทั่วไปไม่แนะนำ (ESC 2021 ระบุข้อห้ามของ dapagliflozin ที่ eGFR <20; การศึกษาหลักรับผู้มี eGFR ≥20) — หากใช้อยู่แล้วให้ปรึกษาแพทย์เรื่องต่อยา'));
+                    p.status = 'caution';
+                }
+            } else if (!c.pregnant) {
+                if (!isNaN(c.egfr) && c.egfr < 20) {
+                    p.nextStep = 'ไม่แนะนำให้เริ่ม SGLT2i เนื่องจาก eGFR < 20';
+                    p.status = 'alert';
+                    p.alerts.push(hfAlert('danger', 'eGFR < 20 mL/min/1.73 m²: ไม่แนะนำเริ่ม dapagliflozin/empagliflozin ตามเกณฑ์ที่ใช้ใน guideline/การศึกษาหลัก'));
+                } else {
+                    if (phenotype === 'HFpEF' || phenotype === 'HFmrEF') {
+                        p.nextStep = 'แนะนำเริ่ม dapagliflozin หรือ empagliflozin 10 mg OD (2023 ESC Class I, 2022 AHA/ACC/HFSA Class 2a)';
+                    } else {
+                        p.nextStep = 'พิจารณาเริ่ม dapagliflozin หรือ empagliflozin 10 mg OD (ไม่ต้องไทเทรต; ใช้ได้ทั้งที่มีและไม่มีเบาหวาน)';
+                    }
+                    if (isNaN(c.egfr)) p.alerts.push(hfAlert('info', 'ยังไม่มี eGFR: สามารถวางแผนเริ่มได้แต่ควรมีค่าไตก่อนเริ่ม และไม่เริ่มถ้า eGFR <20'));
+                }
+            }
+            return p;
+        }
+
+        function evalHfAddons(c, phenotype, pillars) {
+            const notes = [];
+            const bbAtTarget = pillars.bb.on && pillars.bb.status === 'target';
+            const hrHigh = !isNaN(c.hr) && c.hr >= 70;
+            const lvefOk = !isNaN(c.lvef) && c.lvef <= 35;
+            const nyhaOk = (c.nyha === 2 || c.nyha === 3 || c.nyha === 4);
+
+            if (c.hasIva) {
+                let ivaTxt = 'กำลังใช้ Ivabradine';
+                if (c.ivaDose === 'vlow') ivaTxt += ' ขนาดต่ำกว่าเริ่ม (~2.5 mg/วัน)';
+                else if (c.ivaDose === 'start') ivaTxt += ' 2.5 mg BID (5 mg/วัน)';
+                else if (c.ivaDose === 'mid') ivaTxt += ' 5 mg BID (ขนาดเริ่มตาม guideline, 10 mg/วัน)';
+                else if (c.ivaDose === 'target') ivaTxt += ' 7.5 mg BID (เป้า 15 mg/วัน)';
+                let extra = 'เป้า 7.5 mg BID; ถ้า HR 50–60 คงขนาดไว้ ถ้า HR <50 ให้ลดหรือหยุด (2021 ESC)';
+                if (!isNaN(c.hr) && c.hr < 50) extra = 'HR < 50: ลดขนาดหรือหยุด ivabradine';
+                else if (hrHigh && c.ivaDose && c.ivaDose !== 'target' && c.ivaDose !== 'none') extra = 'HR ยัง ≥70: พิจารณาปรับเพิ่มทีละขั้นจน 7.5 mg BID';
+                notes.push({ title:'Ivabradine', tone: (!isNaN(c.hr) && c.hr < 50) ? 'danger' : 'info', body: ivaTxt + ' — ' + extra });
+            } else if (phenotype === 'HFrEF' && lvefOk && hrHigh && nyhaOk && !c.pregnant) {
+                const why = bbAtTarget ? 'ได้ evidence-based BB ครบเป้าแล้วแต่ HR ยัง ≥70' : (c.hasBB ? 'HR ≥70 (ควรได้ขนาด BB สูงสุดที่ทนได้ก่อน ตาม guideline)' : 'HR ≥70 และยังไม่ได้ BB — ใช้ได้หากมีข้อห้ามต่อ BB');
+                notes.push({ title:'Ivabradine (ยังไม่ได้)', tone:'info', body: why + ': พิจารณา ivabradine หากเป็น sinus rhythm, LVEF ≤35%, NYHA II–IV (2022 AHA/ACC/HFSA และ 2021 ESC ระดับ 2a) เริ่ม 5 mg BID (หรือ 2.5 mg BID หากอายุ >75 ปี) เป้า 7.5 mg BID' });
+            } else {
+                notes.push({ title:'Ivabradine', tone:'muted', body:'ข้อบ่งใช้: HFrEF LVEF ≤35%, sinus rhythm, HR ขณะพัก ≥70 แม้ได้ evidence-based beta-blocker ในขนาดที่ทนได้สูงสุด (หรือมีข้อห้ามต่อ BB). เริ่ม 5 mg BID เป้า 7.5 mg BID' });
+            }
+
+            if (c.hasHnIsdn) {
+                notes.push({ title:'Hydralazine + ISDN (กำลังใช้)', tone:'info', body:'เป้าตาม 2022 AHA/ACC/HFSA: hydralazine 75 mg / ISDN 40 mg สามครั้งต่อวัน (หรือ hydralazine รวม 300 mg/วัน และ ISDN รวม 120 mg/วัน แบ่งให้) ขนาดเริ่มที่ใช้บ่อยคือ 37.5/20 mg TID' });
+            } else {
+                notes.push({ title:'Hydralazine + ISDN', tone:'muted', body:'2022 AHA/ACC/HFSA: Class 1 ในผู้ป่วย African American ที่มี HFrEF NYHA III–IV ที่ได้รับยาหลักแล้ว และ Class 2b หากไม่ทน ACEI/ARB/ARNI. ขนาดเริ่ม 37.5/20 mg TID เป้า 75/40 mg TID' });
+            }
+
+            if (c.hasVericiguat) {
+                notes.push({ title:'Vericiguat (กำลังใช้)', tone:'info', body:'ขนาดเริ่ม 2.5 mg OD ปรับขึ้นเป็น 5 mg แล้ว 10 mg OD (เป้า) ตาม 2022 AHA/ACC/HFSA และ 2021 ESC' });
+            } else {
+                notes.push({ title:'Vericiguat', tone:'muted', body:'2022 AHA/ACC/HFSA และ 2021 ESC ระดับ 2b: พิจารณาใน HFrEF NYHA II–IV ที่อาการแย่ลงแม้ได้ยา GDMT แล้ว. เริ่ม 2.5 mg OD เป้า 10 mg OD' });
+            }
+            return notes;
+        }
+
+        function buildHfGdmtSummaryLine(pillars, onCount, c) {
+            const parts = ['GDMT ' + onCount + '/4'];
+            const map = [
+                ['raasi', 'RAASi'],
+                ['bb', 'BB'],
+                ['mra', 'MRA'],
+                ['sglt2i', 'SGLT2i']
+            ];
+            map.forEach(([k, label]) => {
+                const p = pillars[k];
+                if (!p.on) {
+                    const caution = (p.alerts || []).filter(a => a.level === 'danger').map(a => a.text.split(':')[0]).join('; ');
+                    parts.push(label + ' ยังไม่ได้' + (caution ? ' (' + caution + ')' : ''));
+                } else {
+                    const meta = hfDrugMeta[p.drug];
+                    const name = meta ? meta.short : label;
+                    let dose = '';
+                    if (!isNaN(p.dailyMg)) dose = ' ' + p.dailyMg + ' mg/วัน';
+                    let pct = (p.pct != null) ? ' (' + p.pct + '% ของเป้า)' : '';
+                    let nxt = p.nextStep ? ' | ขั้นถัดไป: ' + p.nextStep : '';
+                    parts.push(label + ' ' + name + dose + pct + nxt);
+                }
+            });
+            const dangers = [];
+            Object.values(pillars).forEach(p => {
+                (p.alerts || []).filter(a => a.level === 'danger').forEach(a => dangers.push(a.text.split(':')[0]));
+            });
+            if (dangers.length) parts.push('เตือน: ' + dangers.join('; '));
+            return parts.join(' · ');
+        }
+
+        function hfStatusBadge(status) {
+            const map = {
+                missing: ['ยังไม่ได้', 'bg-gray-100 text-gray-700 border-gray-200'],
+                on: ['ได้แล้ว', 'bg-blue-50 text-blue-800 border-blue-200'],
+                low: ['ได้แล้ว ยังไม่ถึงเป้า', 'bg-amber-50 text-amber-800 border-amber-200'],
+                inrange: ['อยู่ในช่วงเป้า', 'bg-emerald-50 text-emerald-800 border-emerald-200'],
+                target: ['ถึงเป้า', 'bg-green-100 text-green-800 border-green-200'],
+                caution: ['ระวัง', 'bg-amber-100 text-amber-900 border-amber-300'],
+                alert: ['ต้องทบทวน', 'bg-red-100 text-red-800 border-red-200']
+            };
+            return map[status] || map.on;
+        }
+
+        function renderHfGdmtHelper() {
+            const grid = document.getElementById('hfGdmtGrid');
+            if (!grid) return;
+            const ev = evaluateHfGdmt();
+            window._hfGdmtEval = ev;
+            const ph = document.getElementById('hfGdmtPhenotype');
+            if (ph) {
+                const tone = ev.phenotype === 'HFrEF' ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : ev.phenotype === 'unknown' ? 'bg-gray-50 border-gray-200 text-gray-700' : 'bg-sky-50 border-sky-200 text-sky-900';
+                ph.innerHTML = `<div class="text-sm rounded-lg border px-3 py-2 ${tone}"><span class="font-bold">${hfEsc(ev.phenotype === 'unknown' ? 'ยังไม่ระบุ phenotype' : ev.phenotype)}</span> · ได้ยา ${ev.onCount}/4 เสา · ${hfEsc(ev.phenotypeLabel)}</div>`;
+            }
+            const colors = { raasi:'border-blue-300', bb:'border-green-300', mra:'border-purple-300', sglt2i:'border-amber-300' };
+            grid.innerHTML = ['raasi','bb','mra','sglt2i'].map(k => {
+                const p = ev.pillars[k];
+                const [badge, badgeCls] = hfStatusBadge(p.status);
+                const pct = p.pct != null ? Math.max(0, Math.min(p.pct, 100)) : 0;
+                const pctLabel = p.pct != null ? (p.pct + '%') : '—';
+                const barColor = p.status === 'alert' ? 'bg-red-500' : p.status === 'target' || p.status === 'inrange' ? 'bg-emerald-500' : p.status === 'low' || p.status === 'caution' ? 'bg-amber-500' : 'bg-gray-300';
+                const alerts = (p.alerts || []).map(a => {
+                    const cls = a.level === 'danger' ? 'text-red-700' : a.level === 'warn' ? 'text-amber-800' : 'text-sky-800';
+                    const icon = a.level === 'danger' ? 'fa-circle-exclamation' : a.level === 'warn' ? 'fa-triangle-exclamation' : 'fa-circle-info';
+                    return `<div class="text-xs ${cls} mt-1"><i class="fa-solid ${icon} mr-1"></i>${hfEsc(a.text)}</div>`;
+                }).join('');
+                return `<div class="border ${colors[k]} rounded-lg p-3 bg-white shadow-sm">
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <h4 class="font-bold text-sm text-gray-800">${hfEsc(p.title)}</h4>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border whitespace-nowrap ${badgeCls}">${badge}</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mb-2">${hfEsc(p.currentText)}</p>
+                    <div class="flex items-center justify-between text-[11px] text-gray-500 mb-0.5">
+                        <span>เทียบเป้า ${hfEsc(p.targetText || '')}</span>
+                        <span class="font-bold text-gray-800">${hfEsc(pctLabel)}</span>
+                    </div>
+                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden mb-2"><div class="${barColor} h-2" style="width:${pct}%"></div></div>
+                    <p class="text-xs text-gray-800"><span class="font-semibold text-emerald-800">ขั้นถัดไป:</span> ${hfEsc(p.nextStep || '—')}</p>
+                    ${alerts}
+                </div>`;
+            }).join('');
+            const addons = document.getElementById('hfGdmtAddons');
+            if (addons) {
+                addons.innerHTML = ev.addons.map(n => {
+                    const cls = n.tone === 'danger' ? 'bg-red-50 border-red-200 text-red-800' : n.tone === 'info' ? 'bg-sky-50 border-sky-200 text-sky-900' : 'bg-gray-50 border-gray-200 text-gray-600';
+                    return `<div class="text-xs rounded-lg border px-3 py-2 ${cls}"><span class="font-bold">${hfEsc(n.title)}:</span> ${hfEsc(n.body)}</div>`;
+                }).join('');
+            }
+        }
+
+        function bindHfGdmtHelper() {
+            const form = document.getElementById('form-HF');
+            if (!form || form.dataset.gdmtBound) return;
+            form.dataset.gdmtBound = '1';
+            form.addEventListener('input', renderHfGdmtHelper);
+            form.addEventListener('change', renderHfGdmtHelper);
+            renderHfGdmtHelper();
+        }
 
         function toggleHfSub(chkId, divId) {
             const el = document.getElementById(chkId);
@@ -4397,6 +5037,7 @@
                 if(isChecked) div.classList.remove('hidden');
                 else div.classList.add('hidden');
             }
+            if (typeof renderHfGdmtHelper === 'function') renderHfGdmtHelper();
         }
 
         function updateHfDose(selDrugId, selDoseId) {
@@ -4420,9 +5061,13 @@
                     doseSel.add(option);
                 });
                 if(wrapDose) wrapDose.classList.remove('hidden');
+                if (selDrugId === 'sel_hf_sglt2i_drug' && doseSteps[drug].length === 1) {
+                    doseSel.value = doseSteps[drug][0].val;
+                }
             } else {
                 if(wrapDose) wrapDose.classList.add('hidden');
             }
+            if (typeof renderHfGdmtHelper === 'function') renderHfGdmtHelper();
         }
 
         function getHfNextStep(drug, currentVal) {
@@ -4458,6 +5103,7 @@
             const mraDose = document.getElementById('sel_hf_mra_dose').value;
 
             const hasSGLT2i = document.getElementById('chk_hf_sglt2i').checked;
+            const sgltDrug = document.getElementById('sel_hf_sglt2i_drug')?.value || 'empagliflozin';
             const hasIva = document.getElementById('chk_hf_iva').checked;
             const ivaDose = document.getElementById('sel_hf_iva_dose').value;
             const hasLoop = document.getElementById('chk_hf_loop').checked;
@@ -4535,34 +5181,36 @@
 
                 if (!pregnant) {
                     if (!hasSGLT2i) {
-                        if (egfr > 20 || isNaN(egfr)) {
+                        if (isNaN(egfr) || egfr >= 20) {
                             gdmt.push(`<strong>• SGLT2 Inhibitor</strong>
-                            <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>เริ่มยา Empagliflozin 10 mg/วัน (1 เม็ด OD)</b></span>
-                            <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ยานี้ไม่ต้องไทเทรต ลดการนอน รพ. ได้ 30% ใช้ได้ไม่ว่าจะเป็นเบาหวานหรือไม่</span>`);
+                            <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>เริ่มยา Dapagliflozin หรือ Empagliflozin 10 mg/วัน (1 เม็ด OD)</b></span>
+                            <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ยานี้ไม่ต้องไทเทรต ใช้ได้ทั้งที่มีและไม่มีเบาหวาน ไม่แนะนำเริ่มหาก eGFR &lt; 20</span>`);
                         } else {
-                            gdmt.push(`<strong>• SGLT2 Inhibitor</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <b>ไม่แนะนำให้เริ่มยา</b> เนื่องจาก eGFR <= 20</span>`);
+                            gdmt.push(`<strong>• SGLT2 Inhibitor</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <b>ไม่แนะนำให้เริ่มยา</b> เนื่องจาก eGFR &lt; 20 (ESC 2021 / การศึกษาหลักรับผู้มี eGFR ≥ 20)</span>`);
                         }
                     }
 
                     if (!hasRAASi) {
-                        let arniDose = (egfr < 30) ? '1/4 เม็ด 100mg BID (เนื่องจาก eGFR<30)' : '1/2 เม็ด 100mg BID';
+                        let arniDose = (!isNaN(egfr) && egfr < 30) || (!isNaN(sbp) && sbp <= 110 && sbp >= 100) ? '24/26 mg BID (eGFR &lt;30 หรือ SBP 100–110)' : '49/51 mg BID หรือ 24/26 mg BID หากไม่เคยได้ ACEI/ARB';
                         gdmt.push(`<strong>• RAASi Group</strong>
                             <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> แนะนำ <b>เริ่มยา ARNi (Entresto) ${arniDose}</b> เป็นตัวเลือกแรก</span>`);
                     } else {
-                        if (raasiDrug === 'enalapril' || raasiDrug === 'losartan') {
-                            if (nyha === 2 || nyha === 3) {
-                                gdmt.push(`<strong>• RAASi Group (กิน ${raasiDrug.toUpperCase()} อยู่)</strong>
+                        const raasiMeta = hfDrugMeta[raasiDrug];
+                        if (raasiMeta && !raasiMeta.isArni && (nyha === 2 || nyha === 3)) {
+                            const wash = raasiMeta.isAcei ? 'หากเปลี่ยนจาก ACEI <b>ต้องหยุดยาเดิมอย่างน้อย 36 ชม.</b> ก่อนให้ ARNi เพื่อป้องกัน Angioedema' : 'การเปลี่ยนจาก ARB เป็น ARNI <b>ไม่ต้องเว้น 36 ชม.</b>';
+                            gdmt.push(`<strong>• RAASi Group (กิน ${raasiMeta.short} อยู่)</strong>
                                 <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา <b>เปลี่ยนยาเดิมเป็น ARNi (Entresto)</b> เพื่อลดอัตราเสียชีวิตเพิ่มเติม</span>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Safety:</em> หากเปลี่ยนจาก ACEI <b>ต้องหยุดยาเดิม 36 ชม.</b> ก่อนให้ ARNi เพื่อป้องกัน Angioedema</span>`);
-                            }
+                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Safety:</em> ${wash} (2022 AHA/ACC/HFSA, 2021 ESC)</span>`);
                         }
-                        if (raasiDose === 'vlow' || raasiDose === 'start' || raasiDose === 'mid') {
-                            if (sbp >= 100 || isNaN(sbp)) {
-                                let nextStep = getHfNextStep(raasiDrug, raasiDose);
+                        const raasiNext = doseSteps[raasiDrug] && doseSteps[raasiDrug].find(s => s.val === raasiDose)?.next;
+                        if (raasiNext) {
+                            if ((sbp >= 100 || isNaN(sbp)) && (isNaN(potassium) || potassium <= 5.5)) {
                                 gdmt.push(`<strong>• RAASi Titration</strong>
-                                    <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ขนาดยายังไม่ถึงเป้า แนะนำให้ <b>ปรับเพิ่มเป็น ${nextStep}</b> เพื่อประสิทธิภาพสูงสุด</span>`);
-                            } else {
-                                gdmt.push(`<strong>• RAASi Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม (Hold titration)</u> เนื่องจากความดัน SBP < 100</span>`);
+                                    <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ขนาดยายังไม่ถึงเป้า แนะนำให้ <b>ปรับเพิ่มเป็น ${raasiNext}</b> เพื่อประสิทธิภาพสูงสุด</span>`);
+                            } else if (!isNaN(sbp) && sbp < 100) {
+                                gdmt.push(`<strong>• RAASi Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม (Hold titration)</u> เนื่องจากความดัน SBP &lt; 100 (2024 ACC ECDP)</span>`);
+                            } else if (!isNaN(potassium) && potassium > 5.5) {
+                                gdmt.push(`<strong>• RAASi Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม</u> เนื่องจาก K &gt; 5.5 และทบทวนขนาดยา</span>`);
                             }
                         }
                     }
@@ -4570,59 +5218,80 @@
                     if (!hasBB) {
                         if (!congestion) {
                             gdmt.push(`<strong>• Beta-blocker</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> น้ำไม่เกินแล้ว <b>แนะนำเริ่มยา Bisoprolol หรือ Carvedilol</b></span>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ห้ามเริ่มขณะคนไข้บวมน้ำเด็ดขาด ส่วน Metoprolol tartrate มีผลการศึกษารองรับน้อยกว่าตัวอื่น (อนุโลมใช้ถ้าจำเป็น)</span>`);
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> น้ำไม่เกินแล้ว <b>แนะนำเริ่มยา Bisoprolol, Carvedilol หรือ Metoprolol succinate</b></span>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ห้ามเริ่มขณะคนไข้บวมน้ำเด็ดขาด ส่วน Metoprolol tartrate ไม่ใช่สูตรที่มีหลักฐานใน HFrEF</span>`);
                         } else {
                             gdmt.push(`<strong>• Beta-blocker</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการเริ่มยาไว้ก่อน</u> เนื่องจากผู้ป่วยยังมีภาวะคั่งน้ำ (Congestion) อาจทำให้หัวใจบีบตัวลดลงฉับพลัน</span>`);
                         }
-                    } else if (bbDose === 'vlow' || bbDose === 'start' || bbDose === 'mid') {
-                        if (congestion) {
-                            gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ห้ามปรับเพิ่มยา (Hold titration)</u> เนื่องจากยังมีภาวะคั่งน้ำ ต้องรอให้ Euvolemic ก่อน</span>`);
-                        } else if (hr >= 60 || isNaN(hr)) {
-                            let nextStep = getHfNextStep(bbDrug, bbDose);
-                            gdmt.push(`<strong>• Beta-blocker Titration</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> HR รับได้ แนะนำ <b>ปรับเพิ่มยาเป็น ${nextStep}</b> เพื่อเพิ่ม LVEF และลดอัตราตาย</span>`);
-                        } else {
-                            gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม (Hold titration)</u> เนื่องจาก HR < 60</span>`);
+                    } else {
+                        if (bbDrug === 'metoprolol') {
+                            gdmt.push(`<strong>• Beta-blocker (Metoprolol tartrate)</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา <b>เปลี่ยนเป็น metoprolol succinate, bisoprolol หรือ carvedilol</b> ซึ่งเป็น evidence-based beta-blocker ใน HFrEF</span>`);
+                        }
+                        const bbNext = doseSteps[bbDrug] && doseSteps[bbDrug].find(s => s.val === bbDose)?.next;
+                        if (bbNext) {
+                            if (congestion) {
+                                gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ห้ามปรับเพิ่มยา (Hold titration)</u> เนื่องจากยังมีภาวะคั่งน้ำ ต้องรอให้ Euvolemic ก่อน</span>`);
+                            } else if (!isNaN(hr) && hr < 50) {
+                                gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>พิจารณาลดขนาดหรือชะลอการปรับเพิ่ม</u> เนื่องจาก HR &lt; 50</span>`);
+                            } else if (hr >= 60 || isNaN(hr)) {
+                                gdmt.push(`<strong>• Beta-blocker Titration</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> HR รับได้ แนะนำ <b>ปรับเพิ่มยาเป็น ${bbNext}</b> เพื่อเพิ่ม LVEF และลดอัตราตาย</span>`);
+                            } else {
+                                gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม (Hold titration)</u> เนื่องจาก HR &lt; 60</span>`);
+                            }
                         }
                     }
 
                     if (!hasMRA) {
-                        if (egfr > 30 && potassium < 5.0) {
-                            gdmt.push(`<strong>• MRA (Spironolactone)</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> แนะนำ <b>เริ่มยา 12.5 mg/day (1/2 เม็ด 25mg)</b></span>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ยานี้ช่วยลดการตายกะทันหัน (Sudden Cardiac Death) และ Cardiac fibrosis</span>`);
-                        } else if (egfr <= 30 || potassium >= 5.0) {
-                            gdmt.push(`<strong>• MRA</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ห้ามเริ่มยา</u> เนื่องจากผู้ป่วยมี eGFR <= 30 หรือ K >= 5.0 เสี่ยงอันตรายจาก Hyperkalemia</span>`);
+                        if (!isNaN(egfr) && !isNaN(potassium) && egfr > 30 && potassium < 5.0) {
+                            gdmt.push(`<strong>• MRA (Spironolactone / Eplerenone)</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> แนะนำ <b>เริ่ม spironolactone 12.5–25 mg/วัน หรือ eplerenone 25 mg/วัน</b></span>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> เริ่มได้เมื่อ eGFR &gt; 30 และ K &lt; 5.0 (2022 AHA/ACC/HFSA, 2021 ESC) ตรวจ K และไตที่ 1 และ 4 สัปดาห์หลังเริ่มหรือปรับขนาด</span>`);
+                        } else if ((!isNaN(egfr) && egfr <= 30) || (!isNaN(potassium) && potassium >= 5.0)) {
+                            gdmt.push(`<strong>• MRA</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ห้ามเริ่มยา</u> เนื่องจากผู้ป่วยมี eGFR ≤ 30 หรือ K ≥ 5.0 เสี่ยงอันตรายจาก Hyperkalemia (2022 AHA/ACC/HFSA, 2021 ESC)</span>`);
+                        } else {
+                            gdmt.push(`<strong>• MRA</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 ระบุ K และ eGFR ก่อนเริ่มยา (เริ่มได้เมื่อ eGFR &gt; 30 และ K &lt; 5.0)</span>`);
                         }
                     } else {
-                        if (potassium >= 5.5) {
+                        if (!isNaN(potassium) && potassium > 6.0) {
                             alerts.push(`<strong>[Critical Alert] การใช้ MRA ร่วมกับภาวะ Hyperkalemia</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> Potassium ล่าสุด >= 5.5 <b>ต้องสั่งหยุดยา MRA ทันที</b></span>`);
-                        } else if ((mraDose === 'vlow' || mraDose === 'start' || mraDose === 'mid') && potassium < 5.0 && egfr > 30) {
-                            let nextStep = getHfNextStep(mraDrug, mraDose);
-                            gdmt.push(`<strong>• MRA Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา <b>ปรับเพิ่มเป็น ${nextStep}</b> ค่าไตและเกลือแร่อยู่ในเกณฑ์ปลอดภัย</span>`);
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> K &gt; 6.0 <b>ต้องสั่งหยุดยา MRA ทันที</b> (ESC practical guidance)</span>`);
+                        } else if (!isNaN(egfr) && egfr < 20) {
+                            alerts.push(`<strong>[Critical Alert] การใช้ MRA ขณะ eGFR &lt; 20</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>หยุดยา MRA ทันที</b> (ESC practical guidance)</span>`);
+                        } else if ((!isNaN(potassium) && potassium > 5.5) || (!isNaN(egfr) && egfr < 30)) {
+                            alerts.push(`<strong>[Critical Alert] การใช้ MRA ขณะ K &gt; 5.5 หรือ eGFR &lt; 30</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>ลดขนาด MRA ลงครึ่งหนึ่ง</b> และติดตาม K/eGFR ใกล้ชิด (ESC practical guidance)</span>`);
+                        } else {
+                            const mraNext = doseSteps[mraDrug] && doseSteps[mraDrug].find(s => s.val === mraDose)?.next;
+                            if (mraNext && (isNaN(potassium) || potassium < 5.0) && (isNaN(egfr) || egfr > 30)) {
+                                gdmt.push(`<strong>• MRA Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา <b>ปรับเพิ่มเป็น ${mraNext}</b> ค่าไตและเกลือแร่อยู่ในเกณฑ์ปลอดภัย</span>`);
+                            }
                         }
                     }
 
-                    if (hasBB && bbDose === 'target' && hr >= 70 && (nyha === 2 || nyha === 3)) {
+                    const bbAtMax = hasBB && bbDrug && bbDrug !== 'metoprolol' && !(doseSteps[bbDrug] && doseSteps[bbDrug].find(s => s.val === bbDose)?.next);
+                    if (hasBB && bbAtMax && hr >= 70 && (nyha === 2 || nyha === 3 || nyha === 4) && (isNaN(lvef) || lvef <= 35)) {
                         if(!hasIva) {
                             gdmt.push(`<strong>• Ivabradine</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ได้ BB Max dose แต่ HR ยังสูง พิจารณา <b>เริ่ม Ivabradine 1/2 เม็ด 5mg BID</b> (ต้องเป็น Sinus Rhythm)</span>`);
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ได้ evidence-based BB ครบเป้าแล้วแต่ HR ยัง ≥ 70 พิจารณา <b>เริ่ม Ivabradine 5 mg BID</b> (หรือ 2.5 mg BID หากอายุ &gt;75 ปี) หากเป็น sinus rhythm และ LVEF ≤ 35% (2022 AHA/ACC/HFSA, 2021 ESC ระดับ 2a)</span>`);
                         } else if (ivaDose === 'vlow' || ivaDose === 'start' || ivaDose === 'mid') {
                             let nextIva = '';
-                            if (ivaDose === 'vlow') nextIva = '1/2 เม็ด 5mg BID (5 mg/day)';
-                            if (ivaDose === 'start') nextIva = '1 เม็ด 5mg BID (10 mg/day)';
-                            if (ivaDose === 'mid') nextIva = '1.5 เม็ด 5mg BID (15 mg/day - Target)';
+                            if (ivaDose === 'vlow') nextIva = '2.5 mg BID (5 mg/วัน)';
+                            if (ivaDose === 'start') nextIva = '5 mg BID (ขนาดเริ่ม 10 mg/วัน)';
+                            if (ivaDose === 'mid') nextIva = '7.5 mg BID (เป้า 15 mg/วัน)';
 
                             gdmt.push(`<strong>• Ivabradine Titration</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> HR ยัง >= 70 พิจารณา <b>ปรับเพิ่มเป็น ${nextIva}</b></span>`);
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> HR ยัง ≥ 70 พิจารณา <b>ปรับเพิ่มเป็น ${nextIva}</b></span>`);
                         }
                     }
                 }
             } else {
-                gdmt.push(`<strong>Diagnosis: HFpEF หรือ HFmrEF (LVEF >= 41%)</strong>
-                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Treatment Goal:</em> การรักษาหลักคือการให้ <b>SGLT2i (Empagliflozin 10mg)</b> เพื่อลดการนอน รพ. ร่วมกับ Diuretics เพื่อลดบวม</span>`);
+                const hfPheno = (!isNaN(lvef) && lvef <= 49) ? 'HFmrEF (LVEF 41–49%)' : 'HFpEF (LVEF ≥ 50%)';
+                const sgltLine = hasSGLT2i ? 'ได้ SGLT2i แล้ว (ขนาดเป้า 10 mg OD ไม่ต้องไทเทรต)' : 'การรักษาหลักคือการให้ <b>SGLT2i (dapagliflozin หรือ empagliflozin 10 mg OD)</b> เพื่อลดการนอน รพ. (2023 ESC Class I; 2022 AHA/ACC/HFSA Class 2a) ร่วมกับยาขับปัสสาวะเมื่อมีการคั่งน้ำ';
+                gdmt.push(`<strong>Diagnosis: ${hfPheno}</strong>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Treatment Goal:</em> ${sgltLine}</span>`);
             }
 
             if (ironDef) {
@@ -4674,6 +5343,7 @@
             const hfResultArea = document.getElementById('hfResultArea');
             if(hfRecContent) hfRecContent.innerHTML = htmlContent;
             if(hfResultArea) hfResultArea.classList.remove('hidden');
+            if (typeof renderHfGdmtHelper === 'function') renderHfGdmtHelper();
         }
 
         function copyHfToPmkNote() {
@@ -4693,26 +5363,7 @@
             const egfr = document.getElementById('hfEgfr').value || '-'; 
             const potassium = document.getElementById('hfK').value || '-';
 
-            let shortMeds = [];
-            if(document.getElementById('chk_hf_raasi').checked) {
-                let val = document.getElementById('sel_hf_raasi_drug').value;
-                if(val === 'arni') shortMeds.push('Entresto'); 
-                else if(val === 'enalapril') shortMeds.push('Enalapril'); 
-                else if(val === 'losartan') shortMeds.push('Losartan');
-            }
-            if(document.getElementById('chk_hf_bb').checked) {
-                let val = document.getElementById('sel_hf_bb_drug').value;
-                if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); 
-                else if(val === 'carvedilol') shortMeds.push('Carvedilol'); 
-                else if(val === 'metoprolol') shortMeds.push('Metoprolol');
-            }
-            if(document.getElementById('chk_hf_mra').checked) { 
-                if(document.getElementById('sel_hf_mra_drug').value === 'spironolactone') shortMeds.push('Spironolactone'); 
-            }
-            if(document.getElementById('chk_hf_sglt2i').checked) shortMeds.push('Empagliflozin');
-            if(document.getElementById('chk_hf_iva').checked) shortMeds.push('Ivabradine');
-            if(document.getElementById('chk_hf_loop').checked) shortMeds.push('Furosemide');
-
+            let shortMeds = getHfShortMeds();
             let medsString = shortMeds.length > 0 ? shortMeds.join(',') : '-';
 
             let interventionText = '';
@@ -4729,6 +5380,12 @@
 
             let summary = `[HF]\nLVEF: ${lvef !== '-' ? lvef + '%' : '-'} | NYHA: ${nyha} | BP: ${sbp}/${dbp} mmHg | HR: ${hr} bpm | eGFR: ${egfr} | K: ${potassium}\nMeds: ${medsString}${interventionText}`;
             summary = summary.replace(/\s+/g, ' ').replace(/ \n /g, '\n').replace(/ \n/g, '\n').replace(/\n /g, '\n');
+
+            if (document.getElementById('hfGdmtAddToNote') && document.getElementById('hfGdmtAddToNote').checked) {
+                if (typeof renderHfGdmtHelper === 'function') renderHfGdmtHelper();
+                const gdmtLine = window._hfGdmtEval && window._hfGdmtEval.summaryLine;
+                if (gdmtLine) summary += '\n' + gdmtLine;
+            }
 
             let currentNote = document.getElementById('outputPmk').value;
             if(currentNote && !currentNote.includes('[HF]')) {
@@ -7868,6 +8525,7 @@
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initC10Capd);
+        document.addEventListener('DOMContentLoaded', bindHfGdmtHelper);
         } else {
             initC10Capd();
         }
@@ -8584,33 +9242,7 @@
                 const egfr = egfrNode ? egfrNode.value || '-' : '-';
                 const potassium = kNode ? kNode.value || '-' : '-';
 
-                let shortMeds = [];
-                if(hasRaasi) {
-                    const sNode = document.getElementById('sel_hf_raasi_drug');
-                    let val = sNode ? sNode.value : '';
-                    if(val === 'arni') shortMeds.push('Entresto'); 
-                    else if(val === 'enalapril') shortMeds.push('Enalapril'); 
-                    else if(val === 'losartan') shortMeds.push('Losartan');
-                }
-                if(hasBb) {
-                    const sNode = document.getElementById('sel_hf_bb_drug');
-                    let val = sNode ? sNode.value : '';
-                    if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); 
-                    else if(val === 'carvedilol') shortMeds.push('Carvedilol'); 
-                    else if(val === 'metoprolol') shortMeds.push('Metoprolol');
-                }
-                if(hasMra) { 
-                    const sNode = document.getElementById('sel_hf_mra_drug');
-                    if(sNode && sNode.value === 'spironolactone') shortMeds.push('Spironolactone'); 
-                }
-                if(hasSglt2i) shortMeds.push('Empagliflozin');
-                
-                const ivaNode = document.getElementById('chk_hf_iva');
-                if(ivaNode && ivaNode.checked) shortMeds.push('Ivabradine');
-                
-                const loopNode = document.getElementById('chk_hf_loop');
-                if(loopNode && loopNode.checked) shortMeds.push('Furosemide');
-
+                let shortMeds = getHfShortMeds();
                 let medsString = shortMeds.length > 0 ? shortMeds.join(',') : '-';
 
                 let interventionText = '';
