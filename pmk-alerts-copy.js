@@ -1214,6 +1214,104 @@
     }
   }
 
+
+  // ==========================================================
+  //  TICKED ALERTS -> delimited block at bottom of #outputPmk
+  // ==========================================================
+
+  const ALERT_BLOCK_START = '[Clinical alert]';
+  const ALERT_BLOCK_END = '[/Clinical alert]';
+  const ALERT_BLOCK_RE = /\n?[ \t]*\[Clinical alert\]\n[\s\S]*?\n?\[\/Clinical alert\][ \t]*/;
+
+  const tickedByClinic = Object.fromEntries(CLINICS.map(c => [c.id, new Set()]));
+
+  function alertKey(a) {
+    const norm = s => String(s || '').replace(/[\d.,]+/g, '#').replace(/\s+/g, ' ').trim();
+    return [a.level || '', norm(a.title), norm(a.detail).slice(0, 80)].join('|');
+  }
+
+  function formatAlertLine(a) {
+    const title = String(a.title || '').trim();
+    let rec = String(a.detail || '').trim();
+    if (title && rec.startsWith(title)) {
+      rec = rec.slice(title.length).replace(/^[:\s—\-–]+/, '').trim();
+    }
+    if (rec && rec.length > 240) rec = rec.slice(0, 237).trimEnd() + '...';
+    return rec ? `- ${title}: ${rec}` : `- ${title}`;
+  }
+
+  function buildAlertBlock(clinic) {
+    const ticked = tickedByClinic[clinic];
+    if (!ticked || ticked.size === 0) return '';
+    const lines = evaluateClinicAlerts(clinic)
+      .filter(a => ticked.has(alertKey(a)))
+      .map(formatAlertLine);
+    if (!lines.length) return '';
+    return [ALERT_BLOCK_START, ...lines, ALERT_BLOCK_END].join('\n');
+  }
+
+  function pruneMissingTicks(clinic, alerts) {
+    const ticked = tickedByClinic[clinic];
+    if (!ticked || ticked.size === 0) return false;
+    const present = new Set(alerts.map(alertKey));
+    let changed = false;
+    [...ticked].forEach(k => {
+      if (!present.has(k)) {
+        ticked.delete(k);
+        changed = true;
+      }
+    });
+    return changed;
+  }
+
+  function applyAlertBlockToNote(clinic) {
+    clinic = clinic || activeClinic();
+    if (clinic !== activeClinic()) return;
+    const out = document.getElementById('outputPmk');
+    if (!out) return;
+
+    const text = String(out.value || '');
+    const m = text.match(ALERT_BLOCK_RE);
+    let base = text;
+    let after = '';
+    if (m) {
+      base = text.slice(0, m.index);
+      after = text.slice(m.index + m[0].length);
+    }
+    base = base.replace(/[ \t]+$/g, '').replace(/\n+$/g, '');
+    after = after.replace(/^[ \t]+/g, '').replace(/^\n+/, '');
+
+    const block = buildAlertBlock(clinic);
+    let next = base;
+    if (block) next = (next ? next + '\n\n' : '') + block;
+    if (after) next = (next ? next + '\n' : '') + after;
+
+    if (out.value !== next) {
+      out.value = next;
+      if (typeof window.updateOpdStickerPreview === 'function') {
+        window.updateOpdStickerPreview();
+      }
+    }
+  }
+
+  function onAlertTickChange(e) {
+    const cb = e.target && e.target.closest && e.target.closest('.pmk-alert-tick-cb');
+    if (!cb) return;
+    e.stopPropagation();
+    const clinic = cb.getAttribute('data-pmk-clinic');
+    let key = cb.getAttribute('data-pmk-alert-key') || '';
+    try { key = decodeURIComponent(key); } catch (err) {}
+    if (!clinic || !key) return;
+    if (!tickedByClinic[clinic]) tickedByClinic[clinic] = new Set();
+    if (cb.checked) tickedByClinic[clinic].add(key);
+    else tickedByClinic[clinic].delete(key);
+    applyAlertBlockToNote(clinic);
+  }
+
+  function clearAllTicks() {
+    CLINICS.forEach(c => tickedByClinic[c.id] = new Set());
+  }
+
   // ==========================================================
   //  UI RENDERING & STYLES
   // ==========================================================
@@ -1314,6 +1412,31 @@
       .pmk-alert-item-head { display: flex; align-items: center; gap: 6px; font-weight: 700; flex-wrap: wrap; }
       .pmk-alert-item-detail { margin-top: 3px; font-size: 12.5px; }
       .pmk-alert-item-src { margin-top: 4px; font-size: 11px; opacity: 0.8; }
+      .pmk-alert-tick-hint {
+        font-size: 12px;
+        color: #475569;
+        margin: 0 0 8px;
+      }
+      .pmk-alert-tick {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        padding-top: 7px;
+        border-top: 1px dashed rgba(15, 23, 42, 0.12);
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #1e293b;
+        cursor: pointer;
+        user-select: none;
+      }
+      .pmk-alert-tick-cb {
+        width: 16px;
+        height: 16px;
+        accent-color: #4f46e5;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
 
       @media print {
         .pmk-top-alert, .pmk-clinic-panel { display: none !important; }
@@ -1367,6 +1490,7 @@
           <div class="pmk-alert-body" id="pmk-alerts-${c.id}" aria-live="polite"></div>
         `;
         form.appendChild(panel);
+        panel.addEventListener('change', onAlertTickChange, true);
       }
     });
   }
@@ -1396,11 +1520,18 @@
       }
     }
 
+    pruneMissingTicks(clinic, alerts);
+
     if (bodyEl) {
       if (alerts.length === 0) {
         bodyEl.innerHTML = `<div class="pmk-alert-ok"><i class="fa-solid fa-circle-check"></i><span>ยังไม่พบสัญญาณเตือนทางคลินิกจากข้อมูลที่กรอก (คำแนะนำประกอบการตัดสินใจเท่านั้น)</span></div>`;
       } else {
-        bodyEl.innerHTML = `<div class="pmk-alert-list">${alerts.map(a => `
+        const ticked = tickedByClinic[clinic] || new Set();
+        bodyEl.innerHTML = `<p class="pmk-alert-tick-hint">ติ๊กข้อที่ต้องการให้ไปปรากฏท้าย Pharmacist Note (สำหรับลง PMK)</p>
+        <div class="pmk-alert-list">${alerts.map(a => {
+          const key = alertKey(a);
+          const checked = ticked.has(key) ? ' checked' : '';
+          return `
           <div class="pmk-alert-item pmk-alert-item--${esc(a.level)}">
             <div class="pmk-alert-item-head">
               <i class="fa-solid ${levelIcon(a.level)}"></i>
@@ -1409,8 +1540,12 @@
             </div>
             <div class="pmk-alert-item-detail">${esc(a.detail)}</div>
             <div class="pmk-alert-item-src">แหล่งอ้างอิง: ${esc(a.source)}</div>
-          </div>
-        `).join('')}</div>`;
+            <label class="pmk-alert-tick">
+              <input type="checkbox" class="pmk-alert-tick-cb" data-pmk-clinic="${esc(clinic)}" data-pmk-alert-key="${encodeURIComponent(key)}"${checked}>
+              ใส่ใน Pharmacist Note
+            </label>
+          </div>`;
+        }).join('')}</div>`;
       }
     }
 
@@ -1432,6 +1567,8 @@
         topEl.innerHTML = '';
       }
     }
+
+    if (clinic === activeClinic()) applyAlertBlockToNote(clinic);
 
     if (opts && opts.fromSave && panelEl && (nDanger > 0 || nWarn > 0)) {
       panelEl.classList.remove('pmk-alert-pulse');
@@ -1479,14 +1616,25 @@
 
     wrapFunction('switchTab', args => renderClinic(args[0] || activeClinic()));
     wrapFunction('switchWfTab', () => renderClinic('WARFARIN'));
-    wrapFunction('generateOutput', () => scheduleRenderActive(false));
+    wrapFunction('generateOutput', () => {
+      applyAlertBlockToNote(activeClinic());
+      scheduleRenderActive(false);
+    });
+    wrapFunction('copyHfToPmkNote', () => {
+      applyAlertBlockToNote('HF');
+      renderClinic('HF');
+    });
     wrapFunction('renderHfGdmtHelper', () => renderClinic('HF'));
     wrapFunction('capdEvaluateAll', () => renderClinic('CAPD'));
     wrapFunction('evaluateHivRenalAlert', () => renderClinic('HIV'));
     wrapFunction('evaluateCkdRenalAlerts', () => renderClinic('CKD'));
     wrapFunction('processResults', () => renderClinic('PREOP'));
     wrapFunction('resetForm', () => {
-      setTimeout(() => CLINICS.forEach(c => renderClinic(c.id)), 20);
+      clearAllTicks();
+      setTimeout(() => {
+        CLINICS.forEach(c => renderClinic(c.id));
+        applyAlertBlockToNote(activeClinic());
+      }, 20);
     });
 
     const btnSendDb = document.getElementById('btnSendDb');
