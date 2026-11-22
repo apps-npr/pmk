@@ -3355,11 +3355,37 @@
                     </div>
                     <textarea id="adminDataPaste" rows="4" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-xs font-mono bg-slate-50 focus:ring-2 focus:ring-blue-300" placeholder="คัดลอกข้อมูลทั้งตารางจาก Excel แล้วคลิกขวา Paste (วาง) ลงที่นี่..."></textarea>
                     
-                    <div class="flex flex-wrap items-end gap-3 mt-3">
-                        <div>
+                    <div class="mt-3 space-y-3">
+                    <div class="flex flex-wrap items-end gap-3">
+                        <div id="filterDateSingleWrap">
                             <label class="block text-xs font-medium text-gray-600 mb-1">เลือกวันที่</label>
-                            <input type="date" id="filterDate" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50">
+                            <input type="date" id="filterDate" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50" onchange="applyFiltersAndRender()">
                         </div>
+                        <div class="flex items-center pb-1.5">
+                            <label class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-700 cursor-pointer select-none">
+                                <input type="checkbox" id="filterDateRangeMode" class="rounded border-gray-300 text-blue-600" onchange="toggleAdminDateRangeMode()">
+                                ดูเป็นช่วงวันที่
+                            </label>
+                        </div>
+                        <div id="filterDateRangeWrap" class="hidden flex flex-wrap items-end gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1">ตั้งแต่</label>
+                                <input type="date" id="filterDateFrom" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50" onchange="applyFiltersAndRender()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1">ถึง</label>
+                                <input type="date" id="filterDateTo" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50" onchange="applyFiltersAndRender()">
+                            </div>
+                            <div class="flex flex-wrap gap-1 pb-0.5">
+                                <button type="button" onclick="setAdminDateRangePreset('today')" class="text-xs px-2 py-1 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700">วันนี้</button>
+                                <button type="button" onclick="setAdminDateRangePreset('last7')" class="text-xs px-2 py-1 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700">7 วันล่าสุด</button>
+                                <button type="button" onclick="setAdminDateRangePreset('thisMonth')" class="text-xs px-2 py-1 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700">เดือนนี้</button>
+                                <button type="button" onclick="setAdminDateRangePreset('lastMonth')" class="text-xs px-2 py-1 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700">เดือนที่แล้ว</button>
+                                <button type="button" onclick="setAdminDateRangePreset('fiscalYear')" class="text-xs px-2 py-1 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700">ปีงบประมาณนี้</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-end gap-3">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">คลินิก</label>
                             <select id="filterClinic" class="rounded border-gray-300 px-2 py-1.5 text-sm bg-gray-50 w-36">
@@ -3378,6 +3404,7 @@
                             <i class="fa-solid fa-bolt mr-2"></i> ประมวลผล
                         </button>
                     </div>
+                    </div>
                 </div>
 
                 <!-- Summary Cards -->
@@ -3385,6 +3412,7 @@
                     <div class="bg-white p-4 rounded-xl border-l-4 border-blue-500 shadow-sm text-center">
                         <p class="text-sm font-medium text-gray-500 mb-1">จำนวนเคสตามตัวกรอง</p>
                         <p id="statTotalCases" class="text-3xl font-bold text-blue-600">0</p>
+                        <p id="statFilterPeriod" class="text-xs text-gray-500 mt-1 leading-snug"></p>
                     </div>
                     <div class="bg-white p-4 rounded-xl border-l-4 border-emerald-500 shadow-sm text-center">
                         <p class="text-sm font-medium text-gray-500 mb-1">เวลาเฉลี่ยรวม (นาที/เคส)</p>
@@ -10938,16 +10966,12 @@
             applyFiltersAndRender();
         }
 
-        function applyFiltersAndRender() {
-            const fDate = document.getElementById('filterDate').value; // คืนค่าเป็น YYYY-MM-DD
-            const fClinic = document.getElementById('filterClinic').value;
-            const fStart = document.getElementById('filterTimeStart').value;
-            const fEnd = document.getElementById('filterTimeEnd').value;
+        const ADMIN_TH_MONTHS_ABBR = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 
-            // ตรวจสอบอัตโนมัติว่าข้อมูลในตารางเป็น เดือน/วัน/ปี (US) หรือ วัน/เดือน/ปี (TH)
+        function detectAdminTimestampFormat(data) {
             let isUSFormat = true; // ค่าเริ่มต้นของ Google Sheets คือ เดือน/วัน/ปี (MM/DD/YYYY)
-            for (let item of rawParsedData) {
-                let dateStr = item.timestamp.trim().split(/\s+/)[0];
+            for (let item of (data || [])) {
+                let dateStr = String(item.timestamp || '').trim().split(/\s+/)[0];
                 let parts = dateStr.split('/');
                 if (parts.length === 3) {
                     let p1 = parseInt(parts[0], 10);
@@ -10963,37 +10987,166 @@
                     }
                 }
             }
+            return isUSFormat;
+        }
 
-            // สร้างรูปแบบวันที่สำหรับเทียบแบบตรงตัว
-            let validDates = [];
-            if (fDate) {
-                const [y, m, d] = fDate.split('-');
-                const numY = parseInt(y, 10);
-                const numM = parseInt(m, 10);
-                const numD = parseInt(d, 10);
-                const thaiY = numY + 543;
+        function parseAdminDatePart(dateStr, isUSFormat) {
+            if (!dateStr) return null;
+            const raw = String(dateStr).trim().split(/\s+/)[0];
+            let y, mo, d;
+            let m = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+            if (m) {
+                y = +m[1]; mo = +m[2]; d = +m[3];
+            } else {
+                m = raw.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+                if (!m) return null;
+                const a = +m[1], b = +m[2];
+                y = +m[3];
+                if (isUSFormat) { mo = a; d = b; }
+                else { d = a; mo = b; }
+            }
+            if (y > 2500) y -= 543;
+            else if (y >= 2400) y -= 543;
+            else if (y < 100) y += 2000;
+            if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+            const dt = new Date(y, mo - 1, d);
+            if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return null;
+            return { y, m: mo, d };
+        }
 
-                if (isUSFormat) {
-                    validDates.push(`${numM}/${numD}/${numY}`); // เช่น 11/13/2026 หรือ 1/5/2026
-                    validDates.push(`${m}/${d}/${y}`);          // เช่น 11/13/2026 หรือ 01/05/2026
-                    validDates.push(`${y}-${m}-${d}`);
-                } else {
-                    validDates.push(`${numD}/${numM}/${numY}`); // เช่น 13/11/2026
-                    validDates.push(`${d}/${m}/${y}`);
-                    validDates.push(`${numD}/${numM}/${thaiY}`);
-                    validDates.push(`${d}/${m}/${thaiY}`);
+        function adminDateKey(obj) {
+            if (!obj) return null;
+            return obj.y * 10000 + obj.m * 100 + obj.d;
+        }
+
+        function formatAdminIsoDate(obj) {
+            if (!obj) return '';
+            return `${obj.y}-${String(obj.m).padStart(2,'0')}-${String(obj.d).padStart(2,'0')}`;
+        }
+
+        function formatAdminThaiDate(obj) {
+            if (!obj) return '';
+            return `${obj.d} ${ADMIN_TH_MONTHS_ABBR[obj.m - 1]} ${obj.y + 543}`;
+        }
+
+        function adminTodayDate() {
+            const n = new Date();
+            return { y: n.getFullYear(), m: n.getMonth() + 1, d: n.getDate() };
+        }
+
+        function addAdminCalendarDays(obj, n) {
+            const dt = new Date(obj.y, obj.m - 1, obj.d + n);
+            return { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() };
+        }
+
+        function getAdminDateFilterBounds() {
+            const rangeOn = !!document.getElementById('filterDateRangeMode')?.checked;
+            if (!rangeOn) {
+                const single = parseAdminDatePart(document.getElementById('filterDate')?.value || '', true);
+                return { rangeOn, from: single, to: single, active: !!single, swapped: false };
+            }
+            let from = parseAdminDatePart(document.getElementById('filterDateFrom')?.value || '', true);
+            let to = parseAdminDatePart(document.getElementById('filterDateTo')?.value || '', true);
+            let swapped = false;
+            if (from && to && adminDateKey(from) > adminDateKey(to)) {
+                const tmp = from; from = to; to = tmp;
+                swapped = true;
+                const fromEl = document.getElementById('filterDateFrom');
+                const toEl = document.getElementById('filterDateTo');
+                if (fromEl && toEl) {
+                    fromEl.value = formatAdminIsoDate(from);
+                    toEl.value = formatAdminIsoDate(to);
                 }
             }
+            return { rangeOn, from, to, active: !!(from || to), swapped };
+        }
+
+        function formatAdminFilterPeriod(bounds) {
+            if (!bounds.active) return 'ทุกวันที่';
+            if (!bounds.rangeOn) return `วันที่ ${formatAdminThaiDate(bounds.from)}`;
+            if (bounds.from && bounds.to) {
+                if (adminDateKey(bounds.from) === adminDateKey(bounds.to)) {
+                    return `วันที่ ${formatAdminThaiDate(bounds.from)}`;
+                }
+                if (bounds.from.y === bounds.to.y && bounds.from.m === bounds.to.m) {
+                    return `ช่วงวันที่ ${bounds.from.d}–${formatAdminThaiDate(bounds.to)}`;
+                }
+                return `ช่วงวันที่ ${formatAdminThaiDate(bounds.from)} – ${formatAdminThaiDate(bounds.to)}`;
+            }
+            if (bounds.from) return `ตั้งแต่ ${formatAdminThaiDate(bounds.from)} เป็นต้นไป`;
+            return `จนถึง ${formatAdminThaiDate(bounds.to)}`;
+        }
+
+        function toggleAdminDateRangeMode() {
+            const on = !!document.getElementById('filterDateRangeMode')?.checked;
+            document.getElementById('filterDateSingleWrap')?.classList.toggle('hidden', on);
+            document.getElementById('filterDateRangeWrap')?.classList.toggle('hidden', !on);
+            if (on) {
+                const single = document.getElementById('filterDate')?.value || '';
+                const fromEl = document.getElementById('filterDateFrom');
+                const toEl = document.getElementById('filterDateTo');
+                if (single && fromEl && toEl && !fromEl.value && !toEl.value) {
+                    fromEl.value = single;
+                    toEl.value = single;
+                }
+            } else {
+                const from = document.getElementById('filterDateFrom')?.value || '';
+                const to = document.getElementById('filterDateTo')?.value || '';
+                const singleEl = document.getElementById('filterDate');
+                if (singleEl && from && from === to) singleEl.value = from;
+            }
+            applyFiltersAndRender();
+        }
+
+        function setAdminDateRangePreset(kind) {
+            const today = adminTodayDate();
+            let from = today, to = today;
+            if (kind === 'last7') {
+                from = addAdminCalendarDays(today, -6);
+                to = today;
+            } else if (kind === 'thisMonth') {
+                from = { y: today.y, m: today.m, d: 1 };
+                to = addAdminCalendarDays({ y: today.y, m: today.m + 1, d: 1 }, -1);
+            } else if (kind === 'lastMonth') {
+                to = addAdminCalendarDays({ y: today.y, m: today.m, d: 1 }, -1);
+                from = { y: to.y, m: to.m, d: 1 };
+            } else if (kind === 'fiscalYear') {
+                const startYear = today.m >= 10 ? today.y : today.y - 1;
+                from = { y: startYear, m: 10, d: 1 };
+                to = { y: startYear + 1, m: 9, d: 30 };
+            }
+            const box = document.getElementById('filterDateRangeMode');
+            if (box && !box.checked) {
+                box.checked = true;
+                document.getElementById('filterDateSingleWrap')?.classList.toggle('hidden', true);
+                document.getElementById('filterDateRangeWrap')?.classList.toggle('hidden', false);
+            }
+            document.getElementById('filterDateFrom').value = formatAdminIsoDate(from);
+            document.getElementById('filterDateTo').value = formatAdminIsoDate(to);
+            applyFiltersAndRender();
+        }
+
+        function applyFiltersAndRender() {
+            const fClinic = document.getElementById('filterClinic').value;
+            const fStart = document.getElementById('filterTimeStart').value;
+            const fEnd = document.getElementById('filterTimeEnd').value;
+            const isUSFormat = detectAdminTimestampFormat(rawParsedData);
+            const dateBounds = getAdminDateFilterBounds();
+            const fromKey = adminDateKey(dateBounds.from);
+            const toKey = adminDateKey(dateBounds.to);
 
             // กรองข้อมูลตามที่เลือก
             let filteredData = rawParsedData.filter(d => {
                 // 1. กรองคลินิก
                 if (fClinic !== 'all' && d.clinic !== fClinic) return false;
                 
-                // 2. กรองวันที่ (ตัดเอาเฉพาะส่วนวันที่หน้าช่องว่างมาเทียบตรงๆ)
-                if (fDate) {
-                    let datePart = d.timestamp.trim().split(/\s+/)[0];
-                    if (!validDates.includes(datePart)) return false;
+                // 2. กรองวันที่: แปลงส่วนวันที่เป็น ปี-เดือน-วัน แล้วเทียบช่วง (รวมวันต้นและวันสิ้นสุด)
+                if (dateBounds.active) {
+                    const parsed = parseAdminDatePart(d.timestamp, isUSFormat);
+                    if (!parsed) return false;
+                    const key = adminDateKey(parsed);
+                    if (fromKey != null && key < fromKey) return false;
+                    if (toKey != null && key > toKey) return false;
                 }
 
                 // 3. กรองเวลา
@@ -11039,6 +11192,8 @@
 
             // อัปเดต Card สรุปผล
             document.getElementById('statTotalCases').innerText = filteredData.length;
+            const periodEl = document.getElementById('statFilterPeriod');
+            if (periodEl) periodEl.innerText = formatAdminFilterPeriod(dateBounds);
             document.getElementById('statAvgTime').innerText = filteredData.length > 0 ? (totalMin / filteredData.length).toFixed(2) : "0.00";
             
             let peakH = "-";
