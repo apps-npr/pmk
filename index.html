@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+    <script>
+        (function () {
+            try {
+                if (localStorage.getItem('pmk_app_auth') === '1' || sessionStorage.getItem('pmk_app_auth') === '1') {
+                    document.documentElement.classList.add('pmk-authed');
+                }
+            } catch (e) {}
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OPD Online - Pharmacist Note</title>
@@ -28,6 +37,21 @@
         body { font-family: 'Prompt', sans-serif; }
         .hidden { display: none !important; }
         #pmkChrome { position: fixed; top: 0; left: 0; right: 0; z-index: 70; }
+
+        html:not(.pmk-authed) #mainAppContainer { display: none !important; }
+        html:not(.pmk-authed) body { overflow: hidden; }
+        #pmkAppLogin {
+            position: fixed; inset: 0; z-index: 60;
+            display: none;
+            align-items: center; justify-content: center;
+            padding: 24px 16px;
+            background: linear-gradient(180deg, #1d4ed8 0%, #1e3a8a 55%, #0f172a 100%);
+        }
+        html:not(.pmk-authed) #pmkAppLogin { display: flex; }
+        html.pmk-authed #pmkAppLogin { display: none !important; }
+        @media print {
+            #pmkAppLogin, #pmkAppLogoutBtn { display: none !important; }
+        }
         body { padding-top: 36px; }
         body:has(#pmkUpdateBar:not(.hidden)) { padding-top: 76px; }
         #pmkStatusBar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 6px 12px; font-size: 12px; font-weight: 600; }
@@ -430,6 +454,39 @@
             <span id="pmkIosHint" class="hidden font-medium opacity-95">บน iPhone/iPad: กดปุ่มแชร์ แล้วเลือก «เพิ่มไปยังหน้าโฮมสกรีน»</span>
         </div>
     </div>
+
+    <div id="pmkAppLogin" class="print:hidden" role="dialog" aria-modal="true" aria-labelledby="pmkLoginTitle">
+        <form id="pmkLoginForm" autocomplete="on" class="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-blue-600 p-6 text-white text-center">
+                <img src="icon_512x512.png" alt="" class="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
+                <h1 id="pmkLoginTitle" class="text-2xl font-semibold leading-tight">PMK</h1>
+                <p class="text-sm text-blue-100 mt-1">เภสัชกรรม รพ.นพรัตนราชธานี</p>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label for="pmkLoginUser" class="block text-sm font-medium text-gray-700 mb-1">ชื่อผู้ใช้</label>
+                    <input type="text" id="pmkLoginUser" name="username" autocomplete="username" autocapitalize="off" spellcheck="false" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="ambu">
+                </div>
+                <div>
+                    <label for="pmkLoginPass" class="block text-sm font-medium text-gray-700 mb-1">รหัสผ่าน</label>
+                    <div class="relative">
+                        <input type="password" id="pmkLoginPass" name="password" autocomplete="current-password" inputmode="numeric" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <button type="button" id="pmkLoginTogglePass" class="absolute inset-y-0 right-0 px-3 text-gray-500 hover:text-gray-800" aria-label="แสดงรหัสผ่าน" tabindex="-1">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <label class="inline-flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+                    <input type="checkbox" id="pmkLoginRemember" class="rounded border-gray-300 text-blue-600" checked>
+                    จดจำการเข้าสู่ระบบ
+                </label>
+                <p id="pmkLoginError" class="hidden text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2" role="alert"></p>
+                <button type="submit" id="pmkLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg shadow-sm transition">
+                    เข้าสู่ระบบ
+                </button>
+            </div>
+        </form>
+    </div>
     <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:hidden" id="mainAppContainer">
         
         <!-- Header -->
@@ -451,7 +508,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex gap-2">
+                <div class="flex gap-2 items-center">
+                    <button type="button" id="pmkAppLogoutBtn" class="print:hidden bg-white/15 hover:bg-white/25 text-white px-3 py-2 rounded-lg font-medium shadow-sm transition flex items-center text-sm border border-white/30" title="ออกจากระบบ">
+                        <i class="fa-solid fa-right-from-bracket mr-1.5"></i> ออกจากระบบ
+                    </button>
                     <button onclick="openAdminLogin()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition flex items-center text-sm">
                         <i class="fa-solid fa-chart-pie mr-1.5"></i> Admin
                     </button>
@@ -11346,7 +11406,7 @@
         // --- [ข้อ 1] ระบบ Auto-Save Draft ลง localStorage ---
         let autoSaveTimer = null;
         const DRAFT_STORAGE_KEY = 'opd_online_autosave_draft_v1';
-        const EXCLUDED_DRAFT_IDS = ['stkX', 'stkY', 'stkW', 'stkPt', 'accessCode', 'adminPass', 'adminUser', 'adminDataPaste'];
+        const EXCLUDED_DRAFT_IDS = ['stkX', 'stkY', 'stkW', 'stkPt', 'accessCode', 'adminPass', 'adminUser', 'adminDataPaste', 'pmkLoginUser', 'pmkLoginPass', 'pmkLoginRemember'];
 
         function triggerAutoSaveDraft() {
             clearTimeout(autoSaveTimer);
@@ -12803,6 +12863,7 @@
         }
     }
     </script>
+    <script src="pmk-login.js"></script>
     <script src="pwa-client.js"></script>
 </body>
 </html>
