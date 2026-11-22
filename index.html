@@ -66,6 +66,42 @@
         .modal-header { padding: 15px; background-color: #3b82f6; color: white; display: flex; justify-content: space-between; align-items: center; }
         .modal-body { padding: 15px; overflow-y: auto; font-size: 0.875rem; }
         .modal-footer { padding: 15px; border-top: 1px solid #e5e7eb; text-align: right; background-color: #f9fafb;}
+
+        /* HIV knowledge panels */
+        .hivkb-card { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 0.75rem; padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+        .hivkb-card h3 { font-size: 0.95rem; font-weight: 700; color: #3730a3; margin: 0 0 0.25rem; }
+        .hivkb-card .hivkb-lead { font-size: 0.75rem; color: #4338ca; margin: 0 0 0.75rem; }
+        .hivkb-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .hivkb-btn { display: inline-flex; align-items: center; gap: 0.35rem; background: #fff; color: #3730a3; border: 1px solid #a5b4fc; border-radius: 9999px; padding: 0.45rem 0.85rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .hivkb-btn:hover, .hivkb-btn:focus { background: #3730a3; color: #fff; outline: none; }
+        #hivKbModal .modal-content-card { max-width: 920px; width: 96vw; max-height: 92vh; }
+        #hivKbModal .modal-header { background-color: #4338ca; }
+        #hivKbModal .modal-close-btn { cursor: pointer; font-size: 2rem; font-weight: 700; line-height: 1; color: #fff; padding: 0 0.4rem; }
+        #hivKbModal .modal-body { font-size: 0.875rem; line-height: 1.55; color: #1f2937; }
+        #hivKbModal .hivkb-h { font-size: 0.92rem; font-weight: 700; color: #312e81; margin: 0.9rem 0 0.35rem; border-bottom: 1px solid #e0e7ff; padding-bottom: 0.2rem; }
+        #hivKbModal .hivkb-h:first-child { margin-top: 0; }
+        #hivKbModal p { margin: 0.25rem 0 0.5rem; }
+        #hivKbModal ul { margin: 0.2rem 0 0.6rem 1.15rem; padding: 0; }
+        #hivKbModal li { margin: 0.15rem 0; }
+        .hivkb-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.4rem 0 0.8rem; }
+        .hivkb-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; min-width: 520px; }
+        .hivkb-table th, .hivkb-table td { border: 1px solid #c7d2fe; padding: 0.4rem 0.5rem; vertical-align: top; text-align: left; }
+        .hivkb-table th { background: #e0e7ff; color: #312e81; font-weight: 700; }
+        .hivkb-table tr:nth-child(even) td { background: #f8fafc; }
+        .hivkb-callout { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 0.5rem; padding: 0.55rem 0.7rem; font-size: 0.78rem; color: #78350f; margin: 0.5rem 0; }
+        .hivkb-src { font-size: 0.72rem; color: #374151; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.55rem 0.7rem; margin-top: 0.85rem; }
+        .hivkb-disc { font-size: 0.72rem; color: #6b7280; margin-top: 0.4rem; }
+        #hivKbModal details { border: 1px solid #e0e7ff; border-radius: 0.5rem; padding: 0.15rem 0.6rem 0.35rem; margin: 0.45rem 0; background: #fff; }
+        #hivKbModal details + details { margin-top: 0.4rem; }
+        #hivKbModal summary { cursor: pointer; font-weight: 700; color: #3730a3; padding: 0.45rem 0; list-style: none; }
+        #hivKbModal summary::-webkit-details-marker { display: none; }
+        #hivKbModal summary::before { content: "▸ "; color: #6366f1; }
+        #hivKbModal details[open] summary::before { content: "▾ "; }
+        @media (max-width: 640px) {
+            .hivkb-btn { font-size: 0.75rem; padding: 0.5rem 0.7rem; }
+            #hivKbModal .modal-body { font-size: 0.82rem; }
+            .hivkb-table { font-size: 0.72rem; min-width: 480px; }
+        }
         #imageModal .modal-content { max-width: 90%; max-height: 90%; margin: auto; border-radius: 8px; display: block; }
         #imageModal .modal-close { position: absolute; top: 15px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; }
         .image-container img { cursor: zoom-in; }
@@ -848,6 +884,19 @@
             <!-- 4. HIV Form -->
             <div id="form-HIV" class="space-y-6 clinic-form hidden">
                 
+
+                <div class="hivkb-card" id="hivKnowledgeCard">
+                    <h3>ความรู้ทางคลินิก HIV</h3>
+                    <p class="hivkb-lead">เปิดดูแนวทางวัคซีนตับอักเสบบี การติดตามซิฟิลิส การรักษาตับอักเสบซี โรคฉวยโอกาส และการปรับขนาดยาตามไต — ข้อมูลจากคลัง hivtb (แนวทางปฏิบัติ HIV/AIDS ประเทศไทย พ.ศ. 2564/2565 และแอปคำนวณขนาดยา)</p>
+                    <div class="hivkb-btns">
+                        <button type="button" class="hivkb-btn" onclick="openHivKb('hbv')">วัคซีนตับอักเสบบี</button>
+                        <button type="button" class="hivkb-btn" onclick="openHivKb('syphilis')">ซิฟิลิส และการติดตาม RPR</button>
+                        <button type="button" class="hivkb-btn" onclick="openHivKb('hcv')">การรักษาตับอักเสบซี และแล็บ</button>
+                        <button type="button" class="hivkb-btn" onclick="openHivKb('oi')">โรคฉวยโอกาส (OI)</button>
+                        <button type="button" class="hivkb-btn" onclick="openHivKb('renal')">ยาต้าน HIV และการปรับขนาดตามไต</button>
+                    </div>
+                </div>
+
                 <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm mb-2">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                         <div class="md:col-span-8">
@@ -2965,6 +3014,20 @@
             <div class="modal-footer flex justify-end gap-2">
                 <button type="button" onclick="closeRenalCalcModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">ปิด</button>
                 <button type="button" onclick="applyRenalCalcResult()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow">นำค่าไปใช้</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="hivKbModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="hivKbTitle" onclick="onHivKbOverlayClick(event)">
+        <div class="modal-content-card">
+            <div class="modal-header">
+                <h3 id="hivKbTitle" class="font-bold text-base pr-4">ความรู้ทางคลินิก HIV</h3>
+                <span class="modal-close-btn" role="button" tabindex="0" aria-label="ปิด" onclick="closeHivKb()">&times;</span>
+            </div>
+            <div class="modal-body" id="hivKbBody"></div>
+            <div class="modal-footer flex justify-end">
+                <button type="button" onclick="closeHivKb()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2 rounded-lg text-sm font-bold shadow">ปิด</button>
             </div>
         </div>
     </div>
@@ -9539,6 +9602,288 @@
         }
 
         // --- [ข้อ 3] เครื่องคิดเลข eGFR (CKD-EPI 2021) และ CrCl (Cockcroft-Gault) ---
+
+        // --- HIV knowledge panels (source: apps-npr/hivtb; no secrets copied) ---
+        function hivKbEsc(s) {
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+        function hivKbBlocksHtml(blocks) {
+            return (blocks || []).map(function (b) {
+                if (b.type === 'h') return '<h4 class="hivkb-h">' + hivKbEsc(b.text) + '</h4>';
+                if (b.type === 'p') return '<p>' + hivKbEsc(b.text) + '</p>';
+                if (b.type === 'ul') return '<ul>' + b.items.map(function (it) { return '<li>' + hivKbEsc(it) + '</li>'; }).join('') + '</ul>';
+                if (b.type === 'note') return '<div class="hivkb-callout">' + hivKbEsc(b.text) + '</div>';
+                if (b.type === 'table') {
+                    var head = '<tr>' + b.cols.map(function (c) { return '<th>' + hivKbEsc(c) + '</th>'; }).join('') + '</tr>';
+                    var body = b.rows.map(function (r) {
+                        return '<tr>' + r.map(function (c) { return '<td>' + hivKbEsc(c) + '</td>'; }).join('') + '</tr>';
+                    }).join('');
+                    return '<div class="hivkb-table-wrap"><table class="hivkb-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
+                }
+                if (b.type === 'details') {
+                    return '<details' + (b.open ? ' open' : '') + '><summary>' + hivKbEsc(b.title) + '</summary>' + hivKbBlocksHtml(b.blocks) + '</details>';
+                }
+                return '';
+            }).join('');
+        }
+        var HIV_KB = {
+            hbv: {
+                title: 'วัคซีนไวรัสตับอักเสบบี ในผู้อยู่ร่วมกับเอชไอวี',
+                source: 'แนวทางปฏิบัติ HIV/AIDS ประเทศไทย พ.ศ. 2564/2565 ตารางที่ 2.34 (เอกสารในคลัง apps-npr/hivtb บทที่ 2). แอป hivtb สรุปสั้นกว่าว่า “3 เข็ม ที่ 0, 1, 6 เดือน ในผู้ที่ Anti-HBs เป็นลบ” โดยไม่ระบุขนาด 20 หรือ 40 ไมโครกรัม — โปรดใช้ตารางด้านล่างเป็นหลัก',
+                blocks: [
+                    { type: 'p', text: 'ใครควรได้วัคซีน: ผู้ที่ยังไม่มีภูมิคุ้มกันต่อไวรัสตับอักเสบบี ดูผล HBsAg, anti-HBs และ anti-HBc ก่อนให้ และตรวจ anti-HBs ซ้ำหลังให้ครบตามที่ระบุ' },
+                    { type: 'h', text: 'แปลผลและวิธีให้วัคซีน (ผู้ใหญ่)' },
+                    { type: 'table', cols: ['ผลเลือด', 'คำแนะนำ', 'การบริหารและการตรวจซ้ำ'], rows: [
+                        ['anti-HBs > 10 ล้านหน่วยสากล/มล.', 'ถือว่ามีภูมิคุ้มกันแล้ว', 'ไม่ต้องให้วัคซีน'],
+                        ['anti-HBc เป็นบวกอย่างเดียว (HBsAg และ anti-HBs เป็นลบ)', 'ให้วัคซีนขนาด 20 ไมโครกรัม 1 โดส', 'ตรวจ anti-HBs ที่ 1–2 เดือนหลังฉีด • ถ้า anti-HBs > 100 ล้านหน่วยสากล/มล. มีภูมิแล้ว ไม่ต้องต่อ • ถ้า anti-HBs < 100 ให้ขนาด 20 ไมโครกรัมอีก 2 โดส รวมเป็น 3 โดส แล้วตรวจ anti-HBs อีกครั้งที่ 1–2 เดือนหลังครบ'],
+                        ['HBsAg, anti-HBs และ anti-HBc เป็นลบทั้งหมด', 'ให้วัคซีนขนาด 40 ไมโครกรัม 3 โดส ฉีดเข้ากล้ามเนื้อ ที่ 0, 1 และ 6 เดือน', 'ตรวจ anti-HBs ที่ 1–2 เดือนหลังให้ครบ'],
+                        ['หลังชุด 40 ไมโครกรัม 3 โดส แล้ว anti-HBs ยัง < 10', 'ให้ขนาด 40 ไมโครกรัม อีก 3 โดส ที่ 0, 1 และ 6 เดือน', 'ตรวจ anti-HBs ที่ 1–2 เดือนหลังครบ ถ้ายัง < 10 ล้านหน่วยสากล/มล. ถือว่าไม่ตอบสนองต่อวัคซีน'],
+                        ['ยังมีความเสี่ยงติดเชื้อต่อเนื่อง และไม่ได้ใช้ tenofovir (TDF และ TAF)', 'พิจารณาตรวจ anti-HBs ทุก 1 ปี', 'ถ้า anti-HBs < 10 ล้านหน่วยสากล/มล. ให้ขนาด 40 ไมโครกรัม กระตุ้น 1 โดส']
+                    ]},
+                    { type: 'note', text: 'จุดที่ควรทวน: ในตารางที่ 2.34 กรณี anti-HBc บวกอย่างเดียว ใช้เกณฑ์ anti-HBs > 100 ล้านหน่วยสากล/มล. หลังเข็มแรก เพื่อถือว่ามีภูมิแล้ว ซึ่งต่างจากเกณฑ์ทั่วไปที่มักใช้ 10 โปรดทวนกับแนวทางฉบับที่ทีมใช้อยู่ แอปคำนวณใน hivtb สรุปเพียง “3 เข็ม (0, 1, 6 เดือน) เฉพาะผู้ที่ Anti-HBs เป็นลบ” ไม่ได้แยกขนาด 20/40 ไมโครกรัม' },
+                    { type: 'h', text: 'ข้อควรระวังเรื่องวัคซีนโดยรวม (จากแอป hivtb)' },
+                    { type: 'ul', items: [
+                        'วัคซีนเชื้อเป็น (live vaccine): ห้ามให้ในผู้ที่มีภูมิคุ้มกันบกพร่องรุนแรง (ผู้ใหญ่ CD4 < 200, เด็ก CD4 < 15%)',
+                        'วัคซีนเชื้อตาย (inactivated): ให้ได้ตามตารางปกติ แต่ประสิทธิภาพอาจลดลงหาก CD4 ต่ำ',
+                        'ควรเริ่มยา ART จน CD4 สูงขึ้นก่อนให้วัคซีนเชื้อเป็น เช่น MMR, varicella'
+                    ]}
+                ]
+            },
+            syphilis: {
+                title: 'ซิฟิลิส: การรักษา และการติดตาม RPR',
+                source: 'แนวทางฯ บทที่ 4 (คลัง hivtb): ข้อความระบุว่าการรักษาในหญิงตั้งครรภ์และหญิงตั้งครรภ์ที่อยู่ร่วมกับเอชไอวีใช้แนวทางเดียวกับผู้ใหญ่ทั่วไป ตารางที่ 4.11 และตารางที่ 4.12 การนัดติดตาม RPR/VDRL. ยาทางเลือก doxycycline ในผู้ที่ไม่ตั้งครรภ์มาจากเครื่องคำนวณในแอป hivtb. เชิงอรรถในบทที่ 6 (บริบท PrEP/การติดตามหลังสัมผัส) ระบุอีกตารางหนึ่งไว้ด้านล่าง',
+                blocks: [
+                    { type: 'h', text: 'การรักษา (ตารางที่ 4.11) — ใช้แนวทางเดียวกับผู้ใหญ่ทั่วไป' },
+                    { type: 'table', cols: ['ระยะของโรค', 'การรักษา'], rows: [
+                        ['ระยะต้น (early syphilis): ระยะที่ 1, ระยะที่ 2 และระยะแฝงช่วงต้น (early latent)', 'ฉีด benzathine penicillin G 2.4 ล้านยูนิต เข้ากล้ามเนื้อ ครั้งเดียว โดยแบ่งฉีดเข้ากล้ามเนื้อสะโพกข้างละ 1.2 ล้านยูนิต (บางการศึกษานแนะนำให้ฉีดสัปดาห์ละ 1 ครั้ง จำนวน 2 ครั้งติดต่อกัน)'],
+                        ['ระยะปลาย (late latent), ระยะแฝงไม่ทราบระยะเวลา (latent syphilis of unknown duration) และระยะที่ 3 (tertiary)', 'ฉีด benzathine penicillin G 2.4 ล้านยูนิต เข้ากล้ามเนื้อ โดยแบ่งฉีดข้างละ 1.2 ล้านยูนิต สัปดาห์ละ 1 ครั้ง จำนวน 3 ครั้งติดต่อกัน • ในหญิงตั้งครรภ์หากฉีดช้ากว่ากำหนดเกิน 9 วัน แต่ยังทำตามไม่ได้ให้เริ่มการรักษาใหม่'],
+                        ['โรคซิฟิลิสระบบประสาท (neurosyphilis)', 'ฉีด aqueous crystalline penicillin G 18–24 ล้านยูนิต/วัน เข้าหลอดเลือดดำ โดยแบ่งฉีด 3–4 ล้านยูนิต ทุก 4 ชั่วโมง นาน 10–14 วัน หรือ ceftriaxone 2 กรัม ฉีดเข้าหลอดเลือดดำหรือกล้ามเนื้อ วันละ 1 ครั้ง นาน 10–14 วัน • หญิงตั้งครรภ์ไม่แนะนำให้เจาะน้ำไขสันหลัง • ให้ตรวจน้ำไขสันหลังและติดตามอาการ 6 เดือนหลังรักษา แต่ไม่เร็วกว่า 6 สัปดาห์หลังคลอด']
+                    ]},
+                    { type: 'ul', items: [
+                        'หากแพ้ยา: แนะนำให้ทำ penicillin desensitization ก่อน (ปรึกษาผู้เชี่ยวชาญ) แล้วรักษาด้วย penicillin G',
+                        'ห้ามใช้ doxycycline หรือ tetracycline ในหญิงตั้งครรภ์',
+                        'หญิงตั้งครรภ์ที่อยู่ร่วมกับเอชไอวี ยังคงให้การรักษาเหมือนผู้ที่ไม่ติดเชื้อเอชไอวี',
+                        'รักษาสามี/คู่เพศสัมพันธ์ด้วย (ระยะต้นแนะนำ penicillin G หรือรับประทาน doxycycline แม้ไม่มีอาการหรือผลเลือดเป็นลบ)'
+                    ]},
+                    { type: 'p', text: 'ยาทางเลือกในผู้ที่ไม่ตั้งครรภ์และแพ้ penicillin (จากเครื่องคำนวณในแอป hivtb): doxycycline 100 มก. รับประทานวันละ 2 ครั้ง นาน 14 วัน (ระยะต้น) หรือ นาน 28 วัน (ระยะปลาย)' },
+                    { type: 'h', text: 'นัดติดตามอาการ และการตรวจ RPR/VDRL (ที่กี่เดือน)' },
+                    { type: 'p', text: 'กรณีเป็นโรคซิฟิลิสระยะที่ 1 หรือ 2 ควรนัดที่ 1 เดือน และกรณีเป็นโรคซิฟิลิสระยะแฝง ควรนัดที่ 3 เดือน หลังจากวันที่ได้รับการรักษา เพื่อดูลักษณะทางคลินิก รอยโรคที่บ่งชี้การติดเชื้อซ้ำ และการรักษาของคู่เพศสัมพันธ์ จากนั้นนัดตรวจเลือดตามตารางที่ 4.12 และในหญิงตั้งครรภ์ให้ตรวจ RPR/VDRL วันที่คลอดทุกราย' },
+                    { type: 'table', cols: ['ระยะของโรค', 'เดือนที่ติดตาม RPR/VDRL', 'ระยะเวลาที่คาดการณ์ว่ามี fourfold decline'], rows: [
+                        ['ระยะที่ 1 (primary) และระยะที่ 2 (secondary)', '3, 6, 9, 12, 24', '6–12 เดือน'],
+                        ['ระยะแฝงช่วงต้น, ระยะแฝงช่วงปลาย และระยะแฝงไม่ทราบระยะเวลา', '3, 6, 12, 18, 24', '12–24 เดือน']
+                    ]},
+                    { type: 'ul', items: [
+                        'หากระดับ RPR/VDRL titer ไม่ลดลงตามเกณฑ์ในเวลาที่กำหนด หรือสูงขึ้นจากเดิม 4 เท่า และยังคงมีระดับสูงคงเดิมหรือเพิ่มขึ้น โดยไม่มีประวัติเสี่ยงที่สงสัยการติดเชื้อซ้ำ อาจเป็นการรักษาล้มเหลว ควรตรวจดูการติดเชื้อเอชไอวี หากผลเป็นบวกแล้วให้พิจารณาการรักษาซิฟิลิสของระบบประสาท โดยไม่ต้องเจาะน้ำไขสันหลัง ด้วย aqueous penicillin G 18–24 ล้านยูนิต/วัน ฉีดเข้าหลอดเลือดดำ 10–14 วัน',
+                        'หากเดิมวินิจฉัย early syphilis แนะนำให้ทำการรักษาซ้ำด้วย benzathine penicillin G 2.4 ล้านยูนิต ฉีดเข้ากล้ามเนื้อ สัปดาห์ละครั้ง จำนวน 3 ครั้งติดต่อกันอีกครั้ง',
+                        'หากมีประวัติพฤติกรรมเสี่ยงที่สงสัยการติดเชื้อซ้ำ ให้รักษาซ้ำด้วย benzathine penicillin G 2.4 ล้านยูนิต ฉีดเข้ากล้ามเนื้อครั้งเดียว และตรวจ RPR/VDRL ในวันที่ได้รับการรักษาใหม่',
+                        'หากนัดติดตามแล้วพบว่าระดับน้อยกว่า 1:8 หรือลดลงไม่เกิน 1 ระดับจากเดิม โดยไม่มีประวัติสงสัยการติดเชื้อซ้ำ อาจเกิดภาวะ serofast แนะนำให้ปรึกษาผู้เชี่ยวชาญ'
+                    ]},
+                    { type: 'note', text: 'เชิงอรรถในบทที่ 6 (ตารางการตรวจติดตามในบริบท PrEP/หลังสัมผัส): กรณีติดเชื้อซิฟิลิสและได้รับการรักษา ควรติดตามไตเตอร์ซ้ำทุก 3 เดือนหลังการรักษาในปีแรก และทุก 6 เดือนในปีที่สอง ซึ่งถี่ไม่เหมือนตารางที่ 4.12 โปรดใช้ตารางที่ 4.12 เป็นหลักเมื่อติดตามหลังรักษาในคลินิก และดูเชิงอรรถบทที่ 6 หากเป็นบริบทการป้องกัน' }
+                ]
+            },
+            hcv: {
+                title: 'การรักษาไวรัสตับอักเสบซี และค่าแล็บที่เกี่ยวข้อง',
+                source: 'แนวทางฯ บทที่ 2 ตารางที่ 2.26 และตารางที่ 2.27 (เอกสารในคลัง hivtb). ในเอกสารนี้สูตร DAA ที่ระบุชื่อคือ sofosbuvir/velpatasvir ไม่พบสูตร glecaprevir/pibrentasvir',
+                blocks: [
+                    { type: 'h', text: 'เป้าหมายและเกณฑ์การรักษา' },
+                    { type: 'ul', items: [
+                        'เพื่อให้การติดเชื้อไวรัสตับอักเสบซีหายขาด ลดการเกิดตับอักเสบจากยาต้านเอชไอวี ตับแข็ง มะเร็งตับ ตับวาย โรคนอกตับ และการแพร่เชื้อ',
+                        'ผู้อยู่ร่วมกับเอชไอวีที่มี HCV ร่วมด้วยทุกรายควรได้รับยากลุ่ม DAA โดยไม่คำนึงถึงระยะพังผืดของตับ รวมผู้ที่เป็น acute HCV ที่ตรวจพบ HCV RNA',
+                        'ข้อบ่งชี้และสูตร DAA เหมือนผู้ที่ไม่อยู่ร่วมกับเอชไอวี เพราะอัตราการหายไม่ต่างกัน',
+                        'ก่อนเริ่ม DAA ควรได้รับยาต้านเอชไอวีมาอย่างน้อย 1 เดือน และไม่มีโรคติดเชื้อฉวยโอกาส โดยเฉพาะวัณโรค ถ้าเป็นวัณโรคให้รักษาวัณโรคและหยุดยา rifampin แล้วจึงเริ่มรักษา HCV',
+                        'ผู้มีตับแข็งควรประเมินว่ามี liver decompensation หรือไม่ ด้วย Child-Pugh score ถ้าเป็น Child-Pugh B และ C ส่งต่อแพทย์ผู้เชี่ยวชาญโรคตับ',
+                        'ถ้ามีทั้ง HBV และ HCV ให้รักษา HBV ก่อนอย่างน้อย 3 เดือนก่อนเริ่ม DAA เพื่อลดการกำเริบของ HBV'
+                    ]},
+                    { type: 'h', text: 'สูตรยาและระยะเวลา (ที่ระบุในแนวทาง)' },
+                    { type: 'ul', items: [
+                        'ให้ DAA เช่น sofosbuvir/velpatasvir (ครบทุกสายพันธุ์) เป็นเวลา 12 สัปดาห์',
+                        'sofosbuvir/velpatasvir ไม่ควรใช้ร่วมกับ EFV, NVP และ ETR ในผู้ที่ได้ยานี้ ควรเปลี่ยนเป็น DTG หรือ RPV ก่อนอย่างน้อย 1 เดือน',
+                        'ผู้ที่เป็นตับแข็งแบบ Child-Pugh B และ C: ถ้าให้ ribavirin ได้ ให้ sofosbuvir/velpatasvir ร่วมกับ ribavirin ขนาดต่ำ เช่น 600 มก. และปรับเพิ่มตามน้ำหนักตัว นาน 12 สัปดาห์ (กรณีตับแข็งควรปรึกษาผู้เชี่ยวชาญ); ถ้าให้ ribavirin ไม่ได้ ให้ sofosbuvir/velpatasvir นาน 24 สัปดาห์',
+                        'ผู้ที่เคยรักษาล้มเหลวด้วย sofosbuvir หรือ NS5A เช่น ledipasvir, daclatasvir, velpatasvir, ravidasvir มาก่อน ควรได้ DAA ร่วมกับ ribavirin ขนาดต่ำ เช่น 600 มก. ปรับตามน้ำหนักตัว นาน 24 สัปดาห์'
+                    ]},
+                    { type: 'note', text: 'ไม่พบสูตร glecaprevir/pibrentasvir (G/P) ในเอกสาร hivtb ฉบับนี้ จึงไม่ได้ใส่ขนาดหรือระยะเวลาของสูตรนั้น หากสถานพยาบาลใช้สูตรอื่น โปรดดูเอกสารทะเบียนยาหรือแนวทางของหน่วยนั้น' },
+                    { type: 'h', text: 'การติดตามค่าแล็บ' },
+                    { type: 'table', cols: ['รายการ', 'จังหวะที่ตรวจ'], rows: [
+                        ['ALT, creatinine', 'ทุก 6 เดือน จนได้รับยา DAA และตรวจไม่พบ HCV RNA หลังรักษาครบ • ติดตาม ALT ต่อทุก 6 เดือนในผู้ที่เสี่ยงต่อการติดเชื้อซ้ำ เช่น ผู้ใช้สารเสพติดแบบฉีด และชายที่มีเพศสัมพันธ์กับชายที่มีคู่นอนหลายคน'],
+                        ['HCV RNA', 'ก่อนการรักษา และที่ 3 เดือนหลังหยุดยารักษาไวรัสตับอักเสบซี (ใช้เป็นจุดประเมินการหายขาดในแนวทางนี้)'],
+                        ['อัลตราซาวนด์ตับ และอาจตรวจ alfa-fetoprotein', 'ทุก 6–12 เดือน หากเป็นตับแข็ง หรือ fibroscan > 12.5 kPa หรือ APRI > 1.5 หรือ FIB-4 > 3.25']
+                    ]}
+                ]
+            },
+            oi: {
+                title: 'โรคติดเชื้อฉวยโอกาส: การรักษา การป้องกัน และเกณฑ์หยุดยา',
+                source: 'แนวทางฯ บทที่ 5 (คลัง hivtb) ตารางที่ 5.20, 5.21 (ผู้ใหญ่), 5.22 (เด็ก) และข้อความในแต่ละหัวข้อ รวมตารางที่ 5.16 สำหรับวัณโรคระยะแฝง. ขนาดยาบางส่วนในแอป hivtb สอดคล้องกับตาราง แต่ถ้าต่างกันให้ยึดตารางในแนวทาง',
+                blocks: [
+                    { type: 'p', text: 'ด้านล่างเน้นผู้ใหญ่ในคลินิก HIV กดแต่ละโรคเพื่อดูข้อบ่งชี้เริ่มป้องกัน ยาที่ใช้ ขนาดยารักษาหลัก และเกณฑ์หยุดยา (ค่า CD4 และระยะเวลา). ตารางรวมเกณฑ์หยุดยาอยู่ท้ายแผง' },
+                    { type: 'details', open: true, title: 'PCP (Pneumocystis jirovecii pneumonia)', blocks: [
+                        { type: 'p', text: 'เริ่มป้องกันปฐมภูมิเมื่อ CD4 < 200 cells/mm³ หรือ CD4 < 14% หรือมี oropharyngeal candidiasis หรือมี AIDS-defining illness (รวมวัณโรค)' },
+                        { type: 'ul', items: [
+                            'ยาหลักป้องกัน: co-trimoxazole (TMP-SMX) ชนิด single-strength (TMP 80 มก.–SMX 400 มก.) กิน 1–2 เม็ด วันละครั้ง (ขนาด 2 เม็ดต่อวันอาจป้องกัน toxoplasmosis ได้ดีกว่า)',
+                            'ทางเลือกเมื่อใช้ co-trimoxazole ไม่ได้: dapsone 100 มก. กินวันละครั้ง',
+                            'รักษา (ยาหลัก): co-trimoxazole โดยให้ TMP 15–20 มก./กก./วัน หรือ SMX 75–100 มก./กก./วัน แบ่งให้วันละ 3–4 ครั้ง นาน 21 วัน',
+                            'หยุดป้องกันปฐมภูมิ: CD4 ≥ 200 cells/mm³ นานกว่า 3 เดือน หรือ CD4 100–200 แต่ HIV VL undetectable นานกว่า 3–6 เดือน',
+                            'หยุดป้องกันทุติยภูมิ: CD4 > 200 cells/mm³ นานกว่า 3 เดือน หรือ CD4 100–200 แต่ HIV VL undetectable นานกว่า 3–6 เดือน • ผู้ที่เป็น PCP ขณะที่ CD4 > 200 อาจพิจารณาให้ secondary prophylaxis ไปตลอด'
+                        ]}
+                    ]},
+                    { type: 'details', title: 'Cryptococcosis', blocks: [
+                        { type: 'p', text: 'เริ่มป้องกันปฐมภูมิเมื่อครบทุกข้อ: CD4 < 100 cells/mm³, ไม่มีอาการของ C. neoformans, ผล cryptococcal antigen ในเลือดเป็นลบหรือตรวจไม่ได้, และไม่สามารถเริ่มยาต้านเอชไอวีได้ภายใน 4 สัปดาห์ (เด็กอายุ < 12 ปีไม่แนะนำป้องกันปฐมภูมิ)' },
+                        { type: 'ul', items: [
+                            'ยาป้องกันปฐมภูมิ: fluconazole 400 มก. กินสัปดาห์ละครั้ง • หยุดได้เมื่อเริ่มยาต้านเอชไอวี',
+                            'รักษา (induction อย่างน้อย 2 สัปดาห์หรือจนกว่าอาการดีขึ้น) ยาหลัก เช่น amphotericin B 1.0 มก./กก./วัน ทางหลอดเลือดดำ ร่วมกับ flucytosine 100 มก./กก./วัน ชนิดกินแบ่งวันละ 4 ครั้ง เป็นเวลา 1 สัปดาห์ ตามด้วย fluconazole 1,200 มก./วัน นาน 1 สัปดาห์ (มีทางเลือกอื่นในตารางที่ 5.20)',
+                            'consolidation 8–10 สัปดาห์: fluconazole 400–800 มก./วัน',
+                            'ป้องกันทุติยภูมิ (ยาหลัก): fluconazole 200 มก. กินวันละครั้ง อย่างน้อย 12 เดือน',
+                            'หยุดป้องกันทุติยภูมิ: ได้ยาอย่างน้อย 1 ปี และ CD4 ≥ 100 cells/mm³ นานกว่า 3 เดือน และ HIV VL undetectable'
+                        ]}
+                    ]},
+                    { type: 'details', title: 'Toxoplasmic encephalitis', blocks: [
+                        { type: 'p', text: 'เริ่มป้องกันปฐมภูมิเมื่อ CD4 < 100 cells/mm³ • ในเด็กต้องมี IgG ต่อ Toxoplasma และภูมิคุ้มกันบกพร่องรุนแรง (อายุ < 6 ปี ที่ CD4 < 15% หรืออายุ ≥ 6 ปี ที่ CD4 < 100)' },
+                        { type: 'ul', items: [
+                            'ยาหลักป้องกันในผู้ใหญ่: co-trimoxazole (80/400) 2 เม็ด วันละครั้ง • การให้ co-trimoxazole เพื่อป้องกัน PCP สามารถป้องกัน toxoplasmosis ได้ แต่ dapsone อย่างเดียวไม่พอ',
+                            'รักษา (ยาหลัก): co-trimoxazole ในขนาด TMP 5–10 มก./กก./วัน หรือ SMX 25–50 มก./กก./วัน ทางหลอดเลือดดำหรือกิน แบ่งวันละ 2 ครั้ง หรือ pyrimethamine (โหลด 200 มก. แล้ว 50 หรือ 75 มก./วัน ตามน้ำหนัก) ร่วมกับ sulfadiazine และ folinic acid อย่างน้อย 6 สัปดาห์',
+                            'หยุดป้องกันปฐมภูมิ: CD4 > 200 cells/mm³ นานกว่า 3 เดือน หรือ CD4 100–200 และ HIV VL undetectable นานอย่างน้อย 3–6 เดือน',
+                            'หยุดป้องกันทุติยภูมิ: CD4 > 200 cells/mm³ นานกว่า 6 เดือน'
+                        ]}
+                    ]},
+                    { type: 'details', title: 'MAC (Mycobacterium avium complex)', blocks: [
+                        { type: 'p', text: 'พิจารณาป้องกันปฐมภูมิในผู้ที่เริ่มยาต้านเอชไอวีไม่ได้ภายใน 4 สัปดาห์ และมั่นใจว่าไม่มี disseminated MAC (ผลเพาะเชื้อในเลือดเป็นลบ)' },
+                        { type: 'ul', items: [
+                            'ข้อบ่งชี้ผู้ใหญ่: CD4 < 50 cells/mm³ และไม่มีลักษณะที่สงสัยว่าติดเชื้อนี้อยู่แล้ว',
+                            'ยาป้องกันผู้ใหญ่: clarithromycin 500 มก. กินวันละ 2 ครั้ง หรือ azithromycin 1,000–1,250 มก. กินสัปดาห์ละครั้ง',
+                            'หยุดป้องกันปฐมภูมิได้เมื่อเริ่มยาต้านเอชไอวี',
+                            'รักษา (ยาหลัก): clarithromycin 500 มก. กินวันละ 2 ครั้ง หรือ azithromycin 500 มก. กินวันละครั้ง ร่วมกับ ethambutol 15 มก./กก./วัน • ถ้ารุนแรงหรือ CD4 < 50 ควรใช้ยาร่วมอีก 1–2 ชนิด เช่น levofloxacin, moxifloxacin หรือ amikacin',
+                            'หยุดป้องกันทุติยภูมิ: ได้รับยารักษา MAC มาอย่างน้อย 12 เดือน ไม่มีอาการของโรค และ CD4 > 100 cells/mm³ นานกว่า 6 เดือน'
+                        ]}
+                    ]},
+                    { type: 'details', title: 'Candidiasis', blocks: [
+                        { type: 'p', text: 'Candidiasis: ไม่แนะนำป้องกันปฐมภูมิ' },
+                        { type: 'ul', items: [
+                            'Oropharyngeal: clotrimazole oral troches 10 มก. อมวันละ 4–5 ครั้ง นาน 7–14 วัน หรือ fluconazole 100 มก. กินวันละครั้ง นาน 7–14 วัน',
+                            'Esophageal: fluconazole 200 มก. กินวันละครั้ง นาน 14–21 วัน',
+                            'หยุดป้องกันทุติยภูมิ: ได้รับยาต้านเอชไอวีจน CD4 > 200 cells/mm³'
+                        ]}
+                    ]},
+                    { type: 'details', title: 'Talaromycosis (เพนิซิลลิโอสิส) และ Histoplasmosis', blocks: [
+                        { type: 'p', text: 'ป้องกันปฐมภูมิเป็นทางเลือก (optional) หากเริ่มยาต้านเอชไอวีได้เร็ว ถ้าจะให้ ใช้เมื่อ CD4 < 100 (talaromycosis) หรือ < 150 (histoplasmosis) ในพื้นที่ที่เชื้อชุกชุม และเริ่มยาต้านไม่ได้ภายใน 4 สัปดาห์' },
+                        { type: 'ul', items: [
+                            'ยาป้องกัน: itraconazole 200 มก. กินวันละครั้ง • หากใช้ itraconazole แล้วไม่ต้องให้ fluconazole เพื่อป้องกัน cryptococcosis ซ้ำ',
+                            'หยุดป้องกันปฐมภูมิได้เมื่อเริ่มยาต้านเอชไอวี',
+                            'รักษา (induction, ยาหลัก): amphotericin B 0.6–0.7 มก./กก./วัน ทางหลอดเลือดดำ 7–14 วัน ต่อ consolidation ด้วย itraconazole ตามตารางในแนวทาง',
+                            'ป้องกันทุติยภูมิ: itraconazole 200 มก. กินวันละครั้ง',
+                            'หยุดป้องกันทุติยภูมิ: CD4 > 100 cells/mm³ (talaromycosis) และ > 150 cells/mm³ (histoplasmosis) นานกว่า 6 เดือน และ HIV VL undetectable นานกว่า 6 เดือน'
+                        ]}
+                    ]},
+                    { type: 'details', title: 'CMV (cytomegalovirus)', blocks: [
+                        { type: 'p', text: 'ไม่แนะนำป้องกันปฐมภูมิ เพราะยาราคาแพง ประสิทธิผลไม่ดีเท่าที่ควร และมีผลข้างเคียงมาก การเริ่มยาต้านเอชไอวีก่อนที่ CD4 จะต่ำกว่า 100 cells/mm³ ช่วยป้องกันได้ ให้สังเกตอาการทางสายตาแล้วมาพบแพทย์เร็ว' },
+                        { type: 'ul', items: [
+                            'รักษา (ยาหลัก): ganciclovir 5 มก./กก. ทุก 12 ชม. ทางหลอดเลือดดำ 2–3 สัปดาห์ หรือจนกว่าอาการดีขึ้น/คงที่ หรือ valganciclovir 900 มก. กินวันละ 2 ครั้ง นาน 2–3 สัปดาห์',
+                            'ป้องกันทุติยภูมิหลัง CMV retinitis: valganciclovir 900 มก. กินวันละครั้ง',
+                            'หยุดป้องกันทุติยภูมิ: รักษา CMV retinitis นานกว่า 3–6 เดือน อาการคงที่หรือไม่มี retinitis และ CD4 > 100 cells/mm³ นานอย่างน้อย 3–6 เดือน แล้วติดตามจอประสาทตาทุก 3–6 เดือน'
+                        ]}
+                    ]},
+                    { type: 'details', title: 'วัณโรค / การรักษาวัณโรคระยะแฝง (TPT)', blocks: [
+                        { type: 'p', text: 'คัดกรองวัณโรคทุกครั้งที่มาด้วยอาการ 4 ข้อ (ไอผิดปกติ โดยเฉพาะนานกว่า 2 สัปดาห์, ไข้ไม่ทราบสาเหตุ, น้ำหนักลดอย่างน้อยร้อยละ 5 ใน 1 เดือน, เหงื่อออกกลางคืนผิดปกติ) แล้วจึงพิจารณา TPT ในผู้ที่ไม่มีวัณโรคกำเริบ' },
+                        { type: 'ul', items: [
+                            'สูตรที่แนะนำในตารางที่ 5.16: อายุ > 13 ปีที่ติดเชื้อเอชไอวี ใช้ 3HP หรือ 1HP เป็นสูตรหลัก และ 6–9H เป็นทางเลือก • อายุ < 13 ปีใช้ 6–9H เป็นสูตรหลัก และ 3HR หรือ 3HP (เฉพาะอายุ > 2 ปี) เป็นทางเลือก',
+                            'กรณีให้ยาสูตรที่มี DTG หรือ BIC สามารถให้ 3HP หรือ 1HP โดยไม่จำเป็นต้องปรับขนาด DTG/BIC (ตามข้อความในบทที่ 5)',
+                            'การรักษาวัณโรคที่ไม่ดื้อยาในผู้ใหญ่โดยทั่วไป 6 เดือน (ยาวขึ้นในกรณีตอบสนองช้า มีโพรงฝี วัณโรคกระดูก ข้อ หรือสมอง ตามตารางที่ 5.4)',
+                            'เริ่มยาต้านเอชไอวีหลังเริ่มยารักษาวัณโรคภายใน 2 สัปดาห์ อย่างช้าไม่เกิน 4 สัปดาห์ ยกเว้นวัณโรคเยื่อหุ้มสมองหรือในระบบประสาท (ผู้ใหญ่เริ่มหลังอย่างน้อย 4 สัปดาห์ อย่างช้าไม่เกิน 6 สัปดาห์)'
+                        ]}
+                    ]},
+                    { type: 'h', text: 'สรุปเกณฑ์หยุดยาป้องกันในผู้ใหญ่ (ตารางที่ 5.21)' },
+                    { type: 'table', cols: ['โรค', 'หยุดป้องกันปฐมภูมิ', 'หยุดป้องกันทุติยภูมิ'], rows: [
+                        ['PCP', 'CD4 ≥ 200 นานกว่า 3 เดือน หรือ CD4 100–200 แต่ VL undetectable นานกว่า 3–6 เดือน', 'CD4 > 200 นานกว่า 3 เดือน หรือ CD4 100–200 แต่ VL undetectable นานกว่า 3–6 เดือน'],
+                        ['Cryptococcosis', 'หยุดได้เมื่อเริ่มยาต้านเอชไอวี', 'ได้อย่างน้อย 1 ปี และ CD4 ≥ 100 นานกว่า 3 เดือน และ VL undetectable'],
+                        ['Candidiasis', 'ไม่มีข้อแนะนำ (ไม่ให้ป้องกันปฐมภูมิ)', 'ได้รับยาต้านจน CD4 > 200'],
+                        ['Toxoplasmosis', 'CD4 > 200 นานกว่า 3 เดือน หรือ CD4 100–200 แต่ VL undetectable นานอย่างน้อย 3–6 เดือน', 'CD4 > 200 นานกว่า 6 เดือน'],
+                        ['Talaromycosis / Histoplasmosis', 'หยุดได้เมื่อเริ่มยาต้านเอชไอวี', 'CD4 > 100 (talaromycosis) และ > 150 (histoplasmosis) นานกว่า 6 เดือน และ VL undetectable นานกว่า 6 เดือน'],
+                        ['CMV retinitis', 'ไม่มีข้อแนะนำ', 'รักษา CMV retinitis นานกว่า 3–6 เดือน และ CD4 > 100 นานอย่างน้อย 3–6 เดือน'],
+                        ['MAC', 'หยุดได้เมื่อเริ่มยาต้านเอชไอวี', 'รักษา MAC อย่างน้อย 12 เดือน ไม่มีอาการของโรค และ CD4 > 100 นานกว่า 6 เดือน']
+                    ]},
+                    { type: 'p', text: 'ในเด็กใช้ตารางที่ 5.22 ซึ่งเกณฑ์ละเอียดตามช่วงอายุ เช่น PCP หยุดหลังได้ยาต้านอย่างน้อย 6 เดือน ร่วมกับ CD4 สูงกว่าเกณฑ์อย่างน้อย 3 เดือน (อายุ 1–5 ปี: CD4 ≥ 500 หรือ ≥ 15%; อายุ ≥ 6 ปี: CD4 ≥ 200 หรือ ≥ 15%) และเด็กอายุ < 1 ปีไม่ให้หยุดยาป้องกัน PCP จนกว่าอายุครบ 1 ปี ไม่ว่า CD4 จะเท่าใด' }
+                ]
+            },
+            renal: {
+                title: 'ยาต้านเอชไอวี และการปรับขนาดตามการทำงานของไต',
+                source: 'แนวทางฯ บทที่ 2 ตารางที่ 2.17 (เอกสารในคลัง hivtb) อ้างอิงแนวทาง EACS ฉบับที่ 10.0 พฤศจิกายน 2024 ตามที่ระบุในตาราง. เครื่องคำนวณในแอป hivtb ใช้ eGFR เช่นกัน มีบางจุดที่ต่างจากตาราง จึงทำเครื่องหมายไว้',
+                blocks: [
+                    { type: 'p', text: 'ตารางใช้ eGFR (มล./นาที) จากสูตร CKD-EPI หรืออาจคำนวณ creatinine clearance: ผู้ชาย = (140 − อายุเป็นปี) × น้ำหนัก (กก.) / (72 × serum creatinine) และผู้หญิงคูณ 0.85 ซึ่งตรงกับที่ถามเรื่องการปรับตาม CrCl' },
+                    { type: 'table', cols: ['ยา', 'ขนาดปกติต่อวัน (eGFR ≥ 50)', 'eGFR 30–49', 'eGFR 10–29', 'eGFR < 10', 'Hemodialysis'], rows: [
+                        ['3TC', '300 มก. ทุก 24 ชม.', '150 มก. ทุก 24 ชม.', '100 มก. ทุก 24 ชม.', '50–25 มก. ทุก 24 ชม. (มี loading)', '25 มก. ทุก 24 ชม. หลังล้างไต (มี loading)'],
+                        ['FTC', '200 มก. ทุก 24 ชม.', '200 มก. ทุก 24 ชม. (ไม่ปรับในช่องนี้)', '200 มก. ทุก 72 ชม.', '200 มก. ทุก 96 ชม.', '200 มก. ทุก 24 ชม. หลังล้างไต'],
+                        ['TAF', '25 มก. ทุก 24 ชม. (ดูเชิงอรรถกรณีใช้กับ booster)', '25 มก. ทุก 24 ชม.', 'ไม่มีข้อมูล', 'ไม่มีข้อมูล', '25 มก. ทุก 24 ชม. หลังล้างไต'],
+                        ['TAF/FTC', '25/200 มก. ทุก 24 ชม.', 'แนะนำยาเดี่ยว', 'ไม่มีข้อมูล', 'ไม่มีข้อมูล', '1 เม็ด วันละครั้ง หลังล้างไต'],
+                        ['TDF', '300 มก. ทุก 24 ชม.', '300 มก. ทุก 48 ชม.', 'ไม่แนะนำ', 'ไม่แนะนำ', '300 มก. ทุก 7 วัน หลังล้างไต'],
+                        ['TDF/FTC', '300 มก. ทุก 24 ชม.', '300 มก. ทุก 48 ชม.', 'แนะนำยาเดี่ยว', 'แนะนำยาเดี่ยว', 'แนะนำยาเดี่ยว'],
+                        ['ABC', '300 มก. ทุก 12 ชม. หรือ 600 มก. ทุก 24 ชม.', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด'],
+                        ['ABC/3TC', '600/300 มก. ทุก 24 ชม.', 'แนะนำยาเดี่ยว', 'แนะนำยาเดี่ยว', 'แนะนำยาเดี่ยว', 'แนะนำยาเดี่ยว'],
+                        ['EFV', '600 มก. ทุก 24 ชม. ก่อนนอน', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด'],
+                        ['NVP', '200 มก. ทุก 12 ชม.', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด'],
+                        ['RPV', '25 มก. ทุก 24 ชม.', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด'],
+                        ['DRV/r', '800/100 มก. ทุก 24 ชม. (naive) หรือ 600/100 มก. ทุก 12 ชม.', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด'],
+                        ['DRV/c', '800/150 มก. ทุก 24 ชม.', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด'],
+                        ['LPV/r', '400/100 มก. ทุก 12 ชม.', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด'],
+                        ['DTG', '50 มก. ทุก 24 ชม.', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด'],
+                        ['CAB-LA/RPV-LA', '400/600 มก. ทุก 4 สัปดาห์ หรือ 600/900 มก. ทุก 8 สัปดาห์', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด', 'ไม่ต้องปรับขนาด'],
+                        ['ABC/3TC/DTG', '600/300/50 ทุก 24 ชม.', 'ไม่แนะนำยารวมเม็ด', 'ใช้ยาเม็ดแยก และปรับขนาด 3TC ตาม eGFR', 'ใช้ยาเม็ดแยก และปรับขนาด 3TC ตาม eGFR', 'ใช้ยาเม็ดแยก และปรับขนาด 3TC ตาม eGFR'],
+                        ['TAF/FTC/BIC', '25/200/50 มก. ทุก 24 ชม.', '25/200/50 มก. ทุก 24 ชม.', 'ไม่แนะนำ (ไม่มีข้อมูล pharmacokinetic ของ BIC เมื่อ eGFR < 15 มล./นาที)', 'ไม่แนะนำ', 'ไม่แนะนำ']
+                    ]},
+                    { type: 'p', text: 'LEN (capsid inhibitor) ในตาราง: ขนาดโหลดตามวันที่ 1–2, 8 และ 15 แล้ว 927 มก. ทุก 6 เดือน ไม่ต้องปรับตามไต ตามตารางที่ 2.17' },
+                    { type: 'h', text: 'เชิงอรรถสำคัญในตาราง' },
+                    { type: 'ul', items: [
+                        'หลังล้างไต (AD): ให้ยาหลังจากล้างไต',
+                        '3TC เมื่อไตบกพร่องมากมี loading dose 150 มก. และ 50 มก. เมื่อ hemodialysis',
+                        'ถ้าใช้ TAF ร่วมกับยา boosting (ยับยั้ง P-gp) ลดขนาด TAF เป็น 10 มก. ทุก 24 ชม.',
+                        'ถ้าใช้ TDF ร่วมกับ cobicistat-boosted PIs ระดับยา TDF สูงขึ้น ไม่แนะนำหาก eGFR < 70 มล./นาที',
+                        'กลุ่มเสี่ยงสูง เช่น อายุ ≥ 50 ปี มีโรคเบาหวาน หรือความดันเลือดสูง ถ้า eGFR < 50 มล./นาที ควรพิจารณาเปลี่ยน TDF เป็นยาตัวอื่น ถ้าเปลี่ยนไม่ได้ให้ปรับขนาด',
+                        'ถ้า eGFR < 30 มล./นาที ควรพิจารณาส่งปรึกษาแพทย์ผู้เชี่ยวชาญโรคไต'
+                    ]},
+                    { type: 'h', text: 'จุดที่เครื่องคำนวณในแอป hivtb ต่างจากตารางที่ 2.17' },
+                    { type: 'ul', items: [
+                        'FTC: ตารางไม่ปรับขนาดในช่วง eGFR 30–49 (ยัง 200 มก. ทุก 24 ชม.) แต่เครื่องคำนวณปรับเป็นทุก 72 ชม. เมื่อ eGFR < 50 — โปรดยึดตารางที่ 2.17',
+                        'TAF: ตารางระบุว่าไม่มีข้อมูลเมื่อ eGFR 10–29 และ < 10 (นอกจากหลังล้างไต) แต่เครื่องคำนวณเตือนเมื่อ eGFR < 15',
+                        'TDF: ทั้งสองแหล่งไม่แนะนำเมื่อ eGFR < 30 และใช้ 300 มก. ทุก 48 ชม. เมื่อ eGFR 30–49 สอดคล้องกัน',
+                        'AZT ไม่ปรากฏในตารางที่ 2.17 หน้านี้ เครื่องคำนวณใช้ 300 มก. วันละ 2 ครั้ง และปรับเป็นวันละครั้งเมื่อ eGFR < 10 — จุดนี้มาจากแอป ไม่ใช่ตารางที่ 2.17',
+                        'สูตรเม็ดรวม TDF/FTC/DTG (TLD): เครื่องคำนวณไม่แนะนำเมื่อ eGFR < 50 ซึ่งสอดคล้องกับแนวทางให้แยกเม็ดแล้วปรับ TDF/FTC',
+                        'ถ้ามีเชื้อ HBV ร่วมด้วย สูตรยาต้องมี TDF หรือ TAF ร่วมกับ 3TC หรือ FTC เสมอ (ทั้งแอปและตารางที่ 2.27)'
+                    ]}
+                ]
+            }
+        };
+        function openHivKb(key) {
+            var item = HIV_KB[key];
+            if (!item) return;
+            var overlay = document.getElementById('hivKbModal');
+            var title = document.getElementById('hivKbTitle');
+            var body = document.getElementById('hivKbBody');
+            if (!overlay || !title || !body) return;
+            title.textContent = item.title;
+            body.innerHTML = hivKbBlocksHtml(item.blocks) +
+                '<div class="hivkb-src"><strong>แหล่งข้อมูล:</strong> ' + hivKbEsc(item.source) + '</div>' +
+                '<p class="hivkb-disc">ใช้สำหรับอ้างอิงในคลินิกเท่านั้น โปรดทวนกับแนวทางฉบับปัจจุบันและบริบทคนไข้ก่อนใช้ขนาดยา</p>';
+            overlay.style.display = 'flex';
+            body.scrollTop = 0;
+            var closeBtn = overlay.querySelector('.modal-close-btn');
+            if (closeBtn) closeBtn.focus();
+        }
+        function closeHivKb() {
+            var overlay = document.getElementById('hivKbModal');
+            if (overlay) overlay.style.display = 'none';
+        }
+        function onHivKbOverlayClick(ev) {
+            if (ev.target && ev.target.id === 'hivKbModal') closeHivKb();
+        }
+        document.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Escape') {
+                var overlay = document.getElementById('hivKbModal');
+                if (overlay && overlay.style.display === 'flex') closeHivKb();
+            }
+        });
+
         function openRenalCalcModal(targetTab) {
             document.getElementById('renalCalcTargetTab').value = targetTab;
             // ดึงค่า Scr เดิมจากแท็บปัจจุบันมาใส่ให้อัตโนมัติถ้ามี
