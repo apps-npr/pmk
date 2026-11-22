@@ -1,0 +1,40 @@
+{
+  "id": "/",
+  "name": "PMK เภสัชกรรม รพ.นพรัตนราชธานี",
+  "short_name": "PMK",
+  "description": "บันทึกงานเภสัชกรรมคลินิก นอกสถานที่และในคลินิก สำหรับกลุ่มงานเภสัชกรรม โรงพยาบาลนพรัตนราชธานี",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#2563eb",
+  "theme_color": "#2563eb",
+  "lang": "th",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "icon_192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon_192x192_maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon_512x512_maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
