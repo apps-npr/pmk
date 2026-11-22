@@ -61,6 +61,13 @@
         .proc-item { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 0.8125rem; }
         .proc-item:hover, .proc-item.active { background-color: #eff6ff; }
         .proc-item .proc-aliases { font-size: 11px; color: #6b7280; }
+        .preopcal-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(15,23,42,0.45); display: flex; align-items: flex-start; justify-content: center; padding: 16px; overflow-y: auto; }
+        .preopcal-card { background: #fff; width: 100%; max-width: 980px; margin: 12px auto 24px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.18); }
+        .preopcal-day { border: 1px solid #e2e8f0; min-height: 72px; padding: 4px 5px; font-size: 11px; background: #fff; }
+        .preopcal-day.is-surg { background: #fff1f2; border-color: #fb7185; }
+        .preopcal-day.is-today-hold { background: #fff7ed; }
+        .preopcal-day.is-restart { background: #f0fdf4; }
+        .preopcal-day.is-out { background: #f8fafc; color: #94a3b8; }
         .tag { background-color: #3b82f6; color: white; padding: 5px 12px; border-radius: 9999px; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 8px; margin: 4px; }
         .tag i { cursor: pointer; }
         .tag:hover { background-color: #2563eb; }
@@ -272,7 +279,8 @@
             body.print-mode-capd-advice-a5 #printStickerArea,
             body.print-mode-capd-advice-a5 #printRifampinArea,
             body.print-mode-capd-advice-a5 #printWfColorTableA5,
-            body.print-mode-capd-advice-a5 #printAsthmaMistakeA5 { display: none !important; }
+            body.print-mode-capd-advice-a5 #printAsthmaMistakeA5,
+            body.print-mode-capd-advice-a5 #printPreopHoldCal { display: none !important; }
             body.print-mode-capd-advice-a5 #printCapdAdviceA5 {
                 position: absolute; left: 0; top: 0; width: 100%;
                 display: flex !important; flex-direction: column; justify-content: flex-start;
@@ -292,6 +300,30 @@
                 padding: 7mm; box-sizing: border-box;
                 -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
             }
+
+            /* โหมด 8: ปฏิทินหยุดยาก่อนผ่าตัด (A4 แนวตั้ง สำหรับคนไข้ Pre-OP) */
+            body.print-mode-preop-hold-cal {
+                min-height: 0 !important; height: auto !important;
+                padding: 0 !important; margin: 0 !important;
+                background: white !important;
+            }
+            body.print-mode-preop-hold-cal #mainAppContainer,
+            body.print-mode-preop-hold-cal #preopHoldCalModal { display: none !important; }
+            body.print-mode-preop-hold-cal #printPreopHoldCal,
+            body.print-mode-preop-hold-cal #printPreopHoldCal * { visibility: visible !important; }
+            body.print-mode-preop-hold-cal #printArea,
+            body.print-mode-preop-hold-cal #printStickerArea,
+            body.print-mode-preop-hold-cal #printRifampinArea,
+            body.print-mode-preop-hold-cal #printWfColorTableA5,
+            body.print-mode-preop-hold-cal #printAsthmaMistakeA5,
+            body.print-mode-preop-hold-cal #printCapdAdviceA5 { display: none !important; }
+            body.print-mode-preop-hold-cal #printPreopHoldCal {
+                position: absolute; left: 0; top: 0; width: 100%;
+                display: block !important; background: white !important; color: #0f172a !important;
+                padding: 0; margin: 0; box-sizing: border-box;
+                font-family: 'Sarabun', 'Prompt', sans-serif;
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+            }
         }
         
         /* ตั้งค่าหน้ากระดาษ */
@@ -301,11 +333,13 @@
         @page wfColorPageA5 { size: A5 portrait; margin: 4mm; }
         @page asthmaMistakePageA5 { size: A5 portrait; margin: 5mm; }
         @page capdAdvicePageA5 { size: A5 landscape; margin: 8mm 12mm; }
+        @page preopHoldCalPageA4 { size: A4 portrait; margin: 8mm 8mm 8mm 8mm; }
         body.print-mode-opd-a5 { page: opdPageA5; }
         body.print-mode-rifampin-a5 { page: rifampinPageA5; }
         body.print-mode-wf-color-a5 { page: wfColorPageA5; }
         body.print-mode-asthma-a5 { page: asthmaMistakePageA5; }
         body.print-mode-capd-advice-a5 { page: capdAdvicePageA5; }
+        body.print-mode-preop-hold-cal { page: preopHoldCalPageA4; }
 
         /* สไตล์ Slider และ Animation สำหรับ Warfarin-Rifampin */
         @keyframes slideUpFade {
@@ -1843,6 +1877,10 @@
                             <label class="block text-xs font-medium text-gray-600 mb-1">Potassium (ล่าสุด)</label>
                             <input type="number" id="hfK" step="0.1" placeholder="mEq/L" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm">
                         </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">น้ำหนัก (กก.) <span class="font-normal text-gray-400">ไม่บังคับ ใช้คิดเป้า Carvedilol</span></label>
+                            <input type="number" id="hfWeight" step="0.1" placeholder="เช่น 70" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm">
+                        </div>
                     </div>
                     
                     <div class="flex flex-wrap gap-4 mt-2">
@@ -1873,9 +1911,13 @@
                         <div id="div_hf_raasi" class="hidden mt-2 ml-6">
                             <select id="sel_hf_raasi_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_raasi_drug', 'sel_hf_raasi_dose')">
                                 <option value="">-- เลือกตัวยา --</option>
-                                <option value="arni">Entresto FTC 100mg (49/51)</option>
-                                <option value="enalapril">Enalapril 5mg, 20mg</option>
-                                <option value="losartan">Losartan 50mg</option>
+                                <option value="arni">Sacubitril/valsartan (Entresto 50/100/200)</option>
+                                <option value="enalapril">Enalapril</option>
+                                <option value="lisinopril">Lisinopril</option>
+                                <option value="ramipril">Ramipril</option>
+                                <option value="losartan">Losartan</option>
+                                <option value="valsartan">Valsartan</option>
+                                <option value="candesartan">Candesartan</option>
                             </select>
                             <div id="wrap_hf_raasi_dose" class="hidden">
                                 <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
@@ -1893,9 +1935,10 @@
                         <div id="div_hf_bb" class="hidden mt-2 ml-6">
                             <select id="sel_hf_bb_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_bb_drug', 'sel_hf_bb_dose')">
                                 <option value="">-- เลือกตัวยา --</option>
-                                <option value="bisoprolol">Bisoprolol 5mg</option>
-                                <option value="carvedilol">Carvedilol 6.25mg, 25mg</option>
-                                <option value="metoprolol">Metoprolol tartrate 100mg (อนุโลมใช้)</option>
+                                <option value="bisoprolol">Bisoprolol</option>
+                                <option value="carvedilol">Carvedilol</option>
+                                <option value="metoprolol_succ">Metoprolol succinate (Betaloc ZOK)</option>
+                                <option value="metoprolol">Metoprolol tartrate (ไม่ใช่สูตรที่มีหลักฐานใน HFrEF)</option>
                             </select>
                             <div id="wrap_hf_bb_dose" class="hidden">
                                 <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
@@ -1908,12 +1951,13 @@
                     <div class="bg-gray-50 p-4 border-l-4 border-purple-400 rounded mb-3">
                         <label class="inline-flex items-center font-bold text-gray-700">
                             <input type="checkbox" id="chk_hf_mra" class="form-checkbox text-purple-600 rounded mr-2" onchange="toggleHfSub('chk_hf_mra', 'div_hf_mra')"> 
-                            3. MRA (Spironolactone)
+                            3. MRA (Spironolactone / Eplerenone)
                         </label>
                         <div id="div_hf_mra" class="hidden mt-2 ml-6">
                             <select id="sel_hf_mra_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_mra_drug', 'sel_hf_mra_dose')">
                                 <option value="">-- เลือกตัวยา --</option>
-                                <option value="spironolactone">Spironolactone 25mg, 100mg</option>
+                                <option value="spironolactone">Spironolactone</option>
+                                <option value="eplerenone">Eplerenone</option>
                             </select>
                             <div id="wrap_hf_mra_dose" class="hidden">
                                 <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
@@ -1922,19 +1966,33 @@
                         </div>
                     </div>
 
-                    <!-- 4. SGLT2i & Others -->
+                    <!-- 4. SGLT2i (pillar) -->
+                    <div class="bg-gray-50 p-4 border-l-4 border-amber-400 rounded mb-3">
+                        <label class="inline-flex items-center font-bold text-gray-700">
+                            <input type="checkbox" id="chk_hf_sglt2i" class="form-checkbox text-yellow-600 rounded mr-2" onchange="toggleHfSub('chk_hf_sglt2i', 'div_hf_sglt2i')">
+                            4. SGLT2 inhibitor
+                        </label>
+                        <div id="div_hf_sglt2i" class="hidden mt-2 ml-6">
+                            <select id="sel_hf_sglt2i_drug" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm mb-2 bg-white" onchange="updateHfDose('sel_hf_sglt2i_drug', 'sel_hf_sglt2i_dose')">
+                                <option value="">-- เลือกตัวยา --</option>
+                                <option value="empagliflozin">Empagliflozin (Jardiance) 10 mg</option>
+                                <option value="dapagliflozin">Dapagliflozin (Forxiga) 10 mg</option>
+                            </select>
+                            <div id="wrap_hf_sglt2i_dose" class="hidden">
+                                <label class="block text-xs text-gray-500 mb-1">ขนาดยาปัจจุบัน:</label>
+                                <select id="sel_hf_sglt2i_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Other GDMT & Diuretics -->
                     <div class="bg-gray-50 p-4 border-l-4 border-yellow-400 rounded mb-3">
-                        <label class="block font-bold text-gray-700 mb-2">4. ยาอื่นๆ (Other GDMT & Diuretics)</label>
+                        <label class="block font-bold text-gray-700 mb-2">5. ยาอื่นๆ (Ivabradine / ยาเสริม / ขับปัสสาวะ)</label>
                         <div class="ml-6 space-y-2">
-                            <label class="flex items-center">
-                                <input type="checkbox" id="chk_hf_sglt2i" class="form-checkbox text-yellow-600 rounded mr-2">
-                                <span class="text-sm">Empagliflozin 10mg (1 tab QD)</span>
-                            </label>
-                            
                             <div>
                                 <label class="flex items-center">
                                     <input type="checkbox" id="chk_hf_iva" class="form-checkbox text-yellow-600 rounded mr-2" onchange="toggleHfSub('chk_hf_iva', 'div_hf_iva')">
-                                    <span class="text-sm">Ivabradine 5mg</span>
+                                    <span class="text-sm">Ivabradine 5 mg</span>
                                 </label>
                                 <div id="div_hf_iva" class="hidden mt-1 ml-6">
                                     <select id="sel_hf_iva_dose" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white">
@@ -1956,6 +2014,14 @@
                                     <input type="text" id="hf_loop_detail" placeholder="ระบุขนาดยา (เช่น 40mg 1 tab OD)" class="w-full md:w-2/3 rounded border-gray-300 p-2 text-sm bg-white">
                                 </div>
                             </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chk_hf_hnisdn" class="form-checkbox text-yellow-600 rounded mr-2">
+                                <span class="text-sm">Hydralazine + isosorbide dinitrate</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="chk_hf_vericiguat" class="form-checkbox text-yellow-600 rounded mr-2">
+                                <span class="text-sm">Vericiguat</span>
+                            </label>
                         </div>
                     </div>
 
@@ -1992,6 +2058,22 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div id="hfGdmtBox" class="bg-white border border-emerald-200 rounded-lg p-5 shadow-sm">
+                    <h3 class="font-semibold text-lg text-emerald-800 mb-1 border-b border-emerald-100 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-table-list text-emerald-600"></i>
+                        4. รายการเช็กยา GDMT 4 เสาหลัก
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-2 mb-3">อัปเดตตามยาและค่าแล็บที่กรอกด้านบน แสดงว่าแต่ละเสาได้ยาหรือยัง ขนาดปัจจุบันเทียบเป้า (% ของ target) ขั้นปรับยาถัดไป และเกณฑ์เตือนจาก K, eGFR, SBP, HR</p>
+                    <div id="hfGdmtPhenotype" class="mb-3"></div>
+                    <div id="hfGdmtGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                    <div id="hfGdmtAddons" class="mt-3 space-y-2"></div>
+                    <p id="hfGdmtSources" class="text-[11px] leading-relaxed text-gray-500 mt-4 pt-3 border-t border-gray-100">ขนาดยาเริ่ม/เป้าและเกณฑ์เตือนอ้างอิง <strong>2022 AHA/ACC/HFSA Guideline for the Management of Heart Failure</strong>, <strong>2024 ACC Expert Consensus Decision Pathway for HFrEF</strong>, <strong>2021 ESC HF Guidelines</strong> (รวม practical guidance) และ <strong>2023 ESC Focused Update</strong> เป็นเครื่องมือช่วยงานเภสัชกร ไม่ทดแทนดุลยพินิจแพทย์ และควรตรวจยืนยันกับผลิตภัณฑ์ใน รพ. ก่อนสั่งปรับยา</p>
+                    <label class="flex items-start gap-2 mt-3 text-sm text-gray-700 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                        <input type="checkbox" id="hfGdmtAddToNote" class="form-checkbox text-emerald-600 rounded mt-0.5">
+                        <span>ใส่บรรทัดสรุป GDMT ลง Pharmacist Note <strong>เมื่อกดคัดลอก</strong> (ไม่ใส่ให้อัตโนมัติ เพราะข้อเสนอแนะอาจยังไม่ตรงกับความเห็นแพทย์)</span>
+                    </label>
                 </div>
 
                 <button onclick="generateHfRecommendations()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition flex items-center justify-center text-lg">
@@ -2869,6 +2951,10 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     6. ใบแนะนำแพทย์ A5
                 </button>
+                <button id="btnPreopHoldCal" onclick="openPreopHoldCalendar()" class="hidden bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    6. ปฏิทินหยุดยาก่อนผ่าตัด
+                </button>
             </div>
         </div>
     </div>
@@ -3465,6 +3551,48 @@
         </div>
     </div>
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
+
+    <!-- Modal: ปฏิทินหยุดยาก่อนผ่าตัด (Pre-OP ข้อ 6) -->
+    <div id="preopHoldCalModal" class="preopcal-overlay hidden print:hidden" onclick="if(event.target===this) closePreopHoldCalendar()">
+        <div class="preopcal-card text-slate-800">
+            <div class="flex items-start justify-between gap-3 px-5 py-4 border-b border-slate-200 bg-amber-50 rounded-t-2xl">
+                <div>
+                    <h3 class="text-lg font-bold text-amber-900">6. ปฏิทินหยุดยาก่อนผ่าตัด</h3>
+                    <p class="text-xs text-amber-800 mt-1 leading-snug">ยังไม่ติ๊กยาไว้ให้ เพราะความเห็นอาจไม่ตรงกับแพทย์ และยังไม่ได้คอนเฟิร์ม กรุณาเลือกเฉพาะยาที่จะใส่ในใบให้คนไข้ แล้วแก้วันที่ได้ก่อนพิมพ์</p>
+                </div>
+                <button type="button" onclick="closePreopHoldCalendar()" class="w-9 h-9 rounded-full hover:bg-amber-100 text-slate-500 text-xl leading-none" aria-label="ปิด">×</button>
+            </div>
+            <div class="px-5 py-4 space-y-4">
+                <div id="preopHoldCalMeta" class="text-sm text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-3"></div>
+                <div class="flex flex-wrap gap-4 items-end">
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-xs font-medium text-gray-600 mb-1">เบอร์ติดต่อเภสัชกร (แสดงบนใบพิมพ์)</label>
+                        <input type="text" id="preopHoldCalPhone" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 02-xxx-xxxx หรือ Line ID" oninput="renderPreopHoldCalPreview()">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="setAllPreopHoldCalTicks(true)" class="text-xs bg-white border border-slate-300 hover:bg-slate-50 px-3 py-2 rounded-lg">ติ๊กทั้งหมด</button>
+                        <button type="button" onclick="setAllPreopHoldCalTicks(false)" class="text-xs bg-white border border-slate-300 hover:bg-slate-50 px-3 py-2 rounded-lg">ล้างการติ๊ก</button>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-800 mb-2">เลือกยาที่จะแนะนำในใบนี้</h4>
+                    <div id="preopHoldCalList" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-800 mb-2">ตัวอย่างปฏิทินที่จะพิมพ์</h4>
+                    <div id="preopHoldCalPreview" class="border border-slate-200 rounded-lg p-2 bg-white overflow-x-auto text-slate-900"></div>
+                </div>
+                <p class="text-[11px] text-slate-500 leading-snug">วันที่งดคำนวณจากคำแนะนำที่มีในแอปแล้วเท่านั้น (เช่น หยุด 5 วันก่อนผ่าตัด) ส่วนวันเริ่มกินใหม่แอปเดิมไม่ได้กำหนดไว้ จึงเว้นว่างให้กรอกเอง ถ้าไม่กรอก ใบพิมพ์จะเขียนว่า “เริ่มยาใหม่เมื่อแพทย์อนุญาต”</p>
+            </div>
+            <div class="flex flex-wrap justify-end gap-2 px-5 py-4 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
+                <button type="button" onclick="closePreopHoldCalendar()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 text-sm">ปิด</button>
+                <button type="button" onclick="printPreopHoldCalendar()" class="px-5 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium"><i class="fa-solid fa-print mr-1"></i> พิมพ์ปฏิทิน A4</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- พิมพ์ปฏิทินหยุดยา Pre-OP (A4 แนวตั้ง) -->
+    <div id="printPreopHoldCal" class="hidden text-slate-900"></div>
 
     <script src="preop-procedures.js"></script>
     <script>
@@ -4237,6 +4365,7 @@
             if(tab === 'ASTHMA') activeBtn.classList.remove('text-teal-700');
             if(tab === 'PARKINSON') activeBtn.classList.remove('text-violet-700');
             if(tab === 'CAPD') activeBtn.classList.remove('text-cyan-700');
+            if (tab === 'HF' && typeof bindHfGdmtHelper === 'function') bindHfGdmtHelper();
 
             const mergeCheck = document.getElementById('mergeMrOption');
             if(mergeCheck) {
@@ -4266,6 +4395,11 @@
             if (capdA5Btn) {
                 if (tab === 'CAPD') capdA5Btn.classList.remove('hidden');
                 else capdA5Btn.classList.add('hidden');
+            }
+            const preopCalBtn = document.getElementById('btnPreopHoldCal');
+            if (preopCalBtn) {
+                if (tab === 'PREOP') preopCalBtn.classList.remove('hidden');
+                else preopCalBtn.classList.add('hidden');
             }
 
             scrollActiveClinicTabIntoView();
@@ -4313,48 +4447,639 @@
         // ==========================================
         const doseSteps = {
             arni: [
-                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 100mg BID (50 mg/day)', next: '1/2 เม็ด 100mg BID (100 mg/day)'},
-                {val: 'start', text: 'Low: 1/2 เม็ด 100mg BID (100 mg/day)', next: '1 เม็ด 100mg BID (200 mg/day)'},
-                {val: 'mid', text: 'Mid: 1 เม็ด 100mg BID (200 mg/day)', next: '2 เม็ด 100mg BID (Target 400 mg/day)'},
-                {val: 'target', text: 'Target: 2 เม็ด 100mg BID (400 mg/day)', next: null}
+                {val: 'vlow', text: 'ต่ำกว่าขนาดเริ่ม: 1/4 เม็ด 100 mg BID (50 mg/วัน)', next: 'Entresto 50 (24/26) mg BID (100 mg/วัน)', dailyMg: 50},
+                {val: 'start', text: 'ขนาดเริ่มต่ำ: Entresto 50 (24/26) mg BID หรือ 1/2 เม็ด 100 mg BID (100 mg/วัน)', next: 'Entresto 100 (49/51) mg BID (200 mg/วัน)', dailyMg: 100},
+                {val: 'mid', text: 'ขนาดเริ่มมาตรฐาน: Entresto 100 (49/51) mg BID (200 mg/วัน)', next: 'Entresto 200 (97/103) mg BID (เป้า 400 mg/วัน)', dailyMg: 200},
+                {val: 'target', text: 'เป้า: Entresto 200 (97/103) mg BID (400 mg/วัน)', next: null, dailyMg: 400}
             ],
             enalapril: [
-                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 5mg OD (2.5 mg/day)', next: '1/2 เม็ด 5mg BID หรือ 1 เม็ด 5mg OD'},
-                {val: 'start', text: 'Low: 1/2 เม็ด 5mg BID (5 mg/day)', next: '1 เม็ด 5mg BID (10 mg/day)'},
-                {val: 'mid', text: 'Mid: 1 เม็ด 5mg BID (10 mg/day)', next: '1/2 - 1 เม็ด 20mg BID (Target)'},
-                {val: 'target', text: 'Target: 1/2 - 1 เม็ด 20mg BID', next: null}
+                {val: 'vlow', text: 'Sub-low: 2.5 mg OD (2.5 mg/วัน)', next: '2.5 mg BID (5 mg/วัน)', dailyMg: 2.5},
+                {val: 'start', text: 'ขนาดเริ่ม: 2.5 mg BID (5 mg/วัน)', next: '5 mg BID (10 mg/วัน)', dailyMg: 5},
+                {val: 'mid', text: '5 mg BID (10 mg/วัน)', next: '10 mg BID (เป้าขั้นต่ำ 20 mg/วัน)', dailyMg: 10},
+                {val: 'mid2', text: 'เป้าขั้นต่ำ: 10 mg BID (20 mg/วัน)', next: '20 mg BID (เป้าบน 40 mg/วัน)', dailyMg: 20},
+                {val: 'target', text: 'เป้าบน: 20 mg BID (40 mg/วัน)', next: null, dailyMg: 40}
+            ],
+            lisinopril: [
+                {val: 'vlow', text: 'ขนาดเริ่มต่ำ: 2.5 mg OD', next: '5 mg OD', dailyMg: 2.5},
+                {val: 'start', text: 'ขนาดเริ่ม: 5 mg OD', next: '10 mg OD', dailyMg: 5},
+                {val: 'mid', text: '10 mg OD', next: '20 mg OD (เป้าขั้นต่ำ)', dailyMg: 10},
+                {val: 'mid2', text: 'เป้าขั้นต่ำ: 20 mg OD', next: '40 mg OD (เป้าบน)', dailyMg: 20},
+                {val: 'target', text: 'เป้าบน: 40 mg OD', next: null, dailyMg: 40}
+            ],
+            ramipril: [
+                {val: 'vlow', text: 'ขนาดเริ่ม: 1.25 mg OD', next: '2.5 mg OD', dailyMg: 1.25},
+                {val: 'start', text: '2.5 mg OD', next: '5 mg OD', dailyMg: 2.5},
+                {val: 'mid', text: '5 mg OD', next: '10 mg OD (เป้า)', dailyMg: 5},
+                {val: 'target', text: 'เป้า: 10 mg OD', next: null, dailyMg: 10}
             ],
             losartan: [
-                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 50mg OD (12.5 mg/day)', next: '1/2 เม็ด 50mg OD (25 mg/day)'},
-                {val: 'start', text: 'Low: 1/2 เม็ด 50mg OD (25 mg/day)', next: '1 เม็ด 50mg OD (50 mg/day)'},
-                {val: 'mid', text: 'Mid: 1 เม็ด 50mg OD (50 mg/day)', next: '2-3 เม็ด 50mg OD (Target 100-150 mg/day)'},
-                {val: 'target', text: 'Target: 2-3 เม็ด 50mg OD', next: null}
+                {val: 'vlow', text: 'Sub-low: 12.5 mg OD', next: '25 mg OD', dailyMg: 12.5},
+                {val: 'start', text: 'ขนาดเริ่ม: 25 mg OD', next: '50 mg OD', dailyMg: 25},
+                {val: 'mid', text: '50 mg OD', next: '100 mg OD', dailyMg: 50},
+                {val: 'mid2', text: '100 mg OD', next: '150 mg OD (เป้า)', dailyMg: 100},
+                {val: 'target', text: 'เป้า: 150 mg OD', next: null, dailyMg: 150}
+            ],
+            valsartan: [
+                {val: 'start', text: 'ขนาดเริ่ม: 40 mg BID (80 mg/วัน)', next: '80 mg BID (160 mg/วัน)', dailyMg: 80},
+                {val: 'mid', text: '80 mg BID (160 mg/วัน)', next: '160 mg BID (เป้า 320 mg/วัน)', dailyMg: 160},
+                {val: 'target', text: 'เป้า: 160 mg BID (320 mg/วัน)', next: null, dailyMg: 320}
+            ],
+            candesartan: [
+                {val: 'vlow', text: 'ขนาดเริ่มต่ำ: 4 mg OD', next: '8 mg OD', dailyMg: 4},
+                {val: 'start', text: 'ขนาดเริ่ม: 8 mg OD', next: '16 mg OD', dailyMg: 8},
+                {val: 'mid', text: '16 mg OD', next: '32 mg OD (เป้า)', dailyMg: 16},
+                {val: 'target', text: 'เป้า: 32 mg OD', next: null, dailyMg: 32}
             ],
             bisoprolol: [
-                {val: 'vlow', text: 'Sub-low: 1/4 เม็ด 5mg OD (1.25 mg/day)', next: '1/2 เม็ด 5mg OD (2.5 mg/day)'},
-                {val: 'start', text: 'Low: 1/2 เม็ด 5mg OD (2.5 mg/day)', next: '1 เม็ด 5mg OD (5 mg/day)'},
-                {val: 'mid', text: 'Mid: 1 เม็ด 5mg OD (5 mg/day)', next: '2 เม็ด 5mg OD (Target 10 mg/day)'},
-                {val: 'target', text: 'Target: 2 เม็ด 5mg OD', next: null}
+                {val: 'vlow', text: 'ขนาดเริ่ม: 1.25 mg OD', next: '2.5 mg OD', dailyMg: 1.25},
+                {val: 'start', text: '2.5 mg OD', next: '5 mg OD', dailyMg: 2.5},
+                {val: 'mid', text: '5 mg OD', next: '10 mg OD (เป้า)', dailyMg: 5},
+                {val: 'target', text: 'เป้า: 10 mg OD', next: null, dailyMg: 10}
             ],
             carvedilol: [
-                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 6.25mg BID (6.25 mg/day)', next: '1 เม็ด 6.25mg BID (12.5 mg/day)'},
-                {val: 'start', text: 'Low: 1 เม็ด 6.25mg BID (12.5 mg/day)', next: '2 เม็ด 6.25mg BID หรือ 1/2 เม็ด 25mg BID (25 mg/day)'},
-                {val: 'mid', text: 'Mid: 2 เม็ด 6.25mg BID (25 mg/day)', next: '1 เม็ด 25mg BID (Target 50 mg/day)'},
-                {val: 'target', text: 'Target: 1 เม็ด 25mg BID', next: null}
+                {val: 'vlow', text: 'ขนาดเริ่ม: 3.125 mg BID (6.25 mg/วัน)', next: '6.25 mg BID (12.5 mg/วัน)', dailyMg: 6.25},
+                {val: 'start', text: '6.25 mg BID (12.5 mg/วัน)', next: '12.5 mg BID (25 mg/วัน)', dailyMg: 12.5},
+                {val: 'mid', text: '12.5 mg BID (25 mg/วัน)', next: '25 mg BID (50 mg/วัน; เป้าถ้าน้ำหนัก <85 กก.)', dailyMg: 25},
+                {val: 'target', text: 'เป้า (<85 กก.): 25 mg BID (50 mg/วัน)', next: '50 mg BID (100 mg/วัน; เป้าถ้าน้ำหนัก ≥85 กก.)', dailyMg: 50},
+                {val: 'target_high', text: 'เป้า (≥85 กก.): 50 mg BID (100 mg/วัน)', next: null, dailyMg: 100}
+            ],
+            metoprolol_succ: [
+                {val: 'vlow', text: 'ขนาดเริ่มต่ำ: 12.5 mg OD', next: '25 mg OD', dailyMg: 12.5},
+                {val: 'start', text: 'ขนาดเริ่ม: 25 mg OD', next: '50 mg OD', dailyMg: 25},
+                {val: 'mid', text: '50 mg OD', next: '100 mg OD', dailyMg: 50},
+                {val: 'mid2', text: '100 mg OD', next: '200 mg OD (เป้า)', dailyMg: 100},
+                {val: 'target', text: 'เป้า: 200 mg OD', next: null, dailyMg: 200}
             ],
             metoprolol: [
-                {val: 'vlow', text: 'Sub-low: 12.5 mg BID', next: '1/4 เม็ด 100mg BID (50 mg/day)'},
-                {val: 'start', text: 'Low: 1/4 เม็ด 100mg BID (50 mg/day)', next: '1/2 เม็ด 100mg BID (100 mg/day)'},
-                {val: 'mid', text: 'Mid: 1/2 เม็ด 100mg BID (100 mg/day)', next: '1 เม็ด 100mg BID (Target 200 mg/day)'},
-                {val: 'target', text: 'Target: 1 เม็ด 100mg BID', next: null}
+                {val: 'vlow', text: 'Sub-low: 12.5 mg BID (สูตร tartrate ไม่มีหลักฐานใน HFrEF)', next: '25 mg BID (50 mg/วัน)', dailyMg: 25},
+                {val: 'start', text: 'Low: 25 mg BID หรือ 1/4 เม็ด 100 mg BID (50 mg/วัน)', next: '50 mg BID (100 mg/วัน)', dailyMg: 50},
+                {val: 'mid', text: '50 mg BID หรือ 1/2 เม็ด 100 mg BID (100 mg/วัน)', next: '100 mg BID (200 mg/วัน)', dailyMg: 100},
+                {val: 'target', text: '200 mg/วัน แบ่ง BID (ยังแนะนำเปลี่ยนเป็น succinate / bisoprolol / carvedilol)', next: null, dailyMg: 200}
             ],
             spironolactone: [
-                {val: 'vlow', text: 'Sub-low: 1/2 เม็ด 25mg วันเว้นวัน', next: '1/2 เม็ด 25mg OD (12.5 mg/day)'},
-                {val: 'start', text: 'Low: 1/2 เม็ด 25mg OD (12.5 mg/day)', next: '1 เม็ด 25mg OD (25 mg/day - Target)'},
-                {val: 'mid', text: 'Mid: 1 เม็ด 25mg OD (25 mg/day - Target)', next: '2 เม็ด 25mg OD (Target 50 mg/day)'},
-                {val: 'target', text: 'Target: 1-2 เม็ด 25mg OD', next: null}
+                {val: 'vlow', text: 'Sub-low: 12.5 mg วันเว้นวัน', next: '12.5 mg OD', dailyMg: 6.25},
+                {val: 'start', text: 'ขนาดเริ่ม: 12.5 mg OD', next: '25 mg OD (เป้าขั้นต่ำ)', dailyMg: 12.5},
+                {val: 'mid', text: 'เป้าขั้นต่ำ: 25 mg OD', next: '50 mg OD (เป้าบน)', dailyMg: 25},
+                {val: 'target', text: 'เป้าบน: 50 mg OD', next: null, dailyMg: 50}
+            ],
+            eplerenone: [
+                {val: 'start', text: 'ขนาดเริ่ม: 25 mg OD', next: '50 mg OD (เป้า)', dailyMg: 25},
+                {val: 'target', text: 'เป้า: 50 mg OD', next: null, dailyMg: 50}
+            ],
+            empagliflozin: [
+                {val: 'target', text: '10 mg OD (เริ่มและเป้าเท่ากัน)', next: null, dailyMg: 10}
+            ],
+            dapagliflozin: [
+                {val: 'target', text: '10 mg OD (เริ่มและเป้าเท่ากัน)', next: null, dailyMg: 10}
             ]
         };
+
+        const hfDrugMeta = {
+            arni: { pillar:'raasi', klass:'ARNI', name:'Sacubitril/valsartan (Entresto)', short:'Entresto', targetDailyMg:400, lowerTargetDailyMg:400, targetText:'97/103 mg BID', startText:'24/26–49/51 mg BID', isAcei:false, isArni:true, evidenceBased:true },
+            enalapril: { pillar:'raasi', klass:'ACEI', name:'Enalapril', short:'Enalapril', targetDailyMg:40, lowerTargetDailyMg:20, targetText:'10–20 mg BID', startText:'2.5 mg BID', isAcei:true, isArni:false, evidenceBased:true },
+            lisinopril: { pillar:'raasi', klass:'ACEI', name:'Lisinopril', short:'Lisinopril', targetDailyMg:40, lowerTargetDailyMg:20, targetText:'20–40 mg OD', startText:'2.5–5 mg OD', isAcei:true, isArni:false, evidenceBased:true },
+            ramipril: { pillar:'raasi', klass:'ACEI', name:'Ramipril', short:'Ramipril', targetDailyMg:10, lowerTargetDailyMg:10, targetText:'10 mg OD', startText:'1.25 mg OD', isAcei:true, isArni:false, evidenceBased:true },
+            losartan: { pillar:'raasi', klass:'ARB', name:'Losartan', short:'Losartan', targetDailyMg:150, lowerTargetDailyMg:150, targetText:'150 mg OD', startText:'25–50 mg OD', isAcei:false, isArni:false, evidenceBased:true },
+            valsartan: { pillar:'raasi', klass:'ARB', name:'Valsartan', short:'Valsartan', targetDailyMg:320, lowerTargetDailyMg:320, targetText:'160 mg BID', startText:'40 mg BID', isAcei:false, isArni:false, evidenceBased:true },
+            candesartan: { pillar:'raasi', klass:'ARB', name:'Candesartan', short:'Candesartan', targetDailyMg:32, lowerTargetDailyMg:32, targetText:'32 mg OD', startText:'4–8 mg OD', isAcei:false, isArni:false, evidenceBased:true },
+            bisoprolol: { pillar:'bb', klass:'BB', name:'Bisoprolol', short:'Bisoprolol', targetDailyMg:10, lowerTargetDailyMg:10, targetText:'10 mg OD', startText:'1.25 mg OD', evidenceBased:true },
+            carvedilol: { pillar:'bb', klass:'BB', name:'Carvedilol', short:'Carvedilol', targetDailyMg:50, lowerTargetDailyMg:50, targetText:'25 mg BID (<85 กก.) หรือ 50 mg BID (≥85 กก.)', startText:'3.125 mg BID', evidenceBased:true },
+            metoprolol_succ: { pillar:'bb', klass:'BB', name:'Metoprolol succinate', short:'Metoprolol succinate', targetDailyMg:200, lowerTargetDailyMg:200, targetText:'200 mg OD', startText:'12.5–25 mg OD', evidenceBased:true },
+            metoprolol: { pillar:'bb', klass:'BB', name:'Metoprolol tartrate', short:'Metoprolol tartrate', targetDailyMg:200, lowerTargetDailyMg:200, targetText:'ไม่มีเป้าใน guideline (แนะนำเปลี่ยนเป็น succinate)', startText:'—', evidenceBased:false },
+            spironolactone: { pillar:'mra', klass:'MRA', name:'Spironolactone', short:'Spironolactone', targetDailyMg:50, lowerTargetDailyMg:25, targetText:'25–50 mg OD', startText:'12.5–25 mg OD', evidenceBased:true },
+            eplerenone: { pillar:'mra', klass:'MRA', name:'Eplerenone', short:'Eplerenone', targetDailyMg:50, lowerTargetDailyMg:50, targetText:'50 mg OD', startText:'25 mg OD', evidenceBased:true },
+            empagliflozin: { pillar:'sglt2i', klass:'SGLT2i', name:'Empagliflozin', short:'Empagliflozin', targetDailyMg:10, lowerTargetDailyMg:10, targetText:'10 mg OD', startText:'10 mg OD', evidenceBased:true },
+            dapagliflozin: { pillar:'sglt2i', klass:'SGLT2i', name:'Dapagliflozin', short:'Dapagliflozin', targetDailyMg:10, lowerTargetDailyMg:10, targetText:'10 mg OD', startText:'10 mg OD', evidenceBased:true }
+        };
+
+        function hfEsc(s) {
+            return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+        function hfNum(id) {
+            const el = document.getElementById(id);
+            if (!el) return NaN;
+            const v = parseFloat(el.value);
+            return v;
+        }
+        function hfChecked(id) {
+            const el = document.getElementById(id);
+            return !!(el && el.checked);
+        }
+        function hfSel(id) {
+            const el = document.getElementById(id);
+            return el ? el.value : '';
+        }
+        function hfStepInfo(drug, val) {
+            const steps = doseSteps[drug] || [];
+            return steps.find(s => s.val === val) || null;
+        }
+        function hfTargetDaily(drug, weight) {
+            if (drug === 'carvedilol' && !isNaN(weight) && weight >= 85) return 100;
+            const meta = hfDrugMeta[drug];
+            return meta ? meta.targetDailyMg : NaN;
+        }
+        function hfLowerTargetDaily(drug, weight) {
+            if (drug === 'carvedilol' && !isNaN(weight) && weight >= 85) return 100;
+            const meta = hfDrugMeta[drug];
+            return meta ? meta.lowerTargetDailyMg : NaN;
+        }
+
+        function getHfShortMeds() {
+            let shortMeds = [];
+            if (hfChecked('chk_hf_raasi')) {
+                const val = hfSel('sel_hf_raasi_drug');
+                const meta = hfDrugMeta[val];
+                if (meta) shortMeds.push(meta.short);
+            }
+            if (hfChecked('chk_hf_bb')) {
+                const val = hfSel('sel_hf_bb_drug');
+                const meta = hfDrugMeta[val];
+                if (meta) shortMeds.push(meta.short);
+                else if (val === 'metoprolol') shortMeds.push('Metoprolol');
+            }
+            if (hfChecked('chk_hf_mra')) {
+                const val = hfSel('sel_hf_mra_drug');
+                const meta = hfDrugMeta[val];
+                if (meta) shortMeds.push(meta.short);
+            }
+            if (hfChecked('chk_hf_sglt2i')) {
+                const val = hfSel('sel_hf_sglt2i_drug');
+                const meta = hfDrugMeta[val];
+                shortMeds.push(meta ? meta.short : 'Empagliflozin');
+            }
+            if (hfChecked('chk_hf_iva')) shortMeds.push('Ivabradine');
+            if (hfChecked('chk_hf_hnisdn')) shortMeds.push('Hydralazine-ISDN');
+            if (hfChecked('chk_hf_vericiguat')) shortMeds.push('Vericiguat');
+            if (hfChecked('chk_hf_loop')) shortMeds.push('Furosemide');
+            return shortMeds;
+        }
+
+        function collectHfClinical() {
+            return {
+                lvef: hfNum('hfLvef'),
+                nyha: parseInt(document.getElementById('hfNyha')?.value || '', 10),
+                sbp: hfNum('hfSbp'),
+                hr: hfNum('hfHr'),
+                egfr: hfNum('hfEgfr'),
+                k: hfNum('hfK'),
+                weight: hfNum('hfWeight'),
+                congestion: hfChecked('hfCongestion'),
+                pregnant: hfChecked('hfPregnant'),
+                hasRAASi: hfChecked('chk_hf_raasi'),
+                raasiDrug: hfSel('sel_hf_raasi_drug'),
+                raasiDose: hfSel('sel_hf_raasi_dose'),
+                hasBB: hfChecked('chk_hf_bb'),
+                bbDrug: hfSel('sel_hf_bb_drug'),
+                bbDose: hfSel('sel_hf_bb_dose'),
+                hasMRA: hfChecked('chk_hf_mra'),
+                mraDrug: hfSel('sel_hf_mra_drug'),
+                mraDose: hfSel('sel_hf_mra_dose'),
+                hasSGLT2i: hfChecked('chk_hf_sglt2i'),
+                sgltDrug: hfSel('sel_hf_sglt2i_drug') || 'empagliflozin',
+                sgltDose: hfSel('sel_hf_sglt2i_dose') || 'target',
+                hasIva: hfChecked('chk_hf_iva'),
+                ivaDose: hfSel('sel_hf_iva_dose'),
+                hasHnIsdn: hfChecked('chk_hf_hnisdn'),
+                hasVericiguat: hfChecked('chk_hf_vericiguat')
+            };
+        }
+
+        function evaluateHfGdmt(c) {
+            c = c || collectHfClinical();
+            let phenotype = 'unknown';
+            let phenotypeLabel = 'ยังไม่ระบุ LVEF — ประเมินยาได้จากรายการที่กรอก แต่คำแนะนำตาม phenotype จะครบเมื่อมี LVEF';
+            if (!isNaN(c.lvef)) {
+                if (c.lvef <= 40) {
+                    phenotype = 'HFrEF';
+                    phenotypeLabel = 'HFrEF (LVEF ≤ 40%): ยา 4 เสาหลักเป็น Class 1 ตาม 2022 AHA/ACC/HFSA และ 2021 ESC ควรเริ่มให้ครบและปรับถึงเป้าที่ทนได้';
+                } else if (c.lvef <= 49) {
+                    phenotype = 'HFmrEF';
+                    phenotypeLabel = 'HFmrEF (LVEF 41–49%): 2023 ESC Focused Update แนะนำ SGLT2i ระดับ Class I; 2022 AHA/ACC/HFSA ให้ SGLT2i ระดับ 2a และ ARNI/ACEI/ARB/MRA/BB ระดับ 2b';
+                } else {
+                    phenotype = 'HFpEF';
+                    phenotypeLabel = 'HFpEF (LVEF ≥ 50%): 2023 ESC Focused Update แนะนำ SGLT2i ระดับ Class I; 2022 AHA/ACC/HFSA ให้ SGLT2i ระดับ 2a, MRA และ ARNI ระดับ 2b';
+                }
+            }
+
+            const pillars = {
+                raasi: evalHfRaasi(c, phenotype),
+                bb: evalHfBb(c, phenotype),
+                mra: evalHfMra(c, phenotype),
+                sglt2i: evalHfSglt2i(c, phenotype)
+            };
+            const addons = evalHfAddons(c, phenotype, pillars);
+            const onCount = ['raasi','bb','mra','sglt2i'].filter(k => pillars[k].on).length;
+            const summaryLine = buildHfGdmtSummaryLine(pillars, onCount, c);
+            return { phenotype, phenotypeLabel, pillars, addons, onCount, summaryLine, clinical: c };
+        }
+
+        function hfAlert(level, text) { return { level, text }; }
+
+        function evalHfRaasi(c, phenotype) {
+            const p = { id:'raasi', title:'1. ARNI / ACEI / ARB', on:false, drug:'', klass:'', currentText:'ยังไม่ได้ยาเสานี้', dailyMg:NaN, targetText:'ARNI 97/103 mg BID (ตัวเลือกแรกใน HFrEF)', targetDailyMg:400, pct:null, nextStep:'พิจารณาเริ่ม ARNI เป็นตัวเลือกแรก', status:'missing', alerts:[], canTitrate:false };
+            if (c.pregnant) p.alerts.push(hfAlert('danger', 'ตั้งครรภ์/วางแผนตั้งครรภ์: ห้ามใช้ ARNI, ACEI, ARB (teratogenic)'));
+            if (c.hasRAASi && c.raasiDrug) {
+                const meta = hfDrugMeta[c.raasiDrug];
+                const step = hfStepInfo(c.raasiDrug, c.raasiDose);
+                p.on = true;
+                p.drug = c.raasiDrug;
+                p.klass = meta ? meta.klass : '';
+                p.currentText = step ? step.text : ((meta ? meta.name : c.raasiDrug) + (c.raasiDose && c.raasiDose !== 'none' && c.raasiDose !== 'naive' ? '' : ' (ยังไม่ระบุขนาด)'));
+                if (meta) {
+                    p.targetText = meta.targetText;
+                    p.targetDailyMg = hfTargetDaily(c.raasiDrug, c.weight);
+                    p.startText = meta.startText;
+                }
+                if (step && typeof step.dailyMg === 'number') {
+                    p.dailyMg = step.dailyMg;
+                    if (p.targetDailyMg) p.pct = Math.round(100 * p.dailyMg / p.targetDailyMg);
+                }
+                if (c.raasiDose === 'naive') {
+                    p.currentText = 'ติ๊กกลุ่มนี้ไว้ แต่เลือกว่าไม่เคยได้รับยามาก่อน';
+                    p.status = 'caution';
+                    p.nextStep = 'เริ่มขนาดต่ำตาม guideline' + (meta ? ' (' + meta.startText + ')' : '');
+                } else if (p.pct == null) {
+                    p.status = 'on';
+                    p.nextStep = 'ระบุขนาดปัจจุบัน เพื่อคิด % ของเป้าและขั้นถัดไป';
+                } else {
+                    const lower = hfLowerTargetDaily(c.raasiDrug, c.weight);
+                    if (p.dailyMg >= p.targetDailyMg) {
+                        p.status = 'target';
+                        p.nextStep = 'ถึงเป้าแล้ว คงขนาดที่ทนได้';
+                    } else if (lower && p.dailyMg >= lower) {
+                        p.status = 'inrange';
+                        p.nextStep = step && step.next ? step.next : 'อยู่ในช่วงเป้า ถ้าทนได้พิจารณาปรับถึงเป้าบน';
+                        p.canTitrate = true;
+                    } else {
+                        p.status = 'low';
+                        p.nextStep = (step && step.next) ? step.next : getHfNextStep(c.raasiDrug, c.raasiDose);
+                        p.canTitrate = true;
+                    }
+                }
+                if (meta && meta.isAcei) {
+                    p.alerts.push(hfAlert('warn', 'หากจะเปลี่ยนเป็น ARNI ต้องหยุด ACEI อย่างน้อย 36 ชม. เพื่อลดเสี่ยง angioedema (2022 AHA/ACC/HFSA และ 2021 ESC) — การเปลี่ยนจาก ARB เป็น ARNI ไม่ต้องเว้นช่วงนี้'));
+                    if (phenotype === 'HFrEF' && (c.nyha === 2 || c.nyha === 3)) {
+                        p.alerts.push(hfAlert('info', 'HFrEF NYHA II–III ที่ทน ACEI/ARB ได้ แนวทางแนะนำพิจารณาเปลี่ยนเป็น ARNI เพื่อลด morbidity/mortality เพิ่มเติม'));
+                    }
+                } else if (meta && !meta.isArni && phenotype === 'HFrEF' && (c.nyha === 2 || c.nyha === 3)) {
+                    p.alerts.push(hfAlert('info', 'กำลังใช้ ARB: ใน HFrEF NYHA II–III พิจารณาเปลี่ยนเป็น ARNI ได้โดยไม่ต้องเว้น 36 ชม.'));
+                }
+            } else {
+                if (phenotype === 'HFrEF' && !c.pregnant) {
+                    let start = '49/51 mg BID';
+                    if ((!isNaN(c.egfr) && c.egfr < 30) || (!isNaN(c.sbp) && c.sbp <= 110 && c.sbp >= 100)) start = '24/26 mg BID (eGFR <30 หรือ SBP 100–110 / ผู้ไม่เคยได้ ACEI-ARB)';
+                    p.nextStep = 'พิจารณาเริ่ม ARNI (Entresto) ' + start + ' เป็นตัวเลือกแรก';
+                } else if (phenotype === 'HFmrEF' || phenotype === 'HFpEF') {
+                    p.nextStep = 'เสานี้ใน HFmrEF/HFpEF มีระดับแนะนำอ่อนกว่า SGLT2i — พิจารณาตามอาการ ความดัน และไต';
+                }
+            }
+
+            if (!isNaN(c.sbp) && c.sbp < 90) {
+                p.alerts.push(hfAlert('danger', 'SBP < 90 mmHg: ESC 2021 ระบุเป็นข้อห้ามของ ARNI (PARADIGM-HF รับผู้มี SBP > 95) — ชะลอการเริ่ม/ปรับเพิ่ม และประเมินปริมาตรเลือด'));
+                p.canTitrate = false;
+                if (p.status === 'low' || p.status === 'inrange') p.status = 'alert';
+            } else if (!isNaN(c.sbp) && c.sbp < 100) {
+                p.alerts.push(hfAlert('warn', 'SBP < 100 mmHg: ชะลอการปรับเพิ่ม RAASi/ARNI (2024 ACC ECDP ระบุ SBP <100 เป็นข้อควรระวังของ sacubitril/valsartan)'));
+                p.canTitrate = false;
+                if (p.status === 'low' || p.status === 'inrange') p.status = 'caution';
+                if (p.on) p.nextStep = 'ชะลอการปรับเพิ่ม เนื่องจาก SBP < 100 mmHg';
+            }
+            if (!isNaN(c.k) && c.k > 5.5) {
+                p.alerts.push(hfAlert('danger', 'K > 5.5 mEq/L: ชะลอการปรับเพิ่ม และทบทวนขนาด RAASi/ARNI พร้อมติดตาม K และ eGFR'));
+                p.canTitrate = false;
+                if (p.on) {
+                    p.status = 'alert';
+                    p.nextStep = 'ชะลอการปรับเพิ่ม และทบทวนขนาด เนื่องจาก K > 5.5 mEq/L';
+                }
+            } else if (!isNaN(c.k) && c.k >= 5.0) {
+                p.alerts.push(hfAlert('warn', 'K ≥ 5.0 mEq/L: ใช้ RAASi/ARNI อย่างระวัง และติดตามเกลือแร่ใกล้ชิด (ESC ระบุ K >5.0 เป็นข้อควรระวังของ ARNI)'));
+            }
+            if (c.hasRAASi && c.raasiDrug === 'arni' && !isNaN(c.egfr) && c.egfr < 30) {
+                p.alerts.push(hfAlert('warn', 'eGFR < 30: หากเริ่ม/ใช้ ARNI ให้ใช้ขนาดเริ่ม 24/26 mg BID แล้วค่อยปรับขึ้น (2024 ACC ECDP) — ESC 2021 เคยตั้ง eGFR <30 เป็นข้อห้าม'));
+            }
+            if (!c.hasRAASi && !isNaN(c.egfr) && c.egfr < 30 && phenotype === 'HFrEF') {
+                p.alerts.push(hfAlert('warn', 'eGFR < 30: หากเริ่ม ARNI ให้เริ่ม 24/26 mg BID; ต้องชั่งประโยชน์กับความเสี่ยงทางไต'));
+            }
+            return p;
+        }
+
+        function evalHfBb(c, phenotype) {
+            const p = { id:'bb', title:'2. Evidence-based beta-blocker', on:false, drug:'', klass:'BB', currentText:'ยังไม่ได้ยาเสานี้', dailyMg:NaN, targetText:'Bisoprolol 10 mg OD, Carvedilol 25 mg BID (<85 กก.) หรือ 50 mg BID (≥85 กก.), Metoprolol succinate 200 mg OD', targetDailyMg:NaN, pct:null, nextStep:'พิจารณาเริ่ม bisoprolol, carvedilol หรือ metoprolol succinate เมื่อ euvolemic', status:'missing', alerts:[], canTitrate:false };
+            if (c.hasBB && c.bbDrug) {
+                const meta = hfDrugMeta[c.bbDrug];
+                const step = hfStepInfo(c.bbDrug, c.bbDose);
+                p.on = true;
+                p.drug = c.bbDrug;
+                p.currentText = step ? step.text : ((meta ? meta.name : c.bbDrug) + (!c.bbDose || c.bbDose === 'none' ? ' (ยังไม่ระบุขนาด)' : ''));
+                if (meta) {
+                    p.targetText = meta.targetText;
+                    p.targetDailyMg = hfTargetDaily(c.bbDrug, c.weight);
+                    if (c.bbDrug === 'carvedilol' && isNaN(c.weight)) p.targetText = '25 mg BID (ถ้าน้ำหนัก ≥85 กก. เป้าคือ 50 mg BID — กรอกน้ำหนักเพื่อคำนวณ % ให้ตรงเป้า)';
+                }
+                if (step && typeof step.dailyMg === 'number' && p.targetDailyMg) {
+                    p.dailyMg = step.dailyMg;
+                    p.pct = Math.round(100 * p.dailyMg / p.targetDailyMg);
+                }
+                if (p.pct == null) {
+                    p.status = 'on';
+                    p.nextStep = 'ระบุขนาดปัจจุบัน เพื่อคิด % ของเป้าและขั้นถัดไป';
+                } else if (!meta || !meta.evidenceBased) {
+                    p.status = 'caution';
+                    p.nextStep = 'พิจารณาเปลี่ยนเป็น metoprolol succinate, bisoprolol หรือ carvedilol (สูตรที่มีหลักฐานใน HFrEF)';
+                    p.alerts.push(hfAlert('warn', 'Metoprolol tartrate ไม่ใช่สูตรที่ guideline ใช้เป็น evidence-based beta-blocker ใน HFrEF (ใช้ succinate / carvedilol / bisoprolol)'));
+                } else if (p.dailyMg >= p.targetDailyMg) {
+                    p.status = 'target';
+                    p.nextStep = 'ถึงเป้าแล้ว คงขนาดที่ทนได้';
+                    if (c.bbDrug === 'carvedilol' && isNaN(c.weight)) {
+                        p.alerts.push(hfAlert('info', 'คิด % จากเป้า 25 mg BID หากน้ำหนัก ≥85 กก. เป้าคือ 50 mg BID'));
+                    }
+                } else {
+                    p.status = 'low';
+                    p.nextStep = (step && step.next) ? step.next : getHfNextStep(c.bbDrug, c.bbDose);
+                    p.canTitrate = true;
+                    if (c.bbDrug === 'carvedilol' && c.bbDose === 'target' && !isNaN(c.weight) && c.weight >= 85) {
+                        p.nextStep = '50 mg BID (เป้าเมื่อน้ำหนัก ≥85 กก.)';
+                    }
+                }
+            }
+
+            if (c.congestion) {
+                if (!p.on && phenotype === 'HFrEF') {
+                    p.alerts.push(hfAlert('warn', 'ยังมีภาวะคั่งน้ำ: ชะลอการเริ่ม beta-blocker จนกว่าจะ euvolemic (แนวปฏิบัติมาตรฐานในการเริ่มยา)'));
+                    p.nextStep = 'ชะลอการเริ่มยา รอให้น้ำไม่เกินก่อน';
+                    p.status = 'caution';
+                } else if (p.on && p.canTitrate) {
+                    p.alerts.push(hfAlert('warn', 'ยังมีภาวะคั่งน้ำ: ห้ามปรับเพิ่ม beta-blocker จนกว่าจะ euvolemic'));
+                    p.nextStep = 'ชะลอการปรับเพิ่ม เนื่องจากยังคั่งน้ำ';
+                    p.canTitrate = false;
+                    p.status = 'caution';
+                }
+            }
+            if (!isNaN(c.hr) && c.hr < 50) {
+                p.alerts.push(hfAlert('danger', 'HR < 50 bpm: พิจารณาลดขนาดหรือชะลอการปรับเพิ่ม beta-blocker และค้นหาสาเหตุของภาวะหัวใจเต้นช้า'));
+                p.canTitrate = false;
+                if (p.on) p.status = 'alert';
+            } else if (!isNaN(c.hr) && c.hr < 60) {
+                p.alerts.push(hfAlert('warn', 'HR < 60 bpm: ชะลอการปรับเพิ่ม beta-blocker'));
+                p.canTitrate = false;
+                if (p.on && (p.status === 'low' || p.status === 'inrange')) p.status = 'caution';
+                if (p.on && p.canTitrate === false && p.status !== 'target') p.nextStep = 'ชะลอการปรับเพิ่ม เนื่องจาก HR < 60';
+            }
+            if (!isNaN(c.sbp) && c.sbp < 90 && p.canTitrate) {
+                p.alerts.push(hfAlert('warn', 'SBP < 90 mmHg: ชะลอการปรับเพิ่ม beta-blocker และประเมินอาการ hypotension'));
+                p.canTitrate = false;
+            }
+            return p;
+        }
+
+        function evalHfMra(c, phenotype) {
+            const p = { id:'mra', title:'3. MRA', on:false, drug:'', klass:'MRA', currentText:'ยังไม่ได้ยาเสานี้', dailyMg:NaN, targetText:'Spironolactone 25–50 mg OD หรือ Eplerenone 50 mg OD', targetDailyMg:50, pct:null, nextStep:'พิจารณาเริ่ม spironolactone 12.5–25 mg OD หรือ eplerenone 25 mg OD หาก K <5.0 และ eGFR >30', status:'missing', alerts:[], canTitrate:false };
+            const labsMissing = isNaN(c.k) || isNaN(c.egfr);
+            if (labsMissing) p.alerts.push(hfAlert('info', 'กรอก K และ eGFR เพื่อประเมินว่าเริ่มหรือปรับ MRA ได้ปลอดภัยหรือไม่'));
+
+            if (c.pregnant) p.alerts.push(hfAlert('danger', 'ตั้งครรภ์/วางแผนตั้งครรภ์: ห้ามใช้ MRA'));
+
+            if (c.hasMRA && c.mraDrug) {
+                const meta = hfDrugMeta[c.mraDrug];
+                const step = hfStepInfo(c.mraDrug, c.mraDose);
+                p.on = true;
+                p.drug = c.mraDrug;
+                p.currentText = step ? step.text : ((meta ? meta.name : c.mraDrug) + (!c.mraDose || c.mraDose === 'none' ? ' (ยังไม่ระบุขนาด)' : ''));
+                if (meta) {
+                    p.targetText = meta.targetText;
+                    p.targetDailyMg = meta.targetDailyMg;
+                }
+                if (step && typeof step.dailyMg === 'number') {
+                    p.dailyMg = step.dailyMg;
+                    p.pct = Math.round(100 * p.dailyMg / p.targetDailyMg);
+                }
+                if (p.pct == null) {
+                    p.status = 'on';
+                    p.nextStep = 'ระบุขนาดปัจจุบัน เพื่อคิด % ของเป้าและขั้นถัดไป';
+                } else if (p.dailyMg >= p.targetDailyMg) {
+                    p.status = 'target';
+                    p.nextStep = 'ถึงเป้าบนแล้ว คงขนาดที่ทนได้';
+                } else if (p.dailyMg >= hfLowerTargetDaily(c.mraDrug, c.weight)) {
+                    p.status = 'inrange';
+                    p.nextStep = (step && step.next) ? step.next : 'อยู่ในช่วงเป้า ถ้า K และ eGFR ปลอดภัยพิจารณาปรับถึงเป้าบน';
+                    p.canTitrate = true;
+                } else {
+                    p.status = 'low';
+                    p.nextStep = (step && step.next) ? step.next : getHfNextStep(c.mraDrug, c.mraDose);
+                    p.canTitrate = true;
+                }
+            } else if (!c.pregnant) {
+                if (!labsMissing && (c.egfr <= 30 || c.k >= 5.0)) {
+                    p.nextStep = 'ห้ามเริ่ม MRA ขณะนี้';
+                    p.status = 'alert';
+                } else if (labsMissing) {
+                    p.nextStep = 'ระบุ K และ eGFR ก่อนเริ่ม MRA';
+                }
+            }
+
+            // Safety thresholds from 2022 AHA (do not initiate if eGFR ≤30 or K ≥5.0)
+            // and ESC practical guidance: reduce if K >5.5 or eGFR <30; stop if K >6.0 or eGFR <20
+            if (!isNaN(c.k) && c.k > 6.0) {
+                p.alerts.push(hfAlert('danger', 'K > 6.0 mEq/L: หยุด MRA ทันที และติดตาม K ใกล้ชิด (ESC practical guidance)'));
+                p.canTitrate = false;
+                if (p.on) { p.status = 'alert'; p.nextStep = 'หยุดยา MRA ทันที'; }
+            } else if ((!isNaN(c.egfr) && c.egfr < 20)) {
+                p.alerts.push(hfAlert('danger', 'eGFR < 20 mL/min/1.73 m²: หยุด MRA ทันที (ESC practical guidance)'));
+                p.canTitrate = false;
+                if (p.on) { p.status = 'alert'; p.nextStep = 'หยุดยา MRA ทันที'; }
+            } else if ((!isNaN(c.k) && c.k > 5.5) || (!isNaN(c.egfr) && c.egfr < 30 && p.on)) {
+                const bits = [];
+                if (!isNaN(c.k) && c.k > 5.5) bits.push('K > 5.5 mEq/L');
+                if (!isNaN(c.egfr) && c.egfr < 30) bits.push('eGFR < 30');
+                p.alerts.push(hfAlert('danger', bits.join(' และ ') + ': ลดขนาด MRA ลงครึ่งหนึ่งและติดตามใกล้ชิด (ESC practical guidance) — 2022 AHA/ACC/HFSA ห้ามเริ่มใหม่ถ้า eGFR ≤30 หรือ K ≥5.0'));
+                p.canTitrate = false;
+                if (p.on) { p.status = 'alert'; p.nextStep = 'ลดขนาดลงครึ่งหนึ่ง และติดตาม K/eGFR'; }
+            } else if (!p.on && !labsMissing && (c.egfr <= 30 || c.k >= 5.0) && !c.pregnant) {
+                const bits = [];
+                if (c.egfr <= 30) bits.push('eGFR ≤ 30');
+                if (c.k >= 5.0) bits.push('K ≥ 5.0 mEq/L');
+                p.alerts.push(hfAlert('danger', 'ห้ามเริ่ม MRA เพราะ ' + bits.join(' และ ') + ' (2022 AHA/ACC/HFSA และ 2021 ESC)'));
+            } else if (!isNaN(c.k) && c.k >= 5.0 && p.on) {
+                p.alerts.push(hfAlert('warn', 'K ≥ 5.0 mEq/L: ชะลอการปรับเพิ่ม MRA และติดตาม K กับ eGFR หลังเริ่มหรือปรับขนาดที่ 1 และ 4 สัปดาห์'));
+                p.canTitrate = false;
+                if (p.status === 'low' || p.status === 'inrange') p.status = 'caution';
+                p.nextStep = 'ชะลอการปรับเพิ่ม และติดตาม K/eGFR';
+            }
+            return p;
+        }
+
+        function evalHfSglt2i(c, phenotype) {
+            const p = { id:'sglt2i', title:'4. SGLT2 inhibitor', on:false, drug:'', klass:'SGLT2i', currentText:'ยังไม่ได้ยาเสานี้', dailyMg:NaN, targetText:'Dapagliflozin หรือ Empagliflozin 10 mg OD', targetDailyMg:10, pct:null, nextStep:'พิจารณาเริ่ม dapagliflozin หรือ empagliflozin 10 mg OD (ไม่ต้องไทเทรต)', status:'missing', alerts:[], canTitrate:false };
+            if (c.pregnant) p.alerts.push(hfAlert('danger', 'ตั้งครรภ์/วางแผนตั้งครรภ์: ห้ามใช้ SGLT2i'));
+            if (c.hasSGLT2i) {
+                const drug = c.sgltDrug || 'empagliflozin';
+                const meta = hfDrugMeta[drug] || hfDrugMeta.empagliflozin;
+                const step = hfStepInfo(drug, c.sgltDose) || (doseSteps[drug] || [])[0];
+                p.on = true;
+                p.drug = drug;
+                p.currentText = step ? (meta.name + ' ' + step.text) : meta.name;
+                p.targetText = meta.targetText;
+                p.dailyMg = step && typeof step.dailyMg === 'number' ? step.dailyMg : 10;
+                p.pct = Math.round(100 * p.dailyMg / 10);
+                p.status = p.pct >= 100 ? 'target' : 'low';
+                p.nextStep = p.pct >= 100 ? 'ถึงเป้าแล้ว (10 mg OD ไม่ต้องไทเทรต)' : 'ปรับเป็น 10 mg OD';
+                if (!isNaN(c.egfr) && c.egfr < 20) {
+                    p.alerts.push(hfAlert('warn', 'eGFR < 20: การเริ่มใหม่โดยทั่วไปไม่แนะนำ (ESC 2021 ระบุข้อห้ามของ dapagliflozin ที่ eGFR <20; การศึกษาหลักรับผู้มี eGFR ≥20) — หากใช้อยู่แล้วให้ปรึกษาแพทย์เรื่องต่อยา'));
+                    p.status = 'caution';
+                }
+            } else if (!c.pregnant) {
+                if (!isNaN(c.egfr) && c.egfr < 20) {
+                    p.nextStep = 'ไม่แนะนำให้เริ่ม SGLT2i เนื่องจาก eGFR < 20';
+                    p.status = 'alert';
+                    p.alerts.push(hfAlert('danger', 'eGFR < 20 mL/min/1.73 m²: ไม่แนะนำเริ่ม dapagliflozin/empagliflozin ตามเกณฑ์ที่ใช้ใน guideline/การศึกษาหลัก'));
+                } else {
+                    if (phenotype === 'HFpEF' || phenotype === 'HFmrEF') {
+                        p.nextStep = 'แนะนำเริ่ม dapagliflozin หรือ empagliflozin 10 mg OD (2023 ESC Class I, 2022 AHA/ACC/HFSA Class 2a)';
+                    } else {
+                        p.nextStep = 'พิจารณาเริ่ม dapagliflozin หรือ empagliflozin 10 mg OD (ไม่ต้องไทเทรต; ใช้ได้ทั้งที่มีและไม่มีเบาหวาน)';
+                    }
+                    if (isNaN(c.egfr)) p.alerts.push(hfAlert('info', 'ยังไม่มี eGFR: สามารถวางแผนเริ่มได้แต่ควรมีค่าไตก่อนเริ่ม และไม่เริ่มถ้า eGFR <20'));
+                }
+            }
+            return p;
+        }
+
+        function evalHfAddons(c, phenotype, pillars) {
+            const notes = [];
+            const bbAtTarget = pillars.bb.on && pillars.bb.status === 'target';
+            const hrHigh = !isNaN(c.hr) && c.hr >= 70;
+            const lvefOk = !isNaN(c.lvef) && c.lvef <= 35;
+            const nyhaOk = (c.nyha === 2 || c.nyha === 3 || c.nyha === 4);
+
+            if (c.hasIva) {
+                let ivaTxt = 'กำลังใช้ Ivabradine';
+                if (c.ivaDose === 'vlow') ivaTxt += ' ขนาดต่ำกว่าเริ่ม (~2.5 mg/วัน)';
+                else if (c.ivaDose === 'start') ivaTxt += ' 2.5 mg BID (5 mg/วัน)';
+                else if (c.ivaDose === 'mid') ivaTxt += ' 5 mg BID (ขนาดเริ่มตาม guideline, 10 mg/วัน)';
+                else if (c.ivaDose === 'target') ivaTxt += ' 7.5 mg BID (เป้า 15 mg/วัน)';
+                let extra = 'เป้า 7.5 mg BID; ถ้า HR 50–60 คงขนาดไว้ ถ้า HR <50 ให้ลดหรือหยุด (2021 ESC)';
+                if (!isNaN(c.hr) && c.hr < 50) extra = 'HR < 50: ลดขนาดหรือหยุด ivabradine';
+                else if (hrHigh && c.ivaDose && c.ivaDose !== 'target' && c.ivaDose !== 'none') extra = 'HR ยัง ≥70: พิจารณาปรับเพิ่มทีละขั้นจน 7.5 mg BID';
+                notes.push({ title:'Ivabradine', tone: (!isNaN(c.hr) && c.hr < 50) ? 'danger' : 'info', body: ivaTxt + ' — ' + extra });
+            } else if (phenotype === 'HFrEF' && lvefOk && hrHigh && nyhaOk && !c.pregnant) {
+                const why = bbAtTarget ? 'ได้ evidence-based BB ครบเป้าแล้วแต่ HR ยัง ≥70' : (c.hasBB ? 'HR ≥70 (ควรได้ขนาด BB สูงสุดที่ทนได้ก่อน ตาม guideline)' : 'HR ≥70 และยังไม่ได้ BB — ใช้ได้หากมีข้อห้ามต่อ BB');
+                notes.push({ title:'Ivabradine (ยังไม่ได้)', tone:'info', body: why + ': พิจารณา ivabradine หากเป็น sinus rhythm, LVEF ≤35%, NYHA II–IV (2022 AHA/ACC/HFSA และ 2021 ESC ระดับ 2a) เริ่ม 5 mg BID (หรือ 2.5 mg BID หากอายุ >75 ปี) เป้า 7.5 mg BID' });
+            } else {
+                notes.push({ title:'Ivabradine', tone:'muted', body:'ข้อบ่งใช้: HFrEF LVEF ≤35%, sinus rhythm, HR ขณะพัก ≥70 แม้ได้ evidence-based beta-blocker ในขนาดที่ทนได้สูงสุด (หรือมีข้อห้ามต่อ BB). เริ่ม 5 mg BID เป้า 7.5 mg BID' });
+            }
+
+            if (c.hasHnIsdn) {
+                notes.push({ title:'Hydralazine + ISDN (กำลังใช้)', tone:'info', body:'เป้าตาม 2022 AHA/ACC/HFSA: hydralazine 75 mg / ISDN 40 mg สามครั้งต่อวัน (หรือ hydralazine รวม 300 mg/วัน และ ISDN รวม 120 mg/วัน แบ่งให้) ขนาดเริ่มที่ใช้บ่อยคือ 37.5/20 mg TID' });
+            } else {
+                notes.push({ title:'Hydralazine + ISDN', tone:'muted', body:'2022 AHA/ACC/HFSA: Class 1 ในผู้ป่วย African American ที่มี HFrEF NYHA III–IV ที่ได้รับยาหลักแล้ว และ Class 2b หากไม่ทน ACEI/ARB/ARNI. ขนาดเริ่ม 37.5/20 mg TID เป้า 75/40 mg TID' });
+            }
+
+            if (c.hasVericiguat) {
+                notes.push({ title:'Vericiguat (กำลังใช้)', tone:'info', body:'ขนาดเริ่ม 2.5 mg OD ปรับขึ้นเป็น 5 mg แล้ว 10 mg OD (เป้า) ตาม 2022 AHA/ACC/HFSA และ 2021 ESC' });
+            } else {
+                notes.push({ title:'Vericiguat', tone:'muted', body:'2022 AHA/ACC/HFSA และ 2021 ESC ระดับ 2b: พิจารณาใน HFrEF NYHA II–IV ที่อาการแย่ลงแม้ได้ยา GDMT แล้ว. เริ่ม 2.5 mg OD เป้า 10 mg OD' });
+            }
+            return notes;
+        }
+
+        function buildHfGdmtSummaryLine(pillars, onCount, c) {
+            const parts = ['GDMT ' + onCount + '/4'];
+            const map = [
+                ['raasi', 'RAASi'],
+                ['bb', 'BB'],
+                ['mra', 'MRA'],
+                ['sglt2i', 'SGLT2i']
+            ];
+            map.forEach(([k, label]) => {
+                const p = pillars[k];
+                if (!p.on) {
+                    const caution = (p.alerts || []).filter(a => a.level === 'danger').map(a => a.text.split(':')[0]).join('; ');
+                    parts.push(label + ' ยังไม่ได้' + (caution ? ' (' + caution + ')' : ''));
+                } else {
+                    const meta = hfDrugMeta[p.drug];
+                    const name = meta ? meta.short : label;
+                    let dose = '';
+                    if (!isNaN(p.dailyMg)) dose = ' ' + p.dailyMg + ' mg/วัน';
+                    let pct = (p.pct != null) ? ' (' + p.pct + '% ของเป้า)' : '';
+                    let nxt = p.nextStep ? ' | ขั้นถัดไป: ' + p.nextStep : '';
+                    parts.push(label + ' ' + name + dose + pct + nxt);
+                }
+            });
+            const dangers = [];
+            Object.values(pillars).forEach(p => {
+                (p.alerts || []).filter(a => a.level === 'danger').forEach(a => dangers.push(a.text.split(':')[0]));
+            });
+            if (dangers.length) parts.push('เตือน: ' + dangers.join('; '));
+            return parts.join(' · ');
+        }
+
+        function hfStatusBadge(status) {
+            const map = {
+                missing: ['ยังไม่ได้', 'bg-gray-100 text-gray-700 border-gray-200'],
+                on: ['ได้แล้ว', 'bg-blue-50 text-blue-800 border-blue-200'],
+                low: ['ได้แล้ว ยังไม่ถึงเป้า', 'bg-amber-50 text-amber-800 border-amber-200'],
+                inrange: ['อยู่ในช่วงเป้า', 'bg-emerald-50 text-emerald-800 border-emerald-200'],
+                target: ['ถึงเป้า', 'bg-green-100 text-green-800 border-green-200'],
+                caution: ['ระวัง', 'bg-amber-100 text-amber-900 border-amber-300'],
+                alert: ['ต้องทบทวน', 'bg-red-100 text-red-800 border-red-200']
+            };
+            return map[status] || map.on;
+        }
+
+        function renderHfGdmtHelper() {
+            const grid = document.getElementById('hfGdmtGrid');
+            if (!grid) return;
+            const ev = evaluateHfGdmt();
+            window._hfGdmtEval = ev;
+            const ph = document.getElementById('hfGdmtPhenotype');
+            if (ph) {
+                const tone = ev.phenotype === 'HFrEF' ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : ev.phenotype === 'unknown' ? 'bg-gray-50 border-gray-200 text-gray-700' : 'bg-sky-50 border-sky-200 text-sky-900';
+                ph.innerHTML = `<div class="text-sm rounded-lg border px-3 py-2 ${tone}"><span class="font-bold">${hfEsc(ev.phenotype === 'unknown' ? 'ยังไม่ระบุ phenotype' : ev.phenotype)}</span> · ได้ยา ${ev.onCount}/4 เสา · ${hfEsc(ev.phenotypeLabel)}</div>`;
+            }
+            const colors = { raasi:'border-blue-300', bb:'border-green-300', mra:'border-purple-300', sglt2i:'border-amber-300' };
+            grid.innerHTML = ['raasi','bb','mra','sglt2i'].map(k => {
+                const p = ev.pillars[k];
+                const [badge, badgeCls] = hfStatusBadge(p.status);
+                const pct = p.pct != null ? Math.max(0, Math.min(p.pct, 100)) : 0;
+                const pctLabel = p.pct != null ? (p.pct + '%') : '—';
+                const barColor = p.status === 'alert' ? 'bg-red-500' : p.status === 'target' || p.status === 'inrange' ? 'bg-emerald-500' : p.status === 'low' || p.status === 'caution' ? 'bg-amber-500' : 'bg-gray-300';
+                const alerts = (p.alerts || []).map(a => {
+                    const cls = a.level === 'danger' ? 'text-red-700' : a.level === 'warn' ? 'text-amber-800' : 'text-sky-800';
+                    const icon = a.level === 'danger' ? 'fa-circle-exclamation' : a.level === 'warn' ? 'fa-triangle-exclamation' : 'fa-circle-info';
+                    return `<div class="text-xs ${cls} mt-1"><i class="fa-solid ${icon} mr-1"></i>${hfEsc(a.text)}</div>`;
+                }).join('');
+                return `<div class="border ${colors[k]} rounded-lg p-3 bg-white shadow-sm">
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <h4 class="font-bold text-sm text-gray-800">${hfEsc(p.title)}</h4>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border whitespace-nowrap ${badgeCls}">${badge}</span>
+                    </div>
+                    <p class="text-xs text-gray-700 mb-2">${hfEsc(p.currentText)}</p>
+                    <div class="flex items-center justify-between text-[11px] text-gray-500 mb-0.5">
+                        <span>เทียบเป้า ${hfEsc(p.targetText || '')}</span>
+                        <span class="font-bold text-gray-800">${hfEsc(pctLabel)}</span>
+                    </div>
+                    <div class="h-2 bg-gray-100 rounded-full overflow-hidden mb-2"><div class="${barColor} h-2" style="width:${pct}%"></div></div>
+                    <p class="text-xs text-gray-800"><span class="font-semibold text-emerald-800">ขั้นถัดไป:</span> ${hfEsc(p.nextStep || '—')}</p>
+                    ${alerts}
+                </div>`;
+            }).join('');
+            const addons = document.getElementById('hfGdmtAddons');
+            if (addons) {
+                addons.innerHTML = ev.addons.map(n => {
+                    const cls = n.tone === 'danger' ? 'bg-red-50 border-red-200 text-red-800' : n.tone === 'info' ? 'bg-sky-50 border-sky-200 text-sky-900' : 'bg-gray-50 border-gray-200 text-gray-600';
+                    return `<div class="text-xs rounded-lg border px-3 py-2 ${cls}"><span class="font-bold">${hfEsc(n.title)}:</span> ${hfEsc(n.body)}</div>`;
+                }).join('');
+            }
+        }
+
+        function bindHfGdmtHelper() {
+            const form = document.getElementById('form-HF');
+            if (!form || form.dataset.gdmtBound) return;
+            form.dataset.gdmtBound = '1';
+            form.addEventListener('input', renderHfGdmtHelper);
+            form.addEventListener('change', renderHfGdmtHelper);
+            renderHfGdmtHelper();
+        }
 
         function toggleHfSub(chkId, divId) {
             const el = document.getElementById(chkId);
@@ -4365,6 +5090,7 @@
                 if(isChecked) div.classList.remove('hidden');
                 else div.classList.add('hidden');
             }
+            if (typeof renderHfGdmtHelper === 'function') renderHfGdmtHelper();
         }
 
         function updateHfDose(selDrugId, selDoseId) {
@@ -4388,9 +5114,13 @@
                     doseSel.add(option);
                 });
                 if(wrapDose) wrapDose.classList.remove('hidden');
+                if (selDrugId === 'sel_hf_sglt2i_drug' && doseSteps[drug].length === 1) {
+                    doseSel.value = doseSteps[drug][0].val;
+                }
             } else {
                 if(wrapDose) wrapDose.classList.add('hidden');
             }
+            if (typeof renderHfGdmtHelper === 'function') renderHfGdmtHelper();
         }
 
         function getHfNextStep(drug, currentVal) {
@@ -4426,6 +5156,7 @@
             const mraDose = document.getElementById('sel_hf_mra_dose').value;
 
             const hasSGLT2i = document.getElementById('chk_hf_sglt2i').checked;
+            const sgltDrug = document.getElementById('sel_hf_sglt2i_drug')?.value || 'empagliflozin';
             const hasIva = document.getElementById('chk_hf_iva').checked;
             const ivaDose = document.getElementById('sel_hf_iva_dose').value;
             const hasLoop = document.getElementById('chk_hf_loop').checked;
@@ -4503,34 +5234,36 @@
 
                 if (!pregnant) {
                     if (!hasSGLT2i) {
-                        if (egfr > 20 || isNaN(egfr)) {
+                        if (isNaN(egfr) || egfr >= 20) {
                             gdmt.push(`<strong>• SGLT2 Inhibitor</strong>
-                            <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>เริ่มยา Empagliflozin 10 mg/วัน (1 เม็ด OD)</b></span>
-                            <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ยานี้ไม่ต้องไทเทรต ลดการนอน รพ. ได้ 30% ใช้ได้ไม่ว่าจะเป็นเบาหวานหรือไม่</span>`);
+                            <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>เริ่มยา Dapagliflozin หรือ Empagliflozin 10 mg/วัน (1 เม็ด OD)</b></span>
+                            <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ยานี้ไม่ต้องไทเทรต ใช้ได้ทั้งที่มีและไม่มีเบาหวาน ไม่แนะนำเริ่มหาก eGFR &lt; 20</span>`);
                         } else {
-                            gdmt.push(`<strong>• SGLT2 Inhibitor</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <b>ไม่แนะนำให้เริ่มยา</b> เนื่องจาก eGFR <= 20</span>`);
+                            gdmt.push(`<strong>• SGLT2 Inhibitor</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <b>ไม่แนะนำให้เริ่มยา</b> เนื่องจาก eGFR &lt; 20 (ESC 2021 / การศึกษาหลักรับผู้มี eGFR ≥ 20)</span>`);
                         }
                     }
 
                     if (!hasRAASi) {
-                        let arniDose = (egfr < 30) ? '1/4 เม็ด 100mg BID (เนื่องจาก eGFR<30)' : '1/2 เม็ด 100mg BID';
+                        let arniDose = (!isNaN(egfr) && egfr < 30) || (!isNaN(sbp) && sbp <= 110 && sbp >= 100) ? '24/26 mg BID (eGFR &lt;30 หรือ SBP 100–110)' : '49/51 mg BID หรือ 24/26 mg BID หากไม่เคยได้ ACEI/ARB';
                         gdmt.push(`<strong>• RAASi Group</strong>
                             <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> แนะนำ <b>เริ่มยา ARNi (Entresto) ${arniDose}</b> เป็นตัวเลือกแรก</span>`);
                     } else {
-                        if (raasiDrug === 'enalapril' || raasiDrug === 'losartan') {
-                            if (nyha === 2 || nyha === 3) {
-                                gdmt.push(`<strong>• RAASi Group (กิน ${raasiDrug.toUpperCase()} อยู่)</strong>
+                        const raasiMeta = hfDrugMeta[raasiDrug];
+                        if (raasiMeta && !raasiMeta.isArni && (nyha === 2 || nyha === 3)) {
+                            const wash = raasiMeta.isAcei ? 'หากเปลี่ยนจาก ACEI <b>ต้องหยุดยาเดิมอย่างน้อย 36 ชม.</b> ก่อนให้ ARNi เพื่อป้องกัน Angioedema' : 'การเปลี่ยนจาก ARB เป็น ARNI <b>ไม่ต้องเว้น 36 ชม.</b>';
+                            gdmt.push(`<strong>• RAASi Group (กิน ${raasiMeta.short} อยู่)</strong>
                                 <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา <b>เปลี่ยนยาเดิมเป็น ARNi (Entresto)</b> เพื่อลดอัตราเสียชีวิตเพิ่มเติม</span>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Safety:</em> หากเปลี่ยนจาก ACEI <b>ต้องหยุดยาเดิม 36 ชม.</b> ก่อนให้ ARNi เพื่อป้องกัน Angioedema</span>`);
-                            }
+                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Safety:</em> ${wash} (2022 AHA/ACC/HFSA, 2021 ESC)</span>`);
                         }
-                        if (raasiDose === 'vlow' || raasiDose === 'start' || raasiDose === 'mid') {
-                            if (sbp >= 100 || isNaN(sbp)) {
-                                let nextStep = getHfNextStep(raasiDrug, raasiDose);
+                        const raasiNext = doseSteps[raasiDrug] && doseSteps[raasiDrug].find(s => s.val === raasiDose)?.next;
+                        if (raasiNext) {
+                            if ((sbp >= 100 || isNaN(sbp)) && (isNaN(potassium) || potassium <= 5.5)) {
                                 gdmt.push(`<strong>• RAASi Titration</strong>
-                                    <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ขนาดยายังไม่ถึงเป้า แนะนำให้ <b>ปรับเพิ่มเป็น ${nextStep}</b> เพื่อประสิทธิภาพสูงสุด</span>`);
-                            } else {
-                                gdmt.push(`<strong>• RAASi Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม (Hold titration)</u> เนื่องจากความดัน SBP < 100</span>`);
+                                    <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ขนาดยายังไม่ถึงเป้า แนะนำให้ <b>ปรับเพิ่มเป็น ${raasiNext}</b> เพื่อประสิทธิภาพสูงสุด</span>`);
+                            } else if (!isNaN(sbp) && sbp < 100) {
+                                gdmt.push(`<strong>• RAASi Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม (Hold titration)</u> เนื่องจากความดัน SBP &lt; 100 (2024 ACC ECDP)</span>`);
+                            } else if (!isNaN(potassium) && potassium > 5.5) {
+                                gdmt.push(`<strong>• RAASi Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม</u> เนื่องจาก K &gt; 5.5 และทบทวนขนาดยา</span>`);
                             }
                         }
                     }
@@ -4538,59 +5271,80 @@
                     if (!hasBB) {
                         if (!congestion) {
                             gdmt.push(`<strong>• Beta-blocker</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> น้ำไม่เกินแล้ว <b>แนะนำเริ่มยา Bisoprolol หรือ Carvedilol</b></span>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ห้ามเริ่มขณะคนไข้บวมน้ำเด็ดขาด ส่วน Metoprolol tartrate มีผลการศึกษารองรับน้อยกว่าตัวอื่น (อนุโลมใช้ถ้าจำเป็น)</span>`);
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> น้ำไม่เกินแล้ว <b>แนะนำเริ่มยา Bisoprolol, Carvedilol หรือ Metoprolol succinate</b></span>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ห้ามเริ่มขณะคนไข้บวมน้ำเด็ดขาด ส่วน Metoprolol tartrate ไม่ใช่สูตรที่มีหลักฐานใน HFrEF</span>`);
                         } else {
                             gdmt.push(`<strong>• Beta-blocker</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการเริ่มยาไว้ก่อน</u> เนื่องจากผู้ป่วยยังมีภาวะคั่งน้ำ (Congestion) อาจทำให้หัวใจบีบตัวลดลงฉับพลัน</span>`);
                         }
-                    } else if (bbDose === 'vlow' || bbDose === 'start' || bbDose === 'mid') {
-                        if (congestion) {
-                            gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ห้ามปรับเพิ่มยา (Hold titration)</u> เนื่องจากยังมีภาวะคั่งน้ำ ต้องรอให้ Euvolemic ก่อน</span>`);
-                        } else if (hr >= 60 || isNaN(hr)) {
-                            let nextStep = getHfNextStep(bbDrug, bbDose);
-                            gdmt.push(`<strong>• Beta-blocker Titration</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> HR รับได้ แนะนำ <b>ปรับเพิ่มยาเป็น ${nextStep}</b> เพื่อเพิ่ม LVEF และลดอัตราตาย</span>`);
-                        } else {
-                            gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม (Hold titration)</u> เนื่องจาก HR < 60</span>`);
+                    } else {
+                        if (bbDrug === 'metoprolol') {
+                            gdmt.push(`<strong>• Beta-blocker (Metoprolol tartrate)</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา <b>เปลี่ยนเป็น metoprolol succinate, bisoprolol หรือ carvedilol</b> ซึ่งเป็น evidence-based beta-blocker ใน HFrEF</span>`);
+                        }
+                        const bbNext = doseSteps[bbDrug] && doseSteps[bbDrug].find(s => s.val === bbDose)?.next;
+                        if (bbNext) {
+                            if (congestion) {
+                                gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ห้ามปรับเพิ่มยา (Hold titration)</u> เนื่องจากยังมีภาวะคั่งน้ำ ต้องรอให้ Euvolemic ก่อน</span>`);
+                            } else if (!isNaN(hr) && hr < 50) {
+                                gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>พิจารณาลดขนาดหรือชะลอการปรับเพิ่ม</u> เนื่องจาก HR &lt; 50</span>`);
+                            } else if (hr >= 60 || isNaN(hr)) {
+                                gdmt.push(`<strong>• Beta-blocker Titration</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> HR รับได้ แนะนำ <b>ปรับเพิ่มยาเป็น ${bbNext}</b> เพื่อเพิ่ม LVEF และลดอัตราตาย</span>`);
+                            } else {
+                                gdmt.push(`<strong>• Beta-blocker Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ชะลอการปรับยาเพิ่ม (Hold titration)</u> เนื่องจาก HR &lt; 60</span>`);
+                            }
                         }
                     }
 
                     if (!hasMRA) {
-                        if (egfr > 30 && potassium < 5.0) {
-                            gdmt.push(`<strong>• MRA (Spironolactone)</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> แนะนำ <b>เริ่มยา 12.5 mg/day (1/2 เม็ด 25mg)</b></span>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> ยานี้ช่วยลดการตายกะทันหัน (Sudden Cardiac Death) และ Cardiac fibrosis</span>`);
-                        } else if (egfr <= 30 || potassium >= 5.0) {
-                            gdmt.push(`<strong>• MRA</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ห้ามเริ่มยา</u> เนื่องจากผู้ป่วยมี eGFR <= 30 หรือ K >= 5.0 เสี่ยงอันตรายจาก Hyperkalemia</span>`);
+                        if (!isNaN(egfr) && !isNaN(potassium) && egfr > 30 && potassium < 5.0) {
+                            gdmt.push(`<strong>• MRA (Spironolactone / Eplerenone)</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> แนะนำ <b>เริ่ม spironolactone 12.5–25 mg/วัน หรือ eplerenone 25 mg/วัน</b></span>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <em>Clinical Pearl:</em> เริ่มได้เมื่อ eGFR &gt; 30 และ K &lt; 5.0 (2022 AHA/ACC/HFSA, 2021 ESC) ตรวจ K และไตที่ 1 และ 4 สัปดาห์หลังเริ่มหรือปรับขนาด</span>`);
+                        } else if ((!isNaN(egfr) && egfr <= 30) || (!isNaN(potassium) && potassium >= 5.0)) {
+                            gdmt.push(`<strong>• MRA</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <u>ห้ามเริ่มยา</u> เนื่องจากผู้ป่วยมี eGFR ≤ 30 หรือ K ≥ 5.0 เสี่ยงอันตรายจาก Hyperkalemia (2022 AHA/ACC/HFSA, 2021 ESC)</span>`);
+                        } else {
+                            gdmt.push(`<strong>• MRA</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 ระบุ K และ eGFR ก่อนเริ่มยา (เริ่มได้เมื่อ eGFR &gt; 30 และ K &lt; 5.0)</span>`);
                         }
                     } else {
-                        if (potassium >= 5.5) {
+                        if (!isNaN(potassium) && potassium > 6.0) {
                             alerts.push(`<strong>[Critical Alert] การใช้ MRA ร่วมกับภาวะ Hyperkalemia</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> Potassium ล่าสุด >= 5.5 <b>ต้องสั่งหยุดยา MRA ทันที</b></span>`);
-                        } else if ((mraDose === 'vlow' || mraDose === 'start' || mraDose === 'mid') && potassium < 5.0 && egfr > 30) {
-                            let nextStep = getHfNextStep(mraDrug, mraDose);
-                            gdmt.push(`<strong>• MRA Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา <b>ปรับเพิ่มเป็น ${nextStep}</b> ค่าไตและเกลือแร่อยู่ในเกณฑ์ปลอดภัย</span>`);
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> K &gt; 6.0 <b>ต้องสั่งหยุดยา MRA ทันที</b> (ESC practical guidance)</span>`);
+                        } else if (!isNaN(egfr) && egfr < 20) {
+                            alerts.push(`<strong>[Critical Alert] การใช้ MRA ขณะ eGFR &lt; 20</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>หยุดยา MRA ทันที</b> (ESC practical guidance)</span>`);
+                        } else if ((!isNaN(potassium) && potassium > 5.5) || (!isNaN(egfr) && egfr < 30)) {
+                            alerts.push(`<strong>[Critical Alert] การใช้ MRA ขณะ K &gt; 5.5 หรือ eGFR &lt; 30</strong>
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> <b>ลดขนาด MRA ลงครึ่งหนึ่ง</b> และติดตาม K/eGFR ใกล้ชิด (ESC practical guidance)</span>`);
+                        } else {
+                            const mraNext = doseSteps[mraDrug] && doseSteps[mraDrug].find(s => s.val === mraDose)?.next;
+                            if (mraNext && (isNaN(potassium) || potassium < 5.0) && (isNaN(egfr) || egfr > 30)) {
+                                gdmt.push(`<strong>• MRA Titration</strong> <br><span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> พิจารณา <b>ปรับเพิ่มเป็น ${mraNext}</b> ค่าไตและเกลือแร่อยู่ในเกณฑ์ปลอดภัย</span>`);
+                            }
                         }
                     }
 
-                    if (hasBB && bbDose === 'target' && hr >= 70 && (nyha === 2 || nyha === 3)) {
+                    const bbAtMax = hasBB && bbDrug && bbDrug !== 'metoprolol' && !(doseSteps[bbDrug] && doseSteps[bbDrug].find(s => s.val === bbDose)?.next);
+                    if (hasBB && bbAtMax && hr >= 70 && (nyha === 2 || nyha === 3 || nyha === 4) && (isNaN(lvef) || lvef <= 35)) {
                         if(!hasIva) {
                             gdmt.push(`<strong>• Ivabradine</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ได้ BB Max dose แต่ HR ยังสูง พิจารณา <b>เริ่ม Ivabradine 1/2 เม็ด 5mg BID</b> (ต้องเป็น Sinus Rhythm)</span>`);
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> ได้ evidence-based BB ครบเป้าแล้วแต่ HR ยัง ≥ 70 พิจารณา <b>เริ่ม Ivabradine 5 mg BID</b> (หรือ 2.5 mg BID หากอายุ &gt;75 ปี) หากเป็น sinus rhythm และ LVEF ≤ 35% (2022 AHA/ACC/HFSA, 2021 ESC ระดับ 2a)</span>`);
                         } else if (ivaDose === 'vlow' || ivaDose === 'start' || ivaDose === 'mid') {
                             let nextIva = '';
-                            if (ivaDose === 'vlow') nextIva = '1/2 เม็ด 5mg BID (5 mg/day)';
-                            if (ivaDose === 'start') nextIva = '1 เม็ด 5mg BID (10 mg/day)';
-                            if (ivaDose === 'mid') nextIva = '1.5 เม็ด 5mg BID (15 mg/day - Target)';
+                            if (ivaDose === 'vlow') nextIva = '2.5 mg BID (5 mg/วัน)';
+                            if (ivaDose === 'start') nextIva = '5 mg BID (ขนาดเริ่ม 10 mg/วัน)';
+                            if (ivaDose === 'mid') nextIva = '7.5 mg BID (เป้า 15 mg/วัน)';
 
                             gdmt.push(`<strong>• Ivabradine Titration</strong>
-                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> HR ยัง >= 70 พิจารณา <b>ปรับเพิ่มเป็น ${nextIva}</b></span>`);
+                                <span class="block mt-1 pl-4 text-green-700">👉 <span class="text-blue-600 font-bold">Action:</span> HR ยัง ≥ 70 พิจารณา <b>ปรับเพิ่มเป็น ${nextIva}</b></span>`);
                         }
                     }
                 }
             } else {
-                gdmt.push(`<strong>Diagnosis: HFpEF หรือ HFmrEF (LVEF >= 41%)</strong>
-                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Treatment Goal:</em> การรักษาหลักคือการให้ <b>SGLT2i (Empagliflozin 10mg)</b> เพื่อลดการนอน รพ. ร่วมกับ Diuretics เพื่อลดบวม</span>`);
+                const hfPheno = (!isNaN(lvef) && lvef <= 49) ? 'HFmrEF (LVEF 41–49%)' : 'HFpEF (LVEF ≥ 50%)';
+                const sgltLine = hasSGLT2i ? 'ได้ SGLT2i แล้ว (ขนาดเป้า 10 mg OD ไม่ต้องไทเทรต)' : 'การรักษาหลักคือการให้ <b>SGLT2i (dapagliflozin หรือ empagliflozin 10 mg OD)</b> เพื่อลดการนอน รพ. (2023 ESC Class I; 2022 AHA/ACC/HFSA Class 2a) ร่วมกับยาขับปัสสาวะเมื่อมีการคั่งน้ำ';
+                gdmt.push(`<strong>Diagnosis: ${hfPheno}</strong>
+                    <span class="block mt-1 pl-4 text-green-700">👉 <em>Treatment Goal:</em> ${sgltLine}</span>`);
             }
 
             if (ironDef) {
@@ -4642,6 +5396,7 @@
             const hfResultArea = document.getElementById('hfResultArea');
             if(hfRecContent) hfRecContent.innerHTML = htmlContent;
             if(hfResultArea) hfResultArea.classList.remove('hidden');
+            if (typeof renderHfGdmtHelper === 'function') renderHfGdmtHelper();
         }
 
         function copyHfToPmkNote() {
@@ -4661,26 +5416,7 @@
             const egfr = document.getElementById('hfEgfr').value || '-'; 
             const potassium = document.getElementById('hfK').value || '-';
 
-            let shortMeds = [];
-            if(document.getElementById('chk_hf_raasi').checked) {
-                let val = document.getElementById('sel_hf_raasi_drug').value;
-                if(val === 'arni') shortMeds.push('Entresto'); 
-                else if(val === 'enalapril') shortMeds.push('Enalapril'); 
-                else if(val === 'losartan') shortMeds.push('Losartan');
-            }
-            if(document.getElementById('chk_hf_bb').checked) {
-                let val = document.getElementById('sel_hf_bb_drug').value;
-                if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); 
-                else if(val === 'carvedilol') shortMeds.push('Carvedilol'); 
-                else if(val === 'metoprolol') shortMeds.push('Metoprolol');
-            }
-            if(document.getElementById('chk_hf_mra').checked) { 
-                if(document.getElementById('sel_hf_mra_drug').value === 'spironolactone') shortMeds.push('Spironolactone'); 
-            }
-            if(document.getElementById('chk_hf_sglt2i').checked) shortMeds.push('Empagliflozin');
-            if(document.getElementById('chk_hf_iva').checked) shortMeds.push('Ivabradine');
-            if(document.getElementById('chk_hf_loop').checked) shortMeds.push('Furosemide');
-
+            let shortMeds = getHfShortMeds();
             let medsString = shortMeds.length > 0 ? shortMeds.join(',') : '-';
 
             let interventionText = '';
@@ -4697,6 +5433,12 @@
 
             let summary = `[HF]\nLVEF: ${lvef !== '-' ? lvef + '%' : '-'} | NYHA: ${nyha} | BP: ${sbp}/${dbp} mmHg | HR: ${hr} bpm | eGFR: ${egfr} | K: ${potassium}\nMeds: ${medsString}${interventionText}`;
             summary = summary.replace(/\s+/g, ' ').replace(/ \n /g, '\n').replace(/ \n/g, '\n').replace(/\n /g, '\n');
+
+            if (document.getElementById('hfGdmtAddToNote') && document.getElementById('hfGdmtAddToNote').checked) {
+                if (typeof renderHfGdmtHelper === 'function') renderHfGdmtHelper();
+                const gdmtLine = window._hfGdmtEval && window._hfGdmtEval.summaryLine;
+                if (gdmtLine) summary += '\n' + gdmtLine;
+            }
 
             let currentNote = document.getElementById('outputPmk').value;
             if(currentNote && !currentNote.includes('[HF]')) {
@@ -4981,71 +5723,626 @@
             if(show) sec.classList.remove('hidden'); else sec.classList.add('hidden');
         }
 
+        // ==========================================
+        //  PRE-OP HOLD CALENDAR (ข้อ 6) — reuse existing hold rules only
+        // ==========================================
+        const PREOP_TH_DAYS_SHORT = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+        const PREOP_TH_DAYS_FULL = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+        const PREOP_TH_MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+        const PREOP_TH_MONTHS_ABBR = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+        const PREOP_RISK_LABELS = {
+            'minimal': 'Minimal',
+            'low-mod': 'Low-Moderate',
+            'high': 'High',
+            'neuro-spine': 'Neuro-axial / Spine'
+        };
+        let preopHoldCalItems = [];
+        function getPreopHoldCalState() {
+            return {
+                items: preopHoldCalItems.map(it => ({
+                    id: it.id, name: it.name, action: it.action, included: it.included,
+                    holdDays: it.holdDays, holdDaysMin: it.holdDaysMin, holdDaysMax: it.holdDaysMax,
+                    stopISO: it.stopISO, restartISO: it.restartISO, lastDoseISO: it.lastDoseISO, note: it.note,
+                    warnings: it.warnings || []
+                })),
+                notes: (typeof preopCalculatedNotes !== 'undefined') ? preopCalculatedNotes.slice() : [],
+                drugs: (typeof selectedPreopDrugs !== 'undefined') ? selectedPreopDrugs.map(d => ({id:d.id, name:d.name, category:d.category})) : []
+            };
+        }
+
+        function preopCalEsc(s) {
+            return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+        function preopCalDateOnly(d) {
+            if (!d) return null;
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        }
+        function preopCalAddDays(d, n) {
+            const x = preopCalDateOnly(d);
+            x.setDate(x.getDate() + n);
+            return x;
+        }
+        function preopCalToISO(d) {
+            if (!d) return '';
+            const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+            return `${y}-${m}-${day}`;
+        }
+        function preopCalFromISO(iso) {
+            if (!iso) return null;
+            const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (!m) return null;
+            const y = +m[1], mo = +m[2], d = +m[3];
+            const dt = new Date(y, mo-1, d);
+            if (dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return null;
+            return dt;
+        }
+        function parsePreopSurgeryDate(raw) {
+            raw = String(raw || '').trim();
+            if (!raw) return null;
+            let m = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+            if (m) {
+                let y = +m[1], mo = +m[2], d = +m[3];
+                if (y >= 2400) y -= 543;
+                const dt = new Date(y, mo-1, d);
+                if (dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return null;
+                return dt;
+            }
+            m = raw.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+            if (m) {
+                let d = +m[1], mo = +m[2], y = +m[3];
+                if (y < 100) y += 2500;
+                if (y >= 2400) y -= 543;
+                const dt = new Date(y, mo-1, d);
+                if (dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return null;
+                return dt;
+            }
+            return null;
+        }
+        function formatPreopThaiDate(d, opts) {
+            if (!d) return '';
+            const be = d.getFullYear() + 543;
+            const day = d.getDate();
+            const moAbbr = PREOP_TH_MONTHS_ABBR[d.getMonth()];
+            const moFull = PREOP_TH_MONTHS[d.getMonth()];
+            if (opts === 'short') return `${day} ${moAbbr} ${be}`;
+            if (opts === 'grid') return String(day);
+            if (opts === 'input') return `${day}/${d.getMonth()+1}/${be}`;
+            return `วัน${PREOP_TH_DAYS_FULL[d.getDay()]}ที่ ${day} ${moFull} ${be}`;
+        }
+        function preopCalParseFlexibleDate(raw) {
+            raw = String(raw || '').trim();
+            if (!raw) return null;
+            return parsePreopSurgeryDate(raw) || preopCalFromISO(raw);
+        }
+
+        // Structured version of the existing processResults() hold rules.
+        // Note strings must stay identical so PMK / sheet copy does not change.
+        function describePreopHold(drug) {
+            const bleedRiskEl = document.getElementById('bleedingRisk');
+            const bleedRisk = bleedRiskEl ? bleedRiskEl.value : '';
+            const crclInput = document.getElementById('renalFunction');
+            const crcl = crclInput && crclInput.value ? parseInt(crclInput.value) : 90;
+
+            let note = '';
+            let action = 'case_by_case';
+            let holdDays = null;
+            let holdDaysMin = null;
+            let holdDaysMax = null;
+            const warnings = [];
+
+            if (drug.id === 'warfarin') {
+                if (bleedRisk === 'minimal') {
+                    note = `${drug.name}: ไม่ต้องหยุดยา (Continue) เช็ค INR ก่อนทำ 1-2 วัน`;
+                    action = 'continue';
+                } else {
+                    note = `${drug.name}: หยุดยา 5 วันก่อนผ่าตัด`;
+                    action = 'hold';
+                    holdDays = 5;
+                    const bridge = document.getElementById('war_mech_mitral')?.checked || document.getElementById('war_mech_aortic')?.checked || document.getElementById('war_mech_stroke')?.checked || document.getElementById('war_af_high')?.checked || document.getElementById('war_af_stroke')?.checked || document.getElementById('war_af_rheumatic')?.checked || document.getElementById('war_vte_recent')?.checked || document.getElementById('war_vte_severe')?.checked;
+                    if (bridge) {
+                        note += ` [⚠️ ต้อง Bridging (High Risk)]`;
+                        warnings.push('ต้อง Bridging (High Risk) — ใบนี้ไม่ได้กำหนดตารางยา Bridging ให้ กรุณาให้แพทย์ยืนยัน');
+                    }
+                }
+            }
+            else if (drug.category === 'doac' || drug.category === 'doac_dabi') {
+                let d = 0;
+                if (drug.category==='doac_dabi'){ d = crcl>=50 ? (bleedRisk==='low-mod'?1:2) : (bleedRisk==='low-mod'?2:4); }
+                else { d = bleedRisk==='low-mod'?1:(bleedRisk==='neuro-spine'?3:2); }
+
+                if (bleedRisk==='minimal') {
+                    note = `${drug.name}: พิจารณาไม่หยุดยา (หรือหยุด 1 วัน)`;
+                    action = 'continue';
+                    holdDaysMin = 0;
+                    holdDaysMax = 1;
+                } else {
+                    note = `${drug.name}: หยุดยา ${d} วันก่อนผ่าตัด`;
+                    action = 'hold';
+                    holdDays = d;
+                }
+            }
+            else if (drug.category === 'antiplatelet') {
+                if (drug.id === 'aspirin') {
+                    if (bleedRisk==='neuro-spine') {
+                        note = `${drug.name}: หยุดยา 7 วัน`;
+                        action = 'hold';
+                        holdDays = 7;
+                    } else {
+                        note = `${drug.name}: ไม่ต้องหยุดยา (Continue)`;
+                        action = 'continue';
+                    }
+                } else {
+                    let d = 5; if(drug.id==='ticagrelor'||drug.id==='cilostazol') d=3; if(drug.id==='prasugrel') d=7;
+                    note = `${drug.name}: หยุดยา ${d} วันก่อนผ่าตัด`;
+                    action = 'hold';
+                    holdDays = d;
+                }
+                if (document.getElementById('stent_status')?.value === 'yes') {
+                    note += ` [⚠️ เพิ่งใส่ Stent ปรึกษา Cardio ก่อนหยุด]`;
+                    warnings.push('เพิ่งใส่ Stent — ปรึกษาอายุรแพทย์หัวใจก่อนหยุดยา');
+                }
+            }
+            else if (drug.category.startsWith('sglt2')) {
+                const d = drug.category==='sglt2_4d' ? 4 : 3;
+                note = `${drug.name}: หยุดยา ${d} วัน`;
+                action = 'hold';
+                holdDays = d;
+            }
+            else if (drug.category === 'glp1_weekly') {
+                note = `${drug.name}: หยุดยา 1 สัปดาห์`;
+                action = 'hold';
+                holdDays = 7;
+            }
+            else if (drug.category === 'glp1_daily' || drug.category === 'dm_oral') {
+                note = `${drug.name}: หยุดยาเช้าวันผ่าตัด`;
+                action = 'hold_morning';
+                holdDays = 0;
+            }
+            else if (drug.category === 'raas_inhibitor') {
+                if (document.getElementById('raas_indication')?.value==='hf') {
+                    note = `${drug.name}: ให้ยาต่อ (Continue)`;
+                    action = 'continue';
+                } else {
+                    note = `${drug.name}: หยุดยาล่วงหน้า 24 ชั่วโมง`;
+                    action = 'hold';
+                    holdDays = 1;
+                }
+            }
+            else if (drug.category === 'betablocker' || drug.category === 'statin') {
+                note = `${drug.name}: รับประทานยาต่อเนื่อง (Continue)`;
+                action = 'continue';
+            }
+            else if (drug.category === 'diuretic') {
+                note = `${drug.name}: หยุดยาเช้าวันผ่าตัด`;
+                action = 'hold_morning';
+                holdDays = 0;
+            }
+            else if (drug.category.startsWith('nsaid')) {
+                if (drug.category==='nsaid_short') {
+                    note=`${drug.name}: หยุดยา 1 วัน`;
+                    action = 'hold';
+                    holdDays = 1;
+                } else if (drug.category==='nsaid_med') {
+                    note=`${drug.name}: หยุดยา 3-4 วัน`;
+                    action = 'hold';
+                    holdDaysMin = 3; holdDaysMax = 4; holdDays = 4;
+                } else if (drug.category==='nsaid_long') {
+                    note=`${drug.name}: หยุดยา 10 วัน`;
+                    action = 'hold';
+                    holdDays = 10;
+                } else {
+                    note=`${drug.name}: หยุดยา 2-3 วัน`;
+                    action = 'hold';
+                    holdDaysMin = 2; holdDaysMax = 3; holdDays = 3;
+                }
+            }
+            else if (drug.category.startsWith('herbal')) {
+                note = `${drug.name}: งดใช้ 1-2 สัปดาห์`;
+                action = 'hold';
+                holdDaysMin = 7; holdDaysMax = 14; holdDays = 14;
+            }
+            else if (drug.category === 'maoi') {
+                note = `${drug.name}: หยุดยาล่วงหน้า 14 วัน`;
+                action = 'hold';
+                holdDays = 14;
+            }
+            else if (drug.category === 'lithium') {
+                note = `${drug.name}: หยุดยา 72 ชั่วโมงก่อนผ่าตัด`;
+                action = 'hold';
+                holdDays = 3;
+            }
+            else if (drug.category === 'parkinson') {
+                note = `${drug.name}: ห้ามหยุดยาเด็ดขาด (Continue)`;
+                action = 'continue';
+            }
+            else if (drug.category === 'biologic_1_2w') {
+                note = `${drug.name}: หยุดยาล่วงหน้า 1-2 สัปดาห์`;
+                action = 'hold';
+                holdDaysMin = 7; holdDaysMax = 14; holdDays = 14;
+            }
+            else if (drug.category === 'biologic_2_3w') {
+                note = `${drug.name}: หยุดยาล่วงหน้า 2-3 สัปดาห์`;
+                action = 'hold';
+                holdDaysMin = 14; holdDaysMax = 21; holdDays = 21;
+            }
+            else if (drug.category === 'jak_inhibitor') {
+                note = `${drug.name}: หยุดยาล่วงหน้า 3-4 วัน`;
+                action = 'hold';
+                holdDaysMin = 3; holdDaysMax = 4; holdDays = 4;
+            }
+            else if (drug.category === 'pde5') {
+                note = `${drug.name}: หยุดล่วงหน้า 1-2 วัน`;
+                action = 'hold';
+                holdDaysMin = 1; holdDaysMax = 2; holdDays = 2;
+            }
+            else {
+                note = `${drug.name}: แพทย์ประเมินเป็นรายกรณี`;
+                action = 'case_by_case';
+            }
+
+            return { drug, id: drug.id, name: drug.name, note, action, holdDays, holdDaysMin, holdDaysMax, warnings };
+        }
+
         function processResults() {
             const bleedRiskEl = document.getElementById('bleedingRisk');
             if(!bleedRiskEl) return;
             const bleedRisk = bleedRiskEl.value;
-            const crclInput = document.getElementById('renalFunction');
-            const crcl = crclInput && crclInput.value ? parseInt(crclInput.value) : 90;
-            
+
             preopCalculatedNotes = [];
-            
+
             if(!bleedRisk) {
                 generateOutput();
                 return;
             }
 
             selectedPreopDrugs.forEach(drug => {
-                let note = "";
-                if (drug.id === 'warfarin') {
-                    if (bleedRisk === 'minimal') note = `${drug.name}: ไม่ต้องหยุดยา (Continue) เช็ค INR ก่อนทำ 1-2 วัน`;
-                    else {
-                        note = `${drug.name}: หยุดยา 5 วันก่อนผ่าตัด`;
-                        const bridge = document.getElementById('war_mech_mitral')?.checked || document.getElementById('war_mech_aortic')?.checked || document.getElementById('war_mech_stroke')?.checked || document.getElementById('war_af_high')?.checked || document.getElementById('war_af_stroke')?.checked || document.getElementById('war_af_rheumatic')?.checked || document.getElementById('war_vte_recent')?.checked || document.getElementById('war_vte_severe')?.checked;
-                        if(bridge) note += ` [⚠️ ต้อง Bridging (High Risk)]`;
-                    }
-                }
-                else if (drug.category === 'doac' || drug.category === 'doac_dabi') {
-                    let d = 0;
-                    if(drug.category==='doac_dabi'){ d = crcl>=50 ? (bleedRisk==='low-mod'?1:2) : (bleedRisk==='low-mod'?2:4); }
-                    else { d = bleedRisk==='low-mod'?1:(bleedRisk==='neuro-spine'?3:2); }
-                    
-                    if(bleedRisk==='minimal') note = `${drug.name}: พิจารณาไม่หยุดยา (หรือหยุด 1 วัน)`;
-                    else note = `${drug.name}: หยุดยา ${d} วันก่อนผ่าตัด`;
-                }
-                else if (drug.category === 'antiplatelet') {
-                    if(drug.id === 'aspirin') note = bleedRisk==='neuro-spine' ? `${drug.name}: หยุดยา 7 วัน` : `${drug.name}: ไม่ต้องหยุดยา (Continue)`;
-                    else {
-                        let d = 5; if(drug.id==='ticagrelor'||drug.id==='cilostazol') d=3; if(drug.id==='prasugrel') d=7;
-                        note = `${drug.name}: หยุดยา ${d} วันก่อนผ่าตัด`;
-                    }
-                    if(document.getElementById('stent_status')?.value === 'yes') note += ` [⚠️ เพิ่งใส่ Stent ปรึกษา Cardio ก่อนหยุด]`;
-                }
-                else if (drug.category.startsWith('sglt2')) note = `${drug.name}: หยุดยา ${drug.category==='sglt2_4d'?'4':'3'} วัน`;
-                else if (drug.category === 'glp1_weekly') note = `${drug.name}: หยุดยา 1 สัปดาห์`;
-                else if (drug.category === 'glp1_daily' || drug.category === 'dm_oral') note = `${drug.name}: หยุดยาเช้าวันผ่าตัด`;
-                else if (drug.category === 'raas_inhibitor') note = document.getElementById('raas_indication')?.value==='hf' ? `${drug.name}: ให้ยาต่อ (Continue)` : `${drug.name}: หยุดยาล่วงหน้า 24 ชั่วโมง`;
-                else if (drug.category === 'betablocker' || drug.category === 'statin') note = `${drug.name}: รับประทานยาต่อเนื่อง (Continue)`;
-                else if (drug.category === 'diuretic') note = `${drug.name}: หยุดยาเช้าวันผ่าตัด`;
-                else if (drug.category.startsWith('nsaid')) {
-                    if(drug.category==='nsaid_short') note=`${drug.name}: หยุดยา 1 วัน`; else if(drug.category==='nsaid_med') note=`${drug.name}: หยุดยา 3-4 วัน`; else if(drug.category==='nsaid_long') note=`${drug.name}: หยุดยา 10 วัน`; else note=`${drug.name}: หยุดยา 2-3 วัน`;
-                }
-                else if (drug.category.startsWith('herbal')) note = `${drug.name}: งดใช้ 1-2 สัปดาห์`;
-                else if (drug.category === 'maoi') note = `${drug.name}: หยุดยาล่วงหน้า 14 วัน`;
-                else if (drug.category === 'lithium') note = `${drug.name}: หยุดยา 72 ชั่วโมงก่อนผ่าตัด`;
-                else if (drug.category === 'parkinson') note = `${drug.name}: ห้ามหยุดยาเด็ดขาด (Continue)`;
-                else if (drug.category === 'biologic_1_2w') note = `${drug.name}: หยุดยาล่วงหน้า 1-2 สัปดาห์`;
-                else if (drug.category === 'biologic_2_3w') note = `${drug.name}: หยุดยาล่วงหน้า 2-3 สัปดาห์`;
-                else if (drug.category === 'jak_inhibitor') note = `${drug.name}: หยุดยาล่วงหน้า 3-4 วัน`;
-                else if (drug.category === 'pde5') note = `${drug.name}: หยุดล่วงหน้า 1-2 วัน`;
-                else note = `${drug.name}: แพทย์ประเมินเป็นรายกรณี`;
-
-                preopCalculatedNotes.push(note);
+                preopCalculatedNotes.push(describePreopHold(drug).note);
             });
             generateOutput();
         }
 
-        // ==========================================
+        function getPreopHoldSurgeryDate() {
+            return parsePreopSurgeryDate(document.getElementById('surgeryDate')?.value);
+        }
+
+        function computePreopHoldDates(desc, surgery) {
+            let stopISO = '';
+            let lastDoseISO = '';
+            if (surgery && desc.action === 'hold_morning') {
+                stopISO = preopCalToISO(surgery);
+                lastDoseISO = preopCalToISO(preopCalAddDays(surgery, -1));
+            } else if (surgery && desc.action === 'hold' && desc.holdDays != null) {
+                const stop = preopCalAddDays(surgery, -desc.holdDays);
+                stopISO = preopCalToISO(stop);
+                lastDoseISO = preopCalToISO(preopCalAddDays(stop, -1));
+            }
+            return { stopISO, lastDoseISO, restartISO: '' };
+        }
+
+        function shortPreopDrugName(name) {
+            return String(name || '').replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+
+        function openPreopHoldCalendar() {
+            if (typeof currentTab !== 'undefined' && currentTab !== 'PREOP') {
+                alert('ปุ่มนี้ใช้ได้เฉพาะคลินิก Pre-op ครับ');
+                return;
+            }
+            const surgery = getPreopHoldSurgeryDate();
+            if (!surgery) {
+                alert('กรุณากรอกวันผ่าตัดก่อนครับ (เช่น 15/12/2569)');
+                return;
+            }
+            if (!selectedPreopDrugs.length) {
+                alert('กรุณาเลือกยาที่ใช้ประจำก่อนครับ');
+                return;
+            }
+            const bleedRisk = document.getElementById('bleedingRisk')?.value;
+            if (!bleedRisk) {
+                alert('กรุณาเลือกกลุ่มความเสี่ยงเลือดออกของหัตถการก่อนครับ');
+                return;
+            }
+
+            const prevById = {};
+            preopHoldCalItems.forEach(it => { prevById[it.id] = it; });
+
+            preopHoldCalItems = selectedPreopDrugs.map(drug => {
+                const desc = describePreopHold(drug);
+                const dates = computePreopHoldDates(desc, surgery);
+                const prev = prevById[desc.id];
+                return {
+                    ...desc,
+                    included: prev ? !!prev.included : false,
+                    stopISO: prev && prev.stopISO != null ? prev.stopISO : dates.stopISO,
+                    restartISO: prev && prev.restartISO != null ? prev.restartISO : '',
+                    lastDoseISO: dates.lastDoseISO,
+                    defaultStopISO: dates.stopISO,
+                    defaultLastDoseISO: dates.lastDoseISO
+                };
+            });
+
+            document.getElementById('preopHoldCalModal').classList.remove('hidden');
+            renderPreopHoldCalForm();
+        }
+
+        function closePreopHoldCalendar() {
+            document.getElementById('preopHoldCalModal')?.classList.add('hidden');
+        }
+
+        function setAllPreopHoldCalTicks(on) {
+            preopHoldCalItems.forEach(it => { it.included = !!on; });
+            renderPreopHoldCalForm();
+        }
+
+        function updatePreopHoldCalItem(id, field, value) {
+            const it = preopHoldCalItems.find(x => x.id === id);
+            if (!it) return;
+            if (field === 'included') it.included = !!value;
+            else if (field === 'stopISO') {
+                const stop = preopCalParseFlexibleDate(value);
+                it.stopISO = stop ? preopCalToISO(stop) : '';
+                it.lastDoseISO = stop ? preopCalToISO(preopCalAddDays(stop, -1)) : '';
+            }
+            else if (field === 'restartISO') {
+                const restart = preopCalParseFlexibleDate(value);
+                it.restartISO = restart ? preopCalToISO(restart) : '';
+            }
+            else if (field === 'note') it.note = value;
+            renderPreopHoldCalForm();
+        }
+
+        function renderPreopHoldCalForm() {
+            const surgery = getPreopHoldSurgeryDate();
+            const bleedRisk = document.getElementById('bleedingRisk')?.value || '';
+            const crcl = document.getElementById('renalFunction')?.value || '90 (ค่าเริ่มต้น)';
+            const proc = (document.getElementById('procedureManual')?.value || '').trim();
+            const pt = (document.getElementById('ptName')?.value || '').trim() || '—';
+            const hn = (document.getElementById('hn')?.value || '').trim() || '—';
+            const pharm = (document.getElementById('preopPharmName')?.value || '').trim() || '—';
+            const meta = document.getElementById('preopHoldCalMeta');
+            if (meta) {
+                meta.innerHTML = `<div class="grid sm:grid-cols-2 gap-x-4 gap-y-1">
+                    <div><span class="text-slate-500">ชื่อ:</span> <b>${preopCalEsc(pt)}</b></div>
+                    <div><span class="text-slate-500">HN:</span> <b>${preopCalEsc(hn)}</b></div>
+                    <div class="sm:col-span-2"><span class="text-slate-500">หัตถการ:</span> ${preopCalEsc(proc || '—')}</div>
+                    <div><span class="text-slate-500">วันผ่าตัด:</span> <b>${surgery ? preopCalEsc(formatPreopThaiDate(surgery)) : '—'}</b></div>
+                    <div><span class="text-slate-500">ความเสี่ยงเลือดออก:</span> ${preopCalEsc(PREOP_RISK_LABELS[bleedRisk] || bleedRisk)} · CrCl ${preopCalEsc(String(crcl))}</div>
+                    <div class="sm:col-span-2"><span class="text-slate-500">เภสัชกร:</span> ${preopCalEsc(pharm)}</div>
+                </div>`;
+            }
+
+            const list = document.getElementById('preopHoldCalList');
+            if (list) {
+                list.innerHTML = preopHoldCalItems.map(it => {
+                    const rangeHint = (it.holdDaysMin != null && it.holdDaysMax != null && it.holdDaysMin !== it.holdDaysMax)
+                        ? `<div class="text-[11px] text-amber-700 mt-1">ช่วงในคำแนะนำคือ ${it.holdDaysMin}–${it.holdDaysMax} วัน ใช้ค่า ${it.holdDays} วันเป็นค่าเริ่ม (แก้ได้)</div>`
+                        : '';
+                    const warn = (it.warnings || []).map(w => `<div class="text-[11px] text-red-700 mt-1">⚠️ ${preopCalEsc(w)}</div>`).join('');
+                    const noAuto = (it.action === 'case_by_case')
+                        ? `<div class="text-[11px] text-slate-500 mt-1">แอปไม่มีวันที่งดอัตโนมัติสำหรับยานี้ กรอกวันที่เองถ้าจะใส่ในใบ</div>`
+                        : (it.action === 'continue'
+                            ? `<div class="text-[11px] text-emerald-700 mt-1">คำแนะนำเดิมคือกินต่อเนื่อง จึงยังไม่มีวันที่งด ถ้าจะแนะนำให้หยุด ให้กรอกวันที่เอง</div>`
+                            : '');
+                    const lastDose = it.lastDoseISO ? formatPreopThaiDate(preopCalFromISO(it.lastDoseISO), 'short') : '—';
+                    return `<div class="border ${it.included ? 'border-amber-400 bg-amber-50/60' : 'border-slate-200 bg-white'} rounded-lg p-3">
+                        <label class="flex items-start gap-2 cursor-pointer">
+                            <input type="checkbox" class="mt-1 w-4 h-4 accent-amber-600" ${it.included ? 'checked' : ''} onchange="updatePreopHoldCalItem('${preopCalEsc(it.id)}','included', this.checked)">
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-sm text-slate-900">${preopCalEsc(it.name)}</div>
+                                <textarea class="mt-1 w-full text-xs border border-slate-200 rounded px-2 py-1 bg-white" rows="2" onchange="updatePreopHoldCalItem('${preopCalEsc(it.id)}','note', this.value)">${preopCalEsc(it.note)}</textarea>
+                                ${rangeHint}${warn}${noAuto}
+                            </div>
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2 pl-6 text-xs">
+                            <div>
+                                <label class="block text-slate-500 mb-0.5">เริ่มงดวันที่ (วว/ดด/พศ)</label>
+                                <input type="text" inputmode="numeric" placeholder="วว/ดด/พศ" value="${it.stopISO && preopCalFromISO(it.stopISO) ? preopCalEsc(formatPreopThaiDate(preopCalFromISO(it.stopISO), 'input')) : ''}" onchange="updatePreopHoldCalItem('${preopCalEsc(it.id)}','stopISO', this.value)" class="w-full border border-slate-300 rounded px-2 py-1">
+                                ${it.stopISO && preopCalFromISO(it.stopISO) ? `<div class="text-[11px] text-slate-600 mt-0.5">${preopCalEsc(formatPreopThaiDate(preopCalFromISO(it.stopISO), 'short'))}</div>` : ''}
+                            </div>
+                            <div>
+                                <label class="block text-slate-500 mb-0.5">วันสุดท้ายที่กิน (คำนวณ)</label>
+                                <div class="px-2 py-1 border border-dashed border-slate-200 rounded bg-slate-50">${preopCalEsc(lastDose)}</div>
+                            </div>
+                            <div>
+                                <label class="block text-slate-500 mb-0.5">เริ่มกินใหม่ (กรอกเอง วว/ดด/พศ)</label>
+                                <input type="text" inputmode="numeric" placeholder="วว/ดด/พศ หรือเว้นว่าง" value="${it.restartISO && preopCalFromISO(it.restartISO) ? preopCalEsc(formatPreopThaiDate(preopCalFromISO(it.restartISO), 'input')) : ''}" onchange="updatePreopHoldCalItem('${preopCalEsc(it.id)}','restartISO', this.value)" class="w-full border border-slate-300 rounded px-2 py-1">
+                                ${it.restartISO && preopCalFromISO(it.restartISO) ? `<div class="text-[11px] text-slate-600 mt-0.5">${preopCalEsc(formatPreopThaiDate(preopCalFromISO(it.restartISO), 'short'))}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+            renderPreopHoldCalPreview();
+        }
+
+        function getSelectedPreopHoldCalItems() {
+            return preopHoldCalItems.filter(it => it.included);
+        }
+
+        function buildPreopHoldCalendarModel(items, surgery) {
+            const selected = items || [];
+            let start = surgery, end = surgery;
+            selected.forEach(it => {
+                const stop = preopCalFromISO(it.stopISO);
+                const restart = preopCalFromISO(it.restartISO);
+                if (stop && stop < start) start = stop;
+                if (restart && restart > end) end = restart;
+            });
+            // include the day before first hold so last-dose days are visible
+            start = preopCalAddDays(start, -1);
+            // pad to Sunday–Saturday
+            start = preopCalAddDays(start, -start.getDay());
+            const endPad = preopCalAddDays(end, 6 - end.getDay());
+
+            const days = [];
+            for (let d = new Date(start); d <= endPad; d = preopCalAddDays(d, 1)) {
+                const iso = preopCalToISO(d);
+                const isSurg = iso === preopCalToISO(surgery);
+                const holds = [];
+                const lastDoses = [];
+                const restarts = [];
+                const continues = [];
+                selected.forEach(it => {
+                    const short = shortPreopDrugName(it.name);
+                    const stop = preopCalFromISO(it.stopISO);
+                    const restart = preopCalFromISO(it.restartISO);
+                    const last = it.lastDoseISO ? preopCalFromISO(it.lastDoseISO) : (stop ? preopCalAddDays(stop, -1) : null);
+                    // If no restart date, show งด only through surgery day — not invent a post-op hold.
+                    const holdUntilISO = restart ? preopCalToISO(preopCalAddDays(restart, -1)) : preopCalToISO(surgery);
+                    if (stop && iso >= preopCalToISO(stop) && iso <= holdUntilISO) {
+                        if (it.action === 'hold_morning' && isSurg) holds.push({ name: short, tag: 'งดเช้าวันนี้' });
+                        else if (it.action === 'hold_morning' && iso === it.stopISO) holds.push({ name: short, tag: 'งดเช้าวันนี้' });
+                        else holds.push({ name: short, tag: 'งด' });
+                    } else if (restart && iso === preopCalToISO(restart)) {
+                        restarts.push({ name: short, tag: 'เริ่มกินใหม่' });
+                    } else if (last && iso === preopCalToISO(last) && stop) {
+                        lastDoses.push({ name: short, tag: 'กินมื้อสุดท้าย' });
+                    } else if (it.action === 'continue' && !stop) {
+                        if (isSurg) continues.push({ name: short, tag: 'กินตามปกติ' });
+                    }
+                });
+                days.push({ date: new Date(d), iso, isSurg, isOutside: d < preopCalAddDays(surgery, -60) /* unused */, holds, lastDoses, restarts, continues });
+            }
+            return { start, end: endPad, days, surgery };
+        }
+
+        function renderPreopHoldCalendarGrid(model, compact) {
+            const fs = compact ? '7.5pt' : '11px';
+            const minH = compact ? '52px' : '72px';
+            let html = `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0;border:1px solid #cbd5e1;border-bottom:none;">`;
+            PREOP_TH_DAYS_SHORT.forEach(w => {
+                html += `<div style="text-align:center;font-weight:700;font-size:${fs};padding:3px 2px;background:#0f172a;color:#fff;border-right:1px solid #334155;">${w}</div>`;
+            });
+            html += `</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0;border:1px solid #cbd5e1;">`;
+            model.days.forEach(day => {
+                const bg = day.isSurg ? '#fff1f2' : (day.restarts.length ? '#f0fdf4' : (day.holds.length ? '#fff7ed' : '#fff'));
+                const bd = day.isSurg ? '#e11d48' : '#e2e8f0';
+                const beYear = day.date.getFullYear() + 543;
+                const showMo = day.date.getDate() === 1 || day.iso === model.days[0].iso;
+                const head = showMo ? `${day.date.getDate()} ${PREOP_TH_MONTHS_ABBR[day.date.getMonth()]}` : String(day.date.getDate());
+                const surgMark = day.isSurg ? `<div style="font-weight:800;color:#be123c;font-size:${fs};">วันผ่าตัด</div>` : '';
+                const lines = [];
+                day.lastDoses.forEach(x => lines.push(`<div style="color:#1d4ed8;">• กินมื้อสุดท้าย ${preopCalEsc(x.name)}</div>`));
+                day.holds.forEach(x => lines.push(`<div style="color:#c2410c;">• ${preopCalEsc(x.tag)} ${preopCalEsc(x.name)}</div>`));
+                day.restarts.forEach(x => lines.push(`<div style="color:#15803d;">• เริ่มกินใหม่ ${preopCalEsc(x.name)}</div>`));
+                day.continues.forEach(x => lines.push(`<div style="color:#0f766e;">• กินตามปกติ ${preopCalEsc(x.name)}</div>`));
+                html += `<div style="min-height:${minH};padding:3px 4px;border-right:1px solid ${bd};border-bottom:1px solid ${bd};background:${bg};font-size:${fs};line-height:1.25;vertical-align:top;">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;font-weight:700;color:#0f172a;">
+                        <span>${head}${showMo ? ' ' + beYear : ''}</span>
+                    </div>
+                    ${surgMark}
+                    ${lines.join('')}
+                </div>`;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function buildPreopHoldPrintHtml(forPrint) {
+            const surgery = getPreopHoldSurgeryDate();
+            const selected = getSelectedPreopHoldCalItems();
+            const proc = (document.getElementById('procedureManual')?.value || '').trim() || '—';
+            const pt = (document.getElementById('ptName')?.value || '').trim() || '—';
+            const hn = (document.getElementById('hn')?.value || '').trim() || '—';
+            const pharm = (document.getElementById('preopPharmName')?.value || '').trim() || '—';
+            const phone = (document.getElementById('preopHoldCalPhone')?.value || '').trim();
+            const risk = document.getElementById('bleedingRisk')?.value || '';
+            const model = buildPreopHoldCalendarModel(selected, surgery);
+            const compact = !!forPrint;
+
+            const continueList = selected.filter(it => it.action === 'continue' && !it.stopISO).map(it => shortPreopDrugName(it.name));
+            const anyRestart = selected.some(it => it.restartISO);
+            const unfilledRestart = selected.filter(it => (it.action === 'hold' || it.action === 'hold_morning' || it.stopISO) && !it.restartISO);
+
+            const rows = selected.map(it => {
+                const last = it.lastDoseISO ? formatPreopThaiDate(preopCalFromISO(it.lastDoseISO), 'short') : '—';
+                const stop = it.stopISO ? formatPreopThaiDate(preopCalFromISO(it.stopISO), 'short') : (it.action === 'continue' ? 'ไม่ต้องงด' : '—');
+                const restart = it.restartISO
+                    ? formatPreopThaiDate(preopCalFromISO(it.restartISO), 'short')
+                    : ((it.action === 'continue' && !it.stopISO) ? 'กินต่อเนื่อง' : 'เมื่อแพทย์อนุญาต');
+                return `<tr>
+                    <td style="border:1px solid #cbd5e1;padding:3px 5px;font-weight:600;">${preopCalEsc(shortPreopDrugName(it.name))}</td>
+                    <td style="border:1px solid #cbd5e1;padding:3px 5px;">${preopCalEsc(last)}</td>
+                    <td style="border:1px solid #cbd5e1;padding:3px 5px;">${preopCalEsc(stop)}</td>
+                    <td style="border:1px solid #cbd5e1;padding:3px 5px;">${preopCalEsc(restart)}</td>
+                    <td style="border:1px solid #cbd5e1;padding:3px 5px;">${preopCalEsc(it.note.replace(/^[^:]+:\s*/, ''))}</td>
+                </tr>`;
+            }).join('');
+
+            const fs = compact ? '9.5pt' : '13px';
+            const titleFs = compact ? '13pt' : '18px';
+            return `<div style="font-family:'Sarabun','Prompt',sans-serif;color:#0f172a;font-size:${fs};line-height:1.35;${compact ? 'width:194mm;margin:0 auto;' : ''}">
+                <div style="text-align:center;border-bottom:2px solid #0f172a;padding-bottom:4px;margin-bottom:6px;">
+                    <div style="font-size:${compact ? '9pt' : '12px'};">กลุ่มงานเภสัชกรรม โรงพยาบาลนพรัตนราชธานี</div>
+                    <div style="font-weight:800;font-size:${titleFs};">ใบแนะนำการกินยาและหยุดยาก่อนผ่าตัด</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;margin-bottom:6px;">
+                    <div>ชื่อ-นามสกุล: <b>${preopCalEsc(pt)}</b></div>
+                    <div>HN: <b>${preopCalEsc(hn)}</b></div>
+                    <div style="grid-column:1/-1;">หัตถการ: ${preopCalEsc(proc)} <span style="color:#64748b;">(${preopCalEsc(PREOP_RISK_LABELS[risk] || risk)})</span></div>
+                    <div>วันผ่าตัด: <b style="color:#be123c;">${surgery ? preopCalEsc(formatPreopThaiDate(surgery)) : '—'}</b></div>
+                    <div>เภสัชกร: ${preopCalEsc(pharm)}${phone ? ' · โทร ' + preopCalEsc(phone) : ''}</div>
+                </div>
+                <div style="background:#fff1f2;border:1px solid #e11d48;color:#9f1239;padding:4px 8px;margin-bottom:6px;font-weight:700;text-align:center;">
+                    กรุณายืนยันกับแพทย์ผู้ผ่าตัดก่อนหยุดยา
+                </div>
+                <table style="width:100%;border-collapse:collapse;margin-bottom:6px;font-size:${compact ? '8.5pt' : '12px'};">
+                    <thead>
+                        <tr style="background:#0f172a;color:#fff;">
+                            <th style="border:1px solid #0f172a;padding:3px 5px;text-align:left;">ยา</th>
+                            <th style="border:1px solid #0f172a;padding:3px 5px;text-align:left;">วันสุดท้ายที่กิน</th>
+                            <th style="border:1px solid #0f172a;padding:3px 5px;text-align:left;">เริ่มงดวันที่</th>
+                            <th style="border:1px solid #0f172a;padding:3px 5px;text-align:left;">เริ่มกินใหม่</th>
+                            <th style="border:1px solid #0f172a;padding:3px 5px;text-align:left;">คำแนะนำ</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows || `<tr><td colspan="5" style="border:1px solid #cbd5e1;padding:6px;text-align:center;color:#64748b;">ยังไม่ได้ติ๊กยาที่จะใส่ในใบนี้</td></tr>`}</tbody>
+                </table>
+                ${continueList.length ? `<div style="margin-bottom:6px;">ยาที่ให้กินต่อเนื่องตามปกติ (รวมถึงเช้าวันผ่าตัด ถ้าแพทย์ไม่ได้สั่งเป็นอย่างอื่น): <b>${preopCalEsc(continueList.join(', '))}</b></div>` : ''}
+                ${selected.length ? renderPreopHoldCalendarGrid(model, compact) : '<div style="padding:12px;text-align:center;color:#64748b;border:1px dashed #cbd5e1;">ติ๊กยาอย่างน้อย 1 รายการ เพื่อดูปฏิทิน</div>'}
+                <div style="margin-top:6px;font-size:${compact ? '8pt' : '11px'};color:#334155;">
+                    <b>วิธีอ่านปฏิทิน:</b> สีชมพูคือวันผ่าตัด · “งด” หมายถึงไม่ต้องกินยานั้น · “กินมื้อสุดท้าย” คือวันสุดท้ายที่กินก่อนงด · “เริ่มกินใหม่” ตามวันที่กรอก
+                    ${!anyRestart && unfilledRestart.length ? ' · ยาที่ยังไม่ระบุวันเริ่มใหม่ ให้เริ่มยาใหม่เมื่อแพทย์อนุญาตเท่านั้น' : ''}
+                </div>
+                <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:flex-end;font-size:${compact ? '8.5pt' : '12px'};">
+                    <div style="max-width:62%;color:#64748b;">ใบนี้เป็นคำแนะนำของเภสัชกรจากข้อมูล ณ วันที่ให้คำปรึกษา ไม่ใช่คำสั่งแพทย์ กรุณาปฏิบัติตามเมื่อแพทย์ผู้ผ่าตัดยืนยันแล้ว</div>
+                    <div style="text-align:center;min-width:38%;">
+                        ลงชื่อเภสัชกร .........................................<br>
+                        ${pharm && pharm !== '—' ? '(' + preopCalEsc(pharm) + ')' : '(.........................................)'}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderPreopHoldCalPreview() {
+            const box = document.getElementById('preopHoldCalPreview');
+            if (!box) return;
+            box.innerHTML = buildPreopHoldPrintHtml(false);
+            const printEl = document.getElementById('printPreopHoldCal');
+            if (printEl) printEl.innerHTML = buildPreopHoldPrintHtml(true);
+        }
+
+        function printPreopHoldCalendar() {
+            if (!getSelectedPreopHoldCalItems().length) {
+                alert('กรุณาติ๊กยาที่จะใส่ในใบแนะนำก่อนครับ (ยังไม่ติ๊กไว้ให้ เพราะต้องยืนยันกับแพทย์ก่อน)');
+                return;
+            }
+            if (!getPreopHoldSurgeryDate()) {
+                alert('กรุณากรอกวันผ่าตัดก่อนครับ');
+                return;
+            }
+            renderPreopHoldCalPreview();
+            document.body.classList.add('print-mode-preop-hold-cal');
+            const done = () => document.body.classList.remove('print-mode-preop-hold-cal');
+            window.addEventListener('afterprint', done, { once: true });
+            setTimeout(() => {
+                window.print();
+                // fallback if afterprint does not fire in some headless runs
+                setTimeout(done, 1500);
+            }, 50);
+        }
+
+                // ==========================================
         //         MODALS LOGIC
         // ==========================================
         function openModal(src) { 
@@ -7281,6 +8578,7 @@
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initC10Capd);
+        document.addEventListener('DOMContentLoaded', bindHfGdmtHelper);
         } else {
             initC10Capd();
         }
@@ -7997,33 +9295,7 @@
                 const egfr = egfrNode ? egfrNode.value || '-' : '-';
                 const potassium = kNode ? kNode.value || '-' : '-';
 
-                let shortMeds = [];
-                if(hasRaasi) {
-                    const sNode = document.getElementById('sel_hf_raasi_drug');
-                    let val = sNode ? sNode.value : '';
-                    if(val === 'arni') shortMeds.push('Entresto'); 
-                    else if(val === 'enalapril') shortMeds.push('Enalapril'); 
-                    else if(val === 'losartan') shortMeds.push('Losartan');
-                }
-                if(hasBb) {
-                    const sNode = document.getElementById('sel_hf_bb_drug');
-                    let val = sNode ? sNode.value : '';
-                    if(val === 'bisoprolol') shortMeds.push('Bisoprolol'); 
-                    else if(val === 'carvedilol') shortMeds.push('Carvedilol'); 
-                    else if(val === 'metoprolol') shortMeds.push('Metoprolol');
-                }
-                if(hasMra) { 
-                    const sNode = document.getElementById('sel_hf_mra_drug');
-                    if(sNode && sNode.value === 'spironolactone') shortMeds.push('Spironolactone'); 
-                }
-                if(hasSglt2i) shortMeds.push('Empagliflozin');
-                
-                const ivaNode = document.getElementById('chk_hf_iva');
-                if(ivaNode && ivaNode.checked) shortMeds.push('Ivabradine');
-                
-                const loopNode = document.getElementById('chk_hf_loop');
-                if(loopNode && loopNode.checked) shortMeds.push('Furosemide');
-
+                let shortMeds = getHfShortMeds();
                 let medsString = shortMeds.length > 0 ? shortMeds.join(',') : '-';
 
                 let interventionText = '';
