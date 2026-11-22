@@ -61,6 +61,13 @@
         .proc-item { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 0.8125rem; }
         .proc-item:hover, .proc-item.active { background-color: #eff6ff; }
         .proc-item .proc-aliases { font-size: 11px; color: #6b7280; }
+        .preopcal-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(15,23,42,0.45); display: flex; align-items: flex-start; justify-content: center; padding: 16px; overflow-y: auto; }
+        .preopcal-card { background: #fff; width: 100%; max-width: 980px; margin: 12px auto 24px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.18); }
+        .preopcal-day { border: 1px solid #e2e8f0; min-height: 72px; padding: 4px 5px; font-size: 11px; background: #fff; }
+        .preopcal-day.is-surg { background: #fff1f2; border-color: #fb7185; }
+        .preopcal-day.is-today-hold { background: #fff7ed; }
+        .preopcal-day.is-restart { background: #f0fdf4; }
+        .preopcal-day.is-out { background: #f8fafc; color: #94a3b8; }
         .tag { background-color: #3b82f6; color: white; padding: 5px 12px; border-radius: 9999px; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 8px; margin: 4px; }
         .tag i { cursor: pointer; }
         .tag:hover { background-color: #2563eb; }
@@ -240,7 +247,8 @@
             body.print-mode-capd-advice-a5 #printStickerArea,
             body.print-mode-capd-advice-a5 #printRifampinArea,
             body.print-mode-capd-advice-a5 #printWfColorTableA5,
-            body.print-mode-capd-advice-a5 #printAsthmaMistakeA5 { display: none !important; }
+            body.print-mode-capd-advice-a5 #printAsthmaMistakeA5,
+            body.print-mode-capd-advice-a5 #printPreopHoldCal { display: none !important; }
             body.print-mode-capd-advice-a5 #printCapdAdviceA5 {
                 position: absolute; left: 0; top: 0; width: 100%;
                 display: flex !important; flex-direction: column; justify-content: flex-start;
@@ -260,6 +268,30 @@
                 padding: 7mm; box-sizing: border-box;
                 -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
             }
+
+            /* โหมด 8: ปฏิทินหยุดยาก่อนผ่าตัด (A4 แนวตั้ง สำหรับคนไข้ Pre-OP) */
+            body.print-mode-preop-hold-cal {
+                min-height: 0 !important; height: auto !important;
+                padding: 0 !important; margin: 0 !important;
+                background: white !important;
+            }
+            body.print-mode-preop-hold-cal #mainAppContainer,
+            body.print-mode-preop-hold-cal #preopHoldCalModal { display: none !important; }
+            body.print-mode-preop-hold-cal #printPreopHoldCal,
+            body.print-mode-preop-hold-cal #printPreopHoldCal * { visibility: visible !important; }
+            body.print-mode-preop-hold-cal #printArea,
+            body.print-mode-preop-hold-cal #printStickerArea,
+            body.print-mode-preop-hold-cal #printRifampinArea,
+            body.print-mode-preop-hold-cal #printWfColorTableA5,
+            body.print-mode-preop-hold-cal #printAsthmaMistakeA5,
+            body.print-mode-preop-hold-cal #printCapdAdviceA5 { display: none !important; }
+            body.print-mode-preop-hold-cal #printPreopHoldCal {
+                position: absolute; left: 0; top: 0; width: 100%;
+                display: block !important; background: white !important; color: #0f172a !important;
+                padding: 0; margin: 0; box-sizing: border-box;
+                font-family: 'Sarabun', 'Prompt', sans-serif;
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+            }
         }
         
         /* ตั้งค่าหน้ากระดาษ */
@@ -269,11 +301,13 @@
         @page wfColorPageA5 { size: A5 portrait; margin: 4mm; }
         @page asthmaMistakePageA5 { size: A5 portrait; margin: 5mm; }
         @page capdAdvicePageA5 { size: A5 landscape; margin: 8mm 12mm; }
+        @page preopHoldCalPageA4 { size: A4 portrait; margin: 8mm 8mm 8mm 8mm; }
         body.print-mode-opd-a5 { page: opdPageA5; }
         body.print-mode-rifampin-a5 { page: rifampinPageA5; }
         body.print-mode-wf-color-a5 { page: wfColorPageA5; }
         body.print-mode-asthma-a5 { page: asthmaMistakePageA5; }
         body.print-mode-capd-advice-a5 { page: capdAdvicePageA5; }
+        body.print-mode-preop-hold-cal { page: preopHoldCalPageA4; }
 
         /* สไตล์ Slider และ Animation สำหรับ Warfarin-Rifampin */
         @keyframes slideUpFade {
@@ -2830,6 +2864,10 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     6. ใบแนะนำแพทย์ A5
                 </button>
+                <button id="btnPreopHoldCal" onclick="openPreopHoldCalendar()" class="hidden bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    6. ปฏิทินหยุดยาก่อนผ่าตัด
+                </button>
             </div>
         </div>
     </div>
@@ -3412,6 +3450,48 @@
         </div>
     </div>
     <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
+
+    <!-- Modal: ปฏิทินหยุดยาก่อนผ่าตัด (Pre-OP ข้อ 6) -->
+    <div id="preopHoldCalModal" class="preopcal-overlay hidden print:hidden" onclick="if(event.target===this) closePreopHoldCalendar()">
+        <div class="preopcal-card text-slate-800">
+            <div class="flex items-start justify-between gap-3 px-5 py-4 border-b border-slate-200 bg-amber-50 rounded-t-2xl">
+                <div>
+                    <h3 class="text-lg font-bold text-amber-900">6. ปฏิทินหยุดยาก่อนผ่าตัด</h3>
+                    <p class="text-xs text-amber-800 mt-1 leading-snug">ยังไม่ติ๊กยาไว้ให้ เพราะความเห็นอาจไม่ตรงกับแพทย์ และยังไม่ได้คอนเฟิร์ม กรุณาเลือกเฉพาะยาที่จะใส่ในใบให้คนไข้ แล้วแก้วันที่ได้ก่อนพิมพ์</p>
+                </div>
+                <button type="button" onclick="closePreopHoldCalendar()" class="w-9 h-9 rounded-full hover:bg-amber-100 text-slate-500 text-xl leading-none" aria-label="ปิด">×</button>
+            </div>
+            <div class="px-5 py-4 space-y-4">
+                <div id="preopHoldCalMeta" class="text-sm text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-3"></div>
+                <div class="flex flex-wrap gap-4 items-end">
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-xs font-medium text-gray-600 mb-1">เบอร์ติดต่อเภสัชกร (แสดงบนใบพิมพ์)</label>
+                        <input type="text" id="preopHoldCalPhone" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 02-xxx-xxxx หรือ Line ID" oninput="renderPreopHoldCalPreview()">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="setAllPreopHoldCalTicks(true)" class="text-xs bg-white border border-slate-300 hover:bg-slate-50 px-3 py-2 rounded-lg">ติ๊กทั้งหมด</button>
+                        <button type="button" onclick="setAllPreopHoldCalTicks(false)" class="text-xs bg-white border border-slate-300 hover:bg-slate-50 px-3 py-2 rounded-lg">ล้างการติ๊ก</button>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-800 mb-2">เลือกยาที่จะแนะนำในใบนี้</h4>
+                    <div id="preopHoldCalList" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-slate-800 mb-2">ตัวอย่างปฏิทินที่จะพิมพ์</h4>
+                    <div id="preopHoldCalPreview" class="border border-slate-200 rounded-lg p-2 bg-white overflow-x-auto text-slate-900"></div>
+                </div>
+                <p class="text-[11px] text-slate-500 leading-snug">วันที่งดคำนวณจากคำแนะนำที่มีในแอปแล้วเท่านั้น (เช่น หยุด 5 วันก่อนผ่าตัด) ส่วนวันเริ่มกินใหม่แอปเดิมไม่ได้กำหนดไว้ จึงเว้นว่างให้กรอกเอง ถ้าไม่กรอก ใบพิมพ์จะเขียนว่า “เริ่มยาใหม่เมื่อแพทย์อนุญาต”</p>
+            </div>
+            <div class="flex flex-wrap justify-end gap-2 px-5 py-4 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
+                <button type="button" onclick="closePreopHoldCalendar()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 text-sm">ปิด</button>
+                <button type="button" onclick="printPreopHoldCalendar()" class="px-5 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium"><i class="fa-solid fa-print mr-1"></i> พิมพ์ปฏิทิน A4</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- พิมพ์ปฏิทินหยุดยา Pre-OP (A4 แนวตั้ง) -->
+    <div id="printPreopHoldCal" class="hidden text-slate-900"></div>
 
     <script src="preop-procedures.js"></script>
     <script>
@@ -4214,6 +4294,11 @@
                 if (tab === 'CAPD') capdA5Btn.classList.remove('hidden');
                 else capdA5Btn.classList.add('hidden');
             }
+            const preopCalBtn = document.getElementById('btnPreopHoldCal');
+            if (preopCalBtn) {
+                if (tab === 'PREOP') preopCalBtn.classList.remove('hidden');
+                else preopCalBtn.classList.add('hidden');
+            }
 
             scrollActiveClinicTabIntoView();
         }
@@ -4928,71 +5013,626 @@
             if(show) sec.classList.remove('hidden'); else sec.classList.add('hidden');
         }
 
+        // ==========================================
+        //  PRE-OP HOLD CALENDAR (ข้อ 6) — reuse existing hold rules only
+        // ==========================================
+        const PREOP_TH_DAYS_SHORT = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+        const PREOP_TH_DAYS_FULL = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+        const PREOP_TH_MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+        const PREOP_TH_MONTHS_ABBR = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+        const PREOP_RISK_LABELS = {
+            'minimal': 'Minimal',
+            'low-mod': 'Low-Moderate',
+            'high': 'High',
+            'neuro-spine': 'Neuro-axial / Spine'
+        };
+        let preopHoldCalItems = [];
+        function getPreopHoldCalState() {
+            return {
+                items: preopHoldCalItems.map(it => ({
+                    id: it.id, name: it.name, action: it.action, included: it.included,
+                    holdDays: it.holdDays, holdDaysMin: it.holdDaysMin, holdDaysMax: it.holdDaysMax,
+                    stopISO: it.stopISO, restartISO: it.restartISO, lastDoseISO: it.lastDoseISO, note: it.note,
+                    warnings: it.warnings || []
+                })),
+                notes: (typeof preopCalculatedNotes !== 'undefined') ? preopCalculatedNotes.slice() : [],
+                drugs: (typeof selectedPreopDrugs !== 'undefined') ? selectedPreopDrugs.map(d => ({id:d.id, name:d.name, category:d.category})) : []
+            };
+        }
+
+        function preopCalEsc(s) {
+            return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+        function preopCalDateOnly(d) {
+            if (!d) return null;
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        }
+        function preopCalAddDays(d, n) {
+            const x = preopCalDateOnly(d);
+            x.setDate(x.getDate() + n);
+            return x;
+        }
+        function preopCalToISO(d) {
+            if (!d) return '';
+            const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+            return `${y}-${m}-${day}`;
+        }
+        function preopCalFromISO(iso) {
+            if (!iso) return null;
+            const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (!m) return null;
+            const y = +m[1], mo = +m[2], d = +m[3];
+            const dt = new Date(y, mo-1, d);
+            if (dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return null;
+            return dt;
+        }
+        function parsePreopSurgeryDate(raw) {
+            raw = String(raw || '').trim();
+            if (!raw) return null;
+            let m = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+            if (m) {
+                let y = +m[1], mo = +m[2], d = +m[3];
+                if (y >= 2400) y -= 543;
+                const dt = new Date(y, mo-1, d);
+                if (dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return null;
+                return dt;
+            }
+            m = raw.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+            if (m) {
+                let d = +m[1], mo = +m[2], y = +m[3];
+                if (y < 100) y += 2500;
+                if (y >= 2400) y -= 543;
+                const dt = new Date(y, mo-1, d);
+                if (dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return null;
+                return dt;
+            }
+            return null;
+        }
+        function formatPreopThaiDate(d, opts) {
+            if (!d) return '';
+            const be = d.getFullYear() + 543;
+            const day = d.getDate();
+            const moAbbr = PREOP_TH_MONTHS_ABBR[d.getMonth()];
+            const moFull = PREOP_TH_MONTHS[d.getMonth()];
+            if (opts === 'short') return `${day} ${moAbbr} ${be}`;
+            if (opts === 'grid') return String(day);
+            if (opts === 'input') return `${day}/${d.getMonth()+1}/${be}`;
+            return `วัน${PREOP_TH_DAYS_FULL[d.getDay()]}ที่ ${day} ${moFull} ${be}`;
+        }
+        function preopCalParseFlexibleDate(raw) {
+            raw = String(raw || '').trim();
+            if (!raw) return null;
+            return parsePreopSurgeryDate(raw) || preopCalFromISO(raw);
+        }
+
+        // Structured version of the existing processResults() hold rules.
+        // Note strings must stay identical so PMK / sheet copy does not change.
+        function describePreopHold(drug) {
+            const bleedRiskEl = document.getElementById('bleedingRisk');
+            const bleedRisk = bleedRiskEl ? bleedRiskEl.value : '';
+            const crclInput = document.getElementById('renalFunction');
+            const crcl = crclInput && crclInput.value ? parseInt(crclInput.value) : 90;
+
+            let note = '';
+            let action = 'case_by_case';
+            let holdDays = null;
+            let holdDaysMin = null;
+            let holdDaysMax = null;
+            const warnings = [];
+
+            if (drug.id === 'warfarin') {
+                if (bleedRisk === 'minimal') {
+                    note = `${drug.name}: ไม่ต้องหยุดยา (Continue) เช็ค INR ก่อนทำ 1-2 วัน`;
+                    action = 'continue';
+                } else {
+                    note = `${drug.name}: หยุดยา 5 วันก่อนผ่าตัด`;
+                    action = 'hold';
+                    holdDays = 5;
+                    const bridge = document.getElementById('war_mech_mitral')?.checked || document.getElementById('war_mech_aortic')?.checked || document.getElementById('war_mech_stroke')?.checked || document.getElementById('war_af_high')?.checked || document.getElementById('war_af_stroke')?.checked || document.getElementById('war_af_rheumatic')?.checked || document.getElementById('war_vte_recent')?.checked || document.getElementById('war_vte_severe')?.checked;
+                    if (bridge) {
+                        note += ` [⚠️ ต้อง Bridging (High Risk)]`;
+                        warnings.push('ต้อง Bridging (High Risk) — ใบนี้ไม่ได้กำหนดตารางยา Bridging ให้ กรุณาให้แพทย์ยืนยัน');
+                    }
+                }
+            }
+            else if (drug.category === 'doac' || drug.category === 'doac_dabi') {
+                let d = 0;
+                if (drug.category==='doac_dabi'){ d = crcl>=50 ? (bleedRisk==='low-mod'?1:2) : (bleedRisk==='low-mod'?2:4); }
+                else { d = bleedRisk==='low-mod'?1:(bleedRisk==='neuro-spine'?3:2); }
+
+                if (bleedRisk==='minimal') {
+                    note = `${drug.name}: พิจารณาไม่หยุดยา (หรือหยุด 1 วัน)`;
+                    action = 'continue';
+                    holdDaysMin = 0;
+                    holdDaysMax = 1;
+                } else {
+                    note = `${drug.name}: หยุดยา ${d} วันก่อนผ่าตัด`;
+                    action = 'hold';
+                    holdDays = d;
+                }
+            }
+            else if (drug.category === 'antiplatelet') {
+                if (drug.id === 'aspirin') {
+                    if (bleedRisk==='neuro-spine') {
+                        note = `${drug.name}: หยุดยา 7 วัน`;
+                        action = 'hold';
+                        holdDays = 7;
+                    } else {
+                        note = `${drug.name}: ไม่ต้องหยุดยา (Continue)`;
+                        action = 'continue';
+                    }
+                } else {
+                    let d = 5; if(drug.id==='ticagrelor'||drug.id==='cilostazol') d=3; if(drug.id==='prasugrel') d=7;
+                    note = `${drug.name}: หยุดยา ${d} วันก่อนผ่าตัด`;
+                    action = 'hold';
+                    holdDays = d;
+                }
+                if (document.getElementById('stent_status')?.value === 'yes') {
+                    note += ` [⚠️ เพิ่งใส่ Stent ปรึกษา Cardio ก่อนหยุด]`;
+                    warnings.push('เพิ่งใส่ Stent — ปรึกษาอายุรแพทย์หัวใจก่อนหยุดยา');
+                }
+            }
+            else if (drug.category.startsWith('sglt2')) {
+                const d = drug.category==='sglt2_4d' ? 4 : 3;
+                note = `${drug.name}: หยุดยา ${d} วัน`;
+                action = 'hold';
+                holdDays = d;
+            }
+            else if (drug.category === 'glp1_weekly') {
+                note = `${drug.name}: หยุดยา 1 สัปดาห์`;
+                action = 'hold';
+                holdDays = 7;
+            }
+            else if (drug.category === 'glp1_daily' || drug.category === 'dm_oral') {
+                note = `${drug.name}: หยุดยาเช้าวันผ่าตัด`;
+                action = 'hold_morning';
+                holdDays = 0;
+            }
+            else if (drug.category === 'raas_inhibitor') {
+                if (document.getElementById('raas_indication')?.value==='hf') {
+                    note = `${drug.name}: ให้ยาต่อ (Continue)`;
+                    action = 'continue';
+                } else {
+                    note = `${drug.name}: หยุดยาล่วงหน้า 24 ชั่วโมง`;
+                    action = 'hold';
+                    holdDays = 1;
+                }
+            }
+            else if (drug.category === 'betablocker' || drug.category === 'statin') {
+                note = `${drug.name}: รับประทานยาต่อเนื่อง (Continue)`;
+                action = 'continue';
+            }
+            else if (drug.category === 'diuretic') {
+                note = `${drug.name}: หยุดยาเช้าวันผ่าตัด`;
+                action = 'hold_morning';
+                holdDays = 0;
+            }
+            else if (drug.category.startsWith('nsaid')) {
+                if (drug.category==='nsaid_short') {
+                    note=`${drug.name}: หยุดยา 1 วัน`;
+                    action = 'hold';
+                    holdDays = 1;
+                } else if (drug.category==='nsaid_med') {
+                    note=`${drug.name}: หยุดยา 3-4 วัน`;
+                    action = 'hold';
+                    holdDaysMin = 3; holdDaysMax = 4; holdDays = 4;
+                } else if (drug.category==='nsaid_long') {
+                    note=`${drug.name}: หยุดยา 10 วัน`;
+                    action = 'hold';
+                    holdDays = 10;
+                } else {
+                    note=`${drug.name}: หยุดยา 2-3 วัน`;
+                    action = 'hold';
+                    holdDaysMin = 2; holdDaysMax = 3; holdDays = 3;
+                }
+            }
+            else if (drug.category.startsWith('herbal')) {
+                note = `${drug.name}: งดใช้ 1-2 สัปดาห์`;
+                action = 'hold';
+                holdDaysMin = 7; holdDaysMax = 14; holdDays = 14;
+            }
+            else if (drug.category === 'maoi') {
+                note = `${drug.name}: หยุดยาล่วงหน้า 14 วัน`;
+                action = 'hold';
+                holdDays = 14;
+            }
+            else if (drug.category === 'lithium') {
+                note = `${drug.name}: หยุดยา 72 ชั่วโมงก่อนผ่าตัด`;
+                action = 'hold';
+                holdDays = 3;
+            }
+            else if (drug.category === 'parkinson') {
+                note = `${drug.name}: ห้ามหยุดยาเด็ดขาด (Continue)`;
+                action = 'continue';
+            }
+            else if (drug.category === 'biologic_1_2w') {
+                note = `${drug.name}: หยุดยาล่วงหน้า 1-2 สัปดาห์`;
+                action = 'hold';
+                holdDaysMin = 7; holdDaysMax = 14; holdDays = 14;
+            }
+            else if (drug.category === 'biologic_2_3w') {
+                note = `${drug.name}: หยุดยาล่วงหน้า 2-3 สัปดาห์`;
+                action = 'hold';
+                holdDaysMin = 14; holdDaysMax = 21; holdDays = 21;
+            }
+            else if (drug.category === 'jak_inhibitor') {
+                note = `${drug.name}: หยุดยาล่วงหน้า 3-4 วัน`;
+                action = 'hold';
+                holdDaysMin = 3; holdDaysMax = 4; holdDays = 4;
+            }
+            else if (drug.category === 'pde5') {
+                note = `${drug.name}: หยุดล่วงหน้า 1-2 วัน`;
+                action = 'hold';
+                holdDaysMin = 1; holdDaysMax = 2; holdDays = 2;
+            }
+            else {
+                note = `${drug.name}: แพทย์ประเมินเป็นรายกรณี`;
+                action = 'case_by_case';
+            }
+
+            return { drug, id: drug.id, name: drug.name, note, action, holdDays, holdDaysMin, holdDaysMax, warnings };
+        }
+
         function processResults() {
             const bleedRiskEl = document.getElementById('bleedingRisk');
             if(!bleedRiskEl) return;
             const bleedRisk = bleedRiskEl.value;
-            const crclInput = document.getElementById('renalFunction');
-            const crcl = crclInput && crclInput.value ? parseInt(crclInput.value) : 90;
-            
+
             preopCalculatedNotes = [];
-            
+
             if(!bleedRisk) {
                 generateOutput();
                 return;
             }
 
             selectedPreopDrugs.forEach(drug => {
-                let note = "";
-                if (drug.id === 'warfarin') {
-                    if (bleedRisk === 'minimal') note = `${drug.name}: ไม่ต้องหยุดยา (Continue) เช็ค INR ก่อนทำ 1-2 วัน`;
-                    else {
-                        note = `${drug.name}: หยุดยา 5 วันก่อนผ่าตัด`;
-                        const bridge = document.getElementById('war_mech_mitral')?.checked || document.getElementById('war_mech_aortic')?.checked || document.getElementById('war_mech_stroke')?.checked || document.getElementById('war_af_high')?.checked || document.getElementById('war_af_stroke')?.checked || document.getElementById('war_af_rheumatic')?.checked || document.getElementById('war_vte_recent')?.checked || document.getElementById('war_vte_severe')?.checked;
-                        if(bridge) note += ` [⚠️ ต้อง Bridging (High Risk)]`;
-                    }
-                }
-                else if (drug.category === 'doac' || drug.category === 'doac_dabi') {
-                    let d = 0;
-                    if(drug.category==='doac_dabi'){ d = crcl>=50 ? (bleedRisk==='low-mod'?1:2) : (bleedRisk==='low-mod'?2:4); }
-                    else { d = bleedRisk==='low-mod'?1:(bleedRisk==='neuro-spine'?3:2); }
-                    
-                    if(bleedRisk==='minimal') note = `${drug.name}: พิจารณาไม่หยุดยา (หรือหยุด 1 วัน)`;
-                    else note = `${drug.name}: หยุดยา ${d} วันก่อนผ่าตัด`;
-                }
-                else if (drug.category === 'antiplatelet') {
-                    if(drug.id === 'aspirin') note = bleedRisk==='neuro-spine' ? `${drug.name}: หยุดยา 7 วัน` : `${drug.name}: ไม่ต้องหยุดยา (Continue)`;
-                    else {
-                        let d = 5; if(drug.id==='ticagrelor'||drug.id==='cilostazol') d=3; if(drug.id==='prasugrel') d=7;
-                        note = `${drug.name}: หยุดยา ${d} วันก่อนผ่าตัด`;
-                    }
-                    if(document.getElementById('stent_status')?.value === 'yes') note += ` [⚠️ เพิ่งใส่ Stent ปรึกษา Cardio ก่อนหยุด]`;
-                }
-                else if (drug.category.startsWith('sglt2')) note = `${drug.name}: หยุดยา ${drug.category==='sglt2_4d'?'4':'3'} วัน`;
-                else if (drug.category === 'glp1_weekly') note = `${drug.name}: หยุดยา 1 สัปดาห์`;
-                else if (drug.category === 'glp1_daily' || drug.category === 'dm_oral') note = `${drug.name}: หยุดยาเช้าวันผ่าตัด`;
-                else if (drug.category === 'raas_inhibitor') note = document.getElementById('raas_indication')?.value==='hf' ? `${drug.name}: ให้ยาต่อ (Continue)` : `${drug.name}: หยุดยาล่วงหน้า 24 ชั่วโมง`;
-                else if (drug.category === 'betablocker' || drug.category === 'statin') note = `${drug.name}: รับประทานยาต่อเนื่อง (Continue)`;
-                else if (drug.category === 'diuretic') note = `${drug.name}: หยุดยาเช้าวันผ่าตัด`;
-                else if (drug.category.startsWith('nsaid')) {
-                    if(drug.category==='nsaid_short') note=`${drug.name}: หยุดยา 1 วัน`; else if(drug.category==='nsaid_med') note=`${drug.name}: หยุดยา 3-4 วัน`; else if(drug.category==='nsaid_long') note=`${drug.name}: หยุดยา 10 วัน`; else note=`${drug.name}: หยุดยา 2-3 วัน`;
-                }
-                else if (drug.category.startsWith('herbal')) note = `${drug.name}: งดใช้ 1-2 สัปดาห์`;
-                else if (drug.category === 'maoi') note = `${drug.name}: หยุดยาล่วงหน้า 14 วัน`;
-                else if (drug.category === 'lithium') note = `${drug.name}: หยุดยา 72 ชั่วโมงก่อนผ่าตัด`;
-                else if (drug.category === 'parkinson') note = `${drug.name}: ห้ามหยุดยาเด็ดขาด (Continue)`;
-                else if (drug.category === 'biologic_1_2w') note = `${drug.name}: หยุดยาล่วงหน้า 1-2 สัปดาห์`;
-                else if (drug.category === 'biologic_2_3w') note = `${drug.name}: หยุดยาล่วงหน้า 2-3 สัปดาห์`;
-                else if (drug.category === 'jak_inhibitor') note = `${drug.name}: หยุดยาล่วงหน้า 3-4 วัน`;
-                else if (drug.category === 'pde5') note = `${drug.name}: หยุดล่วงหน้า 1-2 วัน`;
-                else note = `${drug.name}: แพทย์ประเมินเป็นรายกรณี`;
-
-                preopCalculatedNotes.push(note);
+                preopCalculatedNotes.push(describePreopHold(drug).note);
             });
             generateOutput();
         }
 
-        // ==========================================
+        function getPreopHoldSurgeryDate() {
+            return parsePreopSurgeryDate(document.getElementById('surgeryDate')?.value);
+        }
+
+        function computePreopHoldDates(desc, surgery) {
+            let stopISO = '';
+            let lastDoseISO = '';
+            if (surgery && desc.action === 'hold_morning') {
+                stopISO = preopCalToISO(surgery);
+                lastDoseISO = preopCalToISO(preopCalAddDays(surgery, -1));
+            } else if (surgery && desc.action === 'hold' && desc.holdDays != null) {
+                const stop = preopCalAddDays(surgery, -desc.holdDays);
+                stopISO = preopCalToISO(stop);
+                lastDoseISO = preopCalToISO(preopCalAddDays(stop, -1));
+            }
+            return { stopISO, lastDoseISO, restartISO: '' };
+        }
+
+        function shortPreopDrugName(name) {
+            return String(name || '').replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+
+        function openPreopHoldCalendar() {
+            if (typeof currentTab !== 'undefined' && currentTab !== 'PREOP') {
+                alert('ปุ่มนี้ใช้ได้เฉพาะคลินิก Pre-op ครับ');
+                return;
+            }
+            const surgery = getPreopHoldSurgeryDate();
+            if (!surgery) {
+                alert('กรุณากรอกวันผ่าตัดก่อนครับ (เช่น 15/12/2569)');
+                return;
+            }
+            if (!selectedPreopDrugs.length) {
+                alert('กรุณาเลือกยาที่ใช้ประจำก่อนครับ');
+                return;
+            }
+            const bleedRisk = document.getElementById('bleedingRisk')?.value;
+            if (!bleedRisk) {
+                alert('กรุณาเลือกกลุ่มความเสี่ยงเลือดออกของหัตถการก่อนครับ');
+                return;
+            }
+
+            const prevById = {};
+            preopHoldCalItems.forEach(it => { prevById[it.id] = it; });
+
+            preopHoldCalItems = selectedPreopDrugs.map(drug => {
+                const desc = describePreopHold(drug);
+                const dates = computePreopHoldDates(desc, surgery);
+                const prev = prevById[desc.id];
+                return {
+                    ...desc,
+                    included: prev ? !!prev.included : false,
+                    stopISO: prev && prev.stopISO != null ? prev.stopISO : dates.stopISO,
+                    restartISO: prev && prev.restartISO != null ? prev.restartISO : '',
+                    lastDoseISO: dates.lastDoseISO,
+                    defaultStopISO: dates.stopISO,
+                    defaultLastDoseISO: dates.lastDoseISO
+                };
+            });
+
+            document.getElementById('preopHoldCalModal').classList.remove('hidden');
+            renderPreopHoldCalForm();
+        }
+
+        function closePreopHoldCalendar() {
+            document.getElementById('preopHoldCalModal')?.classList.add('hidden');
+        }
+
+        function setAllPreopHoldCalTicks(on) {
+            preopHoldCalItems.forEach(it => { it.included = !!on; });
+            renderPreopHoldCalForm();
+        }
+
+        function updatePreopHoldCalItem(id, field, value) {
+            const it = preopHoldCalItems.find(x => x.id === id);
+            if (!it) return;
+            if (field === 'included') it.included = !!value;
+            else if (field === 'stopISO') {
+                const stop = preopCalParseFlexibleDate(value);
+                it.stopISO = stop ? preopCalToISO(stop) : '';
+                it.lastDoseISO = stop ? preopCalToISO(preopCalAddDays(stop, -1)) : '';
+            }
+            else if (field === 'restartISO') {
+                const restart = preopCalParseFlexibleDate(value);
+                it.restartISO = restart ? preopCalToISO(restart) : '';
+            }
+            else if (field === 'note') it.note = value;
+            renderPreopHoldCalForm();
+        }
+
+        function renderPreopHoldCalForm() {
+            const surgery = getPreopHoldSurgeryDate();
+            const bleedRisk = document.getElementById('bleedingRisk')?.value || '';
+            const crcl = document.getElementById('renalFunction')?.value || '90 (ค่าเริ่มต้น)';
+            const proc = (document.getElementById('procedureManual')?.value || '').trim();
+            const pt = (document.getElementById('ptName')?.value || '').trim() || '—';
+            const hn = (document.getElementById('hn')?.value || '').trim() || '—';
+            const pharm = (document.getElementById('preopPharmName')?.value || '').trim() || '—';
+            const meta = document.getElementById('preopHoldCalMeta');
+            if (meta) {
+                meta.innerHTML = `<div class="grid sm:grid-cols-2 gap-x-4 gap-y-1">
+                    <div><span class="text-slate-500">ชื่อ:</span> <b>${preopCalEsc(pt)}</b></div>
+                    <div><span class="text-slate-500">HN:</span> <b>${preopCalEsc(hn)}</b></div>
+                    <div class="sm:col-span-2"><span class="text-slate-500">หัตถการ:</span> ${preopCalEsc(proc || '—')}</div>
+                    <div><span class="text-slate-500">วันผ่าตัด:</span> <b>${surgery ? preopCalEsc(formatPreopThaiDate(surgery)) : '—'}</b></div>
+                    <div><span class="text-slate-500">ความเสี่ยงเลือดออก:</span> ${preopCalEsc(PREOP_RISK_LABELS[bleedRisk] || bleedRisk)} · CrCl ${preopCalEsc(String(crcl))}</div>
+                    <div class="sm:col-span-2"><span class="text-slate-500">เภสัชกร:</span> ${preopCalEsc(pharm)}</div>
+                </div>`;
+            }
+
+            const list = document.getElementById('preopHoldCalList');
+            if (list) {
+                list.innerHTML = preopHoldCalItems.map(it => {
+                    const rangeHint = (it.holdDaysMin != null && it.holdDaysMax != null && it.holdDaysMin !== it.holdDaysMax)
+                        ? `<div class="text-[11px] text-amber-700 mt-1">ช่วงในคำแนะนำคือ ${it.holdDaysMin}–${it.holdDaysMax} วัน ใช้ค่า ${it.holdDays} วันเป็นค่าเริ่ม (แก้ได้)</div>`
+                        : '';
+                    const warn = (it.warnings || []).map(w => `<div class="text-[11px] text-red-700 mt-1">⚠️ ${preopCalEsc(w)}</div>`).join('');
+                    const noAuto = (it.action === 'case_by_case')
+                        ? `<div class="text-[11px] text-slate-500 mt-1">แอปไม่มีวันที่งดอัตโนมัติสำหรับยานี้ กรอกวันที่เองถ้าจะใส่ในใบ</div>`
+                        : (it.action === 'continue'
+                            ? `<div class="text-[11px] text-emerald-700 mt-1">คำแนะนำเดิมคือกินต่อเนื่อง จึงยังไม่มีวันที่งด ถ้าจะแนะนำให้หยุด ให้กรอกวันที่เอง</div>`
+                            : '');
+                    const lastDose = it.lastDoseISO ? formatPreopThaiDate(preopCalFromISO(it.lastDoseISO), 'short') : '—';
+                    return `<div class="border ${it.included ? 'border-amber-400 bg-amber-50/60' : 'border-slate-200 bg-white'} rounded-lg p-3">
+                        <label class="flex items-start gap-2 cursor-pointer">
+                            <input type="checkbox" class="mt-1 w-4 h-4 accent-amber-600" ${it.included ? 'checked' : ''} onchange="updatePreopHoldCalItem('${preopCalEsc(it.id)}','included', this.checked)">
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-sm text-slate-900">${preopCalEsc(it.name)}</div>
+                                <textarea class="mt-1 w-full text-xs border border-slate-200 rounded px-2 py-1 bg-white" rows="2" onchange="updatePreopHoldCalItem('${preopCalEsc(it.id)}','note', this.value)">${preopCalEsc(it.note)}</textarea>
+                                ${rangeHint}${warn}${noAuto}
+                            </div>
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2 pl-6 text-xs">
+                            <div>
+                                <label class="block text-slate-500 mb-0.5">เริ่มงดวันที่ (วว/ดด/พศ)</label>
+                                <input type="text" inputmode="numeric" placeholder="วว/ดด/พศ" value="${it.stopISO && preopCalFromISO(it.stopISO) ? preopCalEsc(formatPreopThaiDate(preopCalFromISO(it.stopISO), 'input')) : ''}" onchange="updatePreopHoldCalItem('${preopCalEsc(it.id)}','stopISO', this.value)" class="w-full border border-slate-300 rounded px-2 py-1">
+                                ${it.stopISO && preopCalFromISO(it.stopISO) ? `<div class="text-[11px] text-slate-600 mt-0.5">${preopCalEsc(formatPreopThaiDate(preopCalFromISO(it.stopISO), 'short'))}</div>` : ''}
+                            </div>
+                            <div>
+                                <label class="block text-slate-500 mb-0.5">วันสุดท้ายที่กิน (คำนวณ)</label>
+                                <div class="px-2 py-1 border border-dashed border-slate-200 rounded bg-slate-50">${preopCalEsc(lastDose)}</div>
+                            </div>
+                            <div>
+                                <label class="block text-slate-500 mb-0.5">เริ่มกินใหม่ (กรอกเอง วว/ดด/พศ)</label>
+                                <input type="text" inputmode="numeric" placeholder="วว/ดด/พศ หรือเว้นว่าง" value="${it.restartISO && preopCalFromISO(it.restartISO) ? preopCalEsc(formatPreopThaiDate(preopCalFromISO(it.restartISO), 'input')) : ''}" onchange="updatePreopHoldCalItem('${preopCalEsc(it.id)}','restartISO', this.value)" class="w-full border border-slate-300 rounded px-2 py-1">
+                                ${it.restartISO && preopCalFromISO(it.restartISO) ? `<div class="text-[11px] text-slate-600 mt-0.5">${preopCalEsc(formatPreopThaiDate(preopCalFromISO(it.restartISO), 'short'))}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+            renderPreopHoldCalPreview();
+        }
+
+        function getSelectedPreopHoldCalItems() {
+            return preopHoldCalItems.filter(it => it.included);
+        }
+
+        function buildPreopHoldCalendarModel(items, surgery) {
+            const selected = items || [];
+            let start = surgery, end = surgery;
+            selected.forEach(it => {
+                const stop = preopCalFromISO(it.stopISO);
+                const restart = preopCalFromISO(it.restartISO);
+                if (stop && stop < start) start = stop;
+                if (restart && restart > end) end = restart;
+            });
+            // include the day before first hold so last-dose days are visible
+            start = preopCalAddDays(start, -1);
+            // pad to Sunday–Saturday
+            start = preopCalAddDays(start, -start.getDay());
+            const endPad = preopCalAddDays(end, 6 - end.getDay());
+
+            const days = [];
+            for (let d = new Date(start); d <= endPad; d = preopCalAddDays(d, 1)) {
+                const iso = preopCalToISO(d);
+                const isSurg = iso === preopCalToISO(surgery);
+                const holds = [];
+                const lastDoses = [];
+                const restarts = [];
+                const continues = [];
+                selected.forEach(it => {
+                    const short = shortPreopDrugName(it.name);
+                    const stop = preopCalFromISO(it.stopISO);
+                    const restart = preopCalFromISO(it.restartISO);
+                    const last = it.lastDoseISO ? preopCalFromISO(it.lastDoseISO) : (stop ? preopCalAddDays(stop, -1) : null);
+                    // If no restart date, show งด only through surgery day — not invent a post-op hold.
+                    const holdUntilISO = restart ? preopCalToISO(preopCalAddDays(restart, -1)) : preopCalToISO(surgery);
+                    if (stop && iso >= preopCalToISO(stop) && iso <= holdUntilISO) {
+                        if (it.action === 'hold_morning' && isSurg) holds.push({ name: short, tag: 'งดเช้าวันนี้' });
+                        else if (it.action === 'hold_morning' && iso === it.stopISO) holds.push({ name: short, tag: 'งดเช้าวันนี้' });
+                        else holds.push({ name: short, tag: 'งด' });
+                    } else if (restart && iso === preopCalToISO(restart)) {
+                        restarts.push({ name: short, tag: 'เริ่มกินใหม่' });
+                    } else if (last && iso === preopCalToISO(last) && stop) {
+                        lastDoses.push({ name: short, tag: 'กินมื้อสุดท้าย' });
+                    } else if (it.action === 'continue' && !stop) {
+                        if (isSurg) continues.push({ name: short, tag: 'กินตามปกติ' });
+                    }
+                });
+                days.push({ date: new Date(d), iso, isSurg, isOutside: d < preopCalAddDays(surgery, -60) /* unused */, holds, lastDoses, restarts, continues });
+            }
+            return { start, end: endPad, days, surgery };
+        }
+
+        function renderPreopHoldCalendarGrid(model, compact) {
+            const fs = compact ? '7.5pt' : '11px';
+            const minH = compact ? '52px' : '72px';
+            let html = `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0;border:1px solid #cbd5e1;border-bottom:none;">`;
+            PREOP_TH_DAYS_SHORT.forEach(w => {
+                html += `<div style="text-align:center;font-weight:700;font-size:${fs};padding:3px 2px;background:#0f172a;color:#fff;border-right:1px solid #334155;">${w}</div>`;
+            });
+            html += `</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0;border:1px solid #cbd5e1;">`;
+            model.days.forEach(day => {
+                const bg = day.isSurg ? '#fff1f2' : (day.restarts.length ? '#f0fdf4' : (day.holds.length ? '#fff7ed' : '#fff'));
+                const bd = day.isSurg ? '#e11d48' : '#e2e8f0';
+                const beYear = day.date.getFullYear() + 543;
+                const showMo = day.date.getDate() === 1 || day.iso === model.days[0].iso;
+                const head = showMo ? `${day.date.getDate()} ${PREOP_TH_MONTHS_ABBR[day.date.getMonth()]}` : String(day.date.getDate());
+                const surgMark = day.isSurg ? `<div style="font-weight:800;color:#be123c;font-size:${fs};">วันผ่าตัด</div>` : '';
+                const lines = [];
+                day.lastDoses.forEach(x => lines.push(`<div style="color:#1d4ed8;">• กินมื้อสุดท้าย ${preopCalEsc(x.name)}</div>`));
+                day.holds.forEach(x => lines.push(`<div style="color:#c2410c;">• ${preopCalEsc(x.tag)} ${preopCalEsc(x.name)}</div>`));
+                day.restarts.forEach(x => lines.push(`<div style="color:#15803d;">• เริ่มกินใหม่ ${preopCalEsc(x.name)}</div>`));
+                day.continues.forEach(x => lines.push(`<div style="color:#0f766e;">• กินตามปกติ ${preopCalEsc(x.name)}</div>`));
+                html += `<div style="min-height:${minH};padding:3px 4px;border-right:1px solid ${bd};border-bottom:1px solid ${bd};background:${bg};font-size:${fs};line-height:1.25;vertical-align:top;">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;font-weight:700;color:#0f172a;">
+                        <span>${head}${showMo ? ' ' + beYear : ''}</span>
+                    </div>
+                    ${surgMark}
+                    ${lines.join('')}
+                </div>`;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function buildPreopHoldPrintHtml(forPrint) {
+            const surgery = getPreopHoldSurgeryDate();
+            const selected = getSelectedPreopHoldCalItems();
+            const proc = (document.getElementById('procedureManual')?.value || '').trim() || '—';
+            const pt = (document.getElementById('ptName')?.value || '').trim() || '—';
+            const hn = (document.getElementById('hn')?.value || '').trim() || '—';
+            const pharm = (document.getElementById('preopPharmName')?.value || '').trim() || '—';
+            const phone = (document.getElementById('preopHoldCalPhone')?.value || '').trim();
+            const risk = document.getElementById('bleedingRisk')?.value || '';
+            const model = buildPreopHoldCalendarModel(selected, surgery);
+            const compact = !!forPrint;
+
+            const continueList = selected.filter(it => it.action === 'continue' && !it.stopISO).map(it => shortPreopDrugName(it.name));
+            const anyRestart = selected.some(it => it.restartISO);
+            const unfilledRestart = selected.filter(it => (it.action === 'hold' || it.action === 'hold_morning' || it.stopISO) && !it.restartISO);
+
+            const rows = selected.map(it => {
+                const last = it.lastDoseISO ? formatPreopThaiDate(preopCalFromISO(it.lastDoseISO), 'short') : '—';
+                const stop = it.stopISO ? formatPreopThaiDate(preopCalFromISO(it.stopISO), 'short') : (it.action === 'continue' ? 'ไม่ต้องงด' : '—');
+                const restart = it.restartISO
+                    ? formatPreopThaiDate(preopCalFromISO(it.restartISO), 'short')
+                    : ((it.action === 'continue' && !it.stopISO) ? 'กินต่อเนื่อง' : 'เมื่อแพทย์อนุญาต');
+                return `<tr>
+                    <td style="border:1px solid #cbd5e1;padding:3px 5px;font-weight:600;">${preopCalEsc(shortPreopDrugName(it.name))}</td>
+                    <td style="border:1px solid #cbd5e1;padding:3px 5px;">${preopCalEsc(last)}</td>
+                    <td style="border:1px solid #cbd5e1;padding:3px 5px;">${preopCalEsc(stop)}</td>
+                    <td style="border:1px solid #cbd5e1;padding:3px 5px;">${preopCalEsc(restart)}</td>
+                    <td style="border:1px solid #cbd5e1;padding:3px 5px;">${preopCalEsc(it.note.replace(/^[^:]+:\s*/, ''))}</td>
+                </tr>`;
+            }).join('');
+
+            const fs = compact ? '9.5pt' : '13px';
+            const titleFs = compact ? '13pt' : '18px';
+            return `<div style="font-family:'Sarabun','Prompt',sans-serif;color:#0f172a;font-size:${fs};line-height:1.35;${compact ? 'width:194mm;margin:0 auto;' : ''}">
+                <div style="text-align:center;border-bottom:2px solid #0f172a;padding-bottom:4px;margin-bottom:6px;">
+                    <div style="font-size:${compact ? '9pt' : '12px'};">กลุ่มงานเภสัชกรรม โรงพยาบาลนพรัตนราชธานี</div>
+                    <div style="font-weight:800;font-size:${titleFs};">ใบแนะนำการกินยาและหยุดยาก่อนผ่าตัด</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;margin-bottom:6px;">
+                    <div>ชื่อ-นามสกุล: <b>${preopCalEsc(pt)}</b></div>
+                    <div>HN: <b>${preopCalEsc(hn)}</b></div>
+                    <div style="grid-column:1/-1;">หัตถการ: ${preopCalEsc(proc)} <span style="color:#64748b;">(${preopCalEsc(PREOP_RISK_LABELS[risk] || risk)})</span></div>
+                    <div>วันผ่าตัด: <b style="color:#be123c;">${surgery ? preopCalEsc(formatPreopThaiDate(surgery)) : '—'}</b></div>
+                    <div>เภสัชกร: ${preopCalEsc(pharm)}${phone ? ' · โทร ' + preopCalEsc(phone) : ''}</div>
+                </div>
+                <div style="background:#fff1f2;border:1px solid #e11d48;color:#9f1239;padding:4px 8px;margin-bottom:6px;font-weight:700;text-align:center;">
+                    กรุณายืนยันกับแพทย์ผู้ผ่าตัดก่อนหยุดยา
+                </div>
+                <table style="width:100%;border-collapse:collapse;margin-bottom:6px;font-size:${compact ? '8.5pt' : '12px'};">
+                    <thead>
+                        <tr style="background:#0f172a;color:#fff;">
+                            <th style="border:1px solid #0f172a;padding:3px 5px;text-align:left;">ยา</th>
+                            <th style="border:1px solid #0f172a;padding:3px 5px;text-align:left;">วันสุดท้ายที่กิน</th>
+                            <th style="border:1px solid #0f172a;padding:3px 5px;text-align:left;">เริ่มงดวันที่</th>
+                            <th style="border:1px solid #0f172a;padding:3px 5px;text-align:left;">เริ่มกินใหม่</th>
+                            <th style="border:1px solid #0f172a;padding:3px 5px;text-align:left;">คำแนะนำ</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows || `<tr><td colspan="5" style="border:1px solid #cbd5e1;padding:6px;text-align:center;color:#64748b;">ยังไม่ได้ติ๊กยาที่จะใส่ในใบนี้</td></tr>`}</tbody>
+                </table>
+                ${continueList.length ? `<div style="margin-bottom:6px;">ยาที่ให้กินต่อเนื่องตามปกติ (รวมถึงเช้าวันผ่าตัด ถ้าแพทย์ไม่ได้สั่งเป็นอย่างอื่น): <b>${preopCalEsc(continueList.join(', '))}</b></div>` : ''}
+                ${selected.length ? renderPreopHoldCalendarGrid(model, compact) : '<div style="padding:12px;text-align:center;color:#64748b;border:1px dashed #cbd5e1;">ติ๊กยาอย่างน้อย 1 รายการ เพื่อดูปฏิทิน</div>'}
+                <div style="margin-top:6px;font-size:${compact ? '8pt' : '11px'};color:#334155;">
+                    <b>วิธีอ่านปฏิทิน:</b> สีชมพูคือวันผ่าตัด · “งด” หมายถึงไม่ต้องกินยานั้น · “กินมื้อสุดท้าย” คือวันสุดท้ายที่กินก่อนงด · “เริ่มกินใหม่” ตามวันที่กรอก
+                    ${!anyRestart && unfilledRestart.length ? ' · ยาที่ยังไม่ระบุวันเริ่มใหม่ ให้เริ่มยาใหม่เมื่อแพทย์อนุญาตเท่านั้น' : ''}
+                </div>
+                <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:flex-end;font-size:${compact ? '8.5pt' : '12px'};">
+                    <div style="max-width:62%;color:#64748b;">ใบนี้เป็นคำแนะนำของเภสัชกรจากข้อมูล ณ วันที่ให้คำปรึกษา ไม่ใช่คำสั่งแพทย์ กรุณาปฏิบัติตามเมื่อแพทย์ผู้ผ่าตัดยืนยันแล้ว</div>
+                    <div style="text-align:center;min-width:38%;">
+                        ลงชื่อเภสัชกร .........................................<br>
+                        ${pharm && pharm !== '—' ? '(' + preopCalEsc(pharm) + ')' : '(.........................................)'}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderPreopHoldCalPreview() {
+            const box = document.getElementById('preopHoldCalPreview');
+            if (!box) return;
+            box.innerHTML = buildPreopHoldPrintHtml(false);
+            const printEl = document.getElementById('printPreopHoldCal');
+            if (printEl) printEl.innerHTML = buildPreopHoldPrintHtml(true);
+        }
+
+        function printPreopHoldCalendar() {
+            if (!getSelectedPreopHoldCalItems().length) {
+                alert('กรุณาติ๊กยาที่จะใส่ในใบแนะนำก่อนครับ (ยังไม่ติ๊กไว้ให้ เพราะต้องยืนยันกับแพทย์ก่อน)');
+                return;
+            }
+            if (!getPreopHoldSurgeryDate()) {
+                alert('กรุณากรอกวันผ่าตัดก่อนครับ');
+                return;
+            }
+            renderPreopHoldCalPreview();
+            document.body.classList.add('print-mode-preop-hold-cal');
+            const done = () => document.body.classList.remove('print-mode-preop-hold-cal');
+            window.addEventListener('afterprint', done, { once: true });
+            setTimeout(() => {
+                window.print();
+                // fallback if afterprint does not fire in some headless runs
+                setTimeout(done, 1500);
+            }, 50);
+        }
+
+                // ==========================================
         //         MODALS LOGIC
         // ==========================================
         function openModal(src) { 
