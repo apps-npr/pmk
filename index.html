@@ -219,6 +219,29 @@
                 -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
             }
 
+            /* โหมด 7: ใบแนะนำแพทย์ CAPD (A5 แนวนอน ตามแอป CAPD) */
+            body.print-mode-capd-advice-a5 {
+                min-height: 0 !important; height: auto !important;
+                padding: 0 !important; margin: 0 !important;
+                background: white !important;
+            }
+            body.print-mode-capd-advice-a5 #mainAppContainer { display: none !important; }
+            body.print-mode-capd-advice-a5 #printCapdAdviceA5,
+            body.print-mode-capd-advice-a5 #printCapdAdviceA5 * { visibility: visible !important; }
+            body.print-mode-capd-advice-a5 #printArea,
+            body.print-mode-capd-advice-a5 #printStickerArea,
+            body.print-mode-capd-advice-a5 #printRifampinArea,
+            body.print-mode-capd-advice-a5 #printWfColorTableA5,
+            body.print-mode-capd-advice-a5 #printAsthmaMistakeA5 { display: none !important; }
+            body.print-mode-capd-advice-a5 #printCapdAdviceA5 {
+                position: absolute; left: 0; top: 0; width: 100%;
+                display: flex !important; flex-direction: column; justify-content: flex-start;
+                background: white !important; color: #0f172a !important;
+                padding: 0; margin: 0; box-sizing: border-box;
+                font-family: 'Sarabun', 'Prompt', sans-serif;
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+            }
+
             /* โหมด 6: พิมพ์ใบสรุปเทคนิคพ่นยาเฉพาะจุดที่ผิด (A5 แนวตั้ง) */
             body.print-mode-asthma-a5 #mainAppContainer { display: none !important; }
             body.print-mode-asthma-a5 #printAsthmaMistakeA5,
@@ -237,10 +260,12 @@
         @page rifampinPageA5 { size: A5 portrait; margin: 5mm; }
         @page wfColorPageA5 { size: A5 portrait; margin: 4mm; }
         @page asthmaMistakePageA5 { size: A5 portrait; margin: 5mm; }
+        @page capdAdvicePageA5 { size: A5 landscape; margin: 8mm 12mm; }
         body.print-mode-opd-a5 { page: opdPageA5; }
         body.print-mode-rifampin-a5 { page: rifampinPageA5; }
         body.print-mode-wf-color-a5 { page: wfColorPageA5; }
         body.print-mode-asthma-a5 { page: asthmaMistakePageA5; }
+        body.print-mode-capd-advice-a5 { page: capdAdvicePageA5; }
 
         /* สไตล์ Slider และ Animation สำหรับ Warfarin-Rifampin */
         @keyframes slideUpFade {
@@ -344,7 +369,7 @@
                 <button onclick="switchTab('MR')" id="tab-MR" class="tab-btn active px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">1. MR</button>
                 <button onclick="switchTab('PREOP')" id="tab-PREOP" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">2. Pre-OP</button>
                 <button onclick="switchTab('ADR')" id="tab-ADR" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">3. ADR/SE</button>
-                <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">4. Clinic HIV</button>
+                <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">4. HIV</button>
                 <button onclick="switchTab('WARFARIN')" id="tab-WARFARIN" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-red-50 text-red-700 border-red-200 hover:bg-red-100">5. Warfarin</button>
                 <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-green-50 text-green-700 border-green-200 hover:bg-green-100">6. Heart Failure</button>
                 <button onclick="switchTab('CKD')" id="tab-CKD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">7. CKD</button>
@@ -1935,7 +1960,7 @@
                 <!-- Banner & ปุ่มเปิดคู่มือให้ความรู้คนไข้ CKD ก่อนล้างไต -->
                 <div class="bg-orange-50 p-4 border border-orange-200 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                     <div class="text-sm">
-                        <h3 class="font-bold text-orange-800 text-base"><i class="fa-solid fa-notes-medical mr-1.5"></i>7. คลินิกโรคไตเรื้อรังและชะลอไตเสื่อม (CKD Clinic)</h3>
+                        <h3 class="font-bold text-orange-800 text-base"><i class="fa-solid fa-notes-medical mr-1.5"></i>7. คลินิกโรคไตเรื้อรังและชะลอไตเสื่อม (CKD)</h3>
                         <p class="text-orange-700 text-xs mt-0.5">ติดตามแนวโน้มการทำงานของไต (sCr / eGFR), คัดกรอง DRP/Nephrotoxic/สมุนไพร และให้คำแนะนำชะลอไตเสื่อม</p>
                     </div>
                     <button type="button" onclick="toggleInfo('c7AdviceGuidePanel')" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center text-xs whitespace-nowrap">
@@ -2170,7 +2195,7 @@
             <!-- 8. Asthma/COPD -->
             <div id="form-ASTHMA" class="space-y-6 clinic-form hidden">
                 <div class="bg-teal-50 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
-                    <h3 class="font-bold text-teal-800 mb-1"><i class="fa-solid fa-lungs mr-1.5"></i>8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD Clinic)</h3>
+                    <h3 class="font-bold text-teal-800 mb-1"><i class="fa-solid fa-lungs mr-1.5"></i>8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD)</h3>
                     <p class="text-teal-700 text-xs">ประเมินการควบคุมอาการ รายการยาพ่นที่ใช้ปัจจุบัน (Current Medication) เทคนิคการพ่นยาพร้อมสรุปขั้นตอนที่ขาด และความร่วมมือในการใช้ยา</p>
                 </div>
                 
@@ -2283,7 +2308,7 @@
             <!-- 9. Parkinson Clinic -->
             <div id="form-PARKINSON" class="space-y-6 clinic-form hidden">
                 <div class="bg-violet-50 p-4 border border-violet-200 rounded-xl mb-4 text-sm">
-                    <h3 class="font-bold text-violet-800 mb-1"><i class="fa-solid fa-brain mr-1.5"></i>9. คลินิกโรคพาร์กินสัน (Parkinson Clinic)</h3>
+                    <h3 class="font-bold text-violet-800 mb-1"><i class="fa-solid fa-brain mr-1.5"></i>9. คลินิกโรคพาร์กินสัน (Parkinson)</h3>
                     <p class="text-violet-700 text-xs">จัดตารางยา ดูรูปยา (เม็ดยาและกล่องยา) ประเมิน motor complications / DRP แล้วคัดลอก Pharmacist Note ไปวางใน PMK — แท็บนี้ไม่บันทึกลง Google Sheet และไม่ส่ง LINE OA</p>
                 </div>
 
@@ -2564,7 +2589,7 @@
 
             <div id="form-CAPD" class="space-y-6 clinic-form hidden">
                 <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-4">
-                    <h3 class="font-bold text-cyan-900 mb-1">10. CAPD Clinic</h3>
+                    <h3 class="font-bold text-cyan-900 mb-1">10. CAPD</h3>
                     <p class="text-sm text-cyan-800">บันทึกผลแล็บ ปัญหาด้านยา และคำแนะนำ EPO สำหรับลง PMK และแท็บ <span class="font-semibold">CAPD</span> ในชีต workload ambu 7141-2 โดยไม่เปลี่ยนโครงคอลัมน์ของชีตเดิม</p>
                 </div>
 
@@ -2788,6 +2813,10 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10v3H7z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10h14a2 2 0 012 2v4a2 2 0 01-2 2h-1v-4H8v4H7a2 2 0 01-2-2v-4a2 2 0 012-2z"></path></svg>
                     5. พิมพ์สติกเกอร์ (Note)
                 </button>
+                <button id="btnCapdAdviceA5" onclick="printCapdAdviceA5()" class="hidden bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    6. ใบแนะนำแพทย์ A5
+                </button>
             </div>
         </div>
     </div>
@@ -2805,6 +2834,52 @@
                 <span id="printName"></span> HN: <span id="printHn"></span>
             </div>
             <div id="printNote"></div>
+        </div>
+    </div>
+
+    <!-- ใบแนะนำแพทย์ A5 ของคลินิก CAPD (รูปแบบจากแอป apps-npr/CAPD, A5 แนวนอน) -->
+    <div id="printCapdAdviceA5" class="hidden text-slate-900">
+        <div>
+            <div class="border-b-2 border-slate-800 pb-1.5 mb-2 flex justify-between items-end">
+                <div>
+                    <div class="text-[18px] font-bold tracking-tight text-slate-900">PHARMACIST NOTE : คลินิกล้างไตทางช่องท้อง (CAPD)</div>
+                    <div id="capdA5PatientInfo" class="text-[15px] font-semibold text-slate-800 mt-0.5"></div>
+                </div>
+                <div id="capdA5DateInfo" class="text-[14px] font-semibold text-slate-700"></div>
+            </div>
+            <div class="mb-2">
+                <div class="text-[14px] font-bold text-slate-900 mb-1">1. ปัญหาด้านยาและการจัดการ (Drug-Related Problems : DRP)</div>
+                <div id="capdA5DrpList" class="border border-slate-400 rounded px-3.5 py-1.5 text-[14px] leading-relaxed bg-slate-50/50 space-y-0.5 min-h-[48px]"></div>
+            </div>
+            <div class="mb-2">
+                <div class="text-[14px] font-bold text-slate-900 mb-1">2. ประวัติผลตรวจระดับ Hemoglobin และขนาดยา EPO (4 ครั้งล่าสุด)</div>
+                <table class="w-full border-collapse border border-slate-700 text-center text-[14px]">
+                    <thead>
+                        <tr id="capdA5TableHead" class="bg-slate-200 font-bold text-slate-900"></tr>
+                    </thead>
+                    <tbody>
+                        <tr id="capdA5TableEpo"></tr>
+                        <tr id="capdA5TableHb"></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="border border-slate-500 rounded px-3.5 py-2 space-y-1 text-[14px] bg-white">
+                <div id="capdA5Reimburse" class="font-semibold"></div>
+                <div id="capdA5EpoChange" class="font-semibold"></div>
+                <div class="pt-1.5 mt-1.5 border-t border-slate-300 flex items-center gap-6 font-semibold">
+                    <span>ติดตามผล Lab (CBC):</span>
+                    <span>&#9744; 1 เดือน (1 mo)</span>
+                    <span>&#9744; 2 เดือน (2 mo)</span>
+                    <span>&#9744; 3 เดือน (3 mo)</span>
+                    <span>&#9744; ตามนัด F/U</span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-3 pt-1 flex justify-end text-[13px] text-slate-700">
+            <div class="text-center w-64">
+                <div>ลงชื่อ ...................................................... เภสัชกร</div>
+                <div class="mt-0.5" id="capdA5PharmSign">(......................................................)</div>
+            </div>
         </div>
     </div>
 
@@ -4120,6 +4195,12 @@
                 if (typeof generateOutput === 'function') generateOutput();
             }
 
+            const capdA5Btn = document.getElementById('btnCapdAdviceA5');
+            if (capdA5Btn) {
+                if (tab === 'CAPD') capdA5Btn.classList.remove('hidden');
+                else capdA5Btn.classList.add('hidden');
+            }
+
             scrollActiveClinicTabIntoView();
         }
 
@@ -4547,11 +4628,11 @@
                 }
             }
 
-            let summary = `[HF Clinic]\nLVEF: ${lvef !== '-' ? lvef + '%' : '-'} | NYHA: ${nyha} | BP: ${sbp}/${dbp} mmHg | HR: ${hr} bpm | eGFR: ${egfr} | K: ${potassium}\nMeds: ${medsString}${interventionText}`;
+            let summary = `[HF]\nLVEF: ${lvef !== '-' ? lvef + '%' : '-'} | NYHA: ${nyha} | BP: ${sbp}/${dbp} mmHg | HR: ${hr} bpm | eGFR: ${egfr} | K: ${potassium}\nMeds: ${medsString}${interventionText}`;
             summary = summary.replace(/\s+/g, ' ').replace(/ \n /g, '\n').replace(/ \n/g, '\n').replace(/\n /g, '\n');
 
             let currentNote = document.getElementById('outputPmk').value;
-            if(currentNote && !currentNote.includes('[HF Clinic]')) {
+            if(currentNote && !currentNote.includes('[HF]')) {
                 document.getElementById('outputPmk').value = currentNote + '\n\n' + summary;
             } else if (!currentNote) {
                 document.getElementById('outputPmk').value = "pharmacist note\n" + summary;
@@ -6324,7 +6405,7 @@
 
         function buildParkinsonNotes() {
             const notes = [];
-            notes.push('pharmacist note Parkinson Clinic');
+            notes.push('pharmacist note Parkinson');
 
             if (c9Meds.length > 0) {
                 notes.push('ตารางยา:');
@@ -6748,6 +6829,102 @@
             return currentVal + '  ➔  ' + order[prevIdx];
         }
 
+
+        function capdPrintEsc(s) {
+            return String(s ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function capdShortEpoLabel(val) {
+            if (!val) return '-';
+            const match = String(val).match(/\(([^)]+)\)/);
+            return match ? match[1] : val;
+        }
+
+        function printCapdAdviceA5() {
+            if (typeof capdEvaluateAll === 'function') capdEvaluateAll();
+
+            const area = document.getElementById('printCapdAdviceA5');
+            if (!area) return;
+
+            const hn = (document.getElementById('hn')?.value || '').trim();
+            const name = (document.getElementById('ptName')?.value || '').trim();
+            const todayLabel = c10Val('c10VisitDate') || c10Val('c10_m12_label') || capdTodayDateStr();
+            const pharm = c10Val('c10PharmName');
+
+            const patEl = document.getElementById('capdA5PatientInfo');
+            const dateEl = document.getElementById('capdA5DateInfo');
+            const signEl = document.getElementById('capdA5PharmSign');
+            if (patEl) patEl.textContent = 'ผู้ป่วย: ' + (name || '-') + '   |   HN: ' + (hn || '-');
+            if (dateEl) dateEl.textContent = 'วันที่รับบริการ: ' + todayLabel;
+            if (signEl) signEl.textContent = '(' + (pharm || '......................................................') + ')';
+
+            const drps = [1, 2, 3, 4].map(i => c10Val('c10Drp' + i)).filter(Boolean);
+            const drpContainer = document.getElementById('capdA5DrpList');
+            if (drpContainer) {
+                if (drps.length > 0) {
+                    drpContainer.innerHTML = drps.map((text, idx) => '<div>' + capdPrintEsc((idx + 1) + '. ' + text) + '</div>').join('');
+                } else {
+                    drpContainer.innerHTML = '<div class="text-slate-600">- ไม่พบปัญหาด้านยาเพิ่มเติม</div>';
+                }
+            }
+
+            const activeCols = [];
+            [9, 10, 11, 12].forEach((colIdx, idx) => {
+                const lbl = c10Val('c10_m' + colIdx + '_label');
+                const hb = c10Val('c10_m' + colIdx + '_hb') || (colIdx === 12 ? c10Val('c10Hb') : '');
+                const epo = c10Val('c10_m' + colIdx + '_epo');
+                if (lbl || hb || epo) {
+                    activeCols.push({
+                        lbl: lbl || ('ครั้งที่ ' + (idx + 1)),
+                        hb: hb || '-',
+                        epo: capdShortEpoLabel(epo)
+                    });
+                }
+            });
+            if (activeCols.length === 0) {
+                for (let i = 1; i <= 4; i++) activeCols.push({ lbl: 'ครั้งที่ ' + i, hb: '-', epo: '-' });
+            }
+
+            let headHtml = '<th class="border border-slate-700 py-1.5 px-3 text-left w-36 bg-slate-200">รายการติดตาม</th>';
+            let epoHtml = '<td class="border border-slate-700 py-1.5 px-3 text-left font-semibold bg-slate-100">ขนาด EPO / wk</td>';
+            let hbHtml = '<td class="border border-slate-700 py-1.5 px-3 text-left font-semibold bg-slate-100">Hb (g/dL)</td>';
+            activeCols.forEach(col => {
+                headHtml += '<th class="border border-slate-700 py-1.5 px-2 bg-slate-200">' + capdPrintEsc(col.lbl) + '</th>';
+                epoHtml += '<td class="border border-slate-700 py-1.5 px-2">' + capdPrintEsc(col.epo) + '</td>';
+                hbHtml += '<td class="border border-slate-700 py-1.5 px-2 font-bold text-[15px]">' + capdPrintEsc(col.hb) + '</td>';
+            });
+            const headEl = document.getElementById('capdA5TableHead');
+            const epoEl = document.getElementById('capdA5TableEpo');
+            const hbEl = document.getElementById('capdA5TableHb');
+            if (headEl) headEl.innerHTML = headHtml;
+            if (epoEl) epoEl.innerHTML = epoHtml;
+            if (hbEl) hbEl.innerHTML = hbHtml;
+
+            const reimburseMain = (document.getElementById('c10_reimburseMainText')?.innerText || '-').trim();
+            const recEpo = (document.getElementById('c10_epoRecommendText')?.innerText || '-').trim();
+            const reimburseEl = document.getElementById('capdA5Reimburse');
+            const epoChangeEl = document.getElementById('capdA5EpoChange');
+            if (reimburseEl) reimburseEl.innerHTML = '<span class="text-slate-600">สิทธิ์การเบิก EPO:</span> ' + capdPrintEsc(reimburseMain);
+            if (epoChangeEl) {
+                const sentence = (typeof capdFormatEpoSentence === 'function' ? capdFormatEpoSentence(recEpo) : recEpo).replace('ขนาด EPO เดิม:', 'เดิม');
+                epoChangeEl.innerHTML = '<span class="text-slate-600">คำแนะนำขนาดยา:</span> ' + capdPrintEsc(sentence);
+            }
+
+            area.classList.remove('hidden');
+            document.body.classList.add('print-mode-capd-advice-a5');
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    document.body.classList.remove('print-mode-capd-advice-a5');
+                    area.classList.add('hidden');
+                }, 500);
+            }, 150);
+        }
+
         function capdFormatEpoSentence(recEpo) {
             const currentEpo = c10Val('c10_m12_epo') || c10Val('c10_m11_epo') || '-';
             if (!recEpo || recEpo === '-') {
@@ -6839,7 +7016,7 @@
             const name = c10Val('ptName');
             const bp = capdResolvedBp();
             const notes = [];
-            notes.push('pharmacist note CAPD Clinic' + (hn ? ' [HN: ' + hn + (name ? ' ' + name : '') + ']' : ''));
+            notes.push('pharmacist note CAPD' + (hn ? ' [HN: ' + hn + (name ? ' ' + name : '') + ']' : ''));
             notes.push('วันที่: ' + dateStr);
 
             const labMap = [
@@ -7272,7 +7449,7 @@
                 }
             }
             else if (currentTab === 'CKD') {
-                notes.push("pharmacist note CKD Clinic");
+                notes.push("pharmacist note CKD");
 
                 const lastDate = document.getElementById('c7LastLabDate')?.value?.trim() || '';
                 const lastScr = document.getElementById('c7LastScr')?.value?.trim() || '';
@@ -7325,7 +7502,7 @@
                 if (pharm) notes.push(`/${pharm}`);
             }
             else if (currentTab === 'ASTHMA') {
-                notes.push("pharmacist note: Asthma/COPD clinic");
+                notes.push("pharmacist note: Asthma/COPD");
                 let c8Lines = [];
                 const ind = document.querySelector('input[name="c8Indication"]:checked')?.value;
                 const score = document.getElementById('c8Score')?.value?.trim();
@@ -7448,7 +7625,7 @@
                     const otherText = document.getElementById('wfNoteOtherText')?.value?.trim() || '';
                     const pharm = document.getElementById('wfNotePharm')?.value || '';
 
-                    notes.push("pharmacist note Warfarin Clinic");
+                    notes.push("pharmacist note Warfarin");
                     notes.push(`${inrCurrentLabel} | INR ครั้งก่อน: ${inrPrevStr}`);
                     notes.push(`Indication: ${indication} | Target INR: ${targetStr}`);
                     notes.push(`Current dose รวม ${curDoseTotal} mg/wk`);
