@@ -95,6 +95,7 @@
       else sessionStorage.setItem(STORAGE_KEY, '1');
     } catch (e) {}
     document.documentElement.classList.add('pmk-authed');
+    syncAppGate();
   }
 
   function clearAuth() {
@@ -103,6 +104,8 @@
       sessionStorage.removeItem(STORAGE_KEY);
     } catch (e) {}
     document.documentElement.classList.remove('pmk-authed');
+    hideDatalistMenu();
+    syncAppGate();
   }
 
   function showError(msg) {
@@ -178,6 +181,217 @@
     focusUser();
   }
 
+
+  function syncAppGate() {
+    const app = document.getElementById('mainAppContainer');
+    const authed = document.documentElement.classList.contains('pmk-authed');
+    if (!app) return;
+    if (authed) {
+      app.removeAttribute('inert');
+      app.removeAttribute('aria-hidden');
+    } else {
+      app.setAttribute('inert', '');
+      app.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  let dlMenu = null;
+  let dlInput = null;
+  let dlItems = [];
+  let dlIndex = -1;
+  let dlSetup = false;
+
+  function hideDatalistMenu() {
+    if (dlMenu) dlMenu.classList.add('hidden');
+    if (dlMenu) dlMenu.innerHTML = '';
+    dlInput = null;
+    dlItems = [];
+    dlIndex = -1;
+  }
+
+  function getDatalistOptions(el) {
+    const id = el.getAttribute('list') || el.getAttribute('data-pmk-list');
+    if (!id) return [];
+    const list = document.getElementById(id);
+    if (!list) return [];
+    return [...list.querySelectorAll('option')].map((o) => o.value).filter(Boolean);
+  }
+
+  function armDatalistInput(el) {
+    if (!el) return;
+    const id = el.getAttribute('list') || el.getAttribute('data-pmk-list');
+    if (!id || !document.getElementById(id)) return;
+    if (el.getAttribute('list')) {
+      el.setAttribute('data-pmk-list', id);
+      el.removeAttribute('list');
+    }
+    el.setAttribute('autocomplete', el.getAttribute('autocomplete') || 'off');
+    el.setAttribute('role', 'combobox');
+    el.setAttribute('aria-autocomplete', 'list');
+    el.setAttribute('aria-expanded', 'false');
+  }
+
+  function armAllDatalistInputs() {
+    document.querySelectorAll('input[list], input[data-pmk-list]').forEach(armDatalistInput);
+  }
+
+  function ensureDatalistMenu() {
+    if (dlMenu) return dlMenu;
+    dlMenu = document.getElementById('pmkDatalistMenu');
+    if (!dlMenu) {
+      dlMenu = document.createElement('div');
+      dlMenu.id = 'pmkDatalistMenu';
+      dlMenu.className = 'hidden print:hidden';
+      dlMenu.setAttribute('role', 'listbox');
+      document.body.appendChild(dlMenu);
+    }
+    return dlMenu;
+  }
+
+  function positionDatalistMenu(input) {
+    const menu = ensureDatalistMenu();
+    const r = input.getBoundingClientRect();
+    const width = Math.max(r.width, 320);
+    let left = r.left;
+    if (left + width > window.innerWidth - 8) left = Math.max(8, window.innerWidth - width - 8);
+    if (left < 8) left = 8;
+    const spaceBelow = window.innerHeight - r.bottom;
+    const spaceAbove = r.top;
+    const maxH = Math.min(280, Math.floor(window.innerHeight * 0.5));
+    menu.style.width = width + 'px';
+    menu.style.left = left + 'px';
+    menu.style.maxHeight = maxH + 'px';
+    if (spaceBelow >= 160 || spaceBelow >= spaceAbove) {
+      menu.style.top = (r.bottom + 4) + 'px';
+      menu.style.bottom = 'auto';
+    } else {
+      menu.style.top = 'auto';
+      menu.style.bottom = (window.innerHeight - r.top + 4) + 'px';
+    }
+  }
+
+  function renderDatalistMenu(input) {
+    const all = getDatalistOptions(input);
+    const q = (input.value || '').trim().toLowerCase();
+    const exact = q && all.some((v) => v.toLowerCase() === q);
+    const matches = (!q || exact) ? all : all.filter((v) => v.toLowerCase().includes(q));
+    const menu = ensureDatalistMenu();
+    menu.innerHTML = '';
+    dlItems = [];
+    dlIndex = -1;
+    if (!matches.length) {
+      const empty = document.createElement('div');
+      empty.className = 'pmk-dl-empty';
+      empty.textContent = q ? 'ไม่พบรายการที่ตรงกัน' : 'ไม่มีรายการให้เลือก';
+      menu.appendChild(empty);
+    } else {
+      matches.forEach((value, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.setAttribute('role', 'option');
+        btn.setAttribute('aria-selected', 'false');
+        btn.textContent = value;
+        btn.addEventListener('mousedown', (e) => e.preventDefault());
+        btn.addEventListener('click', () => chooseDatalistValue(value));
+        menu.appendChild(btn);
+        dlItems.push(btn);
+        if (q && value.toLowerCase() === q) dlIndex = i;
+      });
+    }
+    menu.classList.remove('hidden');
+    input.setAttribute('aria-expanded', 'true');
+    positionDatalistMenu(input);
+    dlInput = input;
+    highlightDatalistItem(dlIndex);
+  }
+
+  function highlightDatalistItem(idx) {
+    dlItems.forEach((btn, i) => btn.setAttribute('aria-selected', i === idx ? 'true' : 'false'));
+    dlIndex = idx;
+    if (idx >= 0 && dlItems[idx]) dlItems[idx].scrollIntoView({ block: 'nearest' });
+  }
+
+  function chooseDatalistValue(value) {
+    const input = dlInput;
+    if (!input) return;
+    input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    hideDatalistMenu();
+    input.setAttribute('aria-expanded', 'false');
+    input.focus();
+  }
+
+  function openDatalistMenu(input) {
+    armDatalistInput(input);
+    renderDatalistMenu(input);
+  }
+
+  function setupDatalistPickers() {
+    armAllDatalistInputs();
+    if (dlSetup) return;
+    dlSetup = true;
+    document.addEventListener('focusin', (e) => {
+      const el = e.target;
+      if (!(el instanceof HTMLInputElement)) return;
+      if (!el.getAttribute('list') && !el.getAttribute('data-pmk-list')) return;
+      openDatalistMenu(el);
+    });
+    document.addEventListener('input', (e) => {
+      const el = e.target;
+      if (!(el instanceof HTMLInputElement)) return;
+      if (el !== dlInput && !el.getAttribute('list') && !el.getAttribute('data-pmk-list')) return;
+      if (el.getAttribute('list') || el.getAttribute('data-pmk-list')) openDatalistMenu(el);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (!dlInput || !dlMenu || dlMenu.classList.contains('hidden')) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const next = dlIndex < dlItems.length - 1 ? dlIndex + 1 : 0;
+        highlightDatalistItem(next);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const next = dlIndex > 0 ? dlIndex - 1 : dlItems.length - 1;
+        highlightDatalistItem(next);
+      } else if (e.key === 'Enter') {
+        if (dlIndex >= 0 && dlItems[dlIndex]) {
+          e.preventDefault();
+          chooseDatalistValue(dlItems[dlIndex].textContent);
+        }
+      } else if (e.key === 'Escape') {
+        hideDatalistMenu();
+        if (dlInput) dlInput.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (!dlMenu || dlMenu.classList.contains('hidden')) return;
+      if (dlMenu.contains(e.target) || e.target === dlInput) return;
+      hideDatalistMenu();
+      const prev = document.querySelector('input[data-pmk-list][aria-expanded="true"]');
+      if (prev) prev.setAttribute('aria-expanded', 'false');
+    });
+    window.addEventListener('resize', () => { if (dlInput) positionDatalistMenu(dlInput); });
+    window.addEventListener('scroll', () => { if (dlInput) positionDatalistMenu(dlInput); }, true);
+
+    const origSwitch = window.switchTab;
+    if (typeof origSwitch === 'function') {
+      window.switchTab = function () {
+        hideDatalistMenu();
+        const result = origSwitch.apply(this, arguments);
+        setTimeout(armAllDatalistInputs, 0);
+        return result;
+      };
+    }
+    const origRenderHiv = window.renderHivDrugs;
+    if (typeof origRenderHiv === 'function') {
+      window.renderHivDrugs = function () {
+        const result = origRenderHiv.apply(this, arguments);
+        setTimeout(armAllDatalistInputs, 0);
+        return result;
+      };
+    }
+  }
+
   window.pmkAppLogout = logout;
   window.pmkAppIsAuthed = isAuthed;
 
@@ -189,7 +403,9 @@
     const logoutBtn = document.getElementById('pmkAppLogoutBtn');
     if (logoutBtn) logoutBtn.addEventListener('click', logout);
     if (isAuthed()) document.documentElement.classList.add('pmk-authed');
-    else focusUser();
+    syncAppGate();
+    setupDatalistPickers();
+    if (!isAuthed()) focusUser();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
