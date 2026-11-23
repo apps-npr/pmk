@@ -357,7 +357,8 @@
             body.print-mode-capd-advice-a5 #printRifampinArea,
             body.print-mode-capd-advice-a5 #printWfColorTableA5,
             body.print-mode-capd-advice-a5 #printAsthmaMistakeA5,
-            body.print-mode-capd-advice-a5 #printPreopHoldCal { display: none !important; }
+            body.print-mode-capd-advice-a5 #printPreopHoldCal,
+            body.print-mode-capd-advice-a5 #printPatientAdviceA5 { display: none !important; }
             body.print-mode-capd-advice-a5 #printCapdAdviceA5 {
                 position: absolute; left: 0; top: 0; width: 100%;
                 display: flex !important; flex-direction: column; justify-content: flex-start;
@@ -393,7 +394,8 @@
             body.print-mode-preop-hold-cal #printRifampinArea,
             body.print-mode-preop-hold-cal #printWfColorTableA5,
             body.print-mode-preop-hold-cal #printAsthmaMistakeA5,
-            body.print-mode-preop-hold-cal #printCapdAdviceA5 { display: none !important; }
+            body.print-mode-preop-hold-cal #printCapdAdviceA5,
+            body.print-mode-preop-hold-cal #printPatientAdviceA5 { display: none !important; }
             body.print-mode-preop-hold-cal #printPreopHoldCal {
                 position: absolute; left: 0; top: 0; width: 100%;
                 display: block !important; background: white !important; color: #0f172a !important;
@@ -404,6 +406,40 @@
         }
         
         /* ตั้งค่าหน้ากระดาษ */
+
+            /* โหมด 8: ใบแนะนำผู้ป่วย A5 แนวตั้ง (คลินิกที่ยังไม่มีใบพิมพ์) */
+            body.print-mode-patient-a5 {
+                min-height: 0 !important; height: auto !important;
+                padding: 0 !important; margin: 0 !important;
+                background: white !important;
+            }
+            body.print-mode-patient-a5 #mainAppContainer,
+            body.print-mode-patient-a5 #pmkAppLogin,
+            body.print-mode-patient-a5 #pmkChrome { display: none !important; }
+            body.print-mode-patient-a5 #printPatientAdviceA5,
+            body.print-mode-patient-a5 #printPatientAdviceA5 * { visibility: visible !important; }
+            body.print-mode-patient-a5 #printArea,
+            body.print-mode-patient-a5 #printStickerArea,
+            body.print-mode-patient-a5 #printRifampinArea,
+            body.print-mode-patient-a5 #printWfColorTableA5,
+            body.print-mode-patient-a5 #printAsthmaMistakeA5,
+            body.print-mode-patient-a5 #printCapdAdviceA5,
+            body.print-mode-patient-a5 #printPreopHoldCal,
+            body.print-mode-patient-a5 #pmkDatalistMenu { display: none !important; }
+            body.print-mode-patient-a5 #printPatientAdviceA5 {
+                position: absolute; left: 0; top: 0; width: 148mm;
+                display: block !important; background: white !important; color: #0f172a !important;
+                padding: 0; margin: 0; box-sizing: border-box;
+                font-family: 'Sarabun', 'Prompt', sans-serif;
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+            }
+            body.print-mode-patient-a5 .pmk-pt-sheet { width: 148mm; box-sizing: border-box; padding: 7mm 8mm; }
+            body.print-mode-patient-a5 .pmk-pt-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+            body.print-mode-patient-a5 .pmk-pt-table th, body.print-mode-patient-a5 .pmk-pt-table td {
+                border: 1px solid #334155; padding: 3px 6px; text-align: left; vertical-align: top;
+            }
+            body.print-mode-patient-a5 .pmk-pt-table th { background: #e2e8f0; font-weight: 700; }
+
         @page { size: auto; margin: 0; }
         @page opdPageA5 { size: A5 landscape; margin: 0; }
         @page rifampinPageA5 { size: A5 portrait; margin: 5mm; }
@@ -416,7 +452,9 @@
         body.print-mode-wf-color-a5 { page: wfColorPageA5; }
         body.print-mode-asthma-a5 { page: asthmaMistakePageA5; }
         body.print-mode-capd-advice-a5 { page: capdAdvicePageA5; }
+        @page patientAdvicePageA5 { size: A5 portrait; margin: 6mm; }
         body.print-mode-preop-hold-cal { page: preopHoldCalPageA4; }
+        body.print-mode-patient-a5 { page: patientAdvicePageA5; }
 
         /* สไตล์ Slider และ Animation สำหรับ Warfarin-Rifampin */
         @keyframes slideUpFade {
@@ -426,6 +464,25 @@
         .animate-slide-up {
             animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        #printPatientAdviceA5 .pmk-pt-sheet { font-family: 'Sarabun', 'Prompt', sans-serif; color: #0f172a; }
+        #printPatientAdviceA5 .pmk-pt-head { border-bottom: 2px solid #1e3a8a; padding-bottom: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+        #printPatientAdviceA5 .pmk-pt-title { font-size: 16px; font-weight: 700; letter-spacing: 0.01em; color: #1e3a8a; }
+        #printPatientAdviceA5 .pmk-pt-sub { font-size: 12px; color: #334155; margin-top: 2px; }
+        #printPatientAdviceA5 .pmk-pt-clinic { font-size: 13px; font-weight: 700; color: #1e40af; margin-top: 2px; }
+        #printPatientAdviceA5 .pmk-pt-meta { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 8px 10px; font-size: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; margin-bottom: 10px; }
+        #printPatientAdviceA5 .pmk-pt-date { grid-column: 1 / -1; }
+        #printPatientAdviceA5 .pmk-pt-sec { margin-bottom: 8px; }
+        #printPatientAdviceA5 .pmk-pt-h { font-size: 12.5px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+        #printPatientAdviceA5 .pmk-pt-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+        #printPatientAdviceA5 .pmk-pt-table th, #printPatientAdviceA5 .pmk-pt-table td { border: 1px solid #334155; padding: 4px 6px; text-align: left; vertical-align: top; }
+        #printPatientAdviceA5 .pmk-pt-table th { background: #e2e8f0; font-weight: 700; }
+        #printPatientAdviceA5 .pmk-pt-ul { margin: 0; padding-left: 18px; font-size: 12px; line-height: 1.45; }
+        #printPatientAdviceA5 .pmk-pt-ul li { margin: 0 0 2px 0; }
+        #printPatientAdviceA5 .pmk-pt-empty { font-size: 12px; color: #64748b; margin: 0; }
+        #printPatientAdviceA5 .pmk-pt-foot { margin-top: 12px; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+        #printPatientAdviceA5 .pmk-pt-sign { text-align: center; font-size: 12px; min-width: 200px; }
+        #printPatientAdviceA5 .pmk-pt-note { font-size: 10.5px; color: #475569; line-height: 1.4; max-width: 58%; }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen p-4 md:p-8 relative">
@@ -3088,6 +3145,10 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     6. ปฏิทินหยุดยาก่อนผ่าตัด
                 </button>
+                <button type="button" id="btnPatientAdviceA5" onclick="printPatientAdviceA5()" class="hidden bg-sky-700 hover:bg-sky-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    6. ใบแนะนำผู้ป่วย A5
+                </button>
             </div>
         </div>
     </div>
@@ -3754,6 +3815,33 @@
 
     <!-- พิมพ์ปฏิทินหยุดยา Pre-OP (A4 แนวตั้ง) -->
     <div id="printPreopHoldCal" class="hidden text-slate-900"></div>
+
+    <!-- ใบแนะนำผู้ป่วย A5 แนวตั้ง (คลินิกที่ยังไม่มีใบพิมพ์เฉพาะ) -->
+    <div id="printPatientAdviceA5" class="hidden text-slate-900">
+        <div class="pmk-pt-sheet">
+            <div class="pmk-pt-head">
+                <div>
+                    <div class="pmk-pt-title">ใบแนะนำสำหรับผู้ป่วย</div>
+                    <div class="pmk-pt-sub">กลุ่มงานเภสัชกรรม โรงพยาบาลนพรัตนราชธานี</div>
+                    <div class="pmk-pt-clinic" id="pmkPtPrintClinic"></div>
+                </div>
+                <div class="text-right text-xs text-slate-600">A5</div>
+            </div>
+            <div class="pmk-pt-meta">
+                <div><span class="font-bold">ชื่อ-สกุล:</span> <span id="pmkPtPrintName">-</span></div>
+                <div><span class="font-bold">HN:</span> <span id="pmkPtPrintHn">-</span></div>
+                <div class="pmk-pt-date"><span class="font-bold">วันที่:</span> <span id="pmkPtPrintDate">-</span></div>
+            </div>
+            <div id="pmkPtPrintBody"></div>
+            <div class="pmk-pt-foot">
+                <div class="pmk-pt-note">เอกสารนี้เป็นคำแนะนำจากเภสัชกรสำหรับผู้รับบริการ หากมีข้อสงสัยหรืออาการผิดปกติ กรุณาติดต่อเภสัชกรหรือแพทย์ที่รักษา</div>
+                <div class="pmk-pt-sign">
+                    <div>ลงชื่อ .............................................. เภสัชกร</div>
+                    <div class="mt-1" id="pmkPtPrintPharm">(................................................)</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="preop-procedures.js"></script>
     <script>
@@ -12899,6 +12987,7 @@
     }
     </script>
     <script src="pmk-login.js"></script>
+    <script src="pmk-patient-print.js"></script>
     <script src="pwa-client.js"></script>
     <script src="pmk-alerts-copy.js"></script>
 </body>
