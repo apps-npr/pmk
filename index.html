@@ -2924,14 +2924,10 @@
 
                 <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-4">
                     <h4 class="font-semibold text-gray-800">1) ข้อมูลการมาคลินิก</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">วันที่มาคลินิก (คอลัมน์ date)</label>
                             <input type="text" id="c10VisitDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 21/11/69" oninput="capdOnVisitChange()">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">Program (คอลัมน์ A, ไม่บังคับ)</label>
-                            <input type="text" id="c10Program" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="ว่างไว้ได้ ระบบจะใส่เลขให้ตอนบันทึกอัตโนมัติ" oninput="generateOutput()">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">เภสัชกรผู้บันทึก</label>
@@ -8867,7 +8863,7 @@
             const visitDate = c10Val('c10VisitDate') || dateStr || capdTodayDateStr();
             const drpCount = capdUpdateDrpCount();
             const row = [
-                c10Val('c10Program'),
+                '', // col A (Program): leave empty so cose.gs auto-numbers
                 visitDate,
                 c10Val('hn'),
                 c10Val('ptName'),
