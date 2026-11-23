@@ -1,5 +1,5 @@
 /* PMK service worker — bump CACHE_VERSION when precache list or app shell changes */
-const CACHE_VERSION = 'pmk-static-v11';
+const CACHE_VERSION = 'pmk-static-v12';
 const CDN_CACHE = 'pmk-cdn-v2';
 const PRECACHE = [
   './',
