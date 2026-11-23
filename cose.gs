@@ -281,6 +281,8 @@ function saveOPDNoteToSheet(data) {
         targetSheetName = "Parkinson New";
     } else if (clinic === "CAPD") {
         targetSheetName = "CAPD";
+    } else if (clinic === "PID") {
+        targetSheetName = "PID"; // คลินิก 11 HIV/TB เด็ก
     }
 
     var sheet = ss.getSheetByName(targetSheetName);
@@ -303,6 +305,9 @@ function saveOPDNoteToSheet(data) {
     } else if (clinic === "CAPD") {
       // แท็บ CAPD เป็นบล็อกรายเดือนซ้อนกัน ต้องเขียนลงแถวว่างแถวแรกของบล็อกล่าสุด ไม่ใช้ appendRow
       writeCapdRowToLatestBlock_(sheet, rowData);
+    } else if (clinic === "PID") {
+      // แท็บ PID มี checkbox FALSE เตรียมไว้ล่วงหน้าหลายร้อยแถว appendRow จะไปตกท้ายตาราง จึงต้องหาแถวว่างจริงแถวแรก
+      writePidRow_(sheet, rowData);
     } else {
       // สำหรับ CKD, Asthma COPD, HF clinic และ Parkinson New ฝั่งเว็บไซต์ได้จัดเตรียมข้อมูลมาครบถ้วนแล้ว (รวมถึงวันที่)
       sheet.appendRow(rowData);
@@ -314,6 +319,89 @@ function saveOPDNoteToSheet(data) {
       "result": "error", 
       "error": error.message
     })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ========================================================
+// คลินิก 11 HIV/TB เด็ก -> แท็บ PID
+// คอลัมน์: A วันที่ (ข้อความ d/m/yy พ.ศ. ใส่เฉพาะแถวแรกของวัน) | B HN | C ชื่อ | D TB (checkbox) | E HIV (checkbox)
+//          F โรค อื่นๆ/ปัญหา | G รายละเอียด | H DRPs (dropdown) | I ME (dropdown) | J พบเภสัช (checkbox) | K หมายเหตุ
+// ========================================================
+var PID_HEADER_ROWS = 2;
+var PID_DRP_LIST = ["NO DRPs", "Untreated indication", "Improper drug selection", "Too LOW dosage", "Too HIGH dosage", "Non-compliance", "Adverse drug reactions", "Drug interactions", "Drug use without indication"];
+var PID_ME_LIST = ["NO ME", "Prescribing error", "Transcribing error", "Dispensing error", "Administration error"];
+
+function pidDateText_(v) {
+  if (v === null || v === undefined || v === '') return '';
+  if (Object.prototype.toString.call(v) === '[object Date]') {
+    var y = v.getFullYear();
+    if (y < 2400) y += 543;
+    return v.getDate() + '/' + (v.getMonth() + 1) + '/' + String(y % 100).padStart(2, '0');
+  }
+  return String(v).trim();
+}
+
+function pidBool_(v) {
+  return v === true || v === 'TRUE' || v === 'true' || v === 1 || v === '1';
+}
+
+// หาแถวถัดจากแถวสุดท้ายที่มี HN หรือชื่อ (คอลัมน์ B:C) — ไม่สนใจ checkbox FALSE ที่เตรียมไว้
+function findPidTargetRow_(sheet) {
+  var maxRows = sheet.getMaxRows();
+  var n = Math.max(maxRows - PID_HEADER_ROWS, 1);
+  var bc = sheet.getRange(PID_HEADER_ROWS + 1, 2, n, 2).getValues();
+  var last = 0;
+  for (var i = bc.length - 1; i >= 0; i--) {
+    if (String(bc[i][0]).trim() !== '' || String(bc[i][1]).trim() !== '') { last = i + 1; break; }
+  }
+  return PID_HEADER_ROWS + last + 1;
+}
+
+function writePidRow_(sheet, rowData) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var r = (rowData || []).slice(0, 11);
+    while (r.length < 11) r.push('');
+    var target = findPidTargetRow_(sheet);
+    if (target > sheet.getMaxRows()) sheet.insertRowsAfter(sheet.getMaxRows(), 50);
+
+    // ใส่วันที่เฉพาะแถวแรกของวัน (เหมือนข้อมูลเดิมในแท็บ)
+    var dateText = pidDateText_(r[0]);
+    if (target > PID_HEADER_ROWS + 1) {
+      var aVals = sheet.getRange(PID_HEADER_ROWS + 1, 1, target - PID_HEADER_ROWS - 1, 1).getValues();
+      var lastDate = '';
+      for (var i = aVals.length - 1; i >= 0; i--) {
+        var t = pidDateText_(aVals[i][0]);
+        if (t) { lastDate = t; break; }
+      }
+      if (lastDate === dateText) dateText = '';
+    }
+
+    var drp = String(r[7] || '').trim();
+    if (drp && PID_DRP_LIST.indexOf(drp) < 0) drp = '';
+    var me = String(r[8] || '').trim();
+    if (me && PID_ME_LIST.indexOf(me) < 0) me = '';
+
+    var out = [
+      dateText,
+      String(r[1] || ''),
+      String(r[2] || ''),
+      pidBool_(r[3]),
+      pidBool_(r[4]),
+      String(r[5] || ''),
+      String(r[6] || ''),
+      drp,
+      me,
+      pidBool_(r[9]),
+      String(r[10] || '')
+    ];
+    sheet.getRange(target, 1).setNumberFormat('@');
+    sheet.getRange(target, 2).setNumberFormat('@'); // HN เป็นข้อความ กันเลข 0 นำหน้าหาย
+    sheet.getRange(target, 1, 1, 11).setValues([out]);
+    return target;
+  } finally {
+    lock.releaseLock();
   }
 }
 

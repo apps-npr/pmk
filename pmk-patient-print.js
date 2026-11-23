@@ -1,13 +1,14 @@
 /* Patient A5 handout for clinic tabs that do not already have a print sheet. Offline-safe, no server calls. */
 (function () {
-  const SUPPORTED = ['MR', 'ADR', 'HIV', 'HF', 'CKD', 'PARKINSON'];
+  const SUPPORTED = ['MR', 'ADR', 'HIV', 'HF', 'CKD', 'PARKINSON', 'PID'];
   const CLINIC_TITLE = {
     MR: 'คลินิกทบทวนรายการยา',
     ADR: 'คลินิกอาการไม่พึงประสงค์จากยา',
     HIV: 'คลินิกเอชไอวี',
     HF: 'คลินิกหัวใจล้มเหลว',
     CKD: 'คลินิกโรคไตเรื้อรัง',
-    PARKINSON: 'คลินิกพาร์กินสัน'
+    PARKINSON: 'คลินิกพาร์กินสัน',
+    PID: 'คลินิก HIV/TB เด็ก (PID)'
   };
 
   function val(id) {
@@ -74,6 +75,7 @@
     if (tab === 'ASTHMA') return val('c8PharmName');
     if (tab === 'PARKINSON') return val('c9PharmName');
     if (tab === 'CAPD') return val('c10PharmName');
+    if (tab === 'PID') return val('pidPharmName');
     return '';
   }
 
@@ -300,13 +302,24 @@
     };
   }
 
+  function collectPid() {
+    const d = (typeof window.pmkPidCollectPrint === 'function') ? window.pmkPidCollectPrint() : { headers: [], rows: [], advice: [], follow: [] };
+    return {
+      date: todayThai(),
+      meds: medTable(d.headers, d.rows),
+      advice: d.advice,
+      follow: d.follow
+    };
+  }
+
   const COLLECT = {
     MR: collectMr,
     ADR: collectAdr,
     HIV: collectHiv,
     HF: collectHf,
     CKD: collectCkd,
-    PARKINSON: collectParkinson
+    PARKINSON: collectParkinson,
+    PID: collectPid
   };
 
   function fillPatientAdviceA5() {

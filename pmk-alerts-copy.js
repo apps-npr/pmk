@@ -12,7 +12,8 @@
     { id: 'CKD', label: '7. CKD' },
     { id: 'ASTHMA', label: '8. Asthma / COPD' },
     { id: 'PARKINSON', label: '9. Parkinson' },
-    { id: 'CAPD', label: '10. CAPD' }
+    { id: 'CAPD', label: '10. CAPD' },
+    { id: 'PID', label: '11. HIV/TB เด็ก (PID)' }
   ];
 
   const CLINIC_MAP = Object.fromEntries(CLINICS.map(c => [c.id, c]));
@@ -1210,6 +1211,7 @@
       case 'ASTHMA': return evalAsthmaAlerts();
       case 'PARKINSON': return evalParkinsonAlerts();
       case 'CAPD': return evalCapdAlerts();
+      case 'PID': return (typeof window.pmkPidEvalAlerts === 'function') ? window.pmkPidEvalAlerts() : [];
       default: return [];
     }
   }
@@ -1495,6 +1497,15 @@
     });
   }
 
+  // Re-render only when the panel content changed. A blur ('change') on the field the user just
+  // left re-renders the panel; rewriting identical HTML mid-click swapped the tick checkbox away
+  // and the click on "ใส่ใน Pharmacist Note" was lost.
+  function setBodyHtml(el, html) {
+    if (el._pmkHtml === html && el.innerHTML) return;
+    el.innerHTML = html;
+    el._pmkHtml = html;
+  }
+
   function renderClinic(clinic, opts) {
     if (!CLINIC_MAP[clinic]) return;
     ensureClinicPanels();
@@ -1524,10 +1535,10 @@
 
     if (bodyEl) {
       if (alerts.length === 0) {
-        bodyEl.innerHTML = `<div class="pmk-alert-ok"><i class="fa-solid fa-circle-check"></i><span>ยังไม่พบสัญญาณเตือนทางคลินิกจากข้อมูลที่กรอก (คำแนะนำประกอบการตัดสินใจเท่านั้น)</span></div>`;
+        setBodyHtml(bodyEl, `<div class="pmk-alert-ok"><i class="fa-solid fa-circle-check"></i><span>ยังไม่พบสัญญาณเตือนทางคลินิกจากข้อมูลที่กรอก (คำแนะนำประกอบการตัดสินใจเท่านั้น)</span></div>`);
       } else {
         const ticked = tickedByClinic[clinic] || new Set();
-        bodyEl.innerHTML = `<p class="pmk-alert-tick-hint">ติ๊กข้อที่ต้องการให้ไปปรากฏท้าย Pharmacist Note (สำหรับลง PMK)</p>
+        setBodyHtml(bodyEl, `<p class="pmk-alert-tick-hint">ติ๊กข้อที่ต้องการให้ไปปรากฏท้าย Pharmacist Note (สำหรับลง PMK)</p>
         <div class="pmk-alert-list">${alerts.map(a => {
           const key = alertKey(a);
           const checked = ticked.has(key) ? ' checked' : '';
@@ -1545,7 +1556,7 @@
               ใส่ใน Pharmacist Note
             </label>
           </div>`;
-        }).join('')}</div>`;
+        }).join('')}</div>`);
       }
     }
 
