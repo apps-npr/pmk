@@ -499,8 +499,7 @@
       if (azt) out.lines.push(calcLine('AZT syrup 10 mg/mL', azt, 'BID', azt / 10, 'เช้า-เย็น x 4 สัปดาห์'));
       if (risk === 'high') {
         if (tc) out.lines.push(calcLine('3TC syrup 10 mg/mL', tc, 'BID', tc / 10, 'เช้า-เย็น x 4 สัปดาห์'));
-        if (nvp) out.lines.push(calcLine('NVP syrup 10 mg/mL', nvp, 'OD', nvp / 10, 'วันละครั้ง x 4 สัปดาห์', 'ตรวจสอบความถี่'));
-        out.warns.push('NVP: ข้อความใน One page ระบุ "4 มก./กก. ทุก 24 ชม." แต่ตารางที่ 1 เขียน "เช้า เย็น" — แอปตั้งค่าเป็นวันละครั้งตามข้อความ โปรดยืนยันกับแพทย์');
+        if (nvp) out.lines.push(calcLine('NVP syrup 10 mg/mL', nvp, 'OD', nvp / 10, 'วันละครั้ง x 4 สัปดาห์'));
         out.notes.push('High risk: ให้ยา 3 ตัวแก่ทารกเร็วที่สุด | ตรวจ PCR แรกเกิด, อายุ 1, 2 และ 4 เดือน');
       } else {
         out.notes.push('Standard risk: AZT 4 มก./กก. ทุก 12 ชม. นาน 4 สัปดาห์ เริ่มเร็วที่สุดหลังคลอด | ตรวจ PCR แรกเกิด, อายุ 1 และ 2-4 เดือน');
@@ -520,7 +519,6 @@
       }
       const s = bsa();
       if (Number.isFinite(s)) out.notes.push(`BSA ${r2(s)} m² → AZT 180-240 mg/m² = ${Math.round(180 * s)}-${Math.round(240 * s)} mg/ครั้ง | LPV/r 300 mg/m² = ${Math.round(300 * s)} mg/ครั้ง | NVP 200 mg/m² = ${Math.round(200 * s)} mg/ครั้ง`);
-      out.warns.push('หัวตาราง 3TC ใน One page เขียน "4 มก./ตร.ม." ซึ่งน่าจะเป็น 4 มก./กก. (ปริมาตรในตารางเท่ากับราว 4-5 mg/kg) แอปใช้ปริมาตรตามตาราง');
       out.table = `<table class="pid-t"><tr><th>น้ำหนัก</th><th>AZT</th><th>3TC</th><th>LPV/r</th><th>NVP*</th></tr>${INF_T2.map(b => `<tr${band === b ? ' style="background:#fef9c3"' : ''}><td>${b.label}</td><td>${b.azt} mL</td><td>${b.tc} mL</td><td>${b.lpv} mL</td><td>${b.nvp} mL</td></tr>`).join('')}</table>`;
       out.src = SRC_HIV + ' ตารางที่ 2';
     } else if (mode === 'tbtx') {
@@ -557,7 +555,6 @@
         out.notes.push('ขนาดเม็ดที่เลือกเป็นค่ากลางช่วง ปัดเป็นครึ่งเม็ด แก้ mg ในรายการยาได้');
       }
       if (yrs >= 15) out.warns.push('อายุ ≥15 ปี: พิจารณาขนาดยาแบบผู้ใหญ่ (พบในชีท PID ว่าเคยเกิด DRP กรณีนี้)');
-      out.warns.push('Ethambutol: One page TB ใช้ 15-20 mg/kg/day แต่แบบฟอร์ม Pharmacist Note เขียน 15-25 — แอปแนะนำ 15-20 และเตือนเมื่อเกิน 20, เตือนแรงเมื่อเกิน 25');
       out.notes.push(`${reg}: ${reg === '2HRZE/10HR' ? 'วัณโรคปอดชนิดแพร่กระจาย / ระบบประสาท / กระดูกและข้อ' : 'วัณโรคปอด / ต่อมน้ำเหลือง'}`);
       out.table = `<table class="pid-t"><tr><th>ยา</th><th>mg/kg/day</th><th>ยา (ดื้อยา)</th><th>mg/kg/day</th></tr>
         <tr><td>Isoniazid (high dose)</td><td>10-15 (15-20)</td><td>Clofazimine</td><td>2-5</td></tr>
@@ -573,7 +570,7 @@
       const reg = val('pidLtbiReg') || '3HP';
       const lt10 = !(yrs >= 10);
       if (reg === '3HP') {
-        if (yrs < 2 || (w > 0 && w < 10)) out.warns.push('3HP ใน One page ใช้อายุ 2-14 ปี และน้ำหนัก ≥10 kg');
+        if (yrs < 2 || (w > 0 && w < 10)) out.warns.push('3HP ใช้อายุ 2-14 ปี และน้ำหนัก ≥10 kg');
         let H = null, P = null;
         if (yrs > 14 && w >= 30) { H = 900; P = 900; }
         else if (w >= 10 && w < 16) { H = 300; P = 300; }
@@ -584,7 +581,6 @@
           out.lines.push(calcLine('Isoniazid (INH) tab 100 mg', H, 'QW', null, 'สัปดาห์ละครั้ง x 12 ครั้ง'));
           out.lines.push(calcLine('Rifapentine tab 150 mg', P, 'QW', null, `สัปดาห์ละครั้ง x 12 ครั้ง (${r1(P / 150)} เม็ด)`));
         }
-        out.warns.push('ช่วง 16-23 kg One page เขียน "H 500 mg 450 mg" (ไม่มีตัว P) แอปตีความเป็น H 500 / P 450; ช่วงน้ำหนักทศนิยม (เช่น 15.5 kg) แอปปัดเข้าแถวล่าง');
         out.table = `<table class="pid-t"><tr><th>3HP อายุ 2-14 ปี</th><th>H</th><th>P</th></tr><tr><td>10-15 kg</td><td>300</td><td>300</td></tr><tr><td>16-23 kg</td><td>500</td><td>450</td></tr><tr><td>24-30 kg</td><td>600</td><td>600</td></tr><tr><td>&gt;30 kg</td><td>700</td><td>750</td></tr><tr><td>อายุ &gt;14 ปี, ≥30 kg</td><td>900</td><td>900</td></tr></table>`;
       } else if (reg === '1HP') {
         if (!(yrs >= 13)) out.warns.push('1HP ใช้ในอายุ ≥13 ปี');
@@ -615,8 +611,7 @@
         if (s === 'hres') out.lines.push(calcLine('Rifampicin syrup 20 mg/mL', 15 * w, 'OD', 15 * w / 20, 'R 10-20 mg/kg/day x 4 เดือน'));
         else {
           out.lines.push(calcLine('Isoniazid (INH) syrup 10 mg/mL', 10 * w, 'OD', w, 'INH 10 mg/kg/day x 9 เดือน'));
-          out.lines.push(calcLine('Vitamin B6', null, 'OD', null, 'Vit B6 1-2 mg/day ตาม One page'));
-          out.warns.push('One page เขียน Vit B6 "1-2 mg/day" — ถ้าตั้งใจเป็น mg/kg/day ให้แก้ขนาดในรายการยา');
+          out.lines.push(calcLine('Vitamin B6', null, 'OD', null, 'Vit B6 1-2 mg/day'));
         }
       }
       out.src = SRC_TB + ' (การป้องกันแม่สู่ลูก)';
@@ -639,7 +634,6 @@
       } else if (t === 'mac' && w > 0) {
         out.lines.push(calcLine('Azithromycin syrup 200 mg/5 mL', Math.min(20 * w, 1250), 'QW', Math.min(20 * w, 1250) / 40, '20 mg/kg (ไม่เกิน 1,250) สัปดาห์ละครั้ง'));
         out.notes.push(`หรือ Azithromycin 5 mg/kg OD = ${Math.min(r1(5 * w), 250)} mg (ไม่เกิน 250) | Clarithromycin 7.5 mg/kg BID = ${Math.min(r1(7.5 * w), 500)} mg`);
-        out.warns.push('ใน One page OIs หน้า 2 บล็อกนี้มีหัวข้อพิมพ์ว่า "PCP" ซ้ำ แต่เนื้อหาเป็นยา MAC');
       } else if (t === 'toxo' && w > 0) {
         if (Number.isFinite(s)) out.lines.push(calcLine('Co-trimoxazole susp (TMP 40/SMX 200 per 5 mL)', 150 * s, 'OD', 150 * s / 8, 'TMP 150 mg/m²/day แบ่ง 1-2 ครั้ง หรือ 3 วัน/สัปดาห์'));
         else out.lines.push(calcLine('Co-trimoxazole susp (TMP 40/SMX 200 per 5 mL)', 6 * w, 'OD', 6 * w / 8, 'TMP 6 mg/kg/day (ใส่ส่วนสูงเพื่อคิด 150 mg/m²)'));
@@ -886,7 +880,7 @@
       if (!c.range || !Number.isFinite(c.value)) return;
       if (c.cls === 'hi') out.push({ level: (c.value > c.range.max * 1.25 ? 'danger' : 'warn'), title: `${r.name}: ขนาดยาสูงกว่าช่วง (${fmt(c.value)} ${c.unit})`, detail: `ช่วงแนะนำ ${c.range.soft ? c.range.min + '-' + c.range.soft + ' (ยอมได้ถึง ' + c.range.max + ')' : c.range.min + '-' + c.range.max} ${c.unit} ที่ BW ${w} kg — พิจารณา DRP "Too HIGH dosage"`, source: c.src });
       else if (c.cls === 'lo' && c.status === 'ต่ำกว่า') out.push({ level: 'warn', title: `${r.name}: ขนาดยาต่ำกว่าช่วง (${fmt(c.value)} ${c.unit})`, detail: `ช่วงแนะนำ ${c.range.min}-${c.range.max} ${c.unit} ที่ BW ${w} kg — พิจารณา DRP "Too LOW dosage"`, source: c.src });
-      else if (c.cls === 'lo') out.push({ level: 'info', title: `${r.name}: เกิน ${c.range.soft} mg/kg/วัน`, detail: drugKey(r.name) === 'E' ? 'Ethambutol เกิน 20 mg/kg/day ตาม One page TB (ฟอร์มอนุญาตถึง 25) — ติดตามการมองเห็น' : 'อยู่ในช่วง high dose — ตรวจสอบข้อบ่งใช้', source: c.src });
+      else if (c.cls === 'lo') out.push({ level: 'info', title: `${r.name}: เกิน ${c.range.soft} mg/kg/วัน`, detail: drugKey(r.name) === 'E' ? 'Ethambutol เกิน 15-20 mg/kg/day — ติดตามการมองเห็น' : 'อยู่ในช่วง high dose — ตรวจสอบข้อบ่งใช้', source: c.src });
     });
     if (has('H') && !has('B6')) out.push({ level: 'warn', title: 'ได้ INH แต่ยังไม่มี Vitamin B6', detail: 'ให้ Vitamin B6 ร่วมกับ INH เพื่อป้องกันปลายประสาทอักเสบ (แบบฟอร์มคลินิกใช้ B6 50 mg)', source: SRC_FORM });
     if (has('R') && (has('DTG') || has('TLD'))) {
