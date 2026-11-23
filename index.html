@@ -11097,7 +11097,7 @@
             initAdrModule();
             generateOutput();
         });
-            // ================= ระบบแอบเก็บเวลาการทำเคส =================
+            // ================= case duration (admin stats; not shown in the UI) =================
         let caseTracking = {
             startTime: null,   // จุดเริ่มช่วงที่กำลังจับอยู่ (null = หยุดพัก)
             elapsedMs: 0,      // เวลาสะสมของช่วงที่จับไปแล้ว (ไม่นับช่วงพัก)
@@ -11145,7 +11145,7 @@
             return Math.max(0, Math.round(ms / 1000));
         }
 
-        // เริ่มจับเวลาเมื่อมีการพิมพ์ HN ครั้งแรกของเคสนั้น
+        // start/continue case duration on first HN entry (no UI)
         document.getElementById('hn').addEventListener('input', function(e) { // หากช่องใส่ HN ของคุณใช้ id อื่น ให้เปลี่ยน 'hn' เป็น id นั้น
             if (this.value.trim() !== '') startOrContinueCaseTracking(this.value.trim());
             else caseTracking.hn = '';
@@ -12884,7 +12884,7 @@
                     saveParkedCases(list);
 
                     // ล้างฟอร์มเพื่อเริ่มทำเคสใหม่ทันที (ค่าสติกเกอร์ 4, 3, 98, 11 ยังอยู่ครบ)
-                    // resetForm เรียก resetCaseTracking จึงเริ่มจับเวลาใหม่สำหรับเคสถัดไป โดยไม่นับช่วงที่พักไว้
+                    // resetForm also resets case duration so the next case starts clean
                     if (typeof window.resetForm === 'function') {
                         window.resetForm();
                     }

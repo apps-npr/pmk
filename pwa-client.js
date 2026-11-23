@@ -264,11 +264,11 @@
     if (!url) return;
     const body = JSON.stringify(payloadObj);
     if (!canSaveToSheet() || !navigator.onLine) {
-      enqueueSave({ kind: 'tracking', url, body, confirmable: false, label: 'บันทึกเวลาให้บริการ' });
+      enqueueSave({ kind: 'tracking', url, body, confirmable: false, label: 'ซิงก์ข้อมูล' });
       return;
     }
     fetch(url, { method: 'POST', body }).catch(() => {
-      enqueueSave({ kind: 'tracking', url, body, confirmable: false, label: 'บันทึกเวลาให้บริการ' });
+      enqueueSave({ kind: 'tracking', url, body, confirmable: false, label: 'ซิงก์ข้อมูล' });
     });
   };
 
