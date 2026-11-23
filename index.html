@@ -2634,7 +2634,7 @@
             <div id="form-PARKINSON" class="space-y-6 clinic-form hidden">
                 <div class="bg-violet-50 p-4 border border-violet-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-violet-800 mb-1"><i class="fa-solid fa-brain mr-1.5"></i>9. คลินิกโรคพาร์กินสัน (Parkinson)</h3>
-                    <p class="text-violet-700 text-xs">จัดตารางยา ดูรูปยา (เม็ดยาและกล่องยา) ประเมิน motor complications / DRP แล้วคัดลอก Pharmacist Note ไปวางใน PMK — แท็บนี้ไม่บันทึกลง Google Sheet และไม่ส่ง LINE OA</p>
+                    <p class="text-violet-700 text-xs">จัดตารางยา ดูรูปยา (เม็ดยาและกล่องยา) ประเมิน motor complications / DRP</p>
                 </div>
 
                 <!-- 1. Drug catalog & regimen -->
@@ -2650,7 +2650,7 @@
                         </div>
                         <div class="md:col-span-3">
                             <label class="block text-xs font-bold text-gray-700 mb-1">ขนาดยา (Dose)</label>
-                            <input type="text" id="c9Dose" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 1 tab หรือ 1/2 tab">
+                            <input type="text" id="c9Dose" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 1 หรือ 1/2 หรือ 0.5 tab">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-xs font-bold text-gray-700 mb-1">เวลา</label>
@@ -2795,7 +2795,7 @@
                         <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="ซึมเศร้า/วิตกกังวล" onchange="generateOutput()"><span>ซึมเศร้า/วิตกกังวล</span></label>
                         <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="นอนละเมอ (RBD)" onchange="generateOutput()"><span>นอนละเมอ (RBD)</span></label>
                         <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="ปัญหาปัสสาวะ" onchange="generateOutput()"><span>ปัญหาปัสสาวะ (กลางคืน/กลั้นไม่อยู่)</span></label>
-                        <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="ท้องผูกรุนแรง" onchange="generateOutput()"><span>ท้องผูกรุนแรง</span></label>
+                        <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="ท้องผูก" onchange="generateOutput()"><span>ท้องผูก</span></label>
                         <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="หน้ามืดวิงเวียน" onchange="generateOutput()"><span>หน้ามืดวิงเวียนเวลาเปลี่ยนท่า</span></label>
                         <label class="flex items-center cursor-pointer hover:bg-violet-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-nms mr-2 h-4 w-4 text-violet-600 rounded" value="กลืนลำบาก/สำลัก" onchange="generateOutput()"><span>กลืนลำบาก/สำลัก</span></label>
                     </div>
@@ -2828,7 +2828,7 @@
                         <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="กลืนลำบาก (Dysphagia)" data-suggest="พบปัญหากลืนลำบาก: ระวังการสำลัก แนะนำประเมินการกลืน หรือปรับรูปแบบยาให้กลืนง่ายขึ้น (เป็นยาน้ำ/บดยา)" onchange="generateOutput()"><span>กลืนลำบาก (Dysphagia)</span></label>
                         <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="ภาพหลอน/สับสน (Hallucinations)" data-suggest="ระวังการใช้ยา Anti-cholinergic ในผู้สูงอายุ หรือลด Dose Dopamine Agonist" onchange="generateOutput()"><span>ภาพหลอน/สับสน (Hallucinations)</span></label>
                         <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="นอนไม่หลับ (Insomnia)" data-suggest="พิจารณาขยับเวลายามื้อเย็นให้เร็วขึ้น หลีกเลี่ยง MAO-B มื้อเย็น" onchange="generateOutput()"><span>นอนไม่หลับ (Insomnia)</span></label>
-                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="ท้องผูกรุนแรง (Constipation)" data-suggest="แนะนำดื่มน้ำมากๆ เพิ่มกากใย หรือพิจารณาเพิ่มยาระบาย" onchange="generateOutput()"><span>ท้องผูกรุนแรง (Constipation)</span></label>
+                        <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="ท้องผูก (Constipation)" data-suggest="แนะนำดื่มน้ำมากๆ เพิ่มกากใย หรือพิจารณาเพิ่มยาระบาย" onchange="generateOutput()"><span>ท้องผูก (Constipation)</span></label>
                         <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="ง่วงซึมมากผิดปกติช่วงกลางวัน (EDS)" data-suggest="ระวังผลข้างเคียงจากยา Dopamine Agonist พิจารณาปรับลดยา" onchange="generateOutput()"><span>ง่วงซึมมากผิดปกติช่วงกลางวัน (EDS)</span></label>
                         <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="น้ำลายไหล (Drooling)" data-suggest="พบปัญาน้ำลายไหล: แนะนำให้ผู้ป่วยกลืนน้ำลายบ่อยๆ อมลูกอม/หมากฝรั่ง หรือแพทย์อาจพิจารณาปรับยา" onchange="generateOutput()"><span>น้ำลายไหล (Drooling)</span></label>
                         <label class="flex items-start cursor-pointer hover:bg-rose-50 p-2 rounded-lg border border-gray-100"><input type="checkbox" class="c9-drp mt-1 mr-2 h-4 w-4 text-rose-600 rounded" value="ปัสสาวะสีส้ม/แดง" data-suggest="เป็นผลข้างเคียงปกติของยา Entacapone ให้อธิบายผู้ป่วย" onchange="generateOutput()"><span>ปัสสาวะสีส้ม/แดง (จาก Entacapone)</span></label>
@@ -2870,7 +2870,7 @@
                             <input type="date" id="c9ClinicDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่ตอบแบบสอบถาม / บันทึกอาการ (เว้นว่างได้ จะไม่ถูกบันทึกลงชีท)</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่ตอบแบบสอบถาม / บันทึกอาการ (เว้นว่างได้)</label>
                             <input type="date" id="c9SurveyDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
@@ -7850,7 +7850,7 @@
                 'กลืนลำบาก (Dysphagia)',
                 'ภาพหลอน/สับสน (Hallucinations)',
                 'นอนไม่หลับ (Insomnia)',
-                'ท้องผูกรุนแรง (Constipation)',
+                'ท้องผูก (Constipation)',
                 'ง่วงซึมมากผิดปกติช่วงกลางวัน (EDS)',
                 'น้ำลายไหล (Drooling)',
                 'ปัสสาวะสีส้ม/แดง'
