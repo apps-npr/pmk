@@ -1565,7 +1565,7 @@
         setBodyHtml(bodyEl, `<div class="pmk-alert-ok"><i class="fa-solid fa-circle-check"></i><span>ยังไม่พบสัญญาณเตือนทางคลินิกจากข้อมูลที่กรอก (คำแนะนำประกอบการตัดสินใจเท่านั้น)</span></div>`);
       } else {
         const ticked = tickedByClinic[clinic] || new Set();
-        setBodyHtml(bodyEl, `<p class="pmk-alert-tick-hint">ติ๊กข้อที่ต้องการให้ไปปรากฏท้าย Pharmacist Note (สำหรับลง PMK)</p>
+        setBodyHtml(bodyEl, `<p class="pmk-alert-tick-hint">ติ๊กข้อที่ต้องการให้ไปปรากฏท้าย Pharmacist Note</p>
         <div class="pmk-alert-list">${alerts.map(a => {
           const key = alertKey(a);
           const checked = ticked.has(key) ? ' checked' : '';

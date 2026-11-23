@@ -57,7 +57,7 @@
       url: item.url,
       body: item.body,
       confirmable: !!item.confirmable,
-      label: item.label || 'บันทึก Google Sheet'
+      label: item.label || 'บันทึกข้อมูล'
     });
     persistQueue();
     return state.queue.length;
@@ -121,11 +121,11 @@
 
     if (pill) {
       if (mode === 'online') {
-        pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> เชื่อมต่อแล้ว — บันทึกลง Google Sheet ได้';
+        pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> เชื่อมต่อแล้ว — บันทึกได้';
       } else if (mode === 'offline') {
-        pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> ออฟไลน์ — ยังบันทึกลง Google Sheet ไม่ได้';
+        pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> ออฟไลน์ — ยังบันทึกไม่ได้';
       } else if (mode === 'amber') {
-        pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> เน็ตมี แต่ยังติดต่อ Google Sheet ไม่ได้';
+        pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> เน็ตมี แต่ยังเชื่อมต่อระบบไม่ได้';
       } else {
         pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> กำลังตรวจการเชื่อมต่อ...';
       }
@@ -156,7 +156,7 @@
     if (!reachable) {
       state.flushing = false;
       renderStatus();
-      if (manual) alert('ยังติดต่อ Google Sheet ไม่ได้ครับ รายการยังอยู่ในคิว');
+      if (manual) alert('ยังเชื่อมต่อระบบไม่ได้ครับ รายการยังอยู่ในคิว');
       return { sent: 0, failed: state.queue.length };
     }
     let sent = 0, failed = 0, unconfirmed = 0;
@@ -194,7 +194,7 @@
     renderStatus();
     if (manual || sent) {
       if (unconfirmed && !remain.length) {
-        showLiteToast('ส่งรายการที่ค้างไว้แล้วครับ (โหมดบันทึกนี้ยังตรวจผลจากชีตไม่ได้ โปรดเปิดชีตตรวจถ้าต้องการยืนยัน)');
+        showLiteToast('ส่งรายการที่ค้างไว้แล้วครับ');
       } else if (sent && !remain.length) {
         showLiteToast('ส่งรายการที่ค้างไว้ครบแล้วครับ');
       } else if (remain.length) {
@@ -228,7 +228,7 @@
     const body = JSON.stringify(payloadObj);
     const url = scriptUrl();
     if (!url) {
-      alert('ยังไม่ได้ตั้งค่าที่อยู่สำหรับบันทึก Google Sheet');
+      alert('ยังไม่ได้ตั้งค่าที่อยู่สำหรับบันทึกข้อมูล');
       return { status: 'error' };
     }
     const ready = canSaveToSheet();
@@ -240,7 +240,7 @@
         confirmable: false,
         label: opts.label || ('บันทึก ' + (payloadObj.clinic || ''))
       });
-      alert('ตอนนี้ยังบันทึกลง Google Sheet ไม่ได้ครับ ระบบเก็บรายการนี้ไว้ในเครื่องแล้ว จะส่งให้อัตโนมัติเมื่อเชื่อมต่อได้');
+      alert('ตอนนี้ยังบันทึกไม่ได้ครับ ระบบเก็บรายการนี้ไว้ในเครื่องแล้ว จะส่งให้อัตโนมัติเมื่อเชื่อมต่อได้');
       return { status: 'queued', pending: state.queue.length };
     }
     try {
@@ -250,10 +250,10 @@
         headers: { 'Content-Type': 'text/plain' },
         body
       });
-      showLiteToast('ส่งข้อมูลบันทึกลง Google Sheet แล้วครับ (โหมดนี้ยังตรวจผลจากชีตอัตโนมัติไม่ได้)');
+      showLiteToast('ส่งข้อมูลแล้วครับ');
       return { status: 'sent-unconfirmed' };
     } catch (err) {
-      enqueueSave({ kind: 'saveOPDNote', url, body, confirmable: false, label: opts.label || 'บันทึก Google Sheet' });
+      enqueueSave({ kind: 'saveOPDNote', url, body, confirmable: false, label: opts.label || 'บันทึกข้อมูล' });
       alert('ส่งข้อมูลไม่สำเร็จ ระบบเก็บรายการนี้ไว้ในเครื่องแล้ว จะส่งใหม่เมื่อเชื่อมต่อได้');
       return { status: 'queued', pending: state.queue.length };
     }
@@ -274,7 +274,7 @@
 
   window.pmkGuardOnlineAction = function (message) {
     if (canSaveToSheet()) return true;
-    alert(message || 'ตอนนี้ออฟไลน์หรือติดต่อ Google Sheet ไม่ได้ครับ กรุณาลองใหม่เมื่อแถบสถานะเป็นสีเขียว');
+    alert(message || 'ตอนนี้ออฟไลน์หรือเชื่อมต่อระบบไม่ได้ครับ กรุณาลองใหม่เมื่อแถบสถานะเป็นสีเขียว');
     return false;
   };
 

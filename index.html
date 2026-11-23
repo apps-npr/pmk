@@ -838,7 +838,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div class="bg-rose-50/60 p-3 rounded-lg border border-rose-100">
-                            <label class="block text-xs font-bold text-rose-900 mb-2">ประเภทการบันทึก (เชื่อมคอลัมน์ Google Sheet)</label>
+                            <label class="block text-xs font-bold text-rose-900 mb-2">ประเภทการบันทึก</label>
                             <div class="flex flex-wrap gap-4 text-sm">
                                 <label class="inline-flex items-center cursor-pointer">
                                     <input type="radio" name="adrRecordMode" value="active" class="form-radio text-rose-600" checked onchange="generateOutput()">
@@ -846,7 +846,7 @@
                                 </label>
                                 <label class="inline-flex items-center cursor-pointer">
                                     <input type="radio" name="adrRecordMode" value="history" class="form-radio text-blue-600" onchange="generateOutput()">
-                                    <span class="ml-2 font-medium text-gray-800">ซักประวัติแพ้ยาเดิม (ลง ADR)</span>
+                                    <span class="ml-2 font-medium text-gray-800">ซักประวัติแพ้ยาเดิม</span>
                                 </label>
                             </div>
                         </div>
@@ -2346,7 +2346,7 @@
 
                     <!-- เช็กลิสต์ติ๊กเลือกสิ่งที่ได้ Advice เพื่อส่งเข้า Pharmacist Note & ช่อง DRP -->
                     <div class="bg-white p-3.5 rounded-lg border border-orange-300">
-                        <label class="block text-xs font-bold text-orange-900 mb-2"><i class="fa-solid fa-check-double mr-1"></i>ติ๊กหัวข้อที่ได้ Advice ผู้ป่วยวันนี้ (เพื่อแนบลงใน Pharmacist Note และคอลัมน์ DRP อัตโนมัติ):</label>
+                        <label class="block text-xs font-bold text-orange-900 mb-2"><i class="fa-solid fa-check-double mr-1"></i>ติ๊กหัวข้อที่ได้ Advice ผู้ป่วยวันนี้ (เพื่อแนบลงใน Pharmacist Note):</label>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-gray-800">
                             <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="Adv. งด NSAIDs/ยาชุด/สมุนไพร/อาหารเสริม" class="c7-adv-cb form-checkbox text-orange-600 rounded mr-1.5" onchange="generateOutput()">งด NSAIDs / ยาชุด / สมุนไพร</label>
                             <label class="inline-flex items-center cursor-pointer"><input type="checkbox" value="Adv. แจ้งทุกครั้งว่าเป็น CKD เมื่อไปรพ.อื่น/คลินิก" class="c7-adv-cb form-checkbox text-orange-600 rounded mr-1.5" onchange="generateOutput()">แจ้งว่าเป็น CKD ทุกครั้งที่รับยาที่อื่น</label>
@@ -2361,7 +2361,7 @@
                 <!-- ส่วนที่ 1: ผลตรวจการทำงานของไต (ตรงตามคอลัมน์ D, E, F, G, H, I ในชีท CKD) -->
                 <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
                     <div class="flex flex-wrap justify-between items-center border-b pb-2 mb-4 gap-2">
-                        <h3 class="font-semibold text-base text-blue-800"><i class="fa-solid fa-vial-circle-check mr-2"></i>1. ข้อมูลการทำงานของไตเปรียบเทียบ (เชื่อมคอลัมน์ D ถึง I ใน Google Sheet)</h3>
+                        <h3 class="font-semibold text-base text-blue-800"><i class="fa-solid fa-vial-circle-check mr-2"></i>1. ข้อมูลการทำงานของไตเปรียบเทียบ</h3>
                         <div id="c7DeltaBadge" class="hidden text-xs font-bold px-3 py-1 rounded-full border"></div>
                     </div>
 
@@ -2451,7 +2451,7 @@
 
                 <!-- ส่วนที่ 2: การประเมิน DRP 4 ด้านหลัก (เชื่อมคอลัมน์ J: DRP ในชีท CKD) -->
                 <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-4">
-                    <h3 class="font-semibold text-base text-blue-800 border-b pb-2"><i class="fa-solid fa-clipboard-list mr-2"></i>2. ซักประวัติปัญหาการใช้ยาในคลินิกไต (เชื่อมคอลัมน์ J: DRP)</h3>
+                    <h3 class="font-semibold text-base text-blue-800 border-b pb-2"><i class="fa-solid fa-clipboard-list mr-2"></i>2. ซักประวัติปัญหาการใช้ยาในคลินิกไต</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- 2.1 Compliance -->
@@ -2506,7 +2506,7 @@
 
                     <!-- สรุป DRP เพิ่มเติม / ข้อความอิสระสำหรับคอลัมน์ J -->
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">สรุป DRP / ข้อมูลรับยาจากที่อื่น / หมายเหตุเพิ่มเติม (บันทึกลงคอลัมน์ J ร่วมกับ 4 ช่องด้านบน)</label>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">สรุป DRP / ข้อมูลรับยาจากที่อื่น / หมายเหตุเพิ่มเติม</label>
                         <input type="text" id="c7Drp" placeholder="เช่น รับยาจากคลินิก/รพ.อื่น, อ่านหนังสือไม่ออก แนะนำญาติจัดยาให้..." class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                     </div>
 
@@ -2634,7 +2634,7 @@
             <div id="form-PARKINSON" class="space-y-6 clinic-form hidden">
                 <div class="bg-violet-50 p-4 border border-violet-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-violet-800 mb-1"><i class="fa-solid fa-brain mr-1.5"></i>9. คลินิกโรคพาร์กินสัน (Parkinson)</h3>
-                    <p class="text-violet-700 text-xs">จัดตารางยา ดูรูปยา (เม็ดยาและกล่องยา) ประเมิน motor complications / DRP แล้วคัดลอก Pharmacist Note ไปวางใน PMK — แท็บนี้ไม่บันทึกลง Google Sheet และไม่ส่ง LINE OA</p>
+                    <p class="text-violet-700 text-xs">จัดตารางยา ดูรูปยา (เม็ดยาและกล่องยา) ประเมิน motor complications / DRP แล้วคัดลอก Pharmacist Note</p>
                 </div>
 
                 <!-- 1. Drug catalog & regimen -->
@@ -2717,11 +2717,11 @@
                             <input type="number" id="c9DysHours" min="0" step="0.5" placeholder="เช่น 1" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="syncC9SheetDropdowns(); generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">เวลาที่เกิดอาการ OFF (ลงชีต คอลัมน์ H — ระบุได้หลายเวลา)</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เวลาที่เกิดอาการ OFF (ระบุได้หลายเวลา)</label>
                             <input type="text" id="c9OffTimeText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 16.00-17.00 หรือไม่พบ" oninput="this.dataset.manual='1'; generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">ช่วงเวลา OFF-time / wearing-off (ลงชีต คอลัมน์ I)</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ช่วงเวลา OFF-time / wearing-off</label>
                             <select id="c9OffRatio" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" onchange="this.dataset.manual='1'; generateOutput()">
 
                             <option value="ไม่พบ">ไม่พบ</option>
@@ -2732,11 +2732,11 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">เวลาที่เกิดอาการยุกยิก / dyskinesia (ลงชีต คอลัมน์ J)</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">เวลาที่เกิดอาการยุกยิก / dyskinesia</label>
                             <input type="text" id="c9DysTimeText" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 15.00 หรือไม่พบ" oninput="this.dataset.manual='1'; generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">ความรุนแรง dyskinesia (ลงชีต คอลัมน์ K)</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ความรุนแรง dyskinesia</label>
                             <select id="c9DysSev" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" onchange="this.dataset.manual='1'; generateOutput()">
 
                             <option value="ไม่พบ">ไม่พบ</option>
@@ -2747,7 +2747,7 @@
                             </select>
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-xs font-medium text-gray-600 mb-1">ระยะเวลา dyskinesia ตามสัดส่วนต่อวัน (ลงชีต คอลัมน์ L)</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">ระยะเวลา dyskinesia ตามสัดส่วนต่อวัน</label>
                             <select id="c9DysDur" class="w-full md:w-2/3 rounded-lg border-gray-300 border px-3 py-2 text-sm" onchange="this.dataset.manual='1'; generateOutput()">
 
                             <option value="ไม่พบ">ไม่พบ</option>
@@ -2862,15 +2862,15 @@
 
                 <!-- 7. ข้อมูลสำหรับลงชีต Parkinson New -->
                 <div class="bg-white border border-violet-200 rounded-xl p-5 shadow-sm space-y-4">
-                    <h3 class="font-semibold text-base text-violet-800 border-b pb-2">7. ข้อมูลสำหรับคัดลอก/บันทึกลงชีต Parkinson New</h3>
-                    <p class="text-xs text-gray-500">ชื่อ-นามสกุลดึงจากช่องด้านบนอัตโนมัติ แก้ได้ถ้าแยกไม่ถูก — คอลัมน์ I, K, L ใช้ตัวเลือกตามชีต และจะถูกเลือกให้อัตโนมัติจากจำนวนชั่วโมง</p>
+                    <h3 class="font-semibold text-base text-violet-800 border-b pb-2">7. ข้อมูลแบบสอบถามอาการ</h3>
+                    <p class="text-xs text-gray-500">ชื่อ-นามสกุลดึงจากช่องด้านบนอัตโนมัติ แก้ได้ถ้าแยกไม่ถูก — บางช่องจะถูกเลือกให้อัตโนมัติจากจำนวนชั่วโมง</p>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">วันที่มาคลินิก</label>
                             <input type="date" id="c9ClinicDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่ตอบแบบสอบถาม / บันทึกอาการ (เว้นว่างได้ จะไม่ถูกบันทึกลงชีท)</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่ตอบแบบสอบถาม / บันทึกอาการ (เว้นว่างได้)</label>
                             <input type="date" id="c9SurveyDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
@@ -2919,14 +2919,14 @@
             <div id="form-CAPD" class="space-y-6 clinic-form hidden">
                 <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-4">
                     <h3 class="font-bold text-cyan-900 mb-1">10. CAPD</h3>
-                    <p class="text-sm text-cyan-800">บันทึกผลแล็บ ปัญหาด้านยา และคำแนะนำ EPO สำหรับลง PMK และแท็บ <span class="font-semibold">CAPD</span> ในชีต workload ambu 7141-2 โดยไม่เปลี่ยนโครงคอลัมน์ของชีตเดิม</p>
+                    <p class="text-sm text-cyan-800">บันทึกผลแล็บ ปัญหาด้านยา และคำแนะนำ EPO</p>
                 </div>
 
                 <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-4">
                     <h4 class="font-semibold text-gray-800">1) ข้อมูลการมาคลินิก</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่มาคลินิก (คอลัมน์ date)</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่มาคลินิก</label>
                             <input type="text" id="c10VisitDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 21/11/69" oninput="capdOnVisitChange()">
                         </div>
                         <div>
@@ -2934,11 +2934,11 @@
                             <input type="text" id="c10PharmName" list="pharmList" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร" oninput="generateOutput()">
                         </div>
                     </div>
-                    <p class="text-xs text-gray-500">HN และชื่อ-นามสกุลใช้จากช่องด้านบนของหน้านี้ คอลัมน์ "new" และจำนวน DRP จะถูกใส่ให้อัตโนมัติ</p>
+                    <p class="text-xs text-gray-500">HN และชื่อ-นามสกุลใช้จากช่องด้านบนของหน้านี้</p>
                     <div class="mt-3 rounded-lg border border-cyan-200 bg-cyan-50/60 p-3 space-y-2">
                         <div class="flex flex-wrap items-center gap-2">
                             <button type="button" id="c10BtnLoadPrev" onclick="capdLoadPreviousByHn()" class="bg-cyan-700 hover:bg-cyan-800 text-white px-4 py-2 rounded-lg text-sm font-semibold">ดึงข้อมูลเดิม</button>
-                            <span class="text-xs text-cyan-900">ใส่ HN ด้านบนแล้วกดเพื่อดึงประวัติจากชีตคลินิก CAPD (ชื่อ, ขนาด EPO, ผลแล็บ, DRP) ไม่ได้บันทึกลงชีต workload</span>
+                            <span class="text-xs text-cyan-900">ใส่ HN ด้านบนแล้วกดเพื่อดึงประวัติเดิม (ชื่อ, ขนาด EPO, ผลแล็บ, DRP)</span>
                         </div>
                         <p id="c10PrevStatus" class="text-sm text-cyan-900 min-h-[1.25rem]"></p>
                         <div id="c10PrevHistory" class="hidden rounded-lg border border-cyan-100 bg-white p-3 text-sm text-gray-800 space-y-2">
@@ -3031,7 +3031,7 @@
                         <div class="flex items-center gap-2"><span class="font-bold text-gray-600 w-5">4.</span><input type="text" id="c10Drp4" class="flex-1 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="รายละเอียดปัญหาด้านยาข้อที่ 4 (ถ้ามี)" oninput="capdUpdateDrpCount(); generateOutput();"></div>
                     </div>
                     <div>
-                        <p class="text-xs font-medium text-gray-600 mb-2">หมวด DRP (คอลัมน์ W–AF ของชีต ถ้ามีให้ติ๊ก จะลงเป็น 1)</p>
+                        <p class="text-xs font-medium text-gray-600 mb-2">หมวด DRP (ถ้ามีให้ติ๊ก)</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm">
                             <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="UD" onchange="generateOutput()"> Unnecessary drug therapy (UD)</label>
                             <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="ND" onchange="generateOutput()"> Need for additional drug therapy (ND)</label>
@@ -3098,12 +3098,12 @@
 
         <!-- Output & Actions -->
         <div id="opdOutputSection" class="bg-gray-100 p-6 border-t border-gray-200">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note (สำหรับลง PMK) <span class="text-xs text-red-500 font-normal">(แก้ไขข้อมูลเองได้หลังใส่ข้อมูลในช่องครบถ้วนแล้ว)</span></label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note <span class="text-xs text-red-500 font-normal">(แก้ไขข้อมูลเองได้หลังใส่ข้อมูลในช่องครบถ้วนแล้ว)</span></label>
             
             <div id="mergeMrOption" class="hidden mb-3 bg-blue-50 border border-blue-200 p-3 rounded-lg">
                 <label class="inline-flex items-center cursor-pointer">
                     <input type="checkbox" id="chkMergeMr" class="form-checkbox text-blue-600 h-5 w-5 rounded" onchange="generateOutput()">
-                    <span class="ml-2 font-medium text-blue-800">นำข้อมูลการรับยาจากแท็บ '1. MR' มารวมใน Note ด้วย (รวมถึงดึงข้อมูลลง Sheet)</span>
+                    <span class="ml-2 font-medium text-blue-800">นำข้อมูลการรับยาจากแท็บ '1. MR' มารวมใน Note ด้วย</span>
                 </label>
             </div>
 
@@ -3132,15 +3132,15 @@
             <div class="flex flex-wrap gap-4">
                 <button onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                    1. คัดลอกลง PMK
+                    1. คัดลอก Pharmacist Note
                 </button>
                 <button id="btnCopySheet" onclick="copyToSheet(); sendCaseTrackingData();" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    2. คัดลอกลง Google Sheet (Manual)
+                    2. คัดลอกข้อมูลตาราง
                 </button>
                 <button onclick="sendToGoogleSheet(); sendCaseTrackingData();" id="btnSendDb" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                    3. บันทึกลง Sheet อัตโนมัติ
+                    3. บันทึกข้อมูล
                 </button>
                 <button onclick="printOpdCard()" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
@@ -3555,7 +3555,7 @@
                     <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2.5 border-b border-gray-200">
                         <div class="flex items-center gap-2">
                             <button type="button" onclick="fetchAdminRealtimeData()" id="btnFetchAdminRealtime" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition flex items-center gap-1.5">
-                                <i class="fa-solid fa-rotate"></i> ดึงข้อมูล Real-time จาก Google Sheet
+                                <i class="fa-solid fa-rotate"></i> ดึงข้อมูล Real-time
                             </button>
                             <span id="adminRealtimeStatus" class="text-xs text-gray-500">พร้อมเชื่อมต่อข้อมูลล่าสุด</span>
                         </div>
@@ -9067,14 +9067,14 @@
                     capdSetPrevStatus('ดึงข้อมูลเดิมสำเร็จ' + (updated ? ' (อัปเดตล่าสุด: ' + updated + ')' : ''), 'ok');
                 } else {
                     capdClearPreviousLookupUi();
-                    capdSetPrevStatus('ไม่พบประวัติ HN นี้ในชีตคลินิก CAPD สามารถกรอกเป็นรายใหม่ได้เลย', 'info');
+                    capdSetPrevStatus('ไม่พบประวัติ HN นี้ในระบบ สามารถกรอกเป็นรายใหม่ได้เลย', 'info');
                 }
             } catch (err) {
                 capdClearPreviousLookupUi();
                 const aborted = err && (err.name === 'AbortError' || /abort/i.test(String(err.message || '')));
                 capdSetPrevStatus(aborted
                     ? 'ดึงข้อมูลเดิมใช้เวลานานเกินไป กรุณาลองใหม่'
-                    : 'เกิดข้อผิดพลาดในการเชื่อมต่อชีตคลินิก CAPD กรุณาลองใหม่', 'error');
+                    : 'เกิดข้อผิดพลาดในการดึงข้อมูลเดิม กรุณาลองใหม่', 'error');
             } finally {
                 if (timer) clearTimeout(timer);
                 if (btn) btn.disabled = false;
@@ -9998,7 +9998,7 @@
         function copyToClipboard(elementId) {
             const el = document.getElementById(elementId);
             if(el && el.value) { 
-                navigator.clipboard.writeText(el.value).then(() => showToast('คัดลอกลง PMK เรียบร้อยแล้ว!')); 
+                navigator.clipboard.writeText(el.value).then(() => showToast('คัดลอก Pharmacist Note เรียบร้อยแล้ว!')); 
             }
         }
 
@@ -10006,7 +10006,7 @@
             const rowData = getRowDataArray();
             const tsvString = rowData.join('\t');
             navigator.clipboard.writeText(tsvString).then(() => { 
-                showToast('คัดลอกข้อมูลสำหรับลง Google Sheet เรียบร้อยแล้ว!'); 
+                showToast('คัดลอกข้อมูลตารางเรียบร้อยแล้ว!'); 
             });
         }
 
@@ -10050,7 +10050,7 @@
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(savePayload)
                 })
-                .then(() => { showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!'); })
+                .then(() => { showToast('บันทึกสำเร็จแล้ว!'); })
                 .catch(error => { console.error('Error!', error); alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
                 .finally(finishBtn);
             }
@@ -10275,7 +10275,7 @@
                     const submitBtn = document.getElementById('submitBtn');
                     const loadingSpinner = document.getElementById('loadingSpinner');
                     
-                    if (typeof pmkGuardOnlineAction === 'function' && !pmkGuardOnlineAction('ตอนนี้ยังติดต่อ Google Sheet ไม่ได้ครับ ยังออกเลข Warfarin ไม่ได้ กรุณาลองใหม่เมื่อแถบสถานะเป็นสีเขียว')) {
+                    if (typeof pmkGuardOnlineAction === 'function' && !pmkGuardOnlineAction('ตอนนี้ยังเชื่อมต่อระบบไม่ได้ครับ ยังออกเลข Warfarin ไม่ได้ กรุณาลองใหม่เมื่อแถบสถานะเป็นสีเขียว')) {
                         return;
                     }
                     if(submitBtn) submitBtn.style.display = 'none';
@@ -10457,7 +10457,7 @@
         function actionPending(id, actionType) {
             const form = document.getElementById('form-' + id);
             if(!form) return;
-            if (typeof pmkGuardOnlineAction === 'function' && !pmkGuardOnlineAction('ตอนนี้ยังติดต่อ Google Sheet ไม่ได้ครับ กรุณาอนุมัติหรือไม่อนุมัติเมื่อแถบสถานะเป็นสีเขียว')) {
+            if (typeof pmkGuardOnlineAction === 'function' && !pmkGuardOnlineAction('ตอนนี้ยังเชื่อมต่อระบบไม่ได้ครับ กรุณาอนุมัติหรือไม่อนุมัติเมื่อแถบสถานะเป็นสีเขียว')) {
                 return;
             }
 
@@ -12635,7 +12635,7 @@
             }
 
             if (btn) btn.disabled = true;
-            if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-blue-600 mr-1"></i> กำลังดึงข้อมูลล่าสุดจาก Google Sheet...';
+            if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-blue-600 mr-1"></i> กำลังดึงข้อมูลล่าสุด...';
 
             try {
                 // ส่ง token ผ่าน URL (GET) เพื่อป้องกัน Google Redirect ตัด body ทิ้ง
@@ -13295,7 +13295,7 @@
 
         if (btn) btn.disabled = true;
         if (statusEl) {
-            statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-blue-600 mr-1"></i> กำลังดึงข้อมูลจาก Google Sheet...';
+            statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-blue-600 mr-1"></i> กำลังดึงข้อมูล...';
         }
 
         try {

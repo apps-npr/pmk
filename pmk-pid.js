@@ -231,7 +231,7 @@
           <button type="button" class="pid-btn alt" data-pid-kb="tb">TB เด็ก (รักษา / LTBI)</button>
           <button type="button" class="pid-btn alt" data-pid-kb="oi">OIs เด็ก</button>
         </div>
-        <p class="pid-note">ชื่อ-HN ใช้ช่องด้านบน แนะนำพิมพ์คำนำหน้า ด.ช./ด.ญ./ทารก ในชื่อ เหมือนในชีท PID</p>
+        <p class="pid-note">ชื่อ-HN ใช้ช่องด้านบน แนะนำพิมพ์คำนำหน้า ด.ช./ด.ญ./ทารก ในชื่อ</p>
       </div>
 
       <div class="pid-card">
@@ -244,14 +244,14 @@
           <div><label class="pid-l">BW ครั้งก่อน (kg)</label><input type="number" step="0.01" min="0" id="pidBwPrev"></div>
           <div><label class="pid-l">ส่วนสูง (cm) - สำหรับ BSA</label><input type="number" step="0.1" min="0" id="pidHt"></div>
         </div>
-        <div style="margin-top:10px"><label class="pid-l">กลุ่มโรค / ประเภทเคส (ติ๊กได้หลายข้อ — TB / HIV จะลงคอลัมน์ D / E ในชีท)</label>
+        <div style="margin-top:10px"><label class="pid-l">กลุ่มโรค / ประเภทเคส (ติ๊กได้หลายข้อ)</label>
           <div class="pid-chips">${CASE_TYPES.map(c => chip('pidCase_' + c.id, c.label)).join('')}</div>
         </div>
         <div class="pid-grid" style="margin-top:10px">
-          <div>${chip('pidTb', 'TB (คอลัมน์ D)')}</div>
-          <div>${chip('pidHiv', 'HIV (คอลัมน์ E)')}</div>
+          <div>${chip('pidTb', 'TB')}</div>
+          <div>${chip('pidHiv', 'HIV')}</div>
         </div>
-        <div style="margin-top:10px"><label class="pid-l">โรค / ปัญหา (คอลัมน์ F) เช่น Case Maternal HIV (high risk), Congenital syphilis, NTM Lymphadenitis</label>
+        <div style="margin-top:10px"><label class="pid-l">โรค / ปัญหา เช่น Case Maternal HIV (high risk), Congenital syphilis, NTM Lymphadenitis</label>
           <input type="text" id="pidDx" placeholder="โรค / ปัญหา">
         </div>
         <div style="margin-top:8px"><label class="pid-l">CC</label><input type="text" id="pidCc"></div>
@@ -326,9 +326,9 @@
       <div class="pid-card">
         <div class="pid-h">6. DRP / ME / Counseling</div>
         <div class="pid-grid">
-          <div><label class="pid-l">DRPs (คอลัมน์ H)</label><select id="pidDrp"><option value="">-- ไม่ระบุ --</option>${DRP_LIST.map(d => `<option>${esc(d)}</option>`).join('')}</select></div>
-          <div><label class="pid-l">ME (คอลัมน์ I)</label><select id="pidMe"><option value="">-- ไม่ระบุ --</option>${ME_LIST.map(d => `<option>${esc(d)}</option>`).join('')}</select></div>
-          <div style="display:flex;align-items:flex-end">${chip('pidSeen', 'พบเภสัช (คอลัมน์ J)', 'checked')}</div>
+          <div><label class="pid-l">DRPs</label><select id="pidDrp"><option value="">-- ไม่ระบุ --</option>${DRP_LIST.map(d => `<option>${esc(d)}</option>`).join('')}</select></div>
+          <div><label class="pid-l">ME</label><select id="pidMe"><option value="">-- ไม่ระบุ --</option>${ME_LIST.map(d => `<option>${esc(d)}</option>`).join('')}</select></div>
+          <div style="display:flex;align-items:flex-end">${chip('pidSeen', 'พบเภสัช', 'checked')}</div>
         </div>
         <div style="margin-top:8px"><label class="pid-l">รายละเอียด DRP / การแก้ไข</label><textarea id="pidDrpDetail"></textarea></div>
         <div style="margin-top:8px"><label class="pid-l">การแก้ไขเพื่อเพิ่ม Adherence (แก่เด็ก / ผู้ดูแล)</label>
@@ -343,7 +343,7 @@
         <div class="pid-grid" style="margin-top:8px">
           <div><label class="pid-l">นัดครั้งถัดไป</label><input type="date" id="pidNext"></div>
           <div><label class="pid-l">นัดเพื่อ (เช่น HIV PCR 4 เดือน, CXR)</label><input type="text" id="pidNextFor"></div>
-          <div><label class="pid-l">หมายเหตุ (คอลัมน์ K)</label><input type="text" id="pidRemark"></div>
+          <div><label class="pid-l">หมายเหตุ</label><input type="text" id="pidRemark"></div>
           <div><label class="pid-l">ชื่อเภสัชกร</label><input type="text" id="pidPharmName" data-pmk-list="pharmList" autocomplete="off" placeholder="เลือกหรือพิมพ์ชื่อเภสัชกร"></div>
         </div>
       </div>
@@ -554,7 +554,7 @@
         out.notes.push(`High-dose INH 15-20 mg/kg = ${Math.round(Math.min(15 * w, 300))}-${Math.round(Math.min(20 * w, 300))} mg/วัน`);
         out.notes.push('ขนาดเม็ดที่เลือกเป็นค่ากลางช่วง ปัดเป็นครึ่งเม็ด แก้ mg ในรายการยาได้');
       }
-      if (yrs >= 15) out.warns.push('อายุ ≥15 ปี: พิจารณาขนาดยาแบบผู้ใหญ่ (พบในชีท PID ว่าเคยเกิด DRP กรณีนี้)');
+      if (yrs >= 15) out.warns.push('อายุ ≥15 ปี: พิจารณาขนาดยาแบบผู้ใหญ่ (เคยพบ DRP กรณีนี้)');
       out.notes.push(`${reg}: ${reg === '2HRZE/10HR' ? 'วัณโรคปอดชนิดแพร่กระจาย / ระบบประสาท / กระดูกและข้อ' : 'วัณโรคปอด / ต่อมน้ำเหลือง'}`);
       out.table = `<table class="pid-t"><tr><th>ยา</th><th>mg/kg/day</th><th>ยา (ดื้อยา)</th><th>mg/kg/day</th></tr>
         <tr><td>Isoniazid (high dose)</td><td>10-15 (15-20)</td><td>Clofazimine</td><td>2-5</td></tr>
@@ -892,7 +892,7 @@
     if ((has('P')) && (has('LPV') || has('NVP'))) out.push({ level: 'warn', title: 'Rifapentine ร่วมกับ PI/NNRTI', detail: 'Rifapentine มีอันตรกิริยากับ LPV/r และ NVP — 3HP ใช้ร่วมกับ DTG ได้โดยไม่ต้องปรับ', source: SRC_TB });
     if (has('TDF') && w > 0 && w < 35 && !has('TLD')) out.push({ level: 'info', title: 'TDF ในเด็กน้ำหนัก <35 kg', detail: 'ตรวจสอบขนาด TDF ตามน้ำหนักและติดตาม Scr / UA protein', source: 'hivtb app' });
     if (has('TLD') && w > 0 && w < 30) out.push({ level: 'warn', title: 'TLD ในเด็กน้ำหนัก <30 kg', detail: 'TLD เม็ดผู้ใหญ่ (TDF 300/3TC 300/DTG 50) — ตรวจสอบเกณฑ์น้ำหนักก่อนใช้', source: 'hivtb app (TLD สำหรับ ≥30 kg)' });
-    if (['H', 'R', 'Z', 'E'].some(has) && yrs >= 15) out.push({ level: 'warn', title: 'อายุ ≥15 ปี ได้ยา TB', detail: 'พิจารณาปรับเป็นขนาดยาผู้ใหญ่ (เคยพบ DRP กรณีนี้ในชีท PID)', source: 'ชีท PID / แนวทาง TB' });
+    if (['H', 'R', 'Z', 'E'].some(has) && yrs >= 15) out.push({ level: 'warn', title: 'อายุ ≥15 ปี ได้ยา TB', detail: 'พิจารณาปรับเป็นขนาดยาผู้ใหญ่ (เคยพบ DRP กรณีนี้)', source: 'แนวทาง TB' });
     if (val('pidPcr') === 'Positive') out.push({ level: 'danger', title: 'HIV DNA PCR เป็นบวก', detail: 'เปลี่ยนจากขนาดป้องกันเป็นขนาดรักษา (LPV/r + AZT + 3TC ตามตารางที่ 2) และเจาะ PCR ซ้ำทันทีเพื่อยืนยันก่อนเริ่มรักษา', source: SRC_HIV });
     if (caseOn('pmtct') && Number.isFinite(months) && months < 2) {
       const high = val('pidRisk') === 'high';
@@ -902,7 +902,7 @@
     if (Number.isFinite(a.pct) && a.pct < 95) out.push({ level: 'warn', title: `Adherence ${a.text} (< 95%)`, detail: 'ค้นหาสาเหตุ ให้คำปรึกษาผู้ดูแล และพิจารณา DRP "Non-compliance"', source: SRC_FORM });
     if (Number.isFinite(a.pct) && a.pct > 105) out.push({ level: 'info', title: `Adherence ${a.text} (> 100%)`, detail: 'ตรวจสอบการนับยา (ยาเหลือน้อยกว่าที่ควร อาจกินเกินหรือยาหาย)', source: SRC_FORM });
     const prev = num('pidBwPrev');
-    if (w > 0 && prev > 0 && Math.abs(w - prev) / prev >= 0.1 && names.length) out.push({ level: 'info', title: `น้ำหนักเปลี่ยน ${fmt(prev)} → ${fmt(w)} kg`, detail: 'ทบทวนขนาดยาตามน้ำหนักใหม่ (ชีท PID มีหลายเคสที่ BW เพิ่มแล้วต้องปรับยา)', source: 'ชีท PID' });
+    if (w > 0 && prev > 0 && Math.abs(w - prev) / prev >= 0.1 && names.length) out.push({ level: 'info', title: `น้ำหนักเปลี่ยน ${fmt(prev)} → ${fmt(w)} kg`, detail: 'ทบทวนขนาดยาตามน้ำหนักใหม่ (เคยพบหลายเคสที่น้ำหนักเพิ่มแล้วต้องปรับยา)', source: 'ประสบการณ์คลินิก' });
     if (val('pidLtbiReg') === '3HP' && val('pidCalcMode') === 'ltbi' && (yrs < 2 || (w > 0 && w < 10))) out.push({ level: 'warn', title: '3HP ไม่เหมาะกับอายุ/น้ำหนักนี้', detail: '3HP ใช้อายุ ≥2 ปี และน้ำหนัก ≥10 kg', source: SRC_TB });
     if (caseOn('tbtx') && has('H') && has('R') && !has('Z') && !val('pidTbStart')) out.push({ level: 'info', title: 'ระบุวันเริ่มยา TB', detail: 'ใส่วันเริ่ม (Start) เพื่อคำนวณระยะ intensive / continuation', source: SRC_FORM });
     return out;
