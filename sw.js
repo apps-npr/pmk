@@ -1,11 +1,12 @@
 /* PMK service worker — bump CACHE_VERSION when precache list or app shell changes */
-const CACHE_VERSION = 'pmk-static-v5';
+const CACHE_VERSION = 'pmk-static-v8';
 const CDN_CACHE = 'pmk-cdn-v2';
 const PRECACHE = [
   './',
   './index.html',
   './preop-procedures.js',
   './pwa-client.js',
+  './pmk-alerts-copy.js',
   './pmk-login.js',
   './pmk-patient-print.js',
   './pmk-tailwind.css',
