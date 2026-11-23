@@ -640,6 +640,7 @@
                 <button onclick="switchTab('ASTHMA')" id="tab-ASTHMA" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">8. Asthma/COPD</button>
                 <button onclick="switchTab('PARKINSON')" id="tab-PARKINSON" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100">9. Parkinson</button>
                 <button onclick="switchTab('CAPD')" id="tab-CAPD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100">10. CAPD</button>
+                <button onclick="switchTab('PID')" id="tab-PID" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100">11. HIV/TB เด็ก (PID)</button>
                     </div>
                 </div>
                 <button type="button" id="clinicPickerBtn" onclick="toggleClinicPicker(event)"
@@ -2911,6 +2912,10 @@
                 </div>
             </div>
 
+            <!-- Clinic 11: HIV/TB เด็ก (PID) rendered by pmk-pid.js -->
+
+            <div id="form-PID" class="space-y-6 clinic-form hidden"></div>
+
             <div id="form-CAPD" class="space-y-6 clinic-form hidden">
                 <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-4">
                     <h3 class="font-bold text-cyan-900 mb-1">10. CAPD</h3>
@@ -4599,7 +4604,7 @@
                 el.classList.add('hidden');
                 el.classList.remove('block');
             });
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50', 'bg-green-50', 'bg-orange-50', 'bg-teal-50', 'bg-violet-50', 'bg-cyan-50'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50', 'bg-green-50', 'bg-orange-50', 'bg-teal-50', 'bg-violet-50', 'bg-cyan-50', 'bg-rose-50'));
             
             const targetForm = document.getElementById('form-' + tab);
             if(targetForm) {
@@ -4616,6 +4621,7 @@
             if(tab === 'ASTHMA') activeBtn.classList.remove('text-teal-700');
             if(tab === 'PARKINSON') activeBtn.classList.remove('text-violet-700');
             if(tab === 'CAPD') activeBtn.classList.remove('text-cyan-700');
+            if(tab === 'PID') activeBtn.classList.remove('text-rose-700');
             if (tab === 'HF' && typeof bindHfGdmtHelper === 'function') bindHfGdmtHelper();
 
             const mergeCheck = document.getElementById('mergeMrOption');
@@ -7504,6 +7510,7 @@
             
             const hivManualAdh = document.getElementById('hivManualAdherence');
             if(hivManualAdh) hivManualAdh.value = '100%'; 
+            if (typeof window.pmkPidReset === 'function') window.pmkPidReset();
             
             const hivLabDateRef = document.getElementById('hivLabDateRef');
             if(hivLabDateRef) hivLabDateRef.value = 'cd4';
@@ -9296,6 +9303,9 @@
             else if (currentTab === 'CAPD') {
                 notes = notes.concat(buildCapdNotes());
             }
+            else if (currentTab === 'PID') {
+                if (typeof window.pmkPidBuildNote === 'function') notes = notes.concat(window.pmkPidBuildNote());
+            }
             else if (currentTab === 'WARFARIN') {
                 const activeWf = document.querySelector('.wf-nav-link.active')?.id;
                 if (activeWf === 'wf-note-tab') {
@@ -9708,6 +9718,9 @@
             else if (currentTab === 'CAPD') {
                 rowData = buildCapdRowData(dateStr);
             }
+            else if (currentTab === 'PID') {
+                rowData = (typeof window.pmkPidBuildRow === 'function') ? window.pmkPidBuildRow(dateStr) : rowData;
+            }
             return rowData;
         }
         function copyToClipboard(elementId) {
@@ -9748,6 +9761,8 @@
                 targetClinicName = 'Parkinson New';
             } else if (currentTab === 'CAPD') {
                 targetClinicName = 'CAPD';
+            } else if (currentTab === 'PID') {
+                targetClinicName = 'PID';
             }
 
             const savePayload = { action: "saveOPDNote", clinic: targetClinicName, payload: getRowDataArray() };
@@ -11071,6 +11086,8 @@
                 pharmacistName = document.getElementById('c9PharmName') ? document.getElementById('c9PharmName').value : '';
             } else if (currentTab === 'CAPD') {
                 pharmacistName = document.getElementById('c10PharmName') ? document.getElementById('c10PharmName').value : '';
+            } else if (currentTab === 'PID') {
+                pharmacistName = document.getElementById('pidPharmName') ? document.getElementById('pidPharmName').value : '';
             } else if (currentTab === 'HF') {
                 pharmacistName = 'ไม่ระบุ (HF)'; // หน้า HF ไม่มีช่องกรอกชื่อเภสัชกร
             }
@@ -12987,6 +13004,7 @@
     }
     </script>
     <script src="pmk-login.js"></script>
+    <script src="pmk-pid.js"></script>
     <script src="pmk-patient-print.js"></script>
     <script src="pwa-client.js"></script>
     <script src="pmk-alerts-copy.js"></script>
