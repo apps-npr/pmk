@@ -2919,14 +2919,14 @@
             <div id="form-CAPD" class="space-y-6 clinic-form hidden">
                 <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-4">
                     <h3 class="font-bold text-cyan-900 mb-1">10. CAPD</h3>
-                    <p class="text-sm text-cyan-800">บันทึกผลแล็บ ปัญหาด้านยา และคำแนะนำ EPO สำหรับลง PMK และแท็บ <span class="font-semibold">CAPD</span> ในชีต workload ambu 7141-2 โดยไม่เปลี่ยนโครงคอลัมน์ของชีตเดิม</p>
+                    <p class="text-sm text-cyan-800">บันทึกผลแล็บ ปัญหาด้านยา และคำแนะนำ EPO สำหรับลง PMK และแท็บ <span class="font-semibold">CAPD</span> </p>
                 </div>
 
                 <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-4">
                     <h4 class="font-semibold text-gray-800">1) ข้อมูลการมาคลินิก</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่มาคลินิก (คอลัมน์ date)</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่มาคลินิก</label>
                             <input type="text" id="c10VisitDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 21/11/69" oninput="capdOnVisitChange()">
                         </div>
                         <div>
@@ -3031,7 +3031,7 @@
                         <div class="flex items-center gap-2"><span class="font-bold text-gray-600 w-5">4.</span><input type="text" id="c10Drp4" class="flex-1 rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="รายละเอียดปัญหาด้านยาข้อที่ 4 (ถ้ามี)" oninput="capdUpdateDrpCount(); generateOutput();"></div>
                     </div>
                     <div>
-                        <p class="text-xs font-medium text-gray-600 mb-2">หมวด DRP (คอลัมน์ W–AF ของชีต ถ้ามีให้ติ๊ก จะลงเป็น 1)</p>
+                        <p class="text-xs font-medium text-gray-600 mb-2">หมวด DRP (ถ้ามีให้ติ๊ก จะลงเป็น 1)</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm">
                             <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="UD" onchange="generateOutput()"> Unnecessary drug therapy (UD)</label>
                             <label class="inline-flex items-center gap-2"><input type="checkbox" class="c10-cls form-checkbox text-cyan-600 rounded" data-cls="ND" onchange="generateOutput()"> Need for additional drug therapy (ND)</label>
