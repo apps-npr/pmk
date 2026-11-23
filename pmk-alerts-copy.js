@@ -3,17 +3,17 @@
   'use strict';
 
   const CLINICS = [
-    { id: 'MR', label: '1. MR (Medication Reconciliation)' },
-    { id: 'PREOP', label: '2. Pre-OP' },
-    { id: 'ADR', label: '3. ADR / Side Effect' },
-    { id: 'HIV', label: '4. HIV' },
-    { id: 'WARFARIN', label: '5. Warfarin' },
-    { id: 'HF', label: '6. Heart Failure' },
-    { id: 'CKD', label: '7. CKD' },
-    { id: 'ASTHMA', label: '8. Asthma / COPD' },
-    { id: 'PARKINSON', label: '9. Parkinson' },
-    { id: 'CAPD', label: '10. CAPD' },
-    { id: 'PID', label: '11. HIV/TB เด็ก (PID)' }
+    { id: 'MR', label: 'MR (Medication Reconciliation)' },
+    { id: 'PREOP', label: 'Pre-OP' },
+    { id: 'ADR', label: 'ADR / Side Effect' },
+    { id: 'HIV', label: 'HIV' },
+    { id: 'WARFARIN', label: 'Warfarin' },
+    { id: 'HF', label: 'Heart Failure' },
+    { id: 'CKD', label: 'CKD' },
+    { id: 'ASTHMA', label: 'Asthma / COPD' },
+    { id: 'PARKINSON', label: 'Parkinson' },
+    { id: 'CAPD', label: 'CAPD' },
+    { id: 'PID', label: 'HIV/TB เด็ก (PID)' }
   ];
 
   const CLINIC_MAP = Object.fromEntries(CLINICS.map(c => [c.id, c]));
