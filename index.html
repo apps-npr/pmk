@@ -2654,7 +2654,7 @@
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-xs font-bold text-gray-700 mb-1">เวลา</label>
-                            <input type="text" id="c9Time" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 0800" maxlength="5">
+                            <input type="text" id="c9Time" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 7.00 หรือ 0700" inputmode="decimal" autocomplete="off" maxlength="8">
                         </div>
                         <div class="md:col-span-2">
                             <button type="button" onclick="addC9Med()" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold px-3 py-2 rounded-lg text-sm shadow-sm">
@@ -2673,15 +2673,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">เช้า</label>
-                            <input type="text" id="c9MealBreak" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เว้นว่างได้" value="07:00" maxlength="5" oninput="generateOutput()">
+                            <input type="text" id="c9MealBreak" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 7.00" value="07.00" inputmode="decimal" autocomplete="off" maxlength="8" oninput="generateOutput()">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">เที่ยง</label>
-                            <input type="text" id="c9MealLunch" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เว้นว่างได้" value="12:00" maxlength="5" oninput="generateOutput()">
+                            <input type="text" id="c9MealLunch" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 12.00" value="12.00" inputmode="decimal" autocomplete="off" maxlength="8" oninput="generateOutput()">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">เย็น</label>
-                            <input type="text" id="c9MealDinner" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เว้นว่างได้" value="17:00" maxlength="5" oninput="generateOutput()">
+                            <input type="text" id="c9MealDinner" class="c9-time-input w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" placeholder="เช่น 17.00" value="17.00" inputmode="decimal" autocomplete="off" maxlength="8" oninput="generateOutput()">
                         </div>
                     </div>
                 </div>
@@ -2870,7 +2870,7 @@
                             <input type="date" id="c9ClinicDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่ตอบแบบสอบถาม / บันทึกอาการ</label>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">วันที่ตอบแบบสอบถาม / บันทึกอาการ (เว้นว่างได้ จะไม่ถูกบันทึกลงชีท)</label>
                             <input type="date" id="c9SurveyDate" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm" oninput="generateOutput()">
                         </div>
                         <div>
@@ -7563,6 +7563,7 @@
             renderSelectedPreopDrugs(); 
             checkPreopSpecificQuestions();
             toggleHivType();
+            if (typeof resetC9Parkinson === 'function') resetC9Parkinson();
             generateOutput();
             resetCaseTracking();
         }
@@ -7625,6 +7626,7 @@
         ];
         let c9Meds = [];
         let c9MedSeq = 0;
+        let c9RecoTicked = new Set();
 
         function pdImgSrc(file) {
             return file ? (PD_IMG + file) : '';
@@ -7634,41 +7636,89 @@
             return "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><rect width="80" height="80" rx="8" fill="#f3f4f6" stroke="#d1d5db"/><text x="40" y="44" text-anchor="middle" font-size="11" fill="#9ca3af" font-family="sans-serif">ไม่มีรูป</text></svg>');
         }
 
+        // รับ 7, 7.00, 07.00, 7:00, 0700, 700 แล้วทำเป็น HH.MM เช่น 07.00
+        function parseC9TimeParts(raw) {
+            const s = String(raw == null ? '' : raw).trim();
+            if (!s) return null;
+            let h, m;
+            const sep = s.match(/^(\d{1,2})[:.hH](\d{1,2})$/);
+            if (sep) {
+                h = parseInt(sep[1], 10);
+                m = parseInt(sep[2], 10);
+            } else if (/^\d{1,2}$/.test(s)) {
+                h = parseInt(s, 10);
+                m = 0;
+            } else {
+                const d = s.replace(/\D/g, '');
+                if (d.length === 1 || d.length === 2) { h = parseInt(d, 10); m = 0; }
+                else if (d.length === 3) { h = parseInt(d.slice(0, 1), 10); m = parseInt(d.slice(1), 10); }
+                else if (d.length >= 4) { h = parseInt(d.slice(0, 2), 10); m = parseInt(d.slice(2, 4), 10); }
+                else return null;
+            }
+            if (!Number.isFinite(h) || !Number.isFinite(m) || h < 0 || h > 23 || m < 0 || m > 59) return null;
+            return { h, m };
+        }
+        function formatC9Time(raw) {
+            const p = parseC9TimeParts(raw);
+            if (!p) return '';
+            return String(p.h).padStart(2, '0') + '.' + String(p.m).padStart(2, '0');
+        }
+        function applyC9TimeInput(el) {
+            if (!el) return '';
+            const raw = (el.value || '').trim();
+            if (!raw) { el.value = ''; return ''; }
+            const fmt = formatC9Time(raw);
+            if (fmt) el.value = fmt;
+            return fmt;
+        }
+
         function initC9Parkinson() {
             const sel = document.getElementById('c9Drug');
-            if (!sel || sel.options.length > 0) return;
-            PD_DRUGS.forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = d.id;
-                opt.textContent = d.name + ' — ' + d.type;
-                sel.appendChild(opt);
-            });
-            renderC9Catalog();
-            document.querySelectorAll('.c9-time-input').forEach(inp => {
-                inp.addEventListener('input', function () {
-                    let v = this.value.replace(/[^0-9]/g, '');
-                    if (v.length >= 3) v = v.substring(0, 2) + ':' + v.substring(2, 4);
-                    this.value = v;
+            if (!sel) return;
+            if (sel.options.length === 0) {
+                PD_DRUGS.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.textContent = d.name + ' — ' + d.type;
+                    sel.appendChild(opt);
                 });
+                renderC9Catalog();
+            }
+            document.querySelectorAll('.c9-time-input').forEach(inp => {
+                if (inp.dataset.c9TimeBound) return;
+                inp.dataset.c9TimeBound = '1';
                 inp.addEventListener('blur', function () {
-                    let v = this.value.replace(/[^0-9]/g, '');
-                    if (v.length === 0) return;
-                    if (v.length === 3) v = '0' + v;
-                    if (v.length === 4) this.value = v.substring(0, 2) + ':' + v.substring(2, 4);
+                    applyC9TimeInput(this);
                     if (typeof generateOutput === 'function') generateOutput();
                 });
             });
             ['c9Dose', 'c9Time'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.addEventListener('keydown', function (e) {
-                    if (e.key === 'Enter') { e.preventDefault(); addC9Med(); }
-                });
+                if (el && !el.dataset.c9EnterBound) {
+                    el.dataset.c9EnterBound = '1';
+                    el.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter') { e.preventDefault(); addC9Med(); }
+                    });
+                }
             });
+            const recoBox = document.getElementById('c9RecoBox');
+            if (recoBox && !recoBox.dataset.c9TickBound) {
+                recoBox.dataset.c9TickBound = '1';
+                recoBox.addEventListener('change', function (e) {
+                    const cb = e.target && e.target.closest && e.target.closest('.c9-reco-tick');
+                    if (!cb) return;
+                    let key = cb.getAttribute('data-reco') || '';
+                    try { key = decodeURIComponent(key); } catch (err) {}
+                    if (!key) return;
+                    if (cb.checked) c9RecoTicked.add(key);
+                    else c9RecoTicked.delete(key);
+                    if (typeof generateOutput === 'function') generateOutput();
+                });
+            }
             const todayIso = new Date().toISOString().slice(0, 10);
             const dClinic = document.getElementById('c9ClinicDate');
-            const dSurvey = document.getElementById('c9SurveyDate');
+            // วันที่ตอบแบบสอบถามไม่ใส่ค่าวันนี้ให้อัตโนมัติ — ถ้าไม่เลือกจะไม่ถูกบันทึกลงชีท
             if (dClinic && !dClinic.value) dClinic.value = todayIso;
-            if (dSurvey && !dSurvey.value) dSurvey.value = todayIso;
             syncC9NamesFromHeader();
             syncC9SheetDropdowns();
             const pt = document.getElementById('ptName');
@@ -7676,6 +7726,16 @@
                 pt.dataset.c9NameBound = '1';
                 pt.addEventListener('input', syncC9NamesFromHeader);
             }
+        }
+
+        function resetC9Parkinson() {
+            c9Meds = [];
+            c9MedSeq = 0;
+            c9RecoTicked = new Set();
+            if (typeof window !== 'undefined') window.c9Meds = c9Meds;
+            if (typeof renderC9Meds === 'function') renderC9Meds();
+            const reco = document.getElementById('c9RecoBox');
+            if (reco) { reco.classList.add('hidden'); reco.innerHTML = ''; }
         }
 
         const C9_OFF_RATIO_OPTIONS = [
@@ -7765,17 +7825,8 @@
             const ids = ['c9MealBreak', 'c9MealLunch', 'c9MealDinner'];
             const out = [];
             ids.forEach(id => {
-                let t = document.getElementById(id)?.value?.trim() || '';
-                if (!t) return;
-                t = t.replace('.', ':');
-                const m = t.split(':');
-                if (m.length >= 2 && m[0] !== '') {
-                    const h = String(parseInt(m[0], 10));
-                    const min = String(m[1] || '00').replace(/\D/g, '').padStart(2, '0').slice(0, 2);
-                    out.push(h + '.' + min);
-                } else {
-                    out.push(t);
-                }
+                const fmt = formatC9Time(document.getElementById(id)?.value);
+                if (fmt) out.push(fmt);
             });
             return out.join(', ');
         }
@@ -7859,7 +7910,7 @@
             syncC9NamesFromHeader();
             const row = Array(19).fill('');
             const clinicDate = formatC9SheetDate(document.getElementById('c9ClinicDate')?.value, dateStr);
-            const surveyDate = formatC9SheetDate(document.getElementById('c9SurveyDate')?.value, clinicDate);
+            const surveyDate = formatC9SheetDate(document.getElementById('c9SurveyDate')?.value, '');
             const names = splitC9Name(document.getElementById('ptName')?.value || '');
             const first = (document.getElementById('c9FirstName')?.value || '').trim() || names.first;
             const last = (document.getElementById('c9LastName')?.value || '').trim() || names.last;
@@ -7925,13 +7976,10 @@
         function addC9Med() {
             const id = document.getElementById('c9Drug')?.value;
             const dose = document.getElementById('c9Dose')?.value?.trim();
-            let time = document.getElementById('c9Time')?.value?.trim() || '';
+            let time = formatC9Time(document.getElementById('c9Time')?.value);
             if (!id) return;
             if (!dose) { alert('กรุณาใส่ขนาดยา เช่น 1 tab'); return; }
-            if (!time) { alert('กรุณาใส่เวลากินยา เช่น 0800 หรือ 08:00'); return; }
-            time = time.replace(/[^0-9]/g, '');
-            if (time.length === 3) time = '0' + time;
-            if (time.length === 4) time = time.substring(0, 2) + ':' + time.substring(2, 4);
+            if (!time) { alert('กรุณาใส่เวลากินยา เช่น 7.00 หรือ 0700'); return; }
             const info = PD_DRUGS.find(d => d.id === id);
             if (!info) return;
             c9Meds.push({ uid: 'm' + (++c9MedSeq), id: info.id, name: info.name, type: info.type, dose, time, pill: info.pill, pack: info.pack });
@@ -7955,6 +8003,7 @@
             if (!box) return;
             if (c9Meds.length === 0) {
                 box.innerHTML = '<p class="text-xs text-gray-400 italic">ยังไม่มีรายการยาในตาราง กดเลือกยาด้านบนแล้วเพิ่มขนาดและเวลา</p>';
+                window.c9Meds = c9Meds;
                 if (leddBox) { leddBox.classList.add('hidden'); leddBox.innerHTML = ''; }
                 return;
             }
@@ -7981,6 +8030,7 @@
                 </div>`;
             });
             box.innerHTML = html;
+            window.c9Meds = c9Meds;
             const ledd = calculateC9Ledd(c9Meds);
             if (leddBox) {
                 if (ledd.ldopa > 0) {
@@ -8090,17 +8140,19 @@
                 recs.push('เพิ่มยา Amantadine เพื่อคุมอาการยุกยิก');
             }
             const drps = collectC9Drps();
-            const hasFoodInt = drps.items.some(s => s.includes('ทานยาก่อนอาหาร'));
-            const hasNgTube = drps.items.some(s => s.includes('บริหารยาทางสายยาง'));
-            const hasPostural = drps.items.some(s => s.includes('ทรงตัวลำบาก'));
-            const hasFall = document.getElementById('c9Fall')?.checked || parseInt(document.getElementById('c9FallCount')?.value || '0', 10) > 0;
-            if (hasNgTube && c9Meds.some(m => (m.name || '').includes('HBS') || (m.name || '').includes('PD 24h'))) {
-                recs.push('[CRITICAL] ห้ามบดยา CR (HBS, PD 24h) ในผู้ป่วย NG Tube เปลี่ยนเป็น IR/Dispersible');
-            }
-            if (hasPostural || hasFall) recs.push('[Warning] เสี่ยงหกล้มสูง ควรประเมินและปรับยาเพื่อลดความเสี่ยง');
-            if (hasOff && hasFoodInt) recs.push('[Warning] OFF-time อาจเกิดจาก Food-Interaction เน้นย้ำเวลายา');
-            drps.advices.forEach(a => { if (!recs.includes(a)) recs.push(a); });
+            // ข้อเตือนเรื่องบดยา CR, หกล้ม และ food-interaction ไปอยู่ที่แถบ "แจ้งเตือนทางคลินิก" แล้ว ไม่ใส่ซ้ำที่นี่
+            const skipSuggest = new Set();
+            if (hasOff) skipSuggest.add(document.getElementById('c9Mc1')?.dataset.suggest || '');
+            if (hasDys) skipSuggest.add(document.getElementById('c9Mc4')?.dataset.suggest || '');
+            drps.advices.forEach(a => { if (a && !recs.includes(a) && !skipSuggest.has(a)) recs.push(a); });
             return recs;
+        }
+
+        function getTickedC9Recommendations() {
+            const recs = getC9Recommendations();
+            const present = new Set(recs);
+            [...c9RecoTicked].forEach(k => { if (!present.has(k)) c9RecoTicked.delete(k); });
+            return recs.filter(r => c9RecoTicked.has(r));
         }
 
         function updateC9RecoBox() {
@@ -8110,11 +8162,17 @@
             if (recs.length === 0) {
                 box.classList.add('hidden');
                 box.innerHTML = '';
+                c9RecoTicked = new Set();
                 return;
             }
             box.classList.remove('hidden');
-            box.innerHTML = '<div class="font-bold text-violet-800 mb-1"><i class="fa-solid fa-lightbulb mr-1"></i>ข้อเสนอแนะเภสัชกร (จะถูกใส่ใน Note อัตโนมัติ)</div><ul class="list-disc pl-5 space-y-0.5">' +
-                recs.map(r => `<li>${r}</li>`).join('') + '</ul>';
+            const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+            box.innerHTML = '<div class="font-bold text-violet-800 mb-1"><i class="fa-solid fa-lightbulb mr-1"></i>ข้อเสนอแนะเภสัชกร (ติ๊กข้อที่ต้องการให้ไปปรากฏใน Pharmacist Note)</div>' +
+                '<p class="text-xs text-gray-500 mb-2">เริ่มต้นยังไม่ถูกใส่ใน Note จนกว่าจะติ๊กเลือก</p>' +
+                recs.map(r => {
+                    const checked = c9RecoTicked.has(r) ? ' checked' : '';
+                    return `<label class="flex items-start gap-2 py-1 cursor-pointer"><input type="checkbox" class="c9-reco-tick mt-1 h-4 w-4 text-violet-600 rounded" data-reco="${encodeURIComponent(r)}"${checked}><span>${esc(r)}</span></label>`;
+                }).join('');
         }
 
         function buildParkinsonNotes() {
@@ -8138,9 +8196,9 @@
             }
 
             const meals = [];
-            const b = document.getElementById('c9MealBreak')?.value?.trim();
-            const l = document.getElementById('c9MealLunch')?.value?.trim();
-            const d = document.getElementById('c9MealDinner')?.value?.trim();
+            const b = formatC9Time(document.getElementById('c9MealBreak')?.value);
+            const l = formatC9Time(document.getElementById('c9MealLunch')?.value);
+            const d = formatC9Time(document.getElementById('c9MealDinner')?.value);
             if (b) meals.push('เช้า ' + b);
             if (l) meals.push('เที่ยง ' + l);
             if (d) meals.push('เย็น ' + d);
@@ -8188,7 +8246,7 @@
                 notes.push('– ไม่พบปัญหา DRPs');
             }
 
-            const recs = getC9Recommendations();
+            const recs = getTickedC9Recommendations();
             if (recs.length > 0) {
                 notes.push('ข้อเสนอแนะเภสัชกร:');
                 recs.forEach(r => notes.push('– ' + r));
@@ -11041,23 +11099,63 @@
         });
             // ================= ระบบแอบเก็บเวลาการทำเคส =================
         let caseTracking = {
-            startTime: null,
+            startTime: null,   // จุดเริ่มช่วงที่กำลังจับอยู่ (null = หยุดพัก)
+            elapsedMs: 0,      // เวลาสะสมของช่วงที่จับไปแล้ว (ไม่นับช่วงพัก)
+            originStart: null, // เวลาเริ่มเคสครั้งแรก สำหรับ payload
             hn: null
         };
-        
+
+        function startOrContinueCaseTracking(hn) {
+            if (hn) caseTracking.hn = hn;
+            if (!caseTracking.startTime) {
+                caseTracking.startTime = new Date();
+                if (!caseTracking.originStart) caseTracking.originStart = caseTracking.startTime;
+            }
+        }
+
+        function pauseCaseTracking() {
+            if (caseTracking.startTime) {
+                caseTracking.elapsedMs += (Date.now() - caseTracking.startTime.getTime());
+                caseTracking.startTime = null;
+            }
+            return snapshotCaseTracking();
+        }
+
+        function snapshotCaseTracking() {
+            let elapsed = caseTracking.elapsedMs || 0;
+            if (caseTracking.startTime) elapsed += (Date.now() - caseTracking.startTime.getTime());
+            return {
+                elapsedMs: Math.max(0, elapsed),
+                originStart: caseTracking.originStart ? caseTracking.originStart.toISOString() : null,
+                hn: caseTracking.hn || null
+            };
+        }
+
+        function resumeCaseTracking(saved) {
+            saved = saved || {};
+            caseTracking.elapsedMs = Number(saved.elapsedMs) || 0;
+            caseTracking.hn = saved.hn || caseTracking.hn || null;
+            caseTracking.originStart = saved.originStart ? new Date(saved.originStart) : (caseTracking.originStart || new Date());
+            caseTracking.startTime = new Date();
+        }
+
+        function getCaseDurationSeconds() {
+            let ms = caseTracking.elapsedMs || 0;
+            if (caseTracking.startTime) ms += (Date.now() - caseTracking.startTime.getTime());
+            return Math.max(0, Math.round(ms / 1000));
+        }
+
         // เริ่มจับเวลาเมื่อมีการพิมพ์ HN ครั้งแรกของเคสนั้น
         document.getElementById('hn').addEventListener('input', function(e) { // หากช่องใส่ HN ของคุณใช้ id อื่น ให้เปลี่ยน 'hn' เป็น id นั้น
-            if (!caseTracking.startTime && this.value.trim() !== '') {
-                caseTracking.startTime = new Date();
-            }
-            caseTracking.hn = this.value.trim();
+            if (this.value.trim() !== '') startOrContinueCaseTracking(this.value.trim());
+            else caseTracking.hn = '';
         });
         
         function sendCaseTrackingData() {
-            if (!caseTracking.startTime) return; // ถ้าไม่มีเวลาเริ่ม (ไม่ได้กรอก HN) ไม่ต้องส่ง
+            if (!caseTracking.startTime && !(caseTracking.elapsedMs > 0)) return; // ถ้าไม่มีเวลาเริ่ม (ไม่ได้กรอก HN) ไม่ต้องส่ง
             
             let endTime = new Date();
-            let durationSeconds = Math.round((endTime - caseTracking.startTime) / 1000);
+            let durationSeconds = getCaseDurationSeconds();
             
             // 1. ดึงชื่อคลินิกจากตัวแปรแท็บที่กำลังเปิดอยู่
             let clinicName = currentTab || 'ไม่ระบุ';
@@ -11101,7 +11199,7 @@
                 hn: caseTracking.hn,
                 pharmacist: pharmacistName,
                 clinic: clinicName,
-                startTime: caseTracking.startTime.toISOString(),
+                startTime: (caseTracking.originStart || caseTracking.startTime || endTime).toISOString(),
                 endTime: endTime.toISOString(),
                 duration: durationSeconds
             };
@@ -11121,6 +11219,8 @@
 
         function resetCaseTracking() {
             caseTracking.startTime = null;
+            caseTracking.elapsedMs = 0;
+            caseTracking.originStart = null;
             caseTracking.hn = null;
         }
         // ==========================================================
@@ -12736,6 +12836,9 @@
                 hivDrugs: typeof hivDrugs !== 'undefined' ? [...hivDrugs] : [],
                 selectedPreopDrugs: typeof selectedPreopDrugs !== 'undefined' ? [...selectedPreopDrugs] : [],
                 adrTimelineDrugs: typeof adrTimelineDrugs !== 'undefined' ? [...adrTimelineDrugs] : [],
+                c9Meds: typeof c9Meds !== 'undefined' ? c9Meds.map(m => ({ ...m })) : [],
+                c9RecoTicked: (typeof c9RecoTicked !== 'undefined' && c9RecoTicked instanceof Set) ? [...c9RecoTicked] : [],
+                caseTracking: typeof snapshotCaseTracking === 'function' ? snapshotCaseTracking() : null,
                 fields
             };
         }
@@ -12766,29 +12869,32 @@
                 cancelText: 'ทำเคสนี้ต่อ',
                 showCancel: true,
                 onConfirm: () => {
+                    const fresh = captureCurrentFormSnapshot();
+                    fresh.caseTracking = (typeof pauseCaseTracking === 'function') ? pauseCaseTracking() : fresh.caseTracking;
                     const list = getParkedCases();
                     // ถ้ามี HN หรือชื่อซ้ำในคิวพัก ให้เขียนทับเคสเดิมของคนนั้นเพื่อไม่ให้ซ้ำซ้อน
-                    const existingIdx = list.findIndex(c => (snap.hn && c.hn === snap.hn) || (snap.ptName && c.ptName === snap.ptName));
+                    const existingIdx = list.findIndex(c => (fresh.hn && c.hn === fresh.hn) || (fresh.ptName && c.ptName === fresh.ptName));
                     if (existingIdx !== -1) {
-                        snap.id = list[existingIdx].id;
-                        list[existingIdx] = snap;
+                        fresh.id = list[existingIdx].id;
+                        list[existingIdx] = fresh;
                     } else {
-                        list.push(snap);
+                        list.push(fresh);
                     }
 
                     saveParkedCases(list);
 
                     // ล้างฟอร์มเพื่อเริ่มทำเคสใหม่ทันที (ค่าสติกเกอร์ 4, 3, 98, 11 ยังอยู่ครบ)
+                    // resetForm เรียก resetCaseTracking จึงเริ่มจับเวลาใหม่สำหรับเคสถัดไป โดยไม่นับช่วงที่พักไว้
                     if (typeof window.resetForm === 'function') {
                         window.resetForm();
                     }
 
                     const statusEl = document.getElementById('autoSaveStatus');
                     if (statusEl) {
-                        statusEl.innerHTML = `<i class="fa-solid fa-folder-plus text-amber-300"></i> <span>พักเคส "${snap.ptName || snap.hn}" ไว้เรียบร้อย พร้อมรับเคสใหม่</span>`;
+                        statusEl.innerHTML = `<i class="fa-solid fa-folder-plus text-amber-300"></i> <span>พักเคส "${fresh.ptName || fresh.hn}" ไว้เรียบร้อย พร้อมรับเคสใหม่</span>`;
                     }
                     if (typeof showToast === 'function') {
-                        showToast(`พักเคส "${snap.ptName || snap.hn}" ไว้เรียบร้อย`);
+                        showToast(`พักเคส "${fresh.ptName || fresh.hn}" ไว้เรียบร้อย`);
                     }
                 }
             });
@@ -12811,6 +12917,11 @@
             if (Array.isArray(target.hivDrugs)) { hivDrugs = target.hivDrugs; if (typeof renderHivDrugs === 'function') renderHivDrugs(); }
             if (Array.isArray(target.selectedPreopDrugs)) { selectedPreopDrugs = target.selectedPreopDrugs; if (typeof renderSelectedPreopDrugs === 'function') renderSelectedPreopDrugs(); }
             if (Array.isArray(target.adrTimelineDrugs)) { adrTimelineDrugs = target.adrTimelineDrugs; if (typeof renderAdrTimelineRows === 'function') renderAdrTimelineRows(); }
+            if (Array.isArray(target.c9Meds)) {
+                c9Meds = target.c9Meds.map(m => ({ ...m }));
+                if (typeof renderC9Meds === 'function') renderC9Meds();
+            }
+            if (Array.isArray(target.c9RecoTicked)) c9RecoTicked = new Set(target.c9RecoTicked);
 
             // กู้คืนค่า Input/Select/Checkbox/Radio ทุกช่อง
             Object.entries(target.fields || {}).forEach(([key, item]) => {
@@ -12828,6 +12939,7 @@
             if (target.currentTab && typeof switchTab === 'function') switchTab(target.currentTab);
             if (typeof evaluateHivRenalAlert === 'function') evaluateHivRenalAlert();
             if (typeof evaluateCkdRenalAlerts === 'function') evaluateCkdRenalAlerts();
+            if (typeof resumeCaseTracking === 'function') resumeCaseTracking(target.caseTracking || { elapsedMs: 0, hn: target.hn });
             if (typeof generateOutput === 'function') generateOutput();
             triggerAutoSaveDraft();
 

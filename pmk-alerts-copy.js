@@ -1008,13 +1008,28 @@
   }
 
   function parseHhmmMinutes(raw) {
-    const s = String(raw || '').trim().replace('.', ':');
-    let m = s.match(/^(\d{1,2}):(\d{2})$/);
-    if (!m) m = s.match(/^(\d{2})(\d{2})$/);
-    if (!m) return NaN;
-    const h = parseInt(m[1], 10);
-    const min = parseInt(m[2], 10);
-    if (h > 23 || min > 59) return NaN;
+    if (typeof formatC9Time === 'function') {
+      const fmt = formatC9Time(raw);
+      if (!fmt) return NaN;
+      const p = fmt.split('.');
+      return parseInt(p[0], 10) * 60 + parseInt(p[1], 10);
+    }
+    const s = String(raw || '').trim();
+    if (!s) return NaN;
+    const sep = s.match(/^(\d{1,2})[:.](\d{1,2})$/);
+    let h, min;
+    if (sep) {
+      h = parseInt(sep[1], 10);
+      min = parseInt(sep[2], 10);
+    } else if (/^\d{1,2}$/.test(s)) {
+      h = parseInt(s, 10); min = 0;
+    } else {
+      const d = s.replace(/\D/g, '');
+      if (d.length === 3) { h = parseInt(d.slice(0, 1), 10); min = parseInt(d.slice(1), 10); }
+      else if (d.length >= 4) { h = parseInt(d.slice(0, 2), 10); min = parseInt(d.slice(2, 4), 10); }
+      else return NaN;
+    }
+    if (!Number.isFinite(h) || !Number.isFinite(min) || h > 23 || min > 59) return NaN;
     return h * 60 + min;
   }
 
@@ -1199,21 +1214,33 @@
     return alerts;
   }
 
+  function dedupeAlerts(alerts) {
+    const seen = new Set();
+    return (alerts || []).filter(a => {
+      const k = [a.level || '', String(a.title || '').replace(/\s+/g, ' ').trim(), String(a.detail || '').replace(/\s+/g, ' ').trim()].join('|');
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }
+
   function evaluateClinicAlerts(clinic) {
+    let list;
     switch (clinic) {
-      case 'MR': return evalMrAlerts();
-      case 'PREOP': return evalPreopAlerts();
-      case 'ADR': return evalAdrAlerts();
-      case 'HIV': return evalHivAlerts();
-      case 'WARFARIN': return evalWarfarinAlerts();
-      case 'HF': return evalHfAlerts();
-      case 'CKD': return evalCkdAlerts();
-      case 'ASTHMA': return evalAsthmaAlerts();
-      case 'PARKINSON': return evalParkinsonAlerts();
-      case 'CAPD': return evalCapdAlerts();
-      case 'PID': return (typeof window.pmkPidEvalAlerts === 'function') ? window.pmkPidEvalAlerts() : [];
-      default: return [];
+      case 'MR': list = evalMrAlerts(); break;
+      case 'PREOP': list = evalPreopAlerts(); break;
+      case 'ADR': list = evalAdrAlerts(); break;
+      case 'HIV': list = evalHivAlerts(); break;
+      case 'WARFARIN': list = evalWarfarinAlerts(); break;
+      case 'HF': list = evalHfAlerts(); break;
+      case 'CKD': list = evalCkdAlerts(); break;
+      case 'ASTHMA': list = evalAsthmaAlerts(); break;
+      case 'PARKINSON': list = evalParkinsonAlerts(); break;
+      case 'CAPD': list = evalCapdAlerts(); break;
+      case 'PID': list = (typeof window.pmkPidEvalAlerts === 'function') ? window.pmkPidEvalAlerts() : []; break;
+      default: list = [];
     }
+    return dedupeAlerts(list);
   }
 
 
