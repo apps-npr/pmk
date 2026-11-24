@@ -11375,6 +11375,7 @@
             let clinicName = currentTab || 'ไม่ระบุ';
 
             // 2. ดึงชื่อเภสัชกรตามคลินิกที่กำลังเปิดอยู่
+            // 2. ดึงชื่อเภสัชกรตามคลินิกที่กำลังเปิดอยู่
             let pharmacistName = '';
     
             if (currentTab === 'MR') {
@@ -11390,8 +11391,10 @@
                 pharmacistName = refillName || referName;
             } else if (currentTab === 'WARFARIN') {
                 pharmacistName = document.getElementById('wfNotePharm') ? document.getElementById('wfNotePharm').value : '';
+            } else if (currentTab === 'HF') {
+                pharmacistName = document.getElementById('hfPharmName') ? document.getElementById('hfPharmName').value : '';
             } else if (currentTab === 'CKD') {
-               pharmacistName = document.getElementById('c7PharmName') ? document.getElementById('c7PharmName').value : '';
+                pharmacistName = document.getElementById('c7PharmName') ? document.getElementById('c7PharmName').value : '';
             } else if (currentTab === 'ASTHMA') {
                 pharmacistName = document.getElementById('c8PharmName') ? document.getElementById('c8PharmName').value : '';
             } else if (currentTab === 'PARKINSON') {
@@ -11399,9 +11402,9 @@
             } else if (currentTab === 'CAPD') {
                 pharmacistName = document.getElementById('c10PharmName') ? document.getElementById('c10PharmName').value : '';
             } else if (currentTab === 'PID') {
-                pharmacistName = document.getElementById('pidPharmName') ? document.getElementById('pidPharmName').value : '';
-            } else if (currentTab === 'HF') {
-                pharmacistName = 'ไม่ระบุ (HF)'; // หน้า HF ไม่มีช่องกรอกชื่อเภสัชกร
+                pharmacistName = (typeof window.pmkPidPharmName === 'function')
+                    ? window.pmkPidPharmName()
+                    : (document.getElementById('pidPharmName') ? document.getElementById('pidPharmName').value : '');
             }
         
             // ถ้าหาไม่เจอ หรือเภสัชกรไม่ได้กรอกชื่อ ให้ใส่ว่า "ไม่ระบุ"
