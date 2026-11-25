@@ -4124,7 +4124,7 @@
             const selectedDays = Array.from(document.querySelectorAll('.wf-day-cb:checked')).map(cb => cb.value);
 
             if (selectedDays.length === 0) {
-                alert('กรุณาเลือกวันที่รับประทานอย่างน้อย 1 วันครับ');
+                pmkAlert('กรุณาเลือกวันที่รับประทานอย่างน้อย 1 วันครับ');
                 return;
             }
 
@@ -4164,8 +4164,9 @@
         async function fetchWarfarinNoteAutoFill() {
             const wfNo = document.getElementById('wfNoteNo')?.value.trim();
             if (!wfNo) {
-                alert('กรุณากรอกเลข WARFARIN NO ก่อนกดดึงข้อมูลครับ');
-                document.getElementById('wfNoteNo')?.focus();
+                pmkAlert('กรุณากรอกเลข WARFARIN NO ก่อนกดดึงข้อมูลครับ', {
+                    onConfirm: () => document.getElementById('wfNoteNo')?.focus()
+                });
                 return;
             }
 
@@ -4218,10 +4219,10 @@
                         showToast(`ดึงข้อมูล Warfarin No ${wfNo} สำเร็จ!`);
                     }
                 } else {
-                    alert(`ไม่พบข้อมูล Warfarin No: ${wfNo} ในฐานข้อมูลครับ`);
+                    pmkAlert(`ไม่พบข้อมูล Warfarin No: ${wfNo} ในฐานข้อมูลครับ`);
                 }
             } catch (err) {
-                alert('เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล: ' + err.message);
+                pmkAlert('เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล: ' + err.message);
             } finally {
                 if (btn) {
                     btn.disabled = false;
@@ -5667,7 +5668,7 @@
         function copyHfToPmkNote() {
             const recContent = document.getElementById('hfRecContent');
             if (!recContent || recContent.innerHTML.trim() === '') { 
-                alert('กรุณากด "ประมวลผลข้อเสนอแนะทางคลินิก" ก่อนครับ'); 
+                pmkAlert('กรุณากด "ประมวลผลข้อเสนอแนะทางคลินิก" ก่อนครับ'); 
                 return; 
             }
 
@@ -6290,21 +6291,21 @@
 
         function openPreopHoldCalendar() {
             if (typeof currentTab !== 'undefined' && currentTab !== 'PREOP') {
-                alert('ปุ่มนี้ใช้ได้เฉพาะคลินิก Pre-op ครับ');
+                pmkAlert('ปุ่มนี้ใช้ได้เฉพาะคลินิก Pre-op ครับ');
                 return;
             }
             const surgery = getPreopHoldSurgeryDate();
             if (!surgery) {
-                alert('กรุณากรอกวันผ่าตัดก่อนครับ (เช่น 15/12/2569)');
+                pmkAlert('กรุณากรอกวันผ่าตัดก่อนครับ (เช่น 15/12/2569)');
                 return;
             }
             if (!selectedPreopDrugs.length) {
-                alert('กรุณาเลือกยาที่ใช้ประจำก่อนครับ');
+                pmkAlert('กรุณาเลือกยาที่ใช้ประจำก่อนครับ');
                 return;
             }
             const bleedRisk = document.getElementById('bleedingRisk')?.value;
             if (!bleedRisk) {
-                alert('กรุณาเลือกกลุ่มความเสี่ยงเลือดออกของหัตถการก่อนครับ');
+                pmkAlert('กรุณาเลือกกลุ่มความเสี่ยงเลือดออกของหัตถการก่อนครับ');
                 return;
             }
 
@@ -6589,11 +6590,11 @@
 
         function printPreopHoldCalendar() {
             if (!getSelectedPreopHoldCalItems().length) {
-                alert('กรุณาติ๊กยาที่จะใส่ในใบแนะนำก่อนครับ (ยังไม่ติ๊กไว้ให้ เพราะต้องยืนยันกับแพทย์ก่อน)');
+                pmkAlert('กรุณาติ๊กยาที่จะใส่ในใบแนะนำก่อนครับ (ยังไม่ติ๊กไว้ให้ เพราะต้องยืนยันกับแพทย์ก่อน)');
                 return;
             }
             if (!getPreopHoldSurgeryDate()) {
-                alert('กรุณากรอกวันผ่าตัดก่อนครับ');
+                pmkAlert('กรุณากรอกวันผ่าตัดก่อนครับ');
                 return;
             }
             renderPreopHoldCalPreview();
@@ -7987,8 +7988,8 @@
             const dose = document.getElementById('c9Dose')?.value?.trim();
             let time = formatC9Time(document.getElementById('c9Time')?.value);
             if (!id) return;
-            if (!dose) { alert('กรุณาใส่ขนาดยา เช่น 1 tab'); return; }
-            if (!time) { alert('กรุณาใส่เวลากินยา เช่น 7.00 หรือ 0700'); return; }
+            if (!dose) { pmkAlert('กรุณาใส่ขนาดยา เช่น 1 tab'); return; }
+            if (!time) { pmkAlert('กรุณาใส่เวลากินยา เช่น 7.00 หรือ 0700'); return; }
             const info = PD_DRUGS.find(d => d.id === id);
             if (!info) return;
             c9Meds.push({ uid: 'm' + (++c9MedSeq), id: info.id, name: info.name, type: info.type, dose, time, pill: info.pill, pack: info.pack });
@@ -10017,7 +10018,7 @@
 
         function sendToGoogleSheet() {
             if (!SCRIPT_URL || SCRIPT_URL === 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่') { 
-                alert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); 
+                pmkAlert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); 
                 return; 
             }
             const btn = document.getElementById('btnSendDb');
@@ -10046,7 +10047,7 @@
             const finishBtn = () => { btn.innerHTML = originalHTML; btn.disabled = false; };
             if (typeof pmkHandleSheetSave === 'function') {
                 Promise.resolve(pmkHandleSheetSave(savePayload, { label: 'บันทึก ' + targetClinicName }))
-                    .catch((error) => { console.error('Error!', error); alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
+                    .catch((error) => { console.error('Error!', error); pmkAlert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
                     .finally(finishBtn);
             } else {
                 fetch(SCRIPT_URL, {
@@ -10056,7 +10057,7 @@
                     body: JSON.stringify(savePayload)
                 })
                 .then(() => { showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!'); })
-                .catch(error => { console.error('Error!', error); alert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
+                .catch(error => { console.error('Error!', error); pmkAlert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
                 .finally(finishBtn);
             }
             sendCaseTrackingData();
@@ -10302,11 +10303,11 @@
                             if(resultArea) resultArea.classList.remove('hidden');
                             if(showNumber) showNumber.innerText = res.warfarinId;
                         } else {
-                            alert('เกิดข้อผิดพลาด: ' + res.error);
+                            pmkAlert('เกิดข้อผิดพลาด: ' + res.error);
                             if(submitBtn) submitBtn.style.display = 'block';
                         }
                     }).catch(err => {
-                        alert('การเชื่อมต่อขัดข้อง');
+                        pmkAlert('การเชื่อมต่อขัดข้อง');
                         if(submitBtn) submitBtn.style.display = 'block';
                         if(loadingSpinner) loadingSpinner.style.display = 'none';
                     });
@@ -10331,7 +10332,7 @@
             
             const no = wnoInput.value.trim();
             if(!no) { 
-                alert('กรุณาใส่เลข Warfarin No'); 
+                pmkAlert('กรุณาใส่เลข Warfarin No'); 
                 return; 
             }
             
@@ -10352,7 +10353,7 @@
                 if(stkIndication) stkIndication.textContent = d.indication || '—';
                 if(stkInr) stkInr.textContent = d.inr || '—';
             } catch(e) { 
-                alert('ดึงข้อมูลไม่สำเร็จ: ' + e.message); 
+                pmkAlert('ดึงข้อมูลไม่สำเร็จ: ' + e.message); 
             } finally {
                 btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> ดึงข้อมูล'; 
                 btn.disabled = false;
@@ -10495,7 +10496,7 @@
                         if(card) card.remove(); 
                     }
                 } else { 
-                    alert('Error: ' + res.error); 
+                    pmkAlert('Error: ' + res.error); 
                     form.style.opacity = '1'; 
                     form.style.pointerEvents = 'auto'; 
                 }
@@ -11476,7 +11477,7 @@
                 document.getElementById('adminUser').value = '';
                 document.getElementById('adminPass').value = '';
             } else {
-                alert('Username หรือ Password ไม่ถูกต้อง!');
+                pmkAlert('Username หรือ Password ไม่ถูกต้อง!');
             }
         }
 
@@ -11489,7 +11490,7 @@
         function processRawData() {
             const rawData = document.getElementById('adminDataPaste').value.trim();
             if (!rawData) {
-                alert('กรุณาวางข้อมูลจาก Excel ก่อนครับ');
+                pmkAlert('กรุณาวางข้อมูลจาก Excel ก่อนครับ');
                 return;
             }
 
@@ -11526,7 +11527,7 @@
             }
 
             if (rawParsedData.length === 0) {
-                alert('ไม่พบข้อมูล โปรดตรวจสอบว่าคัดลอกมาครบถ้วนหรือไม่');
+                pmkAlert('ไม่พบข้อมูล โปรดตรวจสอบว่าคัดลอกมาครบถ้วนหรือไม่');
                 return;
             }
 
@@ -12619,7 +12620,7 @@
         window.loginAdmin = async function() {
             const username = document.getElementById('adminUser')?.value.trim() || '';
             const password = document.getElementById('adminPass')?.value || '';
-            if (!username || !password) { alert('กรุณากรอก Username และ Password'); return; }
+            if (!username || !password) { pmkAlert('กรุณากรอก Username และ Password'); return; }
 
             try {
                 const res = await fetch(SCRIPT_URL, {
@@ -12635,10 +12636,10 @@
                     document.getElementById('adminStatsModal').style.display = 'flex';
                     fetchAdminRealtimeData(); // ดึงข้อมูล Real-time ทันทีหลัง Login สำเร็จ
                 } else {
-                    alert(data.message || 'Username หรือ Password ไม่ถูกต้อง');
+                    pmkAlert(data.message || 'Username หรือ Password ไม่ถูกต้อง');
                 }
             } catch (err) {
-                alert('ไม่สามารถเชื่อมต่อ Server เพื่อตรวจสอบรหัสผ่านได้: ' + err.message);
+                pmkAlert('ไม่สามารถเชื่อมต่อ Server เพื่อตรวจสอบรหัสผ่านได้: ' + err.message);
             }
         };
 
@@ -13222,7 +13223,8 @@
             confirmText = 'ยืนยัน',
             cancelText = 'ยกเลิก',
             showCancel = true,
-            onConfirm = null
+            onConfirm = null,
+            onCancel = null
         }) {
             const modal = document.getElementById('customConfirmModal');
             const iconWrap = document.getElementById('ccmIconWrap');
@@ -13232,7 +13234,7 @@
             const cancelBtn = document.getElementById('ccmCancelBtn');
             const confirmBtn = document.getElementById('ccmConfirmBtn');
 
-            if (!modal) return;
+            if (!modal) return Promise.resolve(false);
 
             const themes = {
                 warning: {
@@ -13268,20 +13270,57 @@
                 cancelBtn.classList.add('hidden');
             }
 
-            const closeDialog = () => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            };
+            return new Promise((resolve) => {
+                const closeDialog = (ok) => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    resolve(!!ok);
+                };
 
-            cancelBtn.onclick = closeDialog;
-            confirmBtn.onclick = () => {
-                closeDialog();
-                if (typeof onConfirm === 'function') onConfirm();
-            };
+                cancelBtn.onclick = () => {
+                    closeDialog(false);
+                    if (typeof onCancel === 'function') onCancel();
+                };
+                confirmBtn.onclick = () => {
+                    closeDialog(true);
+                    if (typeof onConfirm === 'function') onConfirm();
+                };
 
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                confirmBtn.focus();
+            });
         }
+
+        function pmkAlert(message, opts) {
+            opts = opts || {};
+            return showModernDialog({
+                type: opts.type || 'info',
+                title: opts.title || 'แจ้งเตือน',
+                message: message,
+                confirmText: opts.confirmText || 'ตกลง',
+                showCancel: false,
+                onConfirm: opts.onConfirm || null
+            });
+        }
+
+        function pmkConfirm(message, opts) {
+            opts = opts || {};
+            return showModernDialog({
+                type: opts.type || 'warning',
+                title: opts.title || 'ยืนยันการทำรายการ',
+                message: message,
+                confirmText: opts.confirmText || 'ยืนยัน',
+                cancelText: opts.cancelText || 'ยกเลิก',
+                showCancel: true,
+                onConfirm: opts.onConfirm || null,
+                onCancel: opts.onCancel || null
+            });
+        }
+
+        window.showModernDialog = showModernDialog;
+        window.pmkAlert = pmkAlert;
+        window.pmkConfirm = pmkConfirm;
 
         // ยืนยันการ "ล้างข้อมูล" แบบใหม่ (เรียกใช้ resetForm() เดิมของคุณโดยไม่กระทบระบบอื่น)
         function confirmResetForm() {
