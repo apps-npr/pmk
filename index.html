@@ -10000,6 +10000,11 @@
             if(el && el.value) { 
                 navigator.clipboard.writeText(el.value).then(() => showToast('คัดลอกลง PMK เรียบร้อยแล้ว!')); 
             }
+            // HIV only: end silent case duration on "1. คัดลอกลง PMK" (RM cases are not saved to the workload sheet).
+            // sendCaseTrackingData() then marks the case sent so a later button 2/3 click, or further HN input, will not write a second duration.
+            if (typeof currentTab !== 'undefined' && currentTab === 'HIV') {
+                sendCaseTrackingData();
+            }
         }
 
         function copyToSheet() {
@@ -11316,10 +11321,12 @@
             startTime: null,   // จุดเริ่มช่วงที่กำลังจับอยู่ (null = หยุดพัก)
             elapsedMs: 0,      // เวลาสะสมของช่วงที่จับไปแล้ว (ไม่นับช่วงพัก)
             originStart: null, // เวลาเริ่มเคสครั้งแรก สำหรับ payload
-            hn: null
+            hn: null,
+            sent: false        // HIV: duration already sent for this case (block a second record)
         };
 
         function startOrContinueCaseTracking(hn) {
+            if (caseTracking.sent) return; // HIV: do not start a new duration after this case was already sent
             if (hn) caseTracking.hn = hn;
             if (!caseTracking.startTime) {
                 caseTracking.startTime = new Date();
@@ -11420,6 +11427,10 @@
                 endTime: endTime.toISOString(),
                 duration: durationSeconds
             };
+            if (currentTab === 'HIV') {
+                const typeNode = document.querySelector('input[name="hivType"]:checked');
+                payload.hivType = typeNode ? typeNode.value : '';
+            }
     
             if (typeof pmkHandleTrackingSave === 'function') {
                 pmkHandleTrackingSave(payload);
@@ -11431,7 +11442,10 @@
             }
     
             // ส่งเสร็จแล้วรีเซ็ตเวลา สำหรับเคสต่อไปทันที
+            // HIV: keep sent=true so button 2/3 or later HN input cannot send a second duration.
+            const finalizeHiv = (currentTab === 'HIV');
             resetCaseTracking();
+            if (finalizeHiv) caseTracking.sent = true;
         }
 
         function resetCaseTracking() {
@@ -11439,6 +11453,7 @@
             caseTracking.elapsedMs = 0;
             caseTracking.originStart = null;
             caseTracking.hn = null;
+            caseTracking.sent = false;
         }
         // ==========================================================
         // ================= ADMIN DASHBOARD LOGIC =================
