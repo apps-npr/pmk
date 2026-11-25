@@ -378,6 +378,8 @@
                 padding: 7mm; box-sizing: border-box;
                 -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
             }
+            body.print-mode-asthma-a5 #printInhalerGuideA5,
+            body.print-mode-inhaler-guide #printAsthmaMistakeA5 { display: none !important; }
 
             /* โหมด 8: ปฏิทินหยุดยาก่อนผ่าตัด (A4 แนวตั้ง สำหรับคนไข้ Pre-OP) */
             body.print-mode-preop-hold-cal {
@@ -445,6 +447,7 @@
         @page rifampinPageA5 { size: A5 portrait; margin: 5mm; }
         @page wfColorPageA5 { size: A5 portrait; margin: 4mm; }
         @page asthmaMistakePageA5 { size: A5 portrait; margin: 5mm; }
+        @page inhalerGuidePageA5 { size: A5 portrait; margin: 5mm; }
         @page capdAdvicePageA5 { size: A5 landscape; margin: 8mm 12mm; }
         @page preopHoldCalPageA4 { size: A4 portrait; margin: 8mm 8mm 8mm 8mm; }
         body.print-mode-opd-a5 { page: opdPageA5; }
@@ -10643,6 +10646,9 @@
                             <select id="c8_dev_${dev.id}_regimen" class="rounded-lg border-gray-300 border px-2.5 py-1 text-xs bg-white hidden focus:ring-blue-300 shadow-sm font-medium" onchange="updateC8Score('${dev.id}')">
                                 ${regimenOptions}
                             </select>
+                            <button type="button" class="c8-tech-guide-btn text-xs bg-teal-600 hover:bg-teal-700 text-white px-2.5 py-1 rounded-lg font-semibold shadow-sm transition" onclick="openInhalerTechniqueGuide('${dev.id}')">
+                                <i class="fa-solid fa-book-open mr-1"></i>ดูเทคนิคพ่นยา
+                            </button>
                             <button type="button" id="c8_dev_${dev.id}_toggle_btn" onclick="document.getElementById('c8_dev_${dev.id}_checklist').classList.toggle('hidden')" class="hidden text-xs bg-white hover:bg-gray-100 text-gray-600 border border-gray-300 px-2.5 py-1 rounded-lg">
                                 ซ่อน/แสดงขั้นตอน
                             </button>
@@ -13390,6 +13396,7 @@
     <script src="pmk-pid.js"></script>
     <script src="pmk-patient-print.js"></script>
     <script src="pwa-client.js"></script>
+    <script src="pmk-inhaler-guide.js"></script>
     <script src="pmk-alerts-copy.js"></script>
 </body>
 </html>
