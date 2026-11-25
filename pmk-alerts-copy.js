@@ -13,7 +13,8 @@
     { id: 'ASTHMA', label: 'Asthma / COPD' },
     { id: 'PARKINSON', label: 'Parkinson' },
     { id: 'CAPD', label: 'CAPD' },
-    { id: 'PID', label: 'HIV/TB เด็ก (PID)' }
+    { id: 'PID', label: 'HIV/TB เด็ก (PID)' },
+    { id: 'OPENHEART', label: 'Open Heart' }
   ];
 
   const CLINIC_MAP = Object.fromEntries(CLINICS.map(c => [c.id, c]));
@@ -1238,6 +1239,7 @@
       case 'PARKINSON': list = evalParkinsonAlerts(); break;
       case 'CAPD': list = evalCapdAlerts(); break;
       case 'PID': list = (typeof window.pmkPidEvalAlerts === 'function') ? window.pmkPidEvalAlerts() : []; break;
+      case 'OPENHEART': list = (typeof window.pmkOpenHeartEvalAlerts === 'function') ? window.pmkOpenHeartEvalAlerts() : []; break;
       default: list = [];
     }
     return dedupeAlerts(list);

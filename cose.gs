@@ -283,6 +283,8 @@ function saveOPDNoteToSheet(data) {
         targetSheetName = "CAPD";
     } else if (clinic === "PID") {
         targetSheetName = "PID"; // คลินิก 11 HIV/TB เด็ก
+    } else if (clinic === "Open heart") {
+        targetSheetName = "Open heart"; // คลินิก 12 Open Heart
     }
 
     var sheet = ss.getSheetByName(targetSheetName);
@@ -308,6 +310,9 @@ function saveOPDNoteToSheet(data) {
     } else if (clinic === "PID") {
       // แท็บ PID มี checkbox FALSE เตรียมไว้ล่วงหน้าหลายร้อยแถว appendRow จะไปตกท้ายตาราง จึงต้องหาแถวว่างจริงแถวแรก
       writePidRow_(sheet, rowData);
+    } else if (clinic === "Open heart") {
+      // แท็บ Open heart มี checkbox FALSE เตรียมไว้ล่วงหน้าในคอลัมน์ E จึงต้องหาแถวว่างจริงแถวแรก
+      writeOpenHeartRow_(sheet, rowData);
     } else {
       // สำหรับ CKD, Asthma COPD, HF clinic และ Parkinson New ฝั่งเว็บไซต์ได้จัดเตรียมข้อมูลมาครบถ้วนแล้ว (รวมถึงวันที่)
       sheet.appendRow(rowData);
@@ -399,6 +404,61 @@ function writePidRow_(sheet, rowData) {
     sheet.getRange(target, 1).setNumberFormat('@');
     sheet.getRange(target, 2).setNumberFormat('@'); // HN เป็นข้อความ กันเลข 0 นำหน้าหาย
     sheet.getRange(target, 1, 1, 11).setValues([out]);
+    return target;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// ========================================================
+// คลินิก 12 Open Heart -> แท็บ Open heart
+// คอลัมน์: A Column 1 (HN) | B ชื่อ-นามสกุล | C U/D | D หัตถการ | E พบเภสัช (checkbox)
+//          F วันที่พบเภสัช | G วันนัดนอนรพ. | H วันผ่าตัด | I รายละเอียด | J เภสัชแนะนำ | K DRP | L cancel case (เว้นว่าง)
+// ========================================================
+var OPENHEART_HEADER_ROWS = 2;
+
+function findOpenHeartTargetRow_(sheet) {
+  var maxRows = sheet.getMaxRows();
+  var n = Math.max(maxRows - OPENHEART_HEADER_ROWS, 1);
+  var ab = sheet.getRange(OPENHEART_HEADER_ROWS + 1, 1, n, 2).getValues();
+  var last = 0;
+  for (var i = ab.length - 1; i >= 0; i--) {
+    if (String(ab[i][0]).trim() !== '' || String(ab[i][1]).trim() !== '') { last = i + 1; break; }
+  }
+  return OPENHEART_HEADER_ROWS + last + 1;
+}
+
+function writeOpenHeartRow_(sheet, rowData) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var r = (rowData || []).slice(0, 12);
+    while (r.length < 12) r.push('');
+    var target = findOpenHeartTargetRow_(sheet);
+    if (target > sheet.getMaxRows()) sheet.insertRowsAfter(sheet.getMaxRows(), 50);
+
+    var out = [
+      String(r[0] || ''),
+      String(r[1] || ''),
+      String(r[2] || ''),
+      String(r[3] || ''),
+      pidBool_(r[4]),
+      String(r[5] || ''),
+      String(r[6] || ''),
+      String(r[7] || ''),
+      String(r[8] || ''),
+      String(r[9] || ''),
+      String(r[10] || ''),
+      ''
+    ];
+
+    sheet.getRange(target, 1).setNumberFormat('@');
+    sheet.getRange(target, 6, 1, 3).setNumberFormat('@');
+    var chkCell = sheet.getRange(target, 5);
+    if (!chkCell.getDataValidation()) {
+      chkCell.insertCheckboxes();
+    }
+    sheet.getRange(target, 1, 1, 12).setValues([out]);
     return target;
   } finally {
     lock.releaseLock();
