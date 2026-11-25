@@ -146,7 +146,7 @@
     loadQueue();
     if (!state.queue.length) return { sent: 0, failed: 0 };
     if (!navigator.onLine) {
-      if (manual) alert('ยังออฟไลน์อยู่ครับ ส่งไม่ได้ในตอนนี้');
+      if (manual) pmkAlert('ยังออฟไลน์อยู่ครับ ส่งไม่ได้ในตอนนี้');
       return { sent: 0, failed: state.queue.length };
     }
     // Lock immediately so a second online event cannot send the same row twice.
@@ -156,7 +156,7 @@
     if (!reachable) {
       state.flushing = false;
       renderStatus();
-      if (manual) alert('ยังติดต่อ Google Sheet ไม่ได้ครับ รายการยังอยู่ในคิว');
+      if (manual) pmkAlert('ยังติดต่อ Google Sheet ไม่ได้ครับ รายการยังอยู่ในคิว');
       return { sent: 0, failed: state.queue.length };
     }
     let sent = 0, failed = 0, unconfirmed = 0;
@@ -228,7 +228,7 @@
     const body = JSON.stringify(payloadObj);
     const url = scriptUrl();
     if (!url) {
-      alert('ยังไม่ได้ตั้งค่าที่อยู่สำหรับบันทึก Google Sheet');
+      pmkAlert('ยังไม่ได้ตั้งค่าที่อยู่สำหรับบันทึก Google Sheet');
       return { status: 'error' };
     }
     const ready = canSaveToSheet();
@@ -240,7 +240,7 @@
         confirmable: false,
         label: opts.label || ('บันทึก ' + (payloadObj.clinic || ''))
       });
-      alert('ตอนนี้ยังบันทึกลง Google Sheet ไม่ได้ครับ ระบบเก็บรายการนี้ไว้ในเครื่องแล้ว จะส่งให้อัตโนมัติเมื่อเชื่อมต่อได้');
+      pmkAlert('ตอนนี้ยังบันทึกลง Google Sheet ไม่ได้ครับ ระบบเก็บรายการนี้ไว้ในเครื่องแล้ว จะส่งให้อัตโนมัติเมื่อเชื่อมต่อได้');
       return { status: 'queued', pending: state.queue.length };
     }
     try {
@@ -254,7 +254,7 @@
       return { status: 'sent-unconfirmed' };
     } catch (err) {
       enqueueSave({ kind: 'saveOPDNote', url, body, confirmable: false, label: opts.label || 'บันทึก Google Sheet' });
-      alert('ส่งข้อมูลไม่สำเร็จ ระบบเก็บรายการนี้ไว้ในเครื่องแล้ว จะส่งใหม่เมื่อเชื่อมต่อได้');
+      pmkAlert('ส่งข้อมูลไม่สำเร็จ ระบบเก็บรายการนี้ไว้ในเครื่องแล้ว จะส่งใหม่เมื่อเชื่อมต่อได้');
       return { status: 'queued', pending: state.queue.length };
     }
   };
@@ -274,7 +274,7 @@
 
   window.pmkGuardOnlineAction = function (message) {
     if (canSaveToSheet()) return true;
-    alert(message || 'ตอนนี้ออฟไลน์หรือติดต่อ Google Sheet ไม่ได้ครับ กรุณาลองใหม่เมื่อแถบสถานะเป็นสีเขียว');
+    pmkAlert(message || 'ตอนนี้ออฟไลน์หรือติดต่อ Google Sheet ไม่ได้ครับ กรุณาลองใหม่เมื่อแถบสถานะเป็นสีเขียว');
     return false;
   };
 

@@ -325,7 +325,7 @@
   function fillPatientAdviceA5() {
     const tab = currentClinic();
     if (SUPPORTED.indexOf(tab) < 0) {
-      alert('คลินิกนี้มีใบพิมพ์อยู่แล้วครับ หรือยังไม่รองรับใบแนะนำผู้ป่วย');
+      pmkAlert('คลินิกนี้มีใบพิมพ์อยู่แล้วครับ หรือยังไม่รองรับใบแนะนำผู้ป่วย');
       return false;
     }
     const data = COLLECT[tab]();
