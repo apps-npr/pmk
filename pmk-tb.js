@@ -2,6 +2,7 @@
  * Workload row -> tab "TB" (7 columns A-G):
  *   A Date | B HN | C Name/age | D DRPs | E ชนิด drp | F ไม่มาตามนัด | G APP
  * Patient history -> separate Apps Script (TB_Patients_Code.gs), set TB_PATIENTS_URL below.
+ * Lookup and upsert by HN or TB No.
  */
 (function () {
   'use strict';
@@ -42,6 +43,7 @@
 
   const PATIENT_FIELDS = [
     // [payload key, element id, fill rule]
+    ['tbno', 'tbNo', 'present'],
     ['age', 'tbAge', 'present'],
     ['sex', 'tbSex', 'present'],
     ['weight', 'tbWeight', 'empty'],
@@ -235,10 +237,14 @@
           </div>
         </div>
         <div class="rounded-lg border border-yellow-200 bg-yellow-50/60 p-3 space-y-2">
-          <div class="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap items-end gap-2">
+            <div class="w-40">
+              <label class="block text-xs font-medium text-gray-600 mb-1">TB No</label>
+              <input type="text" id="tbNo" class="${inputCls()}" placeholder="เช่น 68-0123" ${onChangeAttr()}>
+            </div>
             <button type="button" id="tbBtnLoadPrev" onclick="window.pmkTbLoadPrevious()" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">ดึงข้อมูลเดิม</button>
             <button type="button" id="tbBtnSavePatient" onclick="window.pmkTbSavePatient()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-sm font-semibold">บันทึกข้อมูลผู้ป่วย</button>
-            <span class="text-xs text-yellow-900">ใส่ HN ด้านบนแล้วกดเพื่อดึงประวัติเดิม หรือบันทึกข้อมูลผู้ป่วยไว้ใช้ครั้งถัดไป (แยกจากการบันทึกงาน)</span>
+            <span class="text-xs text-yellow-900">ใส่ HN ด้านบน หรือ TB No แล้วกดเพื่อดึงประวัติเดิม หรือบันทึกข้อมูลผู้ป่วยไว้ใช้ครั้งถัดไป (แยกจากการบันทึกงาน)</span>
           </div>
           <p id="tbPrevStatus" class="text-sm text-yellow-900 min-h-[1.25rem]"></p>
           <div id="tbPrevHistory" class="hidden rounded-lg border border-yellow-100 bg-white p-3 text-sm text-gray-800 space-y-1"></div>
@@ -780,6 +786,7 @@
     const crcl = getCrcl();
     return {
       hn: val('hn'),
+      tbno: val('tbNo'),
       name: val('ptName'),
       age: val('tbAge'),
       sex: radio('tbSex'),
@@ -818,6 +825,8 @@
     lastLoadedPatient = Object.assign({}, p);
     const nameEl = $('ptName');
     if (nameEl && plain(p.name)) nameEl.value = plain(p.name);
+    const hnEl = $('hn');
+    if (hnEl && plain(p.hn)) hnEl.value = plain(p.hn);
     PATIENT_FIELDS.forEach(([key, id, rule]) => {
       const el = $(id);
       const v = plain(p[key]);
@@ -842,7 +851,8 @@
     if (!box) return;
     const rows = [];
     const updated = plain(p.updatedAt);
-    rows.push(`<div class="font-semibold text-yellow-900">พบข้อมูล HN นี้${updated ? ' (อัปเดตล่าสุด: ' + esc(updated) + ')' : ''}</div>`);
+    const who = [plain(p.hn) ? 'HN ' + plain(p.hn) : '', plain(p.tbno) ? 'TB No ' + plain(p.tbno) : ''].filter(Boolean).join(' · ');
+    rows.push(`<div class="font-semibold text-yellow-900">พบข้อมูลผู้ป่วยนี้${who ? ' (' + esc(who) + ')' : ''}${updated ? ' (อัปเดตล่าสุด: ' + esc(updated) + ')' : ''}</div>`);
     const bits = [];
     if (plain(p.lastVisit)) bits.push('มาครั้งก่อน ' + esc(plain(p.lastVisit)));
     if (plain(p.weight)) bits.push('น้ำหนักครั้งก่อน ' + esc(plain(p.weight)) + ' kg');
@@ -863,10 +873,18 @@
     setStatus('');
   }
 
+  async function fetchPatient(url, query) {
+    const sep = url.includes('?') ? '&' : '?';
+    const res = await fetch(url + sep + query, { method: 'GET', credentials: 'omit', cache: 'no-store' });
+    if (!res.ok) throw new Error('http ' + res.status);
+    return res.json();
+  }
+
   async function loadPrevious() {
     const hn = val('hn');
+    const tbno = val('tbNo');
     const btn = $('tbBtnLoadPrev');
-    if (!hn) { clearLookupUi(); setStatus('กรุณากรอก HN ด้านบนก่อนดึงข้อมูลเดิม', 'error'); return; }
+    if (!hn && !tbno) { clearLookupUi(); setStatus('กรุณากรอก HN หรือ TB No ก่อนดึงข้อมูลเดิม', 'error'); return; }
     const url = patientsUrl();
     if (!url) { setStatus('ยังไม่ได้เชื่อมต่อระบบข้อมูลผู้ป่วย TB กรุณาแจ้งผู้ดูแลระบบ', 'error'); return; }
     if (navigator.onLine === false) { setStatus('ตอนนี้ออฟไลน์ ดึงข้อมูลเดิมไม่ได้ กรุณาต่อเน็ตแล้วลองใหม่', 'error'); return; }
@@ -874,15 +892,18 @@
     if (btn) { btn.disabled = true; btn.textContent = 'กำลังดึงข้อมูล...'; }
     setStatus('กำลังดึงข้อมูลเดิม...', 'info');
     try {
-      const res = await fetch(url + (url.includes('?') ? '&' : '?') + 'hn=' + encodeURIComponent(hn), { method: 'GET', credentials: 'omit', cache: 'no-store' });
-      if (!res.ok) throw new Error('http ' + res.status);
-      const data = await res.json();
+      let data = null;
+      if (hn) data = await fetchPatient(url, 'hn=' + encodeURIComponent(hn));
+      if (!(data && data.status === 'found' && data.patient)) {
+        const key = tbno || hn;
+        if (key) data = await fetchPatient(url, 'tbno=' + encodeURIComponent(key));
+      }
       if (data && data.status === 'found' && data.patient) {
         fillFromPrevious(data.patient);
         setStatus('ดึงข้อมูลเดิมสำเร็จ', 'ok');
       } else if (data && data.status === 'not_found') {
         clearLookupUi();
-        setStatus('ไม่พบประวัติของ HN นี้ (ผู้ป่วยใหม่)', 'info');
+        setStatus('ไม่พบประวัติของ HN หรือ TB No นี้ (ผู้ป่วยใหม่)', 'info');
       } else {
         setStatus((data && data.message) || 'ดึงข้อมูลเดิมไม่สำเร็จ กรุณาลองใหม่', 'error');
       }
@@ -896,7 +917,8 @@
   async function savePatient() {
     const hn = val('hn');
     const btn = $('tbBtnSavePatient');
-    if (!hn) { alertModal('กรุณากรอก HN ก่อนบันทึกข้อมูลผู้ป่วย'); return; }
+    const tbno = val('tbNo');
+    if (!hn && !tbno) { alertModal('กรุณากรอก HN หรือ TB No ก่อนบันทึกข้อมูลผู้ป่วย'); return; }
     const url = patientsUrl();
     if (!url) { alertModal('ยังไม่ได้เชื่อมต่อระบบบันทึกข้อมูลผู้ป่วย TB กรุณาแจ้งผู้ดูแลระบบ'); return; }
     if (navigator.onLine === false) { alertModal('ตอนนี้ออฟไลน์ บันทึกข้อมูลผู้ป่วยไม่ได้ กรุณาต่อเน็ตแล้วลองใหม่'); return; }
@@ -936,16 +958,20 @@
     }
   }
 
-  function bindHnEnter() {
-    const hnEl = $('hn');
-    if (!hnEl || hnEl.dataset.tbLookupBound === '1') return;
-    hnEl.dataset.tbLookupBound = '1';
-    hnEl.addEventListener('keydown', (e) => {
+  function bindLookupEnter(el) {
+    if (!el || el.dataset.tbLookupBound === '1') return;
+    el.dataset.tbLookupBound = '1';
+    el.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter') return;
       if (typeof currentTab === 'undefined' || currentTab !== 'TB') return;
       e.preventDefault();
       loadPrevious();
     });
+  }
+
+  function bindHnEnter() {
+    bindLookupEnter($('hn'));
+    bindLookupEnter($('tbNo'));
   }
 
   // ---------------------------------------------------------------
