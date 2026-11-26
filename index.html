@@ -7938,6 +7938,21 @@
         let c9Meds = [];
         let c9MedSeq = 0;
         let c9RecoTicked = new Set();
+        if (typeof window !== 'undefined') window.c9Meds = c9Meds;
+
+        function syncC9Meds() {
+            if (typeof window === 'undefined') return c9Meds;
+            if (Array.isArray(window.c9Meds) && window.c9Meds !== c9Meds) {
+                // Adopt an external window.c9Meds assignment only when the local list is empty.
+                // Otherwise keep the in-form list (e.g. after กู้เคสที่พักไว้).
+                if (!c9Meds.length && window.c9Meds.length) c9Meds = window.c9Meds;
+                else window.c9Meds = c9Meds;
+            } else {
+                window.c9Meds = c9Meds;
+            }
+            return c9Meds;
+        }
+        if (typeof window !== 'undefined') window.pmkGetC9Meds = function () { return syncC9Meds(); };
 
         function pdImgSrc(file) {
             return file ? (PD_IMG + file) : '';
@@ -8285,6 +8300,7 @@
         }
 
         function addC9Med() {
+            syncC9Meds();
             const id = document.getElementById('c9Drug')?.value;
             const dose = document.getElementById('c9Dose')?.value?.trim();
             let time = formatC9Time(document.getElementById('c9Time')?.value);
@@ -8303,12 +8319,14 @@
         }
 
         function removeC9Med(uid) {
+            syncC9Meds();
             c9Meds = c9Meds.filter(m => m.uid !== uid);
             renderC9Meds();
             generateOutput();
         }
 
         function renderC9Meds() {
+            syncC9Meds();
             const box = document.getElementById('c9MedList');
             const leddBox = document.getElementById('c9LeddBox');
             if (!box) return;
@@ -13620,6 +13638,7 @@
             if (Array.isArray(target.adrTimelineDrugs)) { adrTimelineDrugs = target.adrTimelineDrugs; if (typeof renderAdrTimelineRows === 'function') renderAdrTimelineRows(); }
             if (Array.isArray(target.c9Meds)) {
                 c9Meds = target.c9Meds.map(m => ({ ...m }));
+                if (typeof window !== 'undefined') window.c9Meds = c9Meds;
                 if (typeof renderC9Meds === 'function') renderC9Meds();
             }
             if (Array.isArray(target.c9RecoTicked)) c9RecoTicked = new Set(target.c9RecoTicked);
