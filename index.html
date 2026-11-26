@@ -642,6 +642,7 @@
                 <button onclick="switchTab('CAPD')" id="tab-CAPD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100">10. CAPD</button>
                 <button onclick="switchTab('PID')" id="tab-PID" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100">11. HIV/TB เด็ก (PID)</button>
                 <button onclick="switchTab('OPENHEART')" id="tab-OPENHEART" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-red-50 text-red-800 border-red-200 hover:bg-red-100">12. Open Heart</button>
+                <button onclick="switchTab('TB')" id="tab-TB" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-yellow-50 text-yellow-800 border-yellow-300 hover:bg-yellow-100">13. TB</button>
                     </div>
                 </div>
                 <button type="button" id="clinicPickerBtn" onclick="toggleClinicPicker(event)"
@@ -2920,6 +2921,9 @@
             <!-- Clinic 12: Open Heart rendered by pmk-openheart.js -->
             <div id="form-OPENHEART" class="space-y-6 clinic-form hidden"></div>
 
+            <!-- Clinic 13: TB rendered by pmk-tb.js -->
+            <div id="form-TB" class="space-y-6 clinic-form hidden"></div>
+
             <div id="form-CAPD" class="space-y-6 clinic-form hidden">
                 <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-4">
                     <h3 class="font-bold text-cyan-900 mb-1">10. CAPD</h3>
@@ -4495,6 +4499,7 @@
             CAPD: '<path d="M9 3.4h6v2.2"/><rect x="6.4" y="5.6" width="11.2" height="14.2" rx="2"/><path d="M7.4 12h9.2"/>',
             PID: '<circle cx="12" cy="7.2" r="3"/><path d="M6.5 20.5c0-3.2 2.4-5.6 5.5-5.6s5.5 2.4 5.5 5.6"/>',
             OPENHEART: '<path d="M12 20.5S4 15.2 2.6 10.6C1.6 7.3 3.9 4.2 7.2 4.2c1.9 0 3.4 1 4.8 2.6 1.4-1.6 2.9-2.6 4.8-2.6 3.3 0 5.6 3.1 4.6 6.4-1.4 4.6-9.4 9.9-9.4 9.9z"/><path d="M6.5 11.5h2.3l1.3-2.4 2.1 4.6 1.5-2.2h3.8"/>',
+            TB: '<path d="M12 3v6"/><path d="M12 9c-1.5 0-2.5 1-3.6 2.4C7 13.2 5 14.5 5 17.2 5 19.4 6.6 21 8.6 21c1.9 0 3.4-1.6 3.4-4.2V9z"/><path d="M12 9c1.5 0 2.5 1 3.6 2.4 1.4 1.8 3.4 3.1 3.4 5.8 0 2.2-1.6 3.8-3.6 3.8-1.9 0-3.4-1.6-3.4-4.2"/><circle cx="8.8" cy="16.5" r="1.1" fill="currentColor" stroke="none"/>',
             _fallback: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/>'
         };
 
@@ -4639,6 +4644,7 @@
             if(tab === 'CAPD') activeBtn.classList.remove('text-cyan-700');
             if(tab === 'PID') activeBtn.classList.remove('text-rose-700');
             if(tab === 'OPENHEART') activeBtn.classList.remove('text-red-800');
+            if(tab === 'TB') activeBtn.classList.remove('text-yellow-800');
             if (tab === 'HF' && typeof bindHfGdmtHelper === 'function') bindHfGdmtHelper();
 
             const mergeCheck = document.getElementById('mergeMrOption');
@@ -7543,6 +7549,7 @@
             if(hivManualAdh) hivManualAdh.value = '100%'; 
             if (typeof window.pmkPidReset === 'function') window.pmkPidReset();
             if (typeof window.pmkOpenHeartReset === 'function') window.pmkOpenHeartReset();
+            if (typeof window.pmkTbReset === 'function') window.pmkTbReset();
             
             const hivLabDateRef = document.getElementById('hivLabDateRef');
             if(hivLabDateRef) hivLabDateRef.value = 'cd4';
@@ -9738,6 +9745,9 @@
             else if (currentTab === 'OPENHEART') {
                 if (typeof window.pmkOpenHeartBuildNote === 'function') notes = notes.concat(window.pmkOpenHeartBuildNote());
             }
+            else if (currentTab === 'TB') {
+                if (typeof window.pmkTbBuildNote === 'function') notes = notes.concat(window.pmkTbBuildNote());
+            }
             else if (currentTab === 'WARFARIN') {
                 const activeWf = document.querySelector('.wf-nav-link.active')?.id;
                 if (activeWf === 'wf-note-tab') {
@@ -10156,6 +10166,9 @@
             else if (currentTab === 'OPENHEART') {
                 rowData = (typeof window.pmkOpenHeartBuildRow === 'function') ? window.pmkOpenHeartBuildRow(dateStr) : Array(12).fill('');
             }
+            else if (currentTab === 'TB') {
+                rowData = (typeof window.pmkTbBuildRow === 'function') ? window.pmkTbBuildRow(dateStr) : Array(7).fill('');
+            }
             return rowData;
         }
         function copyToClipboard(elementId) {
@@ -10205,6 +10218,8 @@
                 targetClinicName = 'PID';
             } else if (currentTab === 'OPENHEART') {
                 targetClinicName = 'Open heart';
+            } else if (currentTab === 'TB') {
+                targetClinicName = 'TB';
             }
 
             const savePayload = { action: "saveOPDNote", clinic: targetClinicName, payload: getRowDataArray() };
@@ -11581,6 +11596,10 @@
                 pharmacistName = (typeof window.pmkOpenHeartPharmName === 'function')
                     ? window.pmkOpenHeartPharmName()
                     : (document.getElementById('ohPharmName') ? document.getElementById('ohPharmName').value : '');
+            } else if (currentTab === 'TB') {
+                pharmacistName = (typeof window.pmkTbPharmName === 'function')
+                    ? window.pmkTbPharmName()
+                    : (document.getElementById('tbPharmName') ? document.getElementById('tbPharmName').value : '');
             }
         
             // ถ้าหาไม่เจอ หรือเภสัชกรไม่ได้กรอกชื่อ ให้ใส่ว่า "ไม่ระบุ"
@@ -12072,6 +12091,7 @@
                         selectedPreopDrugs: typeof selectedPreopDrugs !== 'undefined' ? selectedPreopDrugs : [],
                         adrTimelineDrugs: typeof adrTimelineDrugs !== 'undefined' ? adrTimelineDrugs : [],
                         ohState: typeof window.pmkOpenHeartGetState === 'function' ? window.pmkOpenHeartGetState() : null,
+                tbState: typeof window.pmkTbGetState === 'function' ? window.pmkTbGetState() : null,
                         fields
                     };
                     localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(payload));
@@ -12096,6 +12116,7 @@
                 if (Array.isArray(data.selectedPreopDrugs)) { selectedPreopDrugs = data.selectedPreopDrugs; if (typeof renderSelectedPreopDrugs === 'function') renderSelectedPreopDrugs(); }
                 if (Array.isArray(data.adrTimelineDrugs) && data.adrTimelineDrugs.length) { adrTimelineDrugs = data.adrTimelineDrugs; if (typeof renderAdrTimelineRows === 'function') renderAdrTimelineRows(); }
                 if (data.ohState && typeof window.pmkOpenHeartSetState === 'function') window.pmkOpenHeartSetState(data.ohState);
+                if (data.tbState && typeof window.pmkTbSetState === 'function') window.pmkTbSetState(data.tbState);
 
                 Object.entries(data.fields).forEach(([key, item]) => {
                     if (item.type === 'radio') {
@@ -13246,6 +13267,7 @@
                 c9Meds: typeof c9Meds !== 'undefined' ? c9Meds.map(m => ({ ...m })) : [],
                 c9RecoTicked: (typeof c9RecoTicked !== 'undefined' && c9RecoTicked instanceof Set) ? [...c9RecoTicked] : [],
                 ohState: typeof window.pmkOpenHeartGetState === 'function' ? window.pmkOpenHeartGetState() : null,
+                        tbState: typeof window.pmkTbGetState === 'function' ? window.pmkTbGetState() : null,
                 caseTracking: typeof snapshotCaseTracking === 'function' ? snapshotCaseTracking() : null,
                 fields
             };
@@ -13331,6 +13353,7 @@
             }
             if (Array.isArray(target.c9RecoTicked)) c9RecoTicked = new Set(target.c9RecoTicked);
             if (target.ohState && typeof window.pmkOpenHeartSetState === 'function') window.pmkOpenHeartSetState(target.ohState);
+            if (target.tbState && typeof window.pmkTbSetState === 'function') window.pmkTbSetState(target.tbState);
 
             // กู้คืนค่า Input/Select/Checkbox/Radio ทุกช่อง
             Object.entries(target.fields || {}).forEach(([key, item]) => {
@@ -13565,6 +13588,7 @@
     <script src="pmk-login.js"></script>
     <script src="pmk-pid.js"></script>
     <script src="pmk-openheart.js"></script>
+    <script src="pmk-tb.js"></script>
     <script src="pmk-patient-print.js"></script>
     <script src="pwa-client.js"></script>
     <script src="pmk-alerts-copy.js"></script>

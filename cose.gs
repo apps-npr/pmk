@@ -285,6 +285,8 @@ function saveOPDNoteToSheet(data) {
         targetSheetName = "PID"; // คลินิก 11 HIV/TB เด็ก
     } else if (clinic === "Open heart") {
         targetSheetName = "Open heart"; // คลินิก 12 Open Heart
+    } else if (clinic === "TB") {
+        targetSheetName = "TB"; // คลินิก 13 TB: A Date | B HN | C Name/age | D DRPs | E ชนิด drp | F ไม่มาตามนัด | G APP
     }
 
     var sheet = ss.getSheetByName(targetSheetName);
@@ -313,6 +315,9 @@ function saveOPDNoteToSheet(data) {
     } else if (clinic === "Open heart") {
       // แท็บ Open heart มี checkbox FALSE เตรียมไว้ล่วงหน้าในคอลัมน์ E จึงต้องหาแถวว่างจริงแถวแรก
       writeOpenHeartRow_(sheet, rowData);
+    } else if (clinic === "TB") {
+      // แท็บ TB: เขียนต่อท้ายแถวล่าสุด และเก็บวันที่/HN เป็นข้อความ (เช่น 26/11/69, 43598/67)
+      writeTbRow_(sheet, rowData);
     } else {
       // สำหรับ CKD, Asthma COPD, HF clinic และ Parkinson New ฝั่งเว็บไซต์ได้จัดเตรียมข้อมูลมาครบถ้วนแล้ว (รวมถึงวันที่)
       sheet.appendRow(rowData);
@@ -459,6 +464,27 @@ function writeOpenHeartRow_(sheet, rowData) {
       chkCell.insertCheckboxes();
     }
     sheet.getRange(target, 1, 1, 12).setValues([out]);
+    return target;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// ========================================================
+// คลินิก 13 TB -> แท็บ TB
+// คอลัมน์: A Date | B HN | C Name/age | D DRPs | E ชนิด drp | F ไม่มาตามนัด | G APP
+// ========================================================
+function writeTbRow_(sheet, rowData) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var r = (rowData || []).slice(0, 7);
+    while (r.length < 7) r.push('');
+    var out = r.map(function (v) { return v == null ? '' : String(v); });
+    var target = sheet.getLastRow() + 1;
+    if (target > sheet.getMaxRows()) sheet.insertRowsAfter(sheet.getMaxRows(), 50);
+    sheet.getRange(target, 1, 1, 2).setNumberFormat('@');
+    sheet.getRange(target, 1, 1, 7).setValues([out]);
     return target;
   } finally {
     lock.releaseLock();
