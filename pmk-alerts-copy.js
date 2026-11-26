@@ -14,7 +14,8 @@
     { id: 'PARKINSON', label: 'Parkinson' },
     { id: 'CAPD', label: 'CAPD' },
     { id: 'PID', label: 'HIV/TB เด็ก (PID)' },
-    { id: 'OPENHEART', label: 'Open Heart' }
+    { id: 'OPENHEART', label: 'Open Heart' },
+    { id: 'TB', label: 'TB' }
   ];
 
   const CLINIC_MAP = Object.fromEntries(CLINICS.map(c => [c.id, c]));
@@ -1240,6 +1241,7 @@
       case 'CAPD': list = evalCapdAlerts(); break;
       case 'PID': list = (typeof window.pmkPidEvalAlerts === 'function') ? window.pmkPidEvalAlerts() : []; break;
       case 'OPENHEART': list = (typeof window.pmkOpenHeartEvalAlerts === 'function') ? window.pmkOpenHeartEvalAlerts() : []; break;
+      case 'TB': list = (typeof window.pmkTbEvalAlerts === 'function') ? window.pmkTbEvalAlerts() : []; break;
       default: list = [];
     }
     return dedupeAlerts(list);
