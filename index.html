@@ -11,7 +11,7 @@
         })();
     </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>OPD Online - Pharmacist Note</title>
     <!-- Tailwind CSS & Fonts & FontAwesome -->
     <link rel="stylesheet" href="pmk-tailwind.css">
@@ -117,6 +117,265 @@
         .clinic-picker-item .clinic-icon { width: 1.4rem; height: 1.4rem; }
         @media print {
             #clinicPickerOverlay, #clinicPickerBtn { display: none !important; }
+        }
+
+
+        /* ===== Mobile layout (<=768px): desktop styles above stay unchanged ===== */
+        @media (max-width: 768px) {
+            html, body {
+                overflow-x: hidden;
+                max-width: 100%;
+            }
+            body.p-4 {
+                padding-top: var(--pmk-chrome-h, calc(32px + env(safe-area-inset-top, 0px)));
+                padding-left: max(1rem, env(safe-area-inset-left, 0px));
+                padding-right: max(1rem, env(safe-area-inset-right, 0px));
+                padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+            }
+            #pmkChrome {
+                padding-top: env(safe-area-inset-top, 0px);
+            }
+            #pmkStatusBar {
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 4px 8px;
+                padding: 5px 10px;
+                font-size: 11px;
+                line-height: 1.25;
+                min-height: 28px;
+            }
+            #pmkStatusBar .pmk-conn-detail { display: none; }
+            #pmkStatusBar #pmkConnPill {
+                flex: 1 1 auto;
+                min-width: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            #pmkIosHint.pmk-ios-hint {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                flex: 1 1 100%;
+                min-width: 0;
+                max-width: 100%;
+                font-size: 10px;
+                font-weight: 600;
+                line-height: 1.25;
+            }
+            #pmkIosHint.hidden { display: none !important; }
+            #pmkIosHint .pmk-ios-hint-text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                min-width: 0;
+            }
+            #pmkIosHintDismiss {
+                flex: 0 0 auto;
+                width: 28px;
+                min-width: 28px;
+                height: 28px;
+                padding: 0;
+                border-radius: 9999px;
+                font-size: 16px;
+                line-height: 1;
+                font-weight: 700;
+            }
+            #pmkUpdateBar { padding: 6px 10px; font-size: 11px; }
+
+            #mainAppContainer {
+                border-radius: 1rem;
+                max-width: 100%;
+                padding-bottom: 72px;
+            }
+
+            #pmkAppHeader {
+                padding: 12px 14px 14px;
+            }
+            #pmkHeaderTop {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+            #pmkHeaderBrand {
+                display: grid;
+                grid-template-columns: 40px 1fr;
+                grid-template-areas:
+                    "logo title"
+                    "logo status"
+                    "park park";
+                column-gap: 10px;
+                row-gap: 2px;
+                width: 100%;
+                min-width: 0;
+                align-items: center;
+            }
+            #pmkHeaderBrand > img {
+                grid-area: logo;
+                align-self: center;
+                margin-right: 0;
+                width: 40px;
+                height: 40px;
+            }
+            #pmkHeaderTitleBlock {
+                display: contents;
+            }
+            #pmkAppHeader h1 {
+                grid-area: title;
+                font-size: 1.25rem;
+                line-height: 1.25;
+                overflow: visible;
+                margin: 0;
+                padding: 0;
+                min-width: 0;
+            }
+            #autoSaveStatus {
+                grid-area: status;
+                font-size: 10px !important;
+                line-height: 1.35;
+                margin-top: 0 !important;
+                min-width: 0;
+            }
+            #pmkParkBar {
+                grid-area: park;
+                width: 100%;
+                margin-top: 8px;
+            }
+            #pmkParkCaseBtn {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+                white-space: normal;
+                line-height: 1.35;
+                min-height: 44px;
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            #parkedCasesBar { width: 100%; }
+            #pmkHeaderActions {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 8px;
+                width: 100%;
+                align-items: stretch;
+            }
+            #pmkHeaderActions > button {
+                width: 100%;
+                min-width: 0;
+                min-height: 44px;
+                justify-content: center;
+                padding: 8px 6px;
+                font-size: 12px;
+                line-height: 1.2;
+                text-align: center;
+                white-space: nowrap;
+            }
+            #pmkHeaderActions > button i,
+            #pmkHeaderActions > button svg {
+                margin-right: 4px;
+                flex-shrink: 0;
+            }
+
+            #mainPatientInfo input,
+            #pmkAppLogin input[type="text"],
+            #pmkAppLogin input[type="password"],
+            #mainAppContainer input[type="text"],
+            #mainAppContainer input[type="number"],
+            #mainAppContainer input[type="tel"],
+            #mainAppContainer input[type="email"],
+            #mainAppContainer input[type="date"],
+            #mainAppContainer input[type="time"],
+            #mainAppContainer input[type="search"],
+            #mainAppContainer input:not([type]),
+            #mainAppContainer select,
+            #mainAppContainer textarea {
+                font-size: 16px !important;
+                min-height: 44px;
+            }
+            #mainAppContainer input[type="checkbox"],
+            #mainAppContainer input[type="radio"],
+            #mainAppContainer input[type="hidden"],
+            #mainAppContainer input[type="range"],
+            #mainAppContainer input[type="color"] {
+                min-height: 0;
+                font-size: inherit !important;
+            }
+
+            #clinicTabsRow {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            #clinicTabScroller {
+                width: 100%;
+                flex: none;
+                min-width: 0;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            #clinicPickerBtn {
+                width: 100%;
+                justify-content: center;
+                min-height: 44px;
+                border-radius: 0.75rem;
+                font-size: 0.9rem;
+            }
+            .tab-btn {
+                min-height: 44px;
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+            }
+
+            #pmkFormsContainer {
+                padding: 1rem !important;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .clinic-form table,
+            #mainAppContainer table,
+            #mainAppContainer .hivkb-table {
+                max-width: 100%;
+            }
+            .clinic-form .flex.justify-between {
+                flex-wrap: wrap;
+            }
+            .clinic-form select,
+            #c10_reimburseScope {
+                max-width: 100%;
+                min-width: 0;
+            }
+            .wf-nav-tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                flex-wrap: nowrap;
+            }
+            #pmkActionButtons {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            #pmkActionButtons > button {
+                width: 100%;
+                justify-content: center;
+                min-height: 44px;
+                text-align: center;
+                white-space: normal;
+            }
+
+            #pmkScrollTopFab {
+                bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+                right: max(12px, env(safe-area-inset-right, 0px));
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.2s ease, transform 0.2s ease;
+            }
+            #pmkScrollTopFab.is-visible {
+                opacity: 1;
+                pointer-events: auto;
+            }
         }
 
 
@@ -536,7 +795,10 @@
             <span id="pmkQueueInfo" class="hidden"></span>
             <button type="button" id="pmkFlushQueueBtn" class="hidden">ส่งตอนนี้</button>
             <button type="button" id="pmkInstallBtn" class="hidden">ติดตั้งแอป</button>
-            <span id="pmkIosHint" class="hidden font-medium opacity-95">บน iPhone/iPad: กดปุ่มแชร์ แล้วเลือก «เพิ่มไปยังหน้าโฮมสกรีน»</span>
+            <span id="pmkIosHint" class="hidden pmk-ios-hint font-medium opacity-95">
+                <span class="pmk-ios-hint-text">บน iPhone/iPad: กดแชร์ แล้วเลือก «เพิ่มไปยังหน้าโฮมสกรีน»</span>
+                <button type="button" id="pmkIosHintDismiss" aria-label="ปิดคำแนะนำติดตั้ง">×</button>
+            </span>
         </div>
     </div>
 
@@ -582,25 +844,25 @@
             })();
         </script>
         <!-- Header -->
-        <div class="bg-blue-600 p-6 text-white">
-            <div class="flex justify-between items-center mb-4">
-                <div class="flex items-center">
+        <div class="bg-blue-600 p-6 text-white" id="pmkAppHeader">
+            <div class="flex justify-between items-center mb-4" id="pmkHeaderTop">
+                <div class="flex items-center" id="pmkHeaderBrand">
                     <img src="icon_512x512.png" alt="Icon" class="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
-                    <div>
+                    <div id="pmkHeaderTitleBlock">
                         <h1 class="text-2xl font-semibold">OPD Online</h1>
                         <div id="autoSaveStatus" class="text-[11px] text-blue-100 flex items-center gap-1.5 mt-0.5">
                             <i class="fa-solid fa-cloud-arrow-up"></i> <span>ระบบบันทึกแบบร่างอัตโนมัติพร้อมทำงาน</span>
                         </div>
                         <!-- แถบระบบพักเคสรอผล Lab (Multi-Draft Queue) -->
-                        <div class="mt-2 flex flex-wrap items-center gap-2">
-                            <button type="button" onclick="parkCurrentCaseDraft()" class="bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5">
+                        <div id="pmkParkBar" class="mt-2 flex flex-wrap items-center gap-2">
+                            <button type="button" id="pmkParkCaseBtn" onclick="parkCurrentCaseDraft()" class="bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5">
                                 <i class="fa-solid fa-pause-circle"></i> พักเคสนี้ไว้ (รอผล Lab) &amp; เริ่มเคสใหม่
                             </button>
                             <div id="parkedCasesBar" class="flex flex-wrap items-center gap-1.5"></div>
                         </div>
                     </div>
                 </div>
-                <div class="flex gap-2 items-center">
+                <div class="flex gap-2 items-center" id="pmkHeaderActions">
                     <button type="button" id="pmkAppLogoutBtn" class="print:hidden bg-white/15 hover:bg-white/25 text-white px-3 py-2 rounded-lg font-medium shadow-sm transition flex items-center text-sm border border-white/30" title="ออกจากระบบ">
                         <i class="fa-solid fa-right-from-bracket mr-1.5"></i> ออกจากระบบ
                     </button>
@@ -627,7 +889,7 @@
 
         <!-- Clinic Tabs -->
         <div class="p-4 sm:p-6 border-b border-gray-200 bg-gray-50">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2" id="clinicTabsRow">
                 <div id="clinicTabScroller" class="flex-1 overflow-x-auto min-w-0">
                     <div id="clinicTabBar" class="flex flex-nowrap gap-2 min-w-max">
                 <button onclick="switchTab('MR')" id="tab-MR" class="tab-btn active px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">1. MR</button>
@@ -654,7 +916,7 @@
         </div>
 
         <!-- Forms Container -->
-        <div class="p-6">
+        <div class="p-6" id="pmkFormsContainer">
             
             <!-- 1. MR Form -->
             <div id="form-MR" class="space-y-4 clinic-form block">
@@ -3138,7 +3400,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-wrap gap-4">
+            <div class="flex flex-wrap gap-4" id="pmkActionButtons">
                 <button onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     1. คัดลอกลง PMK
@@ -3176,9 +3438,18 @@
     </div>
 
     <!-- Floating Back to Top Button -->
-    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-20 right-5 bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-xl transition-transform hover:scale-110 z-40 print:hidden" title="กลับขึ้นด้านบน">
+    <button type="button" id="pmkScrollTopFab" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-20 right-5 bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-xl transition-transform hover:scale-110 z-40 print:hidden" title="กลับขึ้นด้านบน">
         <i class="fa-solid fa-arrow-up"></i>
     </button>
+    <script>
+    (function () {
+        var fab = document.getElementById('pmkScrollTopFab');
+        if (!fab) return;
+        function syncFab() { fab.classList.toggle('is-visible', window.scrollY > 180); }
+        window.addEventListener('scroll', syncFab, { passive: true });
+        syncFab();
+    })();
+    </script>
 
     <!-- A5 Print Area -->
     <div id="printArea" class="hidden">
@@ -7667,6 +7938,21 @@
         let c9Meds = [];
         let c9MedSeq = 0;
         let c9RecoTicked = new Set();
+        if (typeof window !== 'undefined') window.c9Meds = c9Meds;
+
+        function syncC9Meds() {
+            if (typeof window === 'undefined') return c9Meds;
+            if (Array.isArray(window.c9Meds) && window.c9Meds !== c9Meds) {
+                // Adopt an external window.c9Meds assignment only when the local list is empty.
+                // Otherwise keep the in-form list (e.g. after กู้เคสที่พักไว้).
+                if (!c9Meds.length && window.c9Meds.length) c9Meds = window.c9Meds;
+                else window.c9Meds = c9Meds;
+            } else {
+                window.c9Meds = c9Meds;
+            }
+            return c9Meds;
+        }
+        if (typeof window !== 'undefined') window.pmkGetC9Meds = function () { return syncC9Meds(); };
 
         function pdImgSrc(file) {
             return file ? (PD_IMG + file) : '';
@@ -8014,6 +8300,7 @@
         }
 
         function addC9Med() {
+            syncC9Meds();
             const id = document.getElementById('c9Drug')?.value;
             const dose = document.getElementById('c9Dose')?.value?.trim();
             let time = formatC9Time(document.getElementById('c9Time')?.value);
@@ -8032,12 +8319,14 @@
         }
 
         function removeC9Med(uid) {
+            syncC9Meds();
             c9Meds = c9Meds.filter(m => m.uid !== uid);
             renderC9Meds();
             generateOutput();
         }
 
         function renderC9Meds() {
+            syncC9Meds();
             const box = document.getElementById('c9MedList');
             const leddBox = document.getElementById('c9LeddBox');
             if (!box) return;
@@ -13349,6 +13638,7 @@
             if (Array.isArray(target.adrTimelineDrugs)) { adrTimelineDrugs = target.adrTimelineDrugs; if (typeof renderAdrTimelineRows === 'function') renderAdrTimelineRows(); }
             if (Array.isArray(target.c9Meds)) {
                 c9Meds = target.c9Meds.map(m => ({ ...m }));
+                if (typeof window !== 'undefined') window.c9Meds = c9Meds;
                 if (typeof renderC9Meds === 'function') renderC9Meds();
             }
             if (Array.isArray(target.c9RecoTicked)) c9RecoTicked = new Set(target.c9RecoTicked);

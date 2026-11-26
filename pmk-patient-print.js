@@ -272,7 +272,9 @@
 
   function collectParkinson() {
     const rows = [];
-    const list = (typeof window.c9Meds !== 'undefined' && Array.isArray(window.c9Meds)) ? window.c9Meds : [];
+    const list = (typeof window.pmkGetC9Meds === 'function')
+      ? (window.pmkGetC9Meds() || [])
+      : ((typeof window.c9Meds !== 'undefined' && Array.isArray(window.c9Meds)) ? window.c9Meds : []);
     list.forEach(function (m) {
       const name = m && String(m.name || '').trim();
       if (!name) return;
