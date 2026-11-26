@@ -121,9 +121,9 @@
 
     if (pill) {
       if (mode === 'online') {
-        pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> เชื่อมต่อแล้ว — บันทึกลง Google Sheet ได้';
+        pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> เชื่อมต่อแล้ว<span class="pmk-conn-detail"> — บันทึกลง Google Sheet ได้</span>';
       } else if (mode === 'offline') {
-        pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> ออฟไลน์ — ยังบันทึกลง Google Sheet ไม่ได้';
+        pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> ออฟไลน์<span class="pmk-conn-detail"> — ยังบันทึกลง Google Sheet ไม่ได้</span>';
       } else if (mode === 'amber') {
         pill.innerHTML = '<i class="fa-solid fa-circle pmk-dot"></i> เน็ตมี แต่ยังติดต่อ Google Sheet ไม่ได้';
       } else {
@@ -139,6 +139,7 @@
       flushBtn.classList.toggle('hidden', !n);
       flushBtn.disabled = state.flushing || mode === 'offline';
     }
+    syncChromePad();
   }
 
   async function flushQueue(manual) {
@@ -278,6 +279,16 @@
     return false;
   };
 
+  const IOS_HINT_KEY = 'pmk_ios_hint_dismissed';
+
+  function syncChromePad() {
+    const el = document.getElementById('pmkChrome');
+    if (!el) return;
+    const h = Math.ceil(el.getBoundingClientRect().height) + 2;
+    document.documentElement.style.setProperty('--pmk-chrome-h', h + 'px');
+  }
+  window.pmkSyncChromePad = syncChromePad;
+
   function isStandalone() {
     return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   }
@@ -312,7 +323,23 @@
         btn.classList.add('hidden');
       });
     }
-    if (hint && isIos()) hint.classList.remove('hidden');
+    if (hint && isIos() && !localStorage.getItem(IOS_HINT_KEY)) {
+      hint.classList.remove('hidden');
+    }
+    const dismiss = document.getElementById('pmkIosHintDismiss');
+    if (dismiss && hint) {
+      dismiss.addEventListener('click', () => {
+        try { localStorage.setItem(IOS_HINT_KEY, '1'); } catch (e) {}
+        hint.classList.add('hidden');
+        syncChromePad();
+      });
+    }
+    syncChromePad();
+    if (typeof ResizeObserver !== 'undefined') {
+      const chrome = document.getElementById('pmkChrome');
+      if (chrome) new ResizeObserver(syncChromePad).observe(chrome);
+    }
+    window.addEventListener('resize', syncChromePad);
   }
 
   function setupUpdatePrompt() {
