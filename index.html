@@ -9004,14 +9004,30 @@
                 html += '<div class="text-xs"><span class="font-semibold">DRP ครั้งก่อน:</span> ' + drps.map((d, i) => (i + 1) + '. ' + d).join(' ') + '</div>';
             }
             const labs = [];
+            const labDate = capdNormalizeThaiDateLabel(p.labDate);
+            if (labDate) labs.push('วันที่แล็บ ' + labDate);
             if (capdPlainText(p.bp)) labs.push('BP ' + capdPlainText(p.bp));
             if (capdPlainText(p.po4)) labs.push('PO₄ ' + capdPlainText(p.po4));
             if (capdPlainText(p.ferritin)) labs.push('Ferritin ' + capdPlainText(p.ferritin));
             if (capdPlainText(p.tsat)) labs.push('TSAT ' + capdPlainText(p.tsat));
+            if (capdPlainText(p.hct)) labs.push('Hct ' + capdPlainText(p.hct));
+            if (capdPlainText(p.k)) labs.push('K ' + capdPlainText(p.k));
+            if (capdPlainText(p.ca)) labs.push('Ca ' + capdPlainText(p.ca));
+            if (capdPlainText(p.glucose)) labs.push('Glucose ' + capdPlainText(p.glucose));
+            if (capdPlainText(p.a1c)) labs.push('A1c ' + capdPlainText(p.a1c));
+            if (capdPlainText(p.ipth)) labs.push('iPTH ' + capdPlainText(p.ipth));
             if (labs.length) html += '<div class="text-xs text-slate-600">' + labs.join(' · ') + '</div>';
             if (capdPlainText(p.recommendEPO)) html += '<div class="text-xs text-slate-600">คำแนะนำ EPO ครั้งก่อน: ' + capdPlainText(p.recommendEPO) + '</div>';
             list.innerHTML = html;
             box.classList.remove('hidden');
+        }
+
+        function capdFillIfPresent(id, val) {
+            const el = document.getElementById(id);
+            const text = capdPlainText(val);
+            if (!el || !text) return false;
+            el.value = text;
+            return true;
         }
 
         function capdFillFromPrevious(p) {
@@ -9037,6 +9053,9 @@
             if (feEl) feEl.value = capdPlainText(p.ferritin);
             const tsatEl = document.getElementById('c10Tsat');
             if (tsatEl) tsatEl.value = capdPlainText(p.tsat);
+            capdFillIfPresent('c10Sbp', p.sbp);
+            capdFillIfPresent('c10Dbp', p.dbp);
+            if (c10Val('c10Sbp') && c10Val('c10Dbp')) capdSyncBpFromParts();
 
             for (let i = 1; i <= C10_TOTAL_MONTHS; i++) {
                 const labelEl = document.getElementById('c10_m' + i + '_label');
@@ -9051,7 +9070,15 @@
             const m12Hb = document.getElementById('c10_m12_hb');
             if (todayHb && m12Hb) todayHb.value = m12Hb.value;
 
+            capdFillIfPresent('c10Hct', p.hct);
+            capdFillIfPresent('c10K', p.k);
+            capdFillIfPresent('c10Ca', p.ca);
+            capdFillIfPresent('c10Glu', p.glucose);
+            capdFillIfPresent('c10A1c', p.a1c);
+            capdFillIfPresent('c10Ipth', p.ipth);
+
             // Keep today's clinic-visit date for the workload sheet.
+            // LabDate is stored for history only and is not written back into the visit date.
             const dateEl = document.getElementById('c10VisitDate');
             if (dateEl) dateEl.value = visitDateBefore || capdTodayDateStr();
 
@@ -9131,10 +9158,20 @@
                 po4: c10Val('c10Po4'),
                 ferritin: c10Val('c10Fe'),
                 tsat: c10Val('c10Tsat'),
+                sbp: capdResolvedBp().sbp || c10Val('c10Sbp'),
+                dbp: capdResolvedBp().dbp || c10Val('c10Dbp'),
+                hct: c10Val('c10Hct'),
+                k: c10Val('c10K'),
+                ca: c10Val('c10Ca'),
+                glucose: c10Val('c10Glu'),
+                a1c: c10Val('c10A1c'),
+                ipth: c10Val('c10Ipth'),
+                labDate: c10Val('c10VisitDate'),
                 reimburseResult: capdComputedOrLookup(document.getElementById('c10_reimburseMainText')?.innerText, 'reimburseResult'),
                 recommendEPO: capdComputedOrLookup(document.getElementById('c10_epoRecommendText')?.innerText, 'recommendEPO')
             };
             const visitDate = c10Val('c10VisitDate');
+            if (!payload.labDate) payload.labDate = c10Val('c10_m12_label') || visitDate;
             for (let i = 1; i <= C10_TOTAL_MONTHS; i++) {
                 let label = c10Val('c10_m' + i + '_label');
                 if (i === 12 && !label && visitDate) label = visitDate;
