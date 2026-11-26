@@ -415,15 +415,15 @@
         </div>
       </div>
 
-      <div class="rounded-xl border-2 border-yellow-400 bg-yellow-100 p-4 space-y-3">
+      <div class="rounded-xl border border-gray-300 bg-white p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <h4 class="font-bold text-yellow-900">ใบ Standing order TB (แนะนำแพทย์)</h4>
+          <h4 class="font-bold text-gray-800">ใบ Standing order TB (แนะนำแพทย์)</h4>
           <div class="flex gap-2">
-            <button type="button" id="tbBtnCopyOrder" onclick="window.pmkTbCopyOrder()" class="text-xs bg-white hover:bg-yellow-50 text-yellow-900 border border-yellow-400 font-semibold px-3 py-2 rounded-lg">คัดลอกข้อความ</button>
-            <button type="button" id="tbBtnPrintOrder" onclick="window.pmkTbPrintOrder()" class="text-xs bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-3 py-2 rounded-lg">พิมพ์ใบสีเหลือง</button>
+            <button type="button" id="tbBtnCopyOrder" onclick="window.pmkTbCopyOrder()" class="text-xs bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 font-semibold px-3 py-2 rounded-lg">คัดลอกข้อความ</button>
+            <button type="button" id="tbBtnPrintOrder" onclick="window.pmkTbPrintOrder()" class="text-xs bg-slate-700 hover:bg-slate-800 text-white font-semibold px-3 py-2 rounded-lg">พิมพ์ใบแนะนำแพทย์</button>
           </div>
         </div>
-        <pre id="tbOrderPreview" class="whitespace-pre-wrap text-sm text-gray-900 bg-yellow-50 border border-yellow-300 rounded-lg p-3 font-sans"></pre>
+        <pre id="tbOrderPreview" class="whitespace-pre-wrap text-sm text-gray-900 bg-white border border-gray-300 rounded-lg p-3 font-sans"></pre>
       </div>
     `;
 
@@ -508,7 +508,7 @@
   }
 
   // ---------------------------------------------------------------
-  // Standing order (yellow sheet)
+  // Standing order (plain white sheet)
   // ---------------------------------------------------------------
   function dxText() {
     const dx = radio('tbDx') || 'PTB';
@@ -571,13 +571,13 @@
 <style>
   @page { size: A5; margin: 8mm; }
   body { font-family: 'Sarabun', 'TH Sarabun New', sans-serif; font-size: 13px; color: #111; margin: 0; }
-  .sheet { background: #fff59d; border: 2px solid #c9a400; border-radius: 6px; padding: 10px 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sheet { background: #ffffff; border: 1px solid #333; border-radius: 0; padding: 10px 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   h1 { font-size: 16px; margin: 0 0 2px; text-align: center; }
   h2 { font-size: 13px; margin: 0 0 8px; text-align: center; font-weight: normal; }
   .row { margin: 2px 0; }
   table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 12px; }
-  th, td { border: 1px solid #8a7300; padding: 2px 4px; text-align: center; }
-  tr.hit td { background: #ffe082; font-weight: bold; }
+  th, td { border: 1px solid #333; padding: 2px 4px; text-align: center; }
+  tr.hit td { background: #e5e7eb; font-weight: bold; }
   ul { margin: 4px 0 4px 18px; padding: 0; }
   .foot { font-size: 11px; margin-top: 4px; }
 </style></head><body><div class="sheet">
