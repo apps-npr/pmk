@@ -100,9 +100,30 @@
 
         html { scroll-behavior: smooth; }
         .tab-btn { transition: all 0.2s ease; }
-        .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
-        .tab-btn:not(.active) { background-color: #f3f4f6; color: #4b5563; }
-        .tab-btn:not(.active):hover { background-color: #e5e7eb; }
+        /* Clinic chip colors come from pmk-ui.css variables; keep the active
+           tab as a tint + accent bar, not a solid blue (or alert-colored) pill. */
+        #clinicTabBar .tab-btn {
+            appearance: none !important;
+            -webkit-appearance: none !important;
+        }
+        #clinicTabBar .tab-btn:not(.active) {
+            background: #fff !important;
+            color: #334155 !important;
+            border-color: #e2e8f0 !important;
+        }
+        #clinicTabBar .tab-btn:not(.active):hover {
+            background: var(--pmk-clinic-bg, #f8fafc) !important;
+            border-color: var(--pmk-clinic-border, #e2e8f0) !important;
+            color: var(--pmk-clinic-text, #334155) !important;
+        }
+        #clinicTabBar .tab-btn.active {
+            background-color: var(--pmk-clinic-bg, #eff6ff) !important;
+            background-image: none !important;
+            color: var(--pmk-clinic-text, #1e3a8a) !important;
+            border-color: var(--pmk-clinic-accent, #1d4ed8) !important;
+            box-shadow: inset 0 -3px 0 var(--pmk-clinic-accent, #1d4ed8), 0 0 0 1px var(--pmk-clinic-accent, #1d4ed8);
+            font-weight: 700;
+        }
 
         /* Clinic picker (sticky button + 2-column panel) */
         #clinicTabScroller { -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
@@ -968,19 +989,19 @@
             <div class="flex items-center gap-2" id="clinicTabsRow">
                 <div id="clinicTabScroller" class="flex-1 overflow-x-auto min-w-0">
                     <div id="clinicTabBar" class="flex flex-nowrap gap-2 min-w-max">
-                <button onclick="switchTab('MR')" id="tab-MR" class="tab-btn active px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">1. MR</button>
-                <button onclick="switchTab('PREOP')" id="tab-PREOP" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">2. Pre-OP</button>
-                <button onclick="switchTab('ADR')" id="tab-ADR" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">3. ADR/SE</button>
-                <button onclick="switchTab('HIV')" id="tab-HIV" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">4. HIV</button>
-                <button onclick="switchTab('WARFARIN')" id="tab-WARFARIN" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-red-50 text-red-700 border-red-200 hover:bg-red-100">5. Warfarin</button>
-                <button onclick="switchTab('HF')" id="tab-HF" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-green-50 text-green-700 border-green-200 hover:bg-green-100">6. Heart Failure</button>
-                <button onclick="switchTab('CKD')" id="tab-CKD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">7. CKD</button>
-                <button onclick="switchTab('ASTHMA')" id="tab-ASTHMA" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">8. Asthma/COPD</button>
-                <button onclick="switchTab('PARKINSON')" id="tab-PARKINSON" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100">9. Parkinson</button>
-                <button onclick="switchTab('CAPD')" id="tab-CAPD" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100">10. CAPD</button>
-                <button onclick="switchTab('PID')" id="tab-PID" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100">11. HIV/TB เด็ก (PID)</button>
-                <button onclick="switchTab('OPENHEART')" id="tab-OPENHEART" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-red-50 text-red-800 border-red-200 hover:bg-red-100">12. Open Heart</button>
-                <button onclick="switchTab('TB')" id="tab-TB" class="tab-btn px-5 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5 bg-yellow-50 text-yellow-800 border-yellow-300 hover:bg-yellow-100">13. TB</button>
+                <button type="button" onclick="switchTab('MR')" id="tab-MR" data-clinic="MR" class="tab-btn pmk-chip active px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">1. MR</button>
+                <button type="button" onclick="switchTab('PREOP')" id="tab-PREOP" data-clinic="PREOP" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">2. Pre-OP</button>
+                <button type="button" onclick="switchTab('ADR')" id="tab-ADR" data-clinic="ADR" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">3. ADR/SE</button>
+                <button type="button" onclick="switchTab('HIV')" id="tab-HIV" data-clinic="HIV" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">4. HIV</button>
+                <button type="button" onclick="switchTab('WARFARIN')" id="tab-WARFARIN" data-clinic="WARFARIN" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">5. Warfarin</button>
+                <button type="button" onclick="switchTab('HF')" id="tab-HF" data-clinic="HF" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">6. Heart Failure</button>
+                <button type="button" onclick="switchTab('CKD')" id="tab-CKD" data-clinic="CKD" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">7. CKD</button>
+                <button type="button" onclick="switchTab('ASTHMA')" id="tab-ASTHMA" data-clinic="ASTHMA" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">8. Asthma/COPD</button>
+                <button type="button" onclick="switchTab('PARKINSON')" id="tab-PARKINSON" data-clinic="PARKINSON" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">9. Parkinson</button>
+                <button type="button" onclick="switchTab('CAPD')" id="tab-CAPD" data-clinic="CAPD" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">10. CAPD</button>
+                <button type="button" onclick="switchTab('PID')" id="tab-PID" data-clinic="PID" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">11. HIV/TB เด็ก (PID)</button>
+                <button type="button" onclick="switchTab('OPENHEART')" id="tab-OPENHEART" data-clinic="OPENHEART" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">12. Open Heart</button>
+                <button type="button" onclick="switchTab('TB')" id="tab-TB" data-clinic="TB" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">13. TB</button>
                     </div>
                 </div>
                 <button type="button" id="clinicPickerBtn" onclick="toggleClinicPicker(event)"
@@ -2623,7 +2644,7 @@
             <!-- 7. CKD (Upgraded Pre-Dialysis & Workload Suite) -->
             <div id="form-CKD" class="space-y-5 clinic-form hidden">
                 <!-- Banner & ปุ่มเปิดคู่มือให้ความรู้คนไข้ CKD ก่อนล้างไต -->
-                <div class="bg-orange-50 p-4 border border-orange-200 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                <div class="pmk-clinic-head bg-orange-50 p-4 border border-orange-200 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                     <div class="text-sm">
                         <h3 class="font-bold text-orange-800 text-base"><i class="fa-solid fa-notes-medical mr-1.5"></i>7. คลินิกโรคไตเรื้อรังและชะลอไตเสื่อม (CKD)</h3>
                         <p class="text-orange-700 text-xs mt-0.5">ติดตามแนวโน้มการทำงานของไต (sCr / eGFR), คัดกรอง DRP/Nephrotoxic/สมุนไพร และให้คำแนะนำชะลอไตเสื่อม</p>
@@ -2859,7 +2880,7 @@
             
             <!-- 8. Asthma/COPD -->
             <div id="form-ASTHMA" class="space-y-6 clinic-form hidden">
-                <div class="bg-teal-50 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
+                <div class="pmk-clinic-head bg-teal-50 p-4 border border-teal-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-teal-800 mb-1"><i class="fa-solid fa-lungs mr-1.5"></i>8. คลินิกโรคระบบทางเดินหายใจ (Asthma / COPD)</h3>
                     <p class="text-teal-700 text-xs">ประเมินการควบคุมอาการ รายการยาพ่นที่ใช้ปัจจุบัน (Current Medication) เทคนิคการพ่นยาพร้อมสรุปขั้นตอนที่ขาด และความร่วมมือในการใช้ยา</p>
                 </div>
@@ -2972,7 +2993,7 @@
             </div>
             <!-- 9. Parkinson Clinic -->
             <div id="form-PARKINSON" class="space-y-6 clinic-form hidden">
-                <div class="bg-violet-50 p-4 border border-violet-200 rounded-xl mb-4 text-sm">
+                <div class="pmk-clinic-head bg-violet-50 p-4 border border-violet-200 rounded-xl mb-4 text-sm">
                     <h3 class="font-bold text-violet-800 mb-1"><i class="fa-solid fa-brain mr-1.5"></i>9. คลินิกโรคพาร์กินสัน (Parkinson)</h3>
                     <p class="text-violet-700 text-xs">จัดตารางยา ดูรูปยา (เม็ดยาและกล่องยา) ประเมิน motor complications / DRP</p>
                 </div>
@@ -3263,7 +3284,7 @@
             <div id="form-TB" class="space-y-6 clinic-form hidden"></div>
 
             <div id="form-CAPD" class="space-y-6 clinic-form hidden">
-                <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-4">
+                <div class="pmk-clinic-head bg-cyan-50 border border-cyan-200 rounded-xl p-4">
                     <h3 class="font-bold text-cyan-900 mb-1">10. CAPD</h3>
                     <p class="text-sm text-cyan-800">บันทึกผลแล็บ ปัญหาด้านยา และคำแนะนำ EPO สำหรับลง PMK และแท็บ <span class="font-semibold">CAPD</span> </p>
                 </div>
@@ -4887,8 +4908,44 @@
                 const id = clinicIdFromTabButton(btn);
                 const label = getClinicTabLabel(btn);
                 if (!label) return;
-                btn.classList.add('flex', 'items-center');
+                btn.dataset.clinic = id;
+                btn.classList.add('flex', 'items-center', 'pmk-chip');
+                if (btn.querySelector('.clinic-icon') && btn.querySelector('.clinic-tab-label')) return;
                 btn.innerHTML = getClinicIconSvg(id, 16) + '<span class="clinic-tab-label">' + escapeClinicLabel(label) + '</span>';
+            });
+        }
+
+        function paintClinicChips() {
+            getClinicTabButtons().forEach(btn => {
+                if (btn.classList.contains('active')) {
+                    btn.style.setProperty('background-color', 'var(--pmk-clinic-bg)', 'important');
+                    btn.style.setProperty('background-image', 'none', 'important');
+                    btn.style.setProperty('color', 'var(--pmk-clinic-text)', 'important');
+                    btn.style.setProperty('border-color', 'var(--pmk-clinic-accent)', 'important');
+                } else {
+                    btn.style.removeProperty('background-color');
+                    btn.style.removeProperty('background-image');
+                    btn.style.removeProperty('color');
+                    btn.style.removeProperty('border-color');
+                }
+            });
+        }
+
+        function applyClinicTheme() {
+            applyClinicIcons();
+            paintClinicChips();
+            document.querySelectorAll('.clinic-form').forEach(form => {
+                const id = String(form.id || '').replace(/^form-/, '');
+                if (!id) return;
+                form.dataset.clinic = id;
+                form.classList.add('pmk-clinic-' + id);
+                if (form.querySelector(':scope > .pmk-clinic-head')) return;
+                const head = document.createElement('div');
+                head.className = 'pmk-clinic-head';
+                const tab = document.getElementById('tab-' + id);
+                const label = getClinicTabLabel(tab) || id;
+                head.innerHTML = getClinicIconSvg(id, 18) + '<span class="pmk-clinic-head-label">' + escapeClinicLabel(label) + '</span>';
+                form.insertBefore(head, form.firstChild);
             });
         }
 
@@ -4963,7 +5020,18 @@
             const scroller = document.getElementById('clinicTabScroller');
             const activeBtn = document.getElementById('tab-' + currentTab);
             if (!scroller || !activeBtn) return;
-            activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            const run = function () {
+                const sRect = scroller.getBoundingClientRect();
+                const tRect = activeBtn.getBoundingClientRect();
+                if (!sRect.width) return;
+                const target = scroller.scrollLeft + (tRect.left - sRect.left) - Math.max(0, (sRect.width - tRect.width) / 2);
+                const max = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
+                const next = Math.max(0, Math.min(max, target));
+                const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (reduce || typeof scroller.scrollTo !== 'function') scroller.scrollLeft = next;
+                else scroller.scrollTo({ left: next, behavior: 'smooth' });
+            };
+            requestAnimationFrame(function () { requestAnimationFrame(run); });
         }
 
         document.addEventListener('keydown', function (e) {
@@ -4973,10 +5041,24 @@
             }
         });
 
+        function bootClinicTheme() {
+            applyClinicTheme();
+            const initial = (typeof currentTab !== 'undefined' && currentTab) || 'MR';
+            document.documentElement.dataset.pmkClinic = initial;
+            const app = document.getElementById('mainAppContainer');
+            if (app) app.dataset.pmkClinic = initial;
+            ['form-TB', 'form-PID', 'form-OPENHEART'].forEach(function (id) {
+                const el = document.getElementById(id);
+                if (!el || el._pmkClinicMo) return;
+                el._pmkClinicMo = new MutationObserver(function () { applyClinicTheme(); });
+                el._pmkClinicMo.observe(el, { childList: true });
+            });
+            scrollActiveClinicTabIntoView();
+        }
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', applyClinicIcons);
+            document.addEventListener('DOMContentLoaded', bootClinicTheme);
         } else {
-            applyClinicIcons();
+            bootClinicTheme();
         }
 
         function switchTab(tab) {
@@ -4985,7 +5067,7 @@
                 el.classList.add('hidden');
                 el.classList.remove('block');
             });
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-red-50', 'bg-green-50', 'bg-orange-50', 'bg-teal-50', 'bg-violet-50', 'bg-cyan-50', 'bg-rose-50'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             
             const targetForm = document.getElementById('form-' + tab);
             if(targetForm) {
@@ -4995,16 +5077,10 @@
             
             const activeBtn = document.getElementById('tab-' + tab);
             if(activeBtn) activeBtn.classList.add('active');
-            
-            if(tab === 'WARFARIN') activeBtn.classList.remove('text-red-700');
-            if(tab === 'HF') activeBtn.classList.remove('text-green-700');
-            if(tab === 'CKD') activeBtn.classList.remove('text-orange-700');
-            if(tab === 'ASTHMA') activeBtn.classList.remove('text-teal-700');
-            if(tab === 'PARKINSON') activeBtn.classList.remove('text-violet-700');
-            if(tab === 'CAPD') activeBtn.classList.remove('text-cyan-700');
-            if(tab === 'PID') activeBtn.classList.remove('text-rose-700');
-            if(tab === 'OPENHEART') activeBtn.classList.remove('text-red-800');
-            if(tab === 'TB') activeBtn.classList.remove('text-yellow-800');
+            document.documentElement.dataset.pmkClinic = tab;
+            const app = document.getElementById('mainAppContainer');
+            if (app) app.dataset.pmkClinic = tab;
+            if (typeof applyClinicTheme === 'function') applyClinicTheme();
             if (tab === 'HF' && typeof bindHfGdmtHelper === 'function') bindHfGdmtHelper();
 
             const mergeCheck = document.getElementById('mergeMrOption');
