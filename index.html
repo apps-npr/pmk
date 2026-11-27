@@ -1040,6 +1040,20 @@
                     <input type="text" id="mrAllergyDetail" placeholder="ระบุ ชื่อยา/อาการที่แพ้ เช่น Amoxicillin/ผื่นคัน" class="w-full rounded-lg border-gray-300 border px-3 py-2 hidden" oninput="generateOutput()">
                 </div>
 
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <div class="text-sm font-medium text-gray-700 mb-2">บุหรี่ / สุรา</div>
+                    <div class="flex flex-wrap items-center gap-4 text-sm text-gray-800">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="mrSmokeCheck" class="form-checkbox text-indigo-600 rounded" onchange="generateOutput()">
+                            <span class="ml-2">บุหรี่</span>
+                        </label>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="mrAlcoholCheck" class="form-checkbox text-indigo-600 rounded" onchange="generateOutput()">
+                            <span class="ml-2">สุรา</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">สมุนไพร / อาหารเสริม</label>
@@ -1169,6 +1183,20 @@
                     <h3 class="font-medium text-sm text-gray-700"><i class="fa-solid fa-heart-pulse"></i> ข้อมูลเพิ่มเติม: RCRI Score <i class="fa-solid fa-chevron-down ml-1"></i></h3>
                     <div id="risk-advice-content" class="hidden mt-3 text-xs text-gray-600">
                         <img src="rcri.png" alt="RCRI Score" class="w-full max-w-sm rounded mt-2 cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <div class="text-sm font-medium text-gray-700 mb-2">บุหรี่ / สุรา</div>
+                    <div class="flex flex-wrap items-center gap-4 text-sm text-gray-800">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="preopSmokeCheck" class="form-checkbox text-indigo-600 rounded" onchange="generateOutput()">
+                            <span class="ml-2">บุหรี่</span>
+                        </label>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="preopAlcoholCheck" class="form-checkbox text-indigo-600 rounded" onchange="generateOutput()">
+                            <span class="ml-2">สุรา</span>
+                        </label>
                     </div>
                 </div>
 
@@ -2917,6 +2945,20 @@
                             <label class="inline-flex items-center font-bold text-orange-600 cursor-pointer text-sm">
                                 <input type="checkbox" id="c8NewPt" class="form-checkbox text-orange-600 rounded mr-2" onchange="generateOutput()">
                                 ⭐ ผู้ป่วยใหม่ (เข้าคลินิกครั้งแรก)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                        <div class="text-sm font-medium text-gray-700 mb-2">บุหรี่ / สุรา</div>
+                        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-800">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="c8SmokeCheck" class="form-checkbox text-indigo-600 rounded" onchange="generateOutput()">
+                                <span class="ml-2">บุหรี่</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="c8AlcoholCheck" class="form-checkbox text-indigo-600 rounded" onchange="generateOutput()">
+                                <span class="ml-2">สุรา</span>
                             </label>
                         </div>
                     </div>
@@ -8044,6 +8086,17 @@
             resetCaseTracking();
         }
 
+
+        function smokeAlcoholNoteText(smokeId, alcoholId) {
+            const parts = [];
+            if (document.getElementById(smokeId)?.checked) parts.push('สูบบุหรี่');
+            if (document.getElementById(alcoholId)?.checked) parts.push('ดื่มสุรา');
+            return 'บุหรี่/สุรา: ' + (parts.length ? parts.join(', ') : 'ปฏิเสธ');
+        }
+        function smokeAlcoholAnyChecked(smokeId, alcoholId) {
+            return !!(document.getElementById(smokeId)?.checked || document.getElementById(alcoholId)?.checked);
+        }
+
         function getMrNoteArray(excludeSignature = false) {
             let notes = [];
             const mrAllergyCheck = document.getElementById('mrAllergyCheck');
@@ -8058,7 +8111,8 @@
             const mrPharmNode = document.getElementById('mrPharmName');
             const pharmName = mrPharmNode ? mrPharmNode.value : '';
 
-            let hasAnyData = mrSources.some(s => s.place || s.date || s.drugs.some(d => d.trim())) || hasAllergy || herb || pharmName;
+            const hasSmokeAlcohol = smokeAlcoholAnyChecked('mrSmokeCheck', 'mrAlcoholCheck');
+            let hasAnyData = mrSources.some(s => s.place || s.date || s.drugs.some(d => d.trim())) || hasAllergy || herb || pharmName || hasSmokeAlcohol;
 
             if (hasAnyData) {
                 mrSources.forEach((src) => {
@@ -8077,7 +8131,7 @@
                 const detailNode = document.getElementById('mrAllergyDetail');
                 let allergyText = hasAllergy ? `แพ้ยา/แพ้อาหาร: ${detailNode ? detailNode.value : '' || 'ไม่ระบุ'}` : `แพ้ยา/แพ้อาหาร: ปฏิเสธ`;
                 let herbText = herb ? `สมุนไพร/อาหารเสริม: ${herb}` : `สมุนไพร/อาหารเสริม: ปฏิเสธ`;
-                notes.push(`${allergyText} | ${herbText}`);
+                notes.push(`${allergyText} | ${herbText} | ${smokeAlcoholNoteText('mrSmokeCheck', 'mrAlcoholCheck')}`);
                 if (extraNote) notes.push(extraNote);
                 if (pharmName && !excludeSignature) notes.push(`/${pharmName}`);
             }
@@ -9762,7 +9816,8 @@
                     if (mrNotes.length > 0) notes = notes.concat(mrNotes);
                 }
 
-                let preopHasData = preopCalculatedNotes.length > 0 || sDate || (bRisk && bRisk !== '-- เลือกความเสี่ยง --') || pManual;
+                const preopSmokeAlcohol = smokeAlcoholAnyChecked('preopSmokeCheck', 'preopAlcoholCheck');
+                let preopHasData = preopCalculatedNotes.length > 0 || sDate || (bRisk && bRisk !== '-- เลือกความเสี่ยง --') || pManual || preopSmokeAlcohol;
                 
                 if (preopHasData) {
                     let metaLines = [];
@@ -9777,6 +9832,7 @@
                     }
                     if(pManual) metaLines.push(`หัตถการ: ${pManual}`);
                     if(bRisk && bRisk !== '-- เลือกความเสี่ยง --') metaLines.push(`Bleeding Risk: ${bRisk}`);
+                    metaLines.push(smokeAlcoholNoteText('preopSmokeCheck', 'preopAlcoholCheck'));
                     
                     if (metaLines.length > 0) {
                         if(isMerge && notes.length > 0 && notes[notes.length-1].includes("แพ้ยา")) {
@@ -10121,6 +10177,7 @@
                 if (er !== '' || admit !== '') {
                     c8Lines.push(`History: ER ${er || 0} ครั้ง, Admit ${admit || 0} ครั้ง`);
                 }
+                c8Lines.push(smokeAlcoholNoteText('c8SmokeCheck', 'c8AlcoholCheck'));
             
                 if (c8Lines.length > 0) notes.push(c8Lines.join(' | '));
             
