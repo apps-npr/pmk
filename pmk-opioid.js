@@ -52,7 +52,7 @@
     tramadol_inj: { label: 'Tramadol (Inj)', unit: 'mg/day', factor: 0.3 },
     codeine_inj: { label: 'Codeine (Inj)', unit: 'mg/day', factor: 0.25 },
     fentanyl_inj: { label: 'Fentanyl (Inj)', unit: 'mcg/day', factor: 0.3 },
-    methadone_po: { label: 'Methadone (Oral)', unit: 'mg/day', factor: null, methadone: true },
+    methadone_po: { label: 'Methadone (Oral)', unit: 'mg/day', factor: 4.7, methadone: true },
     pethidine_inj: { label: 'Pethidine (Inj)', unit: 'mg/day', factor: 0.3 },
     levorphanol_po: { label: 'Levorphanol (Oral)', unit: 'mg/day', factor: 11 },
     tapentadol_po: { label: 'Tapentadol (Oral)', unit: 'mg/day', factor: 0.4 }
@@ -66,12 +66,9 @@
   // ---------------------------------------------------------------
   // Pure calculations (exported for tests)
   // ---------------------------------------------------------------
-  function methadoneFactor(dose) {
-    // CDC 2016 tiered factors (kept from appopioid; CDC 2022 uses a single 4.7)
-    if (dose <= 20) return 4;
-    if (dose <= 40) return 8;
-    if (dose <= 60) return 10;
-    return 12;
+  function methadoneFactor() {
+    // CDC 2022 single MME factor (pharmacist decision; replaces the CDC 2016 tiers of the old app)
+    return 4.7;
   }
   function toOme(drugKey, dose) {
     const d = DRUGS[drugKey];
@@ -645,7 +642,7 @@
           </div>
           ${DRUGS[cd] && DRUGS[cd].morphine ? '<div class="text-xs text-gray-600 mt-1">Morphine เปลี่ยนแค่ทางให้ยา ไม่ต้องลดขนาด</div>' : ''}
           ${!c.opioidTolerant && !(DRUGS[cd] || {}).patch ? '<div class="op-warn mt-1">OME &lt; 60 mg/day: ยังไม่ถือว่า opioid-tolerant ไม่แนะนำแผ่นแปะ</div>' : ''}
-          ${cd === 'methadone_po' ? '<div class="op-warn mt-1">Methadone: อัตราแปลงไม่แน่นอน ปรึกษาผู้เชี่ยวชาญก่อนเปลี่ยนยา</div>' : ''}
+          ${cd === 'methadone_po' ? '<div class="op-warn mt-1">Methadone ×4.7 (CDC 2022) ใช้ประเมิน OME เท่านั้น ห้ามใช้คำนวณขนาดเมื่อเปลี่ยนไป/มาจาก methadone (ครึ่งชีวิตยาวและไม่แน่นอน) ปรึกษาผู้เชี่ยวชาญ</div>' : ''}
           ${cd === 'fentanyl_patch' ? '<div class="text-xs text-gray-600 mt-1">หลังลอกแผ่น ระดับยายังอยู่ ≥ 20 ชม. เริ่มยาใหม่ขนาดต่ำแล้วค่อยเพิ่ม</div>' : ''}`);
       } else { res.classList.add('hidden'); setHtml(res, ''); }
     }

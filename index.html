@@ -5171,6 +5171,10 @@
                 if (typeof generateOutput === 'function') generateOutput();
             }
 
+            // Clinic 14 Opioid has no workload tab yet: button 3 is not shown there
+            const sendDbBtn = document.getElementById('btnSendDb');
+            if (sendDbBtn) sendDbBtn.classList.toggle('hidden', tab === 'OPIOID');
+
             const capdA5Btn = document.getElementById('btnCapdAdviceA5');
             if (capdA5Btn) {
                 if (tab === 'CAPD') capdA5Btn.classList.remove('hidden');
