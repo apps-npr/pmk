@@ -533,6 +533,12 @@
            ระบบการพิมพ์แบบแยกโหมดอิสระ
            =================================================== */
         @media print {
+            html, body {
+                overflow: visible !important;
+                height: auto !important;
+                max-height: none !important;
+                max-width: none !important;
+            }
             body { background: white; margin: 0; padding: 0; }
             body * { visibility: hidden; }
 
@@ -567,17 +573,62 @@
             body.print-mode-warfarin-stk .extra:empty { display: none !important; }
             body.print-mode-warfarin-stk .extra:empty:before { content: none !important; }
 
-            /* โหมด 3: พิมพ์ Pharmacist Note สติกเกอร์ (กำหนดขนาดเอง) */
+            /* โหมด 3: พิมพ์ Pharmacist Note สติกเกอร์ (กำหนดขนาดเอง)
+               วางใน document flow (ห้าม position:absolute / overflow:hidden)
+               เพื่อให้ข้อความยาวขึ้นหน้าสติกเกอร์ถัดไปแทนการถูกตัด */
+            body.print-mode-opd-stk {
+                min-height: 0 !important;
+                height: auto !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
             body.print-mode-opd-stk #mainAppContainer,
             body.print-mode-opd-stk #printArea,
-            body.print-mode-opd-stk #printRifampinArea { display: none !important; }
-            body.print-mode-opd-stk #printStickerArea, 
+            body.print-mode-opd-stk #printRifampinArea,
+            body.print-mode-opd-stk #printWfColorTableA5,
+            body.print-mode-opd-stk #printCapdAdviceA5,
+            body.print-mode-opd-stk #printAsthmaMistakeA5,
+            body.print-mode-opd-stk #printPreopHoldCal,
+            body.print-mode-opd-stk #printPatientAdviceA5,
+            body.print-mode-opd-stk #pmkChrome,
+            body.print-mode-opd-stk #pmkAppLogin,
+            body.print-mode-opd-stk #pmkScrollTopFab,
+            body.print-mode-opd-stk #toast { display: none !important; }
+            body.print-mode-opd-stk #printStickerArea,
             body.print-mode-opd-stk #printStickerArea * { visibility: visible !important; }
-            body.print-mode-opd-stk #printStickerArea { 
-                display: block !important; 
+            body.print-mode-opd-stk #printStickerArea {
+                display: block !important;
+                position: static !important;
+                overflow: visible !important;
+                height: auto !important;
+                max-height: none !important;
                 background: white !important;
                 color: black !important;
                 z-index: 99999 !important;
+                box-sizing: border-box;
+            }
+            body.print-mode-opd-stk #stkPrintNote {
+                overflow: visible !important;
+                height: auto !important;
+                max-height: none !important;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+            body.print-mode-opd-stk .stk-print-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            body.print-mode-opd-stk .stk-print-table thead {
+                display: table-header-group;
+            }
+            body.print-mode-opd-stk .stk-print-head {
+                font-weight: bold;
+                margin-bottom: 2px;
+                border-bottom: 1px dashed #ccc;
+                padding-bottom: 2px;
+                break-after: avoid;
+                page-break-after: avoid;
             }
 
             /* โหมด 4: พิมพ์ใบคำแนะนำ Warfarin-Rifampin (A5 แนวตั้ง) */
@@ -3510,10 +3561,20 @@
 
     <!-- OPD Note Sticker Print Area (สำหรับโหมด 3) -->
     <div id="printStickerArea" class="hidden">
-        <div style="font-weight: bold; margin-bottom: 2px; border-bottom: 1px dashed #ccc; padding-bottom: 2px;">
-            <span id="stkPrintName"></span> HN: <span id="stkPrintHn"></span>
-        </div>
-        <div id="stkPrintNote" style="white-space: pre-wrap; word-wrap: break-word;"></div>
+        <table class="stk-print-table">
+            <thead>
+                <tr>
+                    <th class="stk-print-head" style="text-align:left; font-weight:bold;">
+                        <span id="stkPrintName"></span> HN: <span id="stkPrintHn"></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="stkPrintNote" style="white-space: pre-wrap; word-wrap: break-word; vertical-align: top;"></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <!-- Warfarin-Rifampin A5 Print Area (สำหรับโหมด 4) -->
     <div id="printRifampinArea" class="hidden w-full max-w-[148mm] mx-auto bg-white text-gray-900 p-6">
@@ -10614,10 +10675,15 @@
                 if (printArea.parentElement !== document.body) {
                     document.body.appendChild(printArea);
                 }
-                printArea.style.position = 'absolute';
-                printArea.style.left = x + 'mm';
-                printArea.style.top = y + 'mm';
+                printArea.style.position = 'static';
+                printArea.style.left = '';
+                printArea.style.top = '';
+                printArea.style.marginLeft = x + 'mm';
+                printArea.style.marginTop = y + 'mm';
                 printArea.style.width = w + 'mm';
+                printArea.style.height = 'auto';
+                printArea.style.maxHeight = 'none';
+                printArea.style.overflow = 'visible';
                 printArea.style.fontSize = pt + 'pt';
                 printArea.style.fontFamily = "'Prompt', sans-serif";
                 printArea.style.lineHeight = "1.3";
