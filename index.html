@@ -365,6 +365,17 @@
                 white-space: normal;
             }
 
+            #outputPmk {
+                min-height: 5.5rem !important;
+                height: 5.5rem;
+                resize: vertical;
+            }
+            #outputPmk.pmk-note-expanded {
+                min-height: 16rem !important;
+                height: 16rem;
+            }
+            .pmk-note-toggle { display: inline-flex !important; }
+
             #pmkScrollTopFab {
                 bottom: calc(12px + env(safe-area-inset-bottom, 0px));
                 right: max(12px, env(safe-area-inset-right, 0px));
@@ -378,6 +389,21 @@
             }
         }
 
+
+        .pmk-note-toggle {
+            display: none;
+            align-items: center;
+            background: #fff;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            min-height: 36px;
+            white-space: nowrap;
+        }
+        .pmk-note-toggle:hover { background: #eff6ff; }
 
         /* Parkinson clinic drug images */
         .c9-drug-img { width: 52px; height: 52px; object-fit: contain; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 2px; cursor: zoom-in; }
@@ -3420,7 +3446,10 @@
 
         <!-- Output & Actions -->
         <div id="opdOutputSection" class="bg-gray-100 p-6 border-t border-gray-200">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Pharmacist Note <span class="text-xs text-red-500 font-normal">(แก้ไขข้อมูลเองได้หลังใส่ข้อมูลในช่องครบถ้วนแล้ว)</span></label>
+            <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+                <label for="outputPmk" class="block text-sm font-medium text-gray-700">Pharmacist Note <span class="text-xs text-red-500 font-normal">(แก้ไขข้อมูลเองได้หลังใส่ข้อมูลในช่องครบถ้วนแล้ว)</span></label>
+                <button type="button" id="pmkNoteToggleBtn" onclick="togglePmkNoteExpand()" class="pmk-note-toggle" aria-controls="outputPmk" aria-expanded="false">ขยายช่อง Note</button>
+            </div>
             
             <div id="mergeMrOption" class="hidden mb-3 bg-blue-50 border border-blue-200 p-3 rounded-lg">
                 <label class="inline-flex items-center cursor-pointer">
@@ -3452,37 +3481,37 @@
             </div>
 
             <div class="flex flex-wrap gap-4" id="pmkActionButtons">
-                <button onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                <button type="button" onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     1. คัดลอกลง PMK
                 </button>
-                <button id="btnCopySheet" onclick="copyToSheet(); sendCaseTrackingData();" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                <button type="button" id="btnCopySheet" onclick="copyToSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     2. คัดลอกลง Google Sheet (Manual)
                 </button>
-                <button onclick="sendToGoogleSheet(); sendCaseTrackingData();" id="btnSendDb" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                <button type="button" onclick="sendToGoogleSheet()" id="btnSendDb" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                     3. บันทึกลง Sheet อัตโนมัติ
                 </button>
-                <button onclick="printOpdCard()" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                <button type="button" onclick="printOpdCard()" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     4. พิมพ์ OPD Card (A5)
                 </button>
-                <button onclick="toggleOpdStickerSettings()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                <button type="button" onclick="toggleOpdStickerSettings()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10v3H7z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10h14a2 2 0 012 2v4a2 2 0 01-2 2h-1v-4H8v4H7a2 2 0 01-2-2v-4a2 2 0 012-2z"></path></svg>
                     5. พิมพ์สติกเกอร์ (Note)
                 </button>
-                <button id="btnCapdAdviceA5" onclick="printCapdAdviceA5()" class="hidden bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                <button type="button" id="btnCapdAdviceA5" onclick="printCapdAdviceA5()" class="hidden bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     6. ใบแนะนำแพทย์ A5
                 </button>
-                <button id="btnPreopHoldCal" onclick="openPreopHoldCalendar()" class="hidden bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                <button type="button" id="btnPreopHoldCal" onclick="openPreopHoldCalendar()" class="hidden bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    6. ปฏิทินหยุดยาก่อนผ่าตัด
+                    7. ปฏิทินหยุดยาก่อนผ่าตัด
                 </button>
                 <button type="button" id="btnPatientAdviceA5" onclick="printPatientAdviceA5()" class="hidden bg-sky-700 hover:bg-sky-800 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                    6. ใบแนะนำผู้ป่วย A5
+                    8. ใบแนะนำผู้ป่วย A5
                 </button>
             </div>
         </div>
@@ -10533,19 +10562,69 @@
             }
         }
 
-        function copyToSheet() {
+        function isHnEmpty() {
+            return !(document.getElementById('hn')?.value || '').trim();
+        }
+
+        async function confirmEmptyHnIfNeeded() {
+            if (!isHnEmpty()) return true;
+            if (typeof pmkConfirm === 'function') {
+                return !!(await pmkConfirm('ยังไม่ได้กรอก HN หากไปต่อ ข้อมูลอาจลงไม่ครบหรือหาเคสย้อนหลังยาก ต้องการไปต่อไหมครับ', {
+                    type: 'warning',
+                    title: 'ยังไม่มีเลข HN',
+                    confirmText: 'ไปต่อ',
+                    cancelText: 'ย้อนกลับไปกรอก HN'
+                }));
+            }
+            return false;
+        }
+
+        function offerStartNewCaseAfterSave() {
+            const hn = (document.getElementById('hn')?.value || '').trim();
+            const ptName = (document.getElementById('ptName')?.value || '').trim();
+            const label = [ptName, hn ? ('HN ' + hn) : ''].filter(Boolean).join(' · ') || 'เคสนี้';
+            if (typeof showModernDialog !== 'function') return;
+            return showModernDialog({
+                type: 'info',
+                title: 'บันทึกเรียบร้อย เริ่มเคสใหม่ไหม?',
+                message: 'บันทึกเคส ' + label + ' แล้ว หากเริ่มเคสใหม่ ระบบจะล้างฟอร์มนี้ (ค่าตั้งค่าสติกเกอร์ยังคงเดิม)',
+                confirmText: 'เริ่มเคสใหม่',
+                cancelText: 'ทำเคสนี้อีก',
+                showCancel: true,
+                onConfirm: () => {
+                    if (typeof window.resetForm === 'function') window.resetForm();
+                    if (typeof showToast === 'function') showToast('พร้อมรับเคสใหม่แล้วครับ');
+                }
+            });
+        }
+
+        function togglePmkNoteExpand() {
+            const ta = document.getElementById('outputPmk');
+            const btn = document.getElementById('pmkNoteToggleBtn');
+            if (!ta) return;
+            const on = ta.classList.toggle('pmk-note-expanded');
+            if (btn) {
+                btn.textContent = on ? 'ย่อช่อง Note' : 'ขยายช่อง Note';
+                btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+            }
+        }
+
+        async function copyToSheet() {
+            if (!(await confirmEmptyHnIfNeeded())) return;
             const rowData = getRowDataArray();
             const tsvString = rowData.join('\t');
             navigator.clipboard.writeText(tsvString).then(() => { 
                 showToast('คัดลอกข้อมูลสำหรับลง Google Sheet เรียบร้อยแล้ว!'); 
             });
+            if (typeof sendCaseTrackingData === 'function') sendCaseTrackingData();
         }
 
-        function sendToGoogleSheet() {
+        async function sendToGoogleSheet() {
             if (!SCRIPT_URL || SCRIPT_URL === 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่') { 
                 pmkAlert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); 
                 return; 
             }
+            if (!(await confirmEmptyHnIfNeeded())) return;
             const btn = document.getElementById('btnSendDb');
             if(!btn) return;
             
@@ -10576,6 +10655,9 @@
             const finishBtn = () => { btn.innerHTML = originalHTML; btn.disabled = false; };
             if (typeof pmkHandleSheetSave === 'function') {
                 Promise.resolve(pmkHandleSheetSave(savePayload, { label: 'บันทึก ' + targetClinicName }))
+                    .then((result) => {
+                        if (result && result.status === 'sent-unconfirmed') offerStartNewCaseAfterSave();
+                    })
                     .catch((error) => { console.error('Error!', error); pmkAlert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
                     .finally(finishBtn);
             } else {
@@ -10585,7 +10667,10 @@
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(savePayload)
                 })
-                .then(() => { showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!'); })
+                .then(() => {
+                    showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!');
+                    offerStartNewCaseAfterSave();
+                })
                 .catch(error => { console.error('Error!', error); pmkAlert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
                 .finally(finishBtn);
             }
