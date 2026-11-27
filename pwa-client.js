@@ -429,7 +429,10 @@
     setupInstall();
     setupUpdatePrompt();
     renderStatus();
-    registerSW();
+    // Register the service worker after the page has finished loading so the first-visit
+    // precache (images, fonts) does not compete with the page's own requests.
+    if (document.readyState === 'complete') registerSW();
+    else window.addEventListener('load', registerSW, { once: true });
     state.browserOnline = navigator.onLine;
     if (!state.browserOnline) {
       state.sheetReachable = false;

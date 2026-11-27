@@ -16,9 +16,8 @@
     <!-- Tailwind CSS & Fonts & FontAwesome -->
     <link rel="stylesheet" href="pmk-tailwind.css">
     <link rel="stylesheet" href="pmk-ui.css">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.webmanifest">
@@ -840,6 +839,24 @@
         #printPatientAdviceA5 .pmk-pt-sign { text-align: center; font-size: 12px; min-width: 200px; }
         #printPatientAdviceA5 .pmk-pt-note { font-size: 10.5px; color: #475569; line-height: 1.4; max-width: 58%; }
     </style>
+    <!-- Static copy of the Tailwind classes the app uses (same rules the Play CDN generates), placed last so the cascade matches. -->
+    <link rel="stylesheet" href="pmk-tailwind-gen.css">
+    <script>
+        // Tailwind Play CDN is kept as a safety net for any class not in the static copy, but loads after first paint.
+        (function () {
+            function load() {
+                var s = document.createElement('script');
+                s.src = 'https://cdn.tailwindcss.com/3.4.17';
+                document.head.appendChild(s);
+            }
+            function go() {
+                if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 4000 });
+                else setTimeout(load, 1500);
+            }
+            if (document.readyState === 'complete') go();
+            else window.addEventListener('load', go, { once: true });
+        })();
+    </script>
 </head>
 <body class="bg-slate-100 min-h-screen p-4 md:p-8 relative">
     
@@ -902,7 +919,7 @@
     <div id="pmkAppLogin" class="print:hidden" role="dialog" aria-modal="true" aria-labelledby="pmkLoginTitle">
         <form id="pmkLoginForm" autocomplete="on" class="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
             <div class="bg-blue-600 p-6 text-white text-center">
-                <img src="icon_512x512.png" alt="" class="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
+                <img src="icon_192x192.png" alt="" class="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
                 <h1 id="pmkLoginTitle" class="text-2xl font-semibold leading-tight">PMK</h1>
                 <p class="text-sm text-blue-100 mt-1">เภสัชกรรม รพ.นพรัตนราชธานี</p>
             </div>
@@ -944,7 +961,7 @@
         <div class="bg-blue-600 p-6 text-white" id="pmkAppHeader">
             <div class="flex justify-between items-center mb-4" id="pmkHeaderTop">
                 <div class="flex items-center" id="pmkHeaderBrand">
-                    <img src="icon_512x512.png" alt="Icon" class="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
+                    <img src="icon_192x192.png" alt="Icon" class="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-sm" onerror="this.style.display='none'">
                     <div id="pmkHeaderTitleBlock">
                         <h1 class="text-2xl font-semibold">OPD Online</h1>
                         <div id="autoSaveStatus" class="text-[11px] text-blue-100 flex items-center gap-1.5 mt-0.5">
@@ -1101,7 +1118,7 @@
                     <h3 class="font-semibold text-lg text-blue-800 mb-4 border-b pb-2">1. ข้อมูลการผ่าตัด (Surgery Info)</h3>
                     
                     <div class="mb-4 bg-gray-50 p-2 rounded flex justify-center">
-                        <img src="risk.png" alt="ตารางความเสี่ยงรวม" class="rounded max-w-full h-auto cursor-zoom-in shadow-sm" style="max-height: 150px;" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                        <img src="risk.png" loading="lazy" decoding="async" alt="ตารางความเสี่ยงรวม" class="rounded max-w-full h-auto cursor-zoom-in shadow-sm" style="max-height: 150px;" onclick="openModal(this.src)" onerror="this.style.display='none'">
                     </div>
 
                     <div id="preopProcPicker" class="mb-4 relative">
@@ -1141,7 +1158,7 @@
                                 <div class="risk-category-group"><h5 class="risk-title high">High Risk</h5><ul class="risk-list"><li>Major Abdominal</li><li>Major Ortho</li><li>CABG</li></ul></div>
                                 <div class="risk-category-group"><h5 class="risk-title critical">Critical Site</h5><ul class="risk-list"><li>Intracranial</li><li>Spinal</li><li>Posterior eye</li></ul></div>
                             </div>
-                            <img src="table_bleeding_risk.png" class="mt-2 w-full rounded cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                            <img src="table_bleeding_risk.png" loading="lazy" decoding="async" class="mt-2 w-full rounded cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'">
                         </div>
                     </div>
 
@@ -1182,7 +1199,7 @@
                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-100" onclick="toggleInfo('risk-advice-content')">
                     <h3 class="font-medium text-sm text-gray-700"><i class="fa-solid fa-heart-pulse"></i> ข้อมูลเพิ่มเติม: RCRI Score <i class="fa-solid fa-chevron-down ml-1"></i></h3>
                     <div id="risk-advice-content" class="hidden mt-3 text-xs text-gray-600">
-                        <img src="rcri.png" alt="RCRI Score" class="w-full max-w-sm rounded mt-2 cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'">
+                        <img src="rcri.png" loading="lazy" decoding="async" alt="RCRI Score" class="w-full max-w-sm rounded mt-2 cursor-zoom-in" onclick="openModal(this.src)" onerror="this.style.display='none'">
                     </div>
                 </div>
 
@@ -8492,11 +8509,11 @@
             box.innerHTML = PD_DRUGS.map(d => {
                 const pill = d.pill ? pdImgSrc(d.pill) : pdPlaceholderSvg();
                 const packHtml = d.pack
-                    ? `<img src="${pdImgSrc(d.pack)}" alt="กล่องยา ${d.name}" class="c9-drug-img" onclick="event.stopPropagation(); openModal(this.src)">`
+                    ? `<img src="${pdImgSrc(d.pack)}" loading="lazy" decoding="async" alt="กล่องยา ${d.name}" class="c9-drug-img" onclick="event.stopPropagation(); openModal(this.src)">`
                     : `<img src="${pdPlaceholderSvg()}" alt="ไม่มีรูปกล่องยา" class="c9-drug-img c9-drug-img-empty">`;
                 const active = selected === d.id ? 'ring-2 ring-violet-500 border-violet-400 bg-violet-50' : 'border-gray-200 bg-white hover:border-violet-300';
                 return `<button type="button" class="c9-drug-card text-left border rounded-xl p-2.5 flex gap-2 items-center ${active} transition shadow-sm" data-drug-id="${d.id}" onclick="selectC9Drug('${d.id}')">
-                    <img src="${pill}" alt="เม็ดยา ${d.name}" class="c9-drug-img" onclick="event.stopPropagation(); openModal(this.src)">
+                    <img src="${pill}" loading="lazy" decoding="async" alt="เม็ดยา ${d.name}" class="c9-drug-img" onclick="event.stopPropagation(); openModal(this.src)">
                     ${packHtml}
                     <div class="min-w-0">
                         <div class="font-bold text-sm text-gray-800 leading-tight">${d.name}</div>

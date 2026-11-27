@@ -1,5 +1,5 @@
 /* PMK service worker — bump CACHE_VERSION when precache list or app shell changes */
-const CACHE_VERSION = 'pmk-static-v27';
+const CACHE_VERSION = 'pmk-static-v28';
 const CDN_CACHE = 'pmk-cdn-v2';
 const PRECACHE = [
   './',
@@ -17,6 +17,7 @@ const PRECACHE = [
   './images/pid/onepage-oi-peds-1.jpg',
   './images/pid/onepage-oi-peds-2.jpg',
   './pmk-tailwind.css',
+  './pmk-tailwind-gen.css',
   './pmk-ui.css',
   './fonts/ibm-plex-sans-thai/latin-400-normal.woff2',
   './fonts/ibm-plex-sans-thai/latin-500-normal.woff2',
