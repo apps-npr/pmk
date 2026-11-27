@@ -452,7 +452,8 @@
     const crclHint = $('tbCrclHint');
     if (crclHint) {
       if (Number.isFinite(crcl) && crcl < 30) {
-        crclHint.textContent = 'CrCl < 30 — Z, E ขนาดเดิม ปรับเป็น 3 วัน/สัปดาห์';
+        const badge = typeof window.pmkBadgeHtml === 'function' ? window.pmkBadgeHtml('warn', 'ควรเช็ค') + ' ' : '';
+        crclHint.innerHTML = badge + 'CrCl < 30 — Z, E ขนาดเดิม ปรับเป็น 3 วัน/สัปดาห์';
         crclHint.className = 'text-[11px] text-red-600 mt-1 font-semibold';
       } else {
         crclHint.textContent = crclManual ? 'กรอกเอง' : 'Cockcroft-Gault';
@@ -481,13 +482,15 @@
       }
       if (recEl) recEl.textContent = active.rec > 0 ? `${active.rec} mg ${freqText(d)}` : '-';
       if (chkEl) {
+        const badge = (level, label) => (typeof window.pmkBadgeHtml === 'function' ? window.pmkBadgeHtml(level, label) + ' ' : '');
         let txt = '-';
         let cls = 'text-gray-500';
-        if (active.status === 'ok') { txt = 'ตรงตามมาตรฐาน'; cls = 'text-emerald-700'; }
-        else if (active.status === 'high') { txt = `สูงกว่ามาตรฐาน (แนะนำ ${active.rec} mg)`; cls = 'text-red-600 font-semibold'; }
-        else if (active.status === 'low') { txt = `ต่ำกว่ามาตรฐาน (แนะนำ ${active.rec} mg)`; cls = 'text-amber-700 font-semibold'; }
+        let prefix = '';
+        if (active.status === 'ok') { txt = 'ตรงตามมาตรฐาน'; cls = 'text-emerald-700'; prefix = badge('ok', 'ผ่าน'); }
+        else if (active.status === 'high') { txt = `สูงกว่ามาตรฐาน (แนะนำ ${active.rec} mg)`; cls = 'text-red-600 font-semibold'; prefix = badge('danger', 'อันตราย'); }
+        else if (active.status === 'low') { txt = `ต่ำกว่ามาตรฐาน (แนะนำ ${active.rec} mg)`; cls = 'text-amber-700 font-semibold'; prefix = badge('warn', 'ควรเช็ค'); }
         if (Number.isFinite(active.mgkg)) txt += ` · ${active.mgkg} mg/kg${active.inRange ? '' : ' (นอกช่วง)'}`;
-        chkEl.textContent = txt;
+        chkEl.innerHTML = prefix + txt;
         chkEl.className = 'px-3 py-2 text-xs ' + cls;
       }
     });
@@ -703,24 +706,24 @@
     const src = 'Standing order TB (2IRZE/4IR)';
     doseChecks().forEach(c => {
       if (c.status === 'high') alerts.push({ level: 'danger', title: `${c.drug.short} ${c.ord} mg สูงกว่าขนาดมาตรฐาน`, detail: `น้ำหนัก ${val('tbWeight')} kg แนะนำ ${c.rec} mg ${freqText(c.drug)}`, source: src });
-      if (c.status === 'low') alerts.push({ level: 'warning', title: `${c.drug.short} ${c.ord} mg ต่ำกว่าขนาดมาตรฐาน`, detail: `น้ำหนัก ${val('tbWeight')} kg แนะนำ ${c.rec} mg ${freqText(c.drug)}`, source: src });
+      if (c.status === 'low') alerts.push({ level: 'warn', title: `${c.drug.short} ${c.ord} mg ต่ำกว่าขนาดมาตรฐาน`, detail: `น้ำหนัก ${val('tbWeight')} kg แนะนำ ${c.rec} mg ${freqText(c.drug)}`, source: src });
     });
     if (isRenalAdjust() && getRegimen() === 'IRZE') {
-      alerts.push({ level: 'warning', title: `CrCl ${getCrcl()} mL/min (< 30)`, detail: 'Pyrazinamide และ Ethambutol ให้ขนาดเดิม แต่ปรับเป็น 3 วัน/สัปดาห์ (จ, พ, ศ)', source: src });
+      alerts.push({ level: 'warn', title: `CrCl ${getCrcl()} mL/min (< 30)`, detail: 'Pyrazinamide และ Ethambutol ให้ขนาดเดิม แต่ปรับเป็น 3 วัน/สัปดาห์ (จ, พ, ศ)', source: src });
     }
     if (!isChecked('tbB6') && getRegimen() !== 'OTHER') {
       alerts.push({ level: 'info', title: 'ยังไม่ได้สั่ง Vitamin B6', detail: 'ผู้ป่วยที่ได้ INH ควรได้ Vitamin B6 (50 mg) 1x1 hs ป้องกัน peripheral neuropathy', source: src });
     }
     const prog = treatmentProgress();
     if (prog && prog.days >= 0) {
-      if (getRegimen() === 'IRZE' && prog.days > 63) alerts.push({ level: 'warning', title: 'ครบ Intensive phase (2 เดือน) แล้วแต่ยังได้ IRZE', detail: `${prog.label} — พิจารณาปรับลดเป็น IR ตามผล sputum/อาการ`, source: src });
+      if (getRegimen() === 'IRZE' && prog.days > 63) alerts.push({ level: 'warn', title: 'ครบ Intensive phase (2 เดือน) แล้วแต่ยังได้ IRZE', detail: `${prog.label} — พิจารณาปรับลดเป็น IR ตามผล sputum/อาการ`, source: src });
       if (getRegimen() === 'IR' && prog.days < 56) alerts.push({ level: 'info', title: 'ยังอยู่ในช่วง Intensive phase', detail: `${prog.label} — ตรวจสอบว่าควรได้ IRZE ครบ 2 เดือนก่อนลดเป็น IR`, source: src });
       if (prog.days >= 180) alerts.push({ level: 'info', title: 'รักษาครบ 6 เดือนแล้ว', detail: 'ตรวจสอบเกณฑ์หยุดยา/ผลการรักษากับแพทย์', source: src });
     }
     const appt = apptCheck();
-    if (appt && appt.short) alerts.push({ level: 'warning', title: 'สั่งยาไม่ถึงวันนัด', detail: `นัดอีก ${appt.need} วัน แต่สั่งยา ${appt.qty} วัน`, source: src });
+    if (appt && appt.short) alerts.push({ level: 'warn', title: 'สั่งยาไม่ถึงวันนัด', detail: `นัดอีก ${appt.need} วัน แต่สั่งยา ${appt.qty} วัน`, source: src });
     if (appt && appt.over) alerts.push({ level: 'info', title: 'สั่งยาเกินวันนัด', detail: `นัดอีก ${appt.need} วัน แต่สั่งยา ${appt.qty} วัน`, source: src });
-    if (radio('tbAllergy') === 'Y') alerts.push({ level: 'warning', title: 'ผู้ป่วยมีประวัติแพ้ยา/อาหาร', detail: val('tbAllergyDetail') || 'ไม่ระบุรายละเอียด', source: src });
+    if (radio('tbAllergy') === 'Y') alerts.push({ level: 'warn', title: 'ผู้ป่วยมีประวัติแพ้ยา/อาหาร', detail: val('tbAllergyDetail') || 'ไม่ระบุรายละเอียด', source: src });
     return alerts;
   }
 

@@ -15,9 +15,8 @@
     <title>OPD Online - Pharmacist Note</title>
     <!-- Tailwind CSS & Fonts & FontAwesome -->
     <link rel="stylesheet" href="pmk-tailwind.css">
+    <link rel="stylesheet" href="pmk-ui.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -34,7 +33,7 @@
     <link rel="icon" type="image/png" sizes="512x512" href="icon_512x512.png">
     
     <style>
-        body { font-family: 'Prompt', sans-serif; }
+        body { font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif; }
         .hidden { display: none !important; }
         #pmkChrome { position: fixed; top: 0; left: 0; right: 0; z-index: 70; }
 
@@ -3481,7 +3480,7 @@
             </div>
 
             <div class="flex flex-wrap gap-4" id="pmkActionButtons">
-                <button type="button" onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
+                <button type="button" id="btnCopyPmk" onclick="copyToClipboard('outputPmk')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     1. คัดลอกลง PMK
                 </button>
@@ -4136,8 +4135,8 @@
     </div>
 
     <!-- Custom Modern Confirm / Alert Modal -->
-    <div id="customConfirmModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 transition-opacity">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-100 transform transition-all scale-100">
+    <div id="customConfirmModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+        <div class="pmk-modal-card bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-100">
             <div class="p-6 text-center">
                 <div id="ccmIconWrap" class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl shadow-inner bg-amber-100 text-amber-600">
                     <i id="ccmIcon" class="fa-solid fa-pause-circle"></i>
@@ -10553,7 +10552,7 @@
         function copyToClipboard(elementId) {
             const el = document.getElementById(elementId);
             if(el && el.value) { 
-                navigator.clipboard.writeText(el.value).then(() => showToast('คัดลอกลง PMK เรียบร้อยแล้ว!')); 
+                navigator.clipboard.writeText(el.value).then(() => showToast('คัดลอกลง PMK เรียบร้อยแล้ว!', { ok: true, button: document.getElementById('btnCopyPmk') })); 
             }
             // HIV only: end silent case duration on "1. คัดลอกลง PMK" (RM cases are not saved to the workload sheet).
             // sendCaseTrackingData() then marks the case sent so a later button 2/3 click, or further HN input, will not write a second duration.
@@ -10614,7 +10613,7 @@
             const rowData = getRowDataArray();
             const tsvString = rowData.join('\t');
             navigator.clipboard.writeText(tsvString).then(() => { 
-                showToast('คัดลอกข้อมูลสำหรับลง Google Sheet เรียบร้อยแล้ว!'); 
+                showToast('คัดลอกข้อมูลสำหรับลง Google Sheet เรียบร้อยแล้ว!', { ok: true, button: document.getElementById('btnCopySheet') }); 
             });
             if (typeof sendCaseTrackingData === 'function') sendCaseTrackingData();
         }
@@ -10668,7 +10667,7 @@
                     body: JSON.stringify(savePayload)
                 })
                 .then(() => {
-                    showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!');
+                    showToast('ส่งข้อมูลบันทึกลง Google Sheet สำเร็จแล้ว!', { ok: true, button: document.getElementById('btnSendDb') });
                     offerStartNewCaseAfterSave();
                 })
                 .catch(error => { console.error('Error!', error); pmkAlert('ส่งข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต'); })
@@ -10786,12 +10785,49 @@
             }, 150);
         }
 
-        function showToast(msg) {
+        function pmkEscapeHtml(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+            });
+        }
+        function pmkBadgeHtml(level, text) {
+            const norm = level === 'warning' ? 'warn' : (level || 'info');
+            const labels = { danger: 'อันตราย', warn: 'ควรเช็ค', info: 'แนะนำ', ok: 'ผ่าน' };
+            const icons = { danger: 'fa-circle-exclamation', warn: 'fa-triangle-exclamation', info: 'fa-circle-info', ok: 'fa-circle-check' };
+            const label = text || labels[norm] || labels.info;
+            return '<span class="pmk-badge pmk-badge--' + pmkEscapeHtml(norm) + '"><i class="fa-solid ' + (icons[norm] || icons.info) + '" aria-hidden="true"></i> ' + pmkEscapeHtml(label) + '</span>';
+        }
+        window.pmkBadgeHtml = pmkBadgeHtml;
+
+        function pmkMarkButtonSuccess(btn) {
+            if (!btn || !btn.classList) return;
+            btn.classList.add('pmk-btn-success');
+            clearTimeout(btn._pmkOkTimer);
+            btn._pmkOkTimer = setTimeout(function () { btn.classList.remove('pmk-btn-success'); }, 1600);
+        }
+
+        function showToast(msg, opts) {
             const toast = document.getElementById('toast');
-            if(toast) {
-                toast.innerText = msg;
-                toast.classList.remove('translate-y-20', 'opacity-0');
-                setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+            if (!toast) return;
+            opts = opts || {};
+            const text = String(msg || '');
+            const ok = opts.ok === true || (opts.ok !== false && /สำเร็จ|เรียบร้อย/.test(text));
+            toast.classList.toggle('pmk-toast-ok', ok);
+            toast.innerHTML = (ok ? '<i class="fa-solid fa-circle-check pmk-toast-check" aria-hidden="true"></i>' : '') +
+                '<span>' + pmkEscapeHtml(text) + '</span>';
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(toast._pmkHide);
+            toast._pmkHide = setTimeout(function () {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('pmk-toast-ok');
+            }, 3000);
+            if (ok) {
+                let btn = opts.button;
+                if (!btn && document.activeElement) {
+                    const el = document.activeElement;
+                    btn = (el.closest && el.closest('#pmkActionButtons button')) || (el.id && /btnCopyPmk|btnCopySheet|btnSendDb/.test(el.id) ? el : null);
+                }
+                if (btn) pmkMarkButtonSuccess(btn);
             }
         }
 
@@ -11668,7 +11704,7 @@
 
             if (scenario === 'concurrent') {
                 alertBox.className = 'p-4 rounded-lg border-l-4 bg-yellow-50 border-yellow-500 text-yellow-800';
-                alertText.innerHTML = "<strong>เริ่มยาทั้ง 2 ชนิดพร้อมกัน:</strong> แนะนำตามแผนการรักษาปกติของผู้ป่วยแต่ละราย (7-35 mg/wk) หลังจากนั้นปรับตามค่า INR";
+                alertText.innerHTML = (typeof pmkBadgeHtml === "function" ? pmkBadgeHtml("warn", "ควรเช็ค") + " " : "") + "<strong>เริ่มยาทั้ง 2 ชนิดพร้อมกัน:</strong> แนะนำตามแผนการรักษาปกติของผู้ป่วยแต่ละราย (7-35 mg/wk) หลังจากนั้นปรับตามค่า INR";
                 followUpText.innerText = "แนะนำติดตามค่า INR หลังจากให้ยา 1-2 wk และปรับขนาดยาตาม Protocol ปกติจนครบ 1 เดือนหรือ INR target พิจารณานัดทุก 1 เดือน";
                 optionsContainer.innerHTML = `<p class="text-sm text-gray-600 font-medium bg-gray-50 p-3 rounded-lg border border-gray-200 text-center">ปรับตามแนวทางการรักษาปกติ</p>`;
                 return;
@@ -11679,7 +11715,7 @@
 
             if (currentInr && inrVal >= 9.0) {
                 alertBox.className = 'p-4 rounded-lg border-l-4 bg-red-100 border-red-600 text-red-900';
-                alertText.innerHTML = `<div class="font-bold text-base mb-1"><i class="fa-solid fa-triangle-exclamation mr-2"></i>วิกฤต (INR &ge; 9.0)</div><div class="text-sm"><strong>การจัดการด่วน:</strong> ${inrAdj.danger}</div>`;
+                alertText.innerHTML = `<div class="font-bold text-base mb-1">${typeof pmkBadgeHtml === "function" ? pmkBadgeHtml("danger", "อันตราย") + " " : ""}<i class="fa-solid fa-triangle-exclamation mr-2"></i>วิกฤต (INR &ge; 9.0)</div><div class="text-sm"><strong>การจัดการด่วน:</strong> ${inrAdj.danger}</div>`;
                 followUpText.innerText = "ส่งพบแพทย์และประเมินอย่างใกล้ชิดทันที";
                 optionsContainer.innerHTML = `<p class="text-sm text-red-600 font-bold bg-red-50 p-3 rounded-lg border border-red-200 text-center">ระบบงดแสดงขนาดยาในภาวะวิกฤต กรุณาประเมินผู้ป่วยทางคลินิก</p>`;
                 return;
@@ -11734,8 +11770,13 @@
             if (finalMin < 0 || finalMax < 0) themeClass = "bg-emerald-50 border-emerald-400 text-emerald-900";
             if (inrAdj.danger) themeClass = "bg-yellow-50 border-yellow-400 text-yellow-900";
 
+            let badgeLevel = 'info', badgeLabel = 'แนะนำ';
+            if (finalMin !== 0 || finalMax !== 0) { badgeLevel = 'warn'; badgeLabel = 'ควรเช็ค'; }
+            if (inrAdj.danger) { badgeLevel = 'danger'; badgeLabel = 'อันตราย'; }
+            if (!inrAdj.danger && finalMin === 0 && finalMax === 0) { badgeLevel = 'ok'; badgeLabel = 'ผ่าน'; }
+            const badgeHtml = typeof pmkBadgeHtml === 'function' ? (pmkBadgeHtml(badgeLevel, badgeLabel) + ' ') : '';
             alertBox.className = `p-4 rounded-lg border-l-4 shadow-sm ${themeClass}`;
-            alertText.innerHTML = `${dangerHtml}<div class="font-bold text-sm mb-1"><i class="fa-solid fa-bullseye mr-1.5"></i>ข้อแนะนำการปรับยา:</div><div class="text-sm font-medium">${finalText}</div>`;
+            alertText.innerHTML = `${badgeHtml}${dangerHtml}<div class="font-bold text-sm mb-1"><i class="fa-solid fa-bullseye mr-1.5"></i>ข้อแนะนำการปรับยา:</div><div class="text-sm font-medium">${finalText}</div>`;
             followUpText.innerText = fupText;
 
             optionsContainer.innerHTML += getRifPrescriptionBlock(minTarget, currentDose);
@@ -13051,14 +13092,14 @@
 
                 if (egfr < 30) {
                     box.classList.add('bg-red-50', 'border-red-600', 'text-red-900');
-                    titleEl.innerHTML = `🚨 แจ้งเตือนค่าไตวิกฤต (eGFR = ${egfr} mL/min < 30): ห้ามใช้สูตรที่มี TDF`;
+                    titleEl.innerHTML = `${typeof pmkBadgeHtml === 'function' ? pmkBadgeHtml('danger', 'อันตราย') + ' ' : ''}🚨 แจ้งเตือนค่าไตวิกฤต (eGFR = ${egfr} mL/min < 30): ห้ามใช้สูตรที่มี TDF`;
                     msgEl.innerText = 'ผู้ป่วยได้รับสูตรยาที่มี TDF ร่วมกับ eGFR < 30 mL/min เสี่ยงพิษต่อไตและกระดูกสูง แนะนำปรึกษาแพทย์เปลี่ยนเป็นสูตรที่มี ABC (เช่น ALACOVIR + DTG) และปรับขนาด 3TC ตามค่าไต';
                     if (!customInp.dataset.userEdited) {
                         customInp.value = `ปรึกษาแพทย์: eGFR ${egfr} mL/min (<30) ผู้ป่วยได้รับสูตรยาที่มี TDF พิจารณาเปลี่ยนเป็นสูตรที่มี ABC (ALACOVIR + DTG) และปรับขนาด 3TC ตามค่าไต`;
                     }
                 } else {
                     box.classList.add('bg-amber-50', 'border-amber-500', 'text-amber-900');
-                    titleEl.innerHTML = `⚠️ แจ้งเตือนค่าไตลดลง (eGFR = ${egfr} mL/min < 50): พบการใช้สูตรยาที่มี TDF`;
+                    titleEl.innerHTML = `${typeof pmkBadgeHtml === 'function' ? pmkBadgeHtml('warn', 'ควรเช็ค') + ' ' : ''}⚠️ แจ้งเตือนค่าไตลดลง (eGFR = ${egfr} mL/min < 50): พบการใช้สูตรยาที่มี TDF`;
                     msgEl.innerText = 'ผู้ป่วยมีค่า eGFR < 50 mL/min และได้รับสูตรที่มี TDF แนะนำปรึกษาแพทย์พิจารณาเปลี่ยนเป็นสูตรที่มี TAF (เช่น TEDAVIR) หรือ ABC (ALACOVIR + DTG)';
                     if (!customInp.dataset.userEdited) {
                         customInp.value = `ปรึกษาแพทย์: eGFR ${egfr} mL/min (<50) ผู้ป่วยได้รับสูตรยาที่มี TDF พิจารณาเปลี่ยนเป็นสูตรที่มี TAF (TEDAVIR) หรือ ABC`;
@@ -13185,9 +13226,12 @@
                     ? 'bg-red-100/90 border-red-500 text-red-950'
                     : 'bg-amber-100/90 border-amber-500 text-amber-950';
 
+                const badge = typeof pmkBadgeHtml === 'function'
+                    ? pmkBadgeHtml(res.level === 'danger' ? 'danger' : 'warn', res.level === 'danger' ? 'อันตราย' : 'ควรเช็ค') + ' '
+                    : '';
                 container.innerHTML += `
                     <div class="p-2.5 rounded-lg border-l-4 ${styleCls} text-xs shadow-sm">
-                        <div class="font-bold">${res.title}</div>
+                        <div class="font-bold">${badge}${res.title}</div>
                         <label class="inline-flex items-start gap-2 mt-1.5 cursor-pointer">
                             <input type="checkbox" class="c7-renal-alert-cb form-checkbox mt-0.5 rounded" data-rule-id="${rule.id}" data-advice="${res.advice}" ${isChecked ? 'checked' : ''} onchange="ckdAlertSelectionState['${rule.id}']=this.checked; generateOutput();">
                             <span class="font-medium">แนะนำรายการนี้: ${res.advice}</span>

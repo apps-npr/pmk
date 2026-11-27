@@ -190,7 +190,7 @@
       #form-PID table.pid-t th,#form-PID table.pid-t td{border:1px solid #e5e7eb;padding:5px 6px;text-align:left;vertical-align:top}
       #form-PID table.pid-t th{background:#fff1f2}
       #form-PID .pid-note{font-size:.78rem;color:#6b7280;margin-top:6px;line-height:1.45}
-      #form-PID .pid-warnbox{font-size:.8rem;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:6px 8px;margin-top:6px;color:#78350f}
+      #form-PID .pid-warnbox{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;font-size:.8rem;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:6px 8px;margin-top:6px;color:#78350f}
       #form-PID .pid-kb{display:flex;flex-wrap:wrap;gap:8px}
       #form-PID .pid-adh{font-size:1.3rem;font-weight:800;color:#9f1239}
       #pidKbModal{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:90;display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto}
@@ -653,7 +653,7 @@
       ${r.lines.length ? `<table class="pid-t"><tr><th>ยา</th><th>ขนาด</th><th>ความถี่</th><th>วิธีใช้</th></tr>${r.lines.map(l => `<tr><td>${esc(l.name)}</td><td>${l.mg !== '' ? esc(l.mg) + ' mg' : ''}${l.ml !== '' ? ' (' + esc(l.ml) + ' mL)' : ''}</td><td>${esc((FREQ_MAP[l.freq] || {}).l || l.freq)}</td><td>${esc(l.time)}</td></tr>`).join('')}</table>
       <div style="margin-top:6px"><button type="button" class="pid-btn sm" id="pidCalcAdd">ใส่ในรายการยา</button></div>` : ''}
       ${r.notes.map(n => `<p class="pid-note">• ${esc(n)}</p>`).join('')}
-      ${r.warns.map(n => `<div class="pid-warnbox">⚠ ${esc(n)}</div>`).join('')}
+      ${r.warns.map(n => `<div class="pid-warnbox">${typeof window.pmkBadgeHtml === 'function' ? window.pmkBadgeHtml('warn', 'ควรเช็ค') + ' ' : '⚠ '}<span>${esc(n)}</span></div>`).join('')}
       ${r.table || ''}
       ${r.src ? `<p class="pid-note">อ้างอิง: ${esc(r.src)}</p>` : ''}`;
     // only touch the DOM when the result changed, so a blur/change during a click does not swap the button away
