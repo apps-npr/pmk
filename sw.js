@@ -1,5 +1,5 @@
 /* PMK service worker — bump CACHE_VERSION when precache list or app shell changes */
-const CACHE_VERSION = 'pmk-static-v24';
+const CACHE_VERSION = 'pmk-static-v25';
 const CDN_CACHE = 'pmk-cdn-v2';
 const PRECACHE = [
   './',
@@ -17,6 +17,31 @@ const PRECACHE = [
   './images/pid/onepage-oi-peds-1.jpg',
   './images/pid/onepage-oi-peds-2.jpg',
   './pmk-tailwind.css',
+  './pmk-ui.css',
+  './fonts/ibm-plex-sans-thai/latin-400-normal.woff2',
+  './fonts/ibm-plex-sans-thai/latin-500-normal.woff2',
+  './fonts/ibm-plex-sans-thai/latin-600-normal.woff2',
+  './fonts/ibm-plex-sans-thai/latin-700-normal.woff2',
+  './fonts/ibm-plex-sans-thai/thai-400-normal.woff2',
+  './fonts/ibm-plex-sans-thai/thai-500-normal.woff2',
+  './fonts/ibm-plex-sans-thai/thai-600-normal.woff2',
+  './fonts/ibm-plex-sans-thai/thai-700-normal.woff2',
+  './fonts/prompt/latin-300-normal.woff2',
+  './fonts/prompt/latin-400-normal.woff2',
+  './fonts/prompt/latin-500-normal.woff2',
+  './fonts/prompt/latin-600-normal.woff2',
+  './fonts/prompt/thai-300-normal.woff2',
+  './fonts/prompt/thai-400-normal.woff2',
+  './fonts/prompt/thai-500-normal.woff2',
+  './fonts/prompt/thai-600-normal.woff2',
+  './fonts/sarabun/latin-300-normal.woff2',
+  './fonts/sarabun/latin-400-normal.woff2',
+  './fonts/sarabun/latin-600-normal.woff2',
+  './fonts/sarabun/latin-700-normal.woff2',
+  './fonts/sarabun/thai-300-normal.woff2',
+  './fonts/sarabun/thai-400-normal.woff2',
+  './fonts/sarabun/thai-600-normal.woff2',
+  './fonts/sarabun/thai-700-normal.woff2',
   './manifest.webmanifest',
   './favicon.ico',
   './apple-touch-icon.png',
@@ -59,9 +84,7 @@ const CDN_PRECACHE = [
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-regular-400.woff2',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-brands-400.woff2',
-  'https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap',
-  'https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap'
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-brands-400.woff2'
 ];
 
 function isAppsScript(url) {

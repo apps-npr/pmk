@@ -1244,7 +1244,10 @@
       case 'TB': list = (typeof window.pmkTbEvalAlerts === 'function') ? window.pmkTbEvalAlerts() : []; break;
       default: list = [];
     }
-    return dedupeAlerts(list);
+    return dedupeAlerts(list).map(a => {
+      const level = a.level === 'warning' ? 'warn' : (a.level || 'info');
+      return level === a.level ? a : Object.assign({}, a, { level });
+    });
   }
 
 
@@ -1410,9 +1413,12 @@
         gap: 4px;
         font-size: 11px;
         font-weight: 700;
-        padding: 2px 8px;
+        line-height: 1.2;
+        padding: 3px 9px;
         border-radius: 999px;
         border: 1px solid transparent;
+        white-space: nowrap;
+        vertical-align: middle;
       }
       .pmk-badge--danger { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
       .pmk-badge--warn { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
@@ -1479,8 +1485,9 @@
   }
 
   function levelLabel(level) {
-    if (level === 'danger') return 'วิกฤต';
-    if (level === 'warn') return 'ระวัง';
+    if (level === 'danger') return 'อันตราย';
+    if (level === 'warn') return 'ควรเช็ค';
+    if (level === 'ok') return 'ผ่าน';
     return 'แนะนำ';
   }
 
@@ -1552,11 +1559,11 @@
 
     if (countsEl) {
       if (alerts.length === 0) {
-        countsEl.innerHTML = `<span class="pmk-badge pmk-badge--ok"><i class="fa-solid fa-check"></i> ปกติ</span>`;
+        countsEl.innerHTML = `<span class="pmk-badge pmk-badge--ok"><i class="fa-solid fa-check"></i> ผ่าน</span>`;
       } else {
         const badges = [];
-        if (nDanger) badges.push(`<span class="pmk-badge pmk-badge--danger">วิกฤต ${nDanger}</span>`);
-        if (nWarn) badges.push(`<span class="pmk-badge pmk-badge--warn">ระวัง ${nWarn}</span>`);
+        if (nDanger) badges.push(`<span class="pmk-badge pmk-badge--danger">อันตราย ${nDanger}</span>`);
+        if (nWarn) badges.push(`<span class="pmk-badge pmk-badge--warn">ควรเช็ค ${nWarn}</span>`);
         if (nInfo) badges.push(`<span class="pmk-badge pmk-badge--info">แนะนำ ${nInfo}</span>`);
         countsEl.innerHTML = badges.join(' ');
       }
@@ -1599,6 +1606,7 @@
         topEl.innerHTML = `
           <div class="pmk-top-alert-main">
             <i class="fa-solid ${levelIcon(topItem.level)}"></i>
+            <span class="pmk-badge pmk-badge--${esc(topItem.level)}">${levelLabel(topItem.level)}</span>
             <strong>แจ้งเตือนทางคลินิก (${important.length} ข้อ):</strong>
             <span>${esc(topItem.title)}</span>
           </div>
