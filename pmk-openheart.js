@@ -499,6 +499,20 @@
           </label>
           <input type="text" id="ohAllergyDetail" placeholder="ระบุ ชื่อยา/อาการที่แพ้ เช่น Amoxicillin / ผื่นคัน" class="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm hidden" oninput="window.pmkOpenHeartRefresh()">
         </div>
+
+        <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+          <div class="text-sm font-medium text-gray-700 mb-2">บุหรี่ / สุรา</div>
+          <div class="flex flex-wrap items-center gap-4 text-sm text-gray-800">
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="ohSmokeCheck" class="form-checkbox text-indigo-600 rounded" onchange="window.pmkOpenHeartRefresh()">
+              <span class="ml-2">บุหรี่</span>
+            </label>
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="ohAlcoholCheck" class="form-checkbox text-indigo-600 rounded" onchange="window.pmkOpenHeartRefresh()">
+              <span class="ml-2">สุรา</span>
+            </label>
+          </div>
+        </div>
       </div>
 
       <!-- 3. ยาที่ใช้ประจำและแผนหยุดยาก่อน OR -->
@@ -914,9 +928,11 @@
     const pharm = val('ohPharmName');
     const hasMr = mrSources.some(s => s.place.trim() || s.date.trim() || s.drugs.some(d => d.trim()));
 
+    const hasSmoke = isChecked('ohSmokeCheck');
+    const hasAlcohol = isChecked('ohAlcoholCheck');
     const hasAny = !!(
       ud || val('ohProcedure') || val('ohSurgeryDate') || val('ohAdmitDate') || val('ohInr') ||
-      selectedDrugs.length || plan.extra || plan.drp || hasMr || hasAllergy || herb || pharm
+      selectedDrugs.length || plan.extra || plan.drp || hasMr || hasAllergy || herb || pharm || hasSmoke || hasAlcohol
     );
     if (!hasAny) return [];
 
@@ -948,6 +964,10 @@
     if (!mrHasContent) out.push('- ปฏิเสธยาประจำ / ยังไม่ระบุรายการยา');
     if (hasAllergy) out.push(`- แพ้ยา/แพ้อาหาร: ${allergyDetail || 'ไม่ระบุ'}`);
     else out.push('- แพ้ยา/แพ้อาหาร: ปฏิเสธ');
+    const smokeParts = [];
+    if (hasSmoke) smokeParts.push('สูบบุหรี่');
+    if (hasAlcohol) smokeParts.push('ดื่มสุรา');
+    out.push(`- บุหรี่/สุรา: ${smokeParts.length ? smokeParts.join(', ') : 'ปฏิเสธ'}`);
 
     // อาหารเสริมสมุนไพร section
     if (herb) {
@@ -1203,6 +1223,8 @@
     if ($('ohHerbHoldCheck')) $('ohHerbHoldCheck').checked = true;
     if ($('ohAllergyCheck')) $('ohAllergyCheck').checked = false;
     if ($('ohAllergyDetail')) $('ohAllergyDetail').classList.add('hidden');
+    if ($('ohSmokeCheck')) $('ohSmokeCheck').checked = false;
+    if ($('ohAlcoholCheck')) $('ohAlcoholCheck').checked = false;
     if ($('ohAntiplateletStatus')) $('ohAntiplateletStatus').value = 'no antiplatelet no OAC';
     renderMrSources();
     renderQuickDrugs();
