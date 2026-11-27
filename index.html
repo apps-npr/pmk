@@ -11948,9 +11948,7 @@
                     ? window.pmkPidPharmName()
                     : (document.getElementById('pidPharmName') ? document.getElementById('pidPharmName').value : '');
             } else if (currentTab === 'OPENHEART') {
-                pharmacistName = (typeof window.pmkOpenHeartPharmName === 'function')
-                    ? window.pmkOpenHeartPharmName()
-                    : (document.getElementById('ohPharmName') ? document.getElementById('ohPharmName').value : '');
+                pharmacistName = document.getElementById('openHeartPharmName') ? document.getElementById('openHeartPharmName').value : '';
             } else if (currentTab === 'TB') {
                 pharmacistName = (typeof window.pmkTbPharmName === 'function')
                     ? window.pmkTbPharmName()
