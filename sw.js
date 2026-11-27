@@ -1,5 +1,5 @@
 /* PMK service worker — bump CACHE_VERSION when precache list or app shell changes */
-const CACHE_VERSION = 'pmk-static-v28';
+const CACHE_VERSION = 'pmk-static-v29';
 const CDN_CACHE = 'pmk-cdn-v2';
 const PRECACHE = [
   './',
@@ -75,7 +75,10 @@ const PRECACHE = [
   './images/parkinson/P-Madopar-dispersible.jpg',
   './images/parkinson/P-MadoparHBS.jpg',
   './images/parkinson/P-Rasagiline.jpg',
+  './images/parkinson/P-Requip.png',
+  './images/parkinson/P-Sinemet.png',
   './images/parkinson/Rasagiline.jpg',
+  './images/parkinson/Requip.png',
   './images/parkinson/Sinemet.jpg',
   './images/parkinson/Trihexyphenidyl.jpg'
 ];
