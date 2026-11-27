@@ -8,11 +8,13 @@
   'use strict';
 
   // ใส่ URL ของ Web app ที่ deploy จาก TB_Patients_Code.gs (ลงท้ายด้วย /exec)
-  const TB_PATIENTS_URL = '';
+  const TB_PATIENTS_URL = 'https://script.google.com/macros/s/AKfycbxxv_78midFRg12XUiBJROQ7IlfQqFisknSkgT440k-Ml7bOTdwmna1j-dITQ4s8STm/exec';
 
   function patientsUrl() {
-    const override = (typeof window.PMK_TB_PATIENTS_URL === 'string') ? window.PMK_TB_PATIENTS_URL.trim() : '';
-    return override || TB_PATIENTS_URL;
+    if (typeof window !== 'undefined' && typeof window.PMK_TB_PATIENTS_URL === 'string') {
+      return window.PMK_TB_PATIENTS_URL.trim();
+    }
+    return TB_PATIENTS_URL;
   }
 
   // ขนาดยาตามช่วงน้ำหนัก (mg/day, oral hs)
