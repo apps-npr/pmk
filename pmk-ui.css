@@ -334,3 +334,278 @@ html.pmk-authed button:not(:disabled):not(.pmk-no-press):active,
     transform: none !important;
   }
 }
+
+
+/* -------- Clinic colors + chip tabs (v26) -------- */
+/* Accents use tints and borders so they don't look like the red/yellow/green alert badges. */
+:root {
+  --pmk-clinic-MR: #4338ca;
+  --pmk-clinic-MR-bg: #eef2ff;
+  --pmk-clinic-MR-border: #c7d2fe;
+  --pmk-clinic-MR-text: #3730a3;
+  --pmk-clinic-PREOP: #1e40af;
+  --pmk-clinic-PREOP-bg: #dbeafe;
+  --pmk-clinic-PREOP-border: #bfdbfe;
+  --pmk-clinic-PREOP-text: #1e3a8a;
+  --pmk-clinic-ADR: #a21caf;
+  --pmk-clinic-ADR-bg: #fae8ff;
+  --pmk-clinic-ADR-border: #f5d0fe;
+  --pmk-clinic-ADR-text: #86198f;
+  --pmk-clinic-HIV: #6d28d9;
+  --pmk-clinic-HIV-bg: #ede9fe;
+  --pmk-clinic-HIV-border: #ddd6fe;
+  --pmk-clinic-HIV-text: #5b21b6;
+  --pmk-clinic-WARFARIN: #9f1239;
+  --pmk-clinic-WARFARIN-bg: #fff1f2;
+  --pmk-clinic-WARFARIN-border: #fecdd3;
+  --pmk-clinic-WARFARIN-text: #9f1239;
+  --pmk-clinic-HF: #be185d;
+  --pmk-clinic-HF-bg: #fdf2f8;
+  --pmk-clinic-HF-border: #fbcfe8;
+  --pmk-clinic-HF-text: #9d174d;
+  --pmk-clinic-CKD: #0f766e;
+  --pmk-clinic-CKD-bg: #f0fdfa;
+  --pmk-clinic-CKD-border: #99f6e4;
+  --pmk-clinic-CKD-text: #115e59;
+  --pmk-clinic-ASTHMA: #0369a1;
+  --pmk-clinic-ASTHMA-bg: #f0f9ff;
+  --pmk-clinic-ASTHMA-border: #bae6fd;
+  --pmk-clinic-ASTHMA-text: #075985;
+  --pmk-clinic-PARKINSON: #5b21b6;
+  --pmk-clinic-PARKINSON-bg: #f5f3ff;
+  --pmk-clinic-PARKINSON-border: #ddd6fe;
+  --pmk-clinic-PARKINSON-text: #4c1d95;
+  --pmk-clinic-CAPD: #1d4ed8;
+  --pmk-clinic-CAPD-bg: #eff6ff;
+  --pmk-clinic-CAPD-border: #bfdbfe;
+  --pmk-clinic-CAPD-text: #1e3a8a;
+  --pmk-clinic-PID: #b45309;
+  --pmk-clinic-PID-bg: #fff7ed;
+  --pmk-clinic-PID-border: #fed7aa;
+  --pmk-clinic-PID-text: #9a3412;
+  --pmk-clinic-OPENHEART: #7f1d1d;
+  --pmk-clinic-OPENHEART-bg: #fef2f2;
+  --pmk-clinic-OPENHEART-border: #fecaca;
+  --pmk-clinic-OPENHEART-text: #7f1d1d;
+  --pmk-clinic-TB: #c2410c;
+  --pmk-clinic-TB-bg: #fff7ed;
+  --pmk-clinic-TB-border: #fdba74;
+  --pmk-clinic-TB-text: #9a3412;
+}
+
+#tab-MR, .clinic-picker-item[data-clinic="MR"], .clinic-form[data-clinic="MR"], .pmk-clinic-MR {
+  --pmk-clinic-accent: #4338ca;
+  --pmk-clinic-bg: #eef2ff;
+  --pmk-clinic-border: #c7d2fe;
+  --pmk-clinic-text: #3730a3;
+}
+#tab-PREOP, .clinic-picker-item[data-clinic="PREOP"], .clinic-form[data-clinic="PREOP"], .pmk-clinic-PREOP {
+  --pmk-clinic-accent: #1e40af;
+  --pmk-clinic-bg: #dbeafe;
+  --pmk-clinic-border: #bfdbfe;
+  --pmk-clinic-text: #1e3a8a;
+}
+#tab-ADR, .clinic-picker-item[data-clinic="ADR"], .clinic-form[data-clinic="ADR"], .pmk-clinic-ADR {
+  --pmk-clinic-accent: #a21caf;
+  --pmk-clinic-bg: #fae8ff;
+  --pmk-clinic-border: #f5d0fe;
+  --pmk-clinic-text: #86198f;
+}
+#tab-HIV, .clinic-picker-item[data-clinic="HIV"], .clinic-form[data-clinic="HIV"], .pmk-clinic-HIV {
+  --pmk-clinic-accent: #6d28d9;
+  --pmk-clinic-bg: #ede9fe;
+  --pmk-clinic-border: #ddd6fe;
+  --pmk-clinic-text: #5b21b6;
+}
+#tab-WARFARIN, .clinic-picker-item[data-clinic="WARFARIN"], .clinic-form[data-clinic="WARFARIN"], .pmk-clinic-WARFARIN {
+  --pmk-clinic-accent: #9f1239;
+  --pmk-clinic-bg: #fff1f2;
+  --pmk-clinic-border: #fecdd3;
+  --pmk-clinic-text: #9f1239;
+}
+#tab-HF, .clinic-picker-item[data-clinic="HF"], .clinic-form[data-clinic="HF"], .pmk-clinic-HF {
+  --pmk-clinic-accent: #be185d;
+  --pmk-clinic-bg: #fdf2f8;
+  --pmk-clinic-border: #fbcfe8;
+  --pmk-clinic-text: #9d174d;
+}
+#tab-CKD, .clinic-picker-item[data-clinic="CKD"], .clinic-form[data-clinic="CKD"], .pmk-clinic-CKD {
+  --pmk-clinic-accent: #0f766e;
+  --pmk-clinic-bg: #f0fdfa;
+  --pmk-clinic-border: #99f6e4;
+  --pmk-clinic-text: #115e59;
+}
+#tab-ASTHMA, .clinic-picker-item[data-clinic="ASTHMA"], .clinic-form[data-clinic="ASTHMA"], .pmk-clinic-ASTHMA {
+  --pmk-clinic-accent: #0369a1;
+  --pmk-clinic-bg: #f0f9ff;
+  --pmk-clinic-border: #bae6fd;
+  --pmk-clinic-text: #075985;
+}
+#tab-PARKINSON, .clinic-picker-item[data-clinic="PARKINSON"], .clinic-form[data-clinic="PARKINSON"], .pmk-clinic-PARKINSON {
+  --pmk-clinic-accent: #5b21b6;
+  --pmk-clinic-bg: #f5f3ff;
+  --pmk-clinic-border: #ddd6fe;
+  --pmk-clinic-text: #4c1d95;
+}
+#tab-CAPD, .clinic-picker-item[data-clinic="CAPD"], .clinic-form[data-clinic="CAPD"], .pmk-clinic-CAPD {
+  --pmk-clinic-accent: #1d4ed8;
+  --pmk-clinic-bg: #eff6ff;
+  --pmk-clinic-border: #bfdbfe;
+  --pmk-clinic-text: #1e3a8a;
+}
+#tab-PID, .clinic-picker-item[data-clinic="PID"], .clinic-form[data-clinic="PID"], .pmk-clinic-PID {
+  --pmk-clinic-accent: #b45309;
+  --pmk-clinic-bg: #fff7ed;
+  --pmk-clinic-border: #fed7aa;
+  --pmk-clinic-text: #9a3412;
+}
+#tab-OPENHEART, .clinic-picker-item[data-clinic="OPENHEART"], .clinic-form[data-clinic="OPENHEART"], .pmk-clinic-OPENHEART {
+  --pmk-clinic-accent: #7f1d1d;
+  --pmk-clinic-bg: #fef2f2;
+  --pmk-clinic-border: #fecaca;
+  --pmk-clinic-text: #7f1d1d;
+}
+#tab-TB, .clinic-picker-item[data-clinic="TB"], .clinic-form[data-clinic="TB"], .pmk-clinic-TB {
+  --pmk-clinic-accent: #c2410c;
+  --pmk-clinic-bg: #fff7ed;
+  --pmk-clinic-border: #fdba74;
+  --pmk-clinic-text: #9a3412;
+}
+
+.tab-btn.pmk-chip,
+#clinicTabBar .tab-btn {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background: #fff;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  white-space: nowrap;
+  scroll-snap-align: start;
+}
+#clinicTabBar .tab-btn .clinic-icon {
+  color: var(--pmk-clinic-accent, #64748b);
+}
+#clinicTabBar .tab-btn:not(.active):hover {
+  background: var(--pmk-clinic-bg, #f8fafc);
+  border-color: var(--pmk-clinic-border, #e2e8f0);
+  color: var(--pmk-clinic-text, #334155);
+}
+#clinicTabBar .tab-btn.active {
+  background-color: var(--pmk-clinic-bg, #eff6ff) !important;
+  background-image: none !important;
+  color: var(--pmk-clinic-text, #1e3a8a) !important;
+  border-color: var(--pmk-clinic-accent, #1d4ed8) !important;
+  box-shadow: inset 0 -3px 0 var(--pmk-clinic-accent, #1d4ed8), 0 0 0 1px var(--pmk-clinic-accent, #1d4ed8);
+  font-weight: 700;
+}
+#clinicTabBar .tab-btn.active .clinic-icon {
+  color: var(--pmk-clinic-accent, #1d4ed8);
+}
+
+#clinicTabScroller {
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 768px) {
+  #clinicTabScroller {
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 12px;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+  }
+  #clinicTabBar .tab-btn {
+    scroll-snap-align: center;
+  }
+}
+
+.clinic-picker-item {
+  border-left: 4px solid var(--pmk-clinic-accent, #94a3b8) !important;
+}
+.clinic-picker-item.is-active {
+  background: var(--pmk-clinic-bg, #eff6ff) !important;
+  color: var(--pmk-clinic-text, #1e3a8a) !important;
+  border-color: var(--pmk-clinic-border, #bfdbfe) !important;
+}
+.clinic-picker-item.is-active .clinic-icon {
+  color: var(--pmk-clinic-accent, #1d4ed8);
+}
+.clinic-picker-item:not(.is-active) .clinic-icon {
+  color: var(--pmk-clinic-accent, #64748b);
+}
+
+/* Form accent: left bar + tinted title, not a solid fill */
+.clinic-form[data-clinic] {
+  border-left: 4px solid var(--pmk-clinic-accent, transparent);
+  padding-left: 0.75rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+}
+.pmk-clinic-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--pmk-clinic-bg, #f8fafc);
+  border: 1px solid var(--pmk-clinic-border, #e2e8f0);
+  border-left: 4px solid var(--pmk-clinic-accent, #64748b);
+  border-radius: 0.75rem;
+  color: var(--pmk-clinic-text, #1e293b);
+}
+.pmk-clinic-head .clinic-icon {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: var(--pmk-clinic-accent, #334155);
+}
+.pmk-clinic-head h3,
+.pmk-clinic-head .pmk-clinic-head-label,
+.pmk-clinic-head .pmk-clinic-head-title {
+  margin: 0;
+  font-weight: 700;
+  color: var(--pmk-clinic-text, #1e293b);
+}
+.pmk-clinic-head p {
+  margin: 0.25rem 0 0;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--pmk-clinic-text, #1e293b);
+  opacity: 0.9;
+}
+
+/* Subtle tab-row wash so the active clinic is obvious even before the form */
+#clinicTabsRow {
+  border-radius: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+html[data-pmk-clinic] #clinicTabsRow {
+  background: color-mix(in srgb, var(--pmk-clinic-bg, #f8fafc) 70%, #f9fafb);
+}
+
+@media print {
+  .pmk-clinic-head { /* keep content, drop the tint so print stays clean */ }
+  #clinicTabsRow,
+  #clinicTabScroller,
+  #clinicPickerBtn,
+  #clinicPickerOverlay {
+    display: none !important;
+  }
+  .clinic-form[data-clinic] {
+    border-left: none !important;
+    padding-left: 0 !important;
+  }
+  .pmk-clinic-head {
+    background: transparent !important;
+    border-color: #ddd !important;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #clinicTabsRow,
+  #clinicTabBar .tab-btn,
+  .clinic-form[data-clinic] {
+    transition: none !important;
+  }
+}

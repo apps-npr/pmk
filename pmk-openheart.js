@@ -397,7 +397,7 @@
     root.dataset.ohMounted = '1';
 
     root.innerHTML = `
-      <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+      <div class="pmk-clinic-head bg-red-50 border border-red-200 rounded-xl p-4">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h3 class="font-bold text-red-900 mb-1">12. Open Heart (MR และวางแผนหยุดยาก่อนผ่าตัดหัวใจ)</h3>

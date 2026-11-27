@@ -213,7 +213,7 @@
     root.dataset.tbMounted = '1';
 
     root.innerHTML = `
-      <div class="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
+      <div class="pmk-clinic-head bg-yellow-50 border border-yellow-300 rounded-xl p-4">
         <h3 class="font-bold text-yellow-900 mb-1">13. TB</h3>
         <p class="text-sm text-yellow-800">คำนวณขนาดยาสูตร 2IRZE/4IR ตามน้ำหนัก ตรวจขนาดยาที่แพทย์สั่ง และออกใบ Standing order TB สำหรับแนะนำแพทย์</p>
       </div>
