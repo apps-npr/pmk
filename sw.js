@@ -1,5 +1,5 @@
 /* PMK service worker — bump CACHE_VERSION when precache list or app shell changes */
-const CACHE_VERSION = 'pmk-static-v29';
+const CACHE_VERSION = 'pmk-static-v30';
 const CDN_CACHE = 'pmk-cdn-v2';
 const PRECACHE = [
   './',
@@ -12,6 +12,7 @@ const PRECACHE = [
   './pmk-pid.js',
   './pmk-openheart.js',
   './pmk-tb.js',
+  './pmk-opioid.js',
   './images/pid/onepage-hiv-peds.jpg',
   './images/pid/onepage-tb-peds.jpg',
   './images/pid/onepage-oi-peds-1.jpg',
@@ -80,7 +81,39 @@ const PRECACHE = [
   './images/parkinson/Rasagiline.jpg',
   './images/parkinson/Requip.png',
   './images/parkinson/Sinemet.jpg',
-  './images/parkinson/Trihexyphenidyl.jpg'
+  './images/parkinson/Trihexyphenidyl.jpg',
+  './images/opioid/CHEOPS.webp',
+  './images/opioid/CPOT_BPS.webp',
+  './images/opioid/EOD.webp',
+  './images/opioid/FMC.webp',
+  './images/opioid/NIPS.webp',
+  './images/opioid/NRS.webp',
+  './images/opioid/VAS.webp',
+  './images/opioid/WBFACES.webp',
+  './images/opioid/WHOAL.webp',
+  './images/opioid/c15.webp',
+  './images/opioid/c30.webp',
+  './images/opioid/f100.webp',
+  './images/opioid/f500.webp',
+  './images/opioid/fp100.webp',
+  './images/opioid/fp12.webp',
+  './images/opioid/fp25.webp',
+  './images/opioid/fp50.webp',
+  './images/opioid/fp75.webp',
+  './images/opioid/k10.webp',
+  './images/opioid/k100.webp',
+  './images/opioid/k20.webp',
+  './images/opioid/k50.webp',
+  './images/opioid/minj.webp',
+  './images/opioid/mir.webp',
+  './images/opioid/mst10.webp',
+  './images/opioid/mst100.webp',
+  './images/opioid/mst200.webp',
+  './images/opioid/mst30.webp',
+  './images/opioid/mst60.webp',
+  './images/opioid/msyr.webp',
+  './images/opioid/pinj.webp',
+  './images/opioid/tramadol.webp'
 ];
 
 const CDN_PRECACHE = [
