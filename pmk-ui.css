@@ -703,6 +703,56 @@ html[data-pmk-clinic] #clinicTabsRow {
 #pmkToolsList .pmk-tool-item { display: flex; align-items: flex-start; gap: .75rem; width: 100%; text-align: left; padding: .9rem 1rem; border: 1px solid #e5e7eb; border-radius: .85rem; background: #fff; min-height: 44px; }
 #pmkToolsList .pmk-tool-item:hover, #pmkToolsList .pmk-tool-item:focus { background: #f7fee7; border-color: #bef264; outline: none; }
 #pmkToolsList .pmk-tool-icon { width: 2.25rem; height: 2.25rem; border-radius: .65rem; background: #ecfccb; color: #3f6212; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-#pmkToolsList .pmk-tool-name { font-weight: 700; color: #1f2937; font-size: .95rem; }
-#pmkToolsList .pmk-tool-desc { font-size: .8rem; color: #6b7280; margin-top: .15rem; line-height: 1.4; }
+#pmkToolsList .pmk-tool-name { display: block; font-weight: 700; color: #1f2937; font-size: .95rem; }
+#pmkToolsList .pmk-tool-desc { display: block; font-size: .8rem; color: #6b7280; margin-top: .15rem; line-height: 1.4; }
 #pmkToolsList .pmk-tool-empty { font-size: .8rem; color: #9ca3af; text-align: center; padding: .5rem; }
+
+#pmkToolsPanel.pmk-tools-wide { max-width: 52rem; }
+#pmkToolsOverlay .inh-wrap { display: grid; gap: .85rem; }
+#pmkToolsOverlay .inh-lead { font-size: .85rem; color: #4b5563; margin: 0; line-height: 1.45; }
+#pmkToolsOverlay .inh-days-lab { display: block; font-size: .8rem; font-weight: 600; color: #1e3a8a; margin-bottom: .35rem; }
+#pmkToolsOverlay .inh-days-row { display: flex; gap: .5rem; align-items: center; }
+#pmkToolsOverlay .inh-days-row input { width: 7rem; border: 1px solid #d1d5db; border-radius: .5rem; padding: .5rem .65rem; font-size: .9rem; min-height: 40px; }
+#pmkToolsOverlay .inh-clear { padding: .45rem .85rem; border-radius: .5rem; border: 1px solid #e5e7eb; background: #fff; color: #374151; font-size: .8rem; font-weight: 600; min-height: 40px; }
+#pmkToolsOverlay .inh-chips { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .5rem; }
+#pmkToolsOverlay .inh-chip { padding: .35rem .7rem; border-radius: 9999px; border: 1px solid #bfdbfe; background: #fff; color: #1e40af; font-size: .8rem; font-weight: 600; min-height: 36px; }
+#pmkToolsOverlay .inh-chip.active { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+#pmkToolsOverlay .inh-hint { font-size: .75rem; color: #6b7280; margin: 0; line-height: 1.45; }
+#pmkToolsOverlay .inh-tabs { display: flex; flex-wrap: wrap; gap: .3rem; }
+#pmkToolsOverlay .inh-tab { padding: .35rem .7rem; border-radius: 9999px; border: 1px solid #e5e7eb; background: #f8fafc; color: #374151; font-size: .75rem; font-weight: 600; min-height: 34px; }
+#pmkToolsOverlay .inh-tab.active { background: #0f766e; border-color: #0f766e; color: #fff; }
+#pmkToolsOverlay .inh-grid { display: grid; grid-template-columns: 1fr; gap: .7rem; }
+@media (min-width: 640px) {
+  #pmkToolsOverlay .inh-grid { grid-template-columns: 1fr 1fr; }
+}
+#pmkToolsOverlay .inh-card { border: 1px solid #e5e7eb; border-radius: .85rem; overflow: hidden; background: #fff; position: relative; }
+#pmkToolsOverlay .inh-card.selected { border-color: #0f766e; box-shadow: 0 0 0 1px #0f766e; }
+#pmkToolsOverlay .inh-bar { height: 6px; background: var(--inh-tint, #e2e8f0); }
+#pmkToolsOverlay .inh-body { padding: .7rem .8rem .85rem; display: grid; gap: .4rem; }
+#pmkToolsOverlay .inh-badge { position: absolute; top: .55rem; right: .55rem; background: #0f766e; color: #fff; font-size: .7rem; font-weight: 700; padding: .2rem .5rem; border-radius: 9999px; }
+#pmkToolsOverlay .inh-pick { display: flex; align-items: flex-start; gap: .45rem; font-weight: 700; color: #1f2937; padding-right: 4.5rem; }
+#pmkToolsOverlay .inh-pick input { width: 1.1rem; height: 1.1rem; margin-top: .15rem; accent-color: #0f766e; flex-shrink: 0; }
+#pmkToolsOverlay .inh-name { font-size: .92rem; line-height: 1.3; }
+#pmkToolsOverlay .inh-meta { font-size: .72rem; color: #6b7280; margin: 0; }
+#pmkToolsOverlay .inh-ppd { display: flex; align-items: center; gap: .5rem; font-size: .75rem; color: #4b5563; font-weight: 600; }
+#pmkToolsOverlay .inh-ppd input { width: 5.5rem; border: 1px solid #d1d5db; border-radius: .45rem; padding: .35rem .5rem; font-size: .85rem; min-height: 36px; }
+#pmkToolsOverlay .inh-pills { display: flex; flex-wrap: wrap; gap: .3rem; }
+#pmkToolsOverlay .inh-pill { min-width: 2rem; min-height: 32px; padding: .2rem .45rem; border-radius: .45rem; border: 1px solid #99f6e4; background: #fff; color: #0f766e; font-size: .8rem; font-weight: 700; }
+#pmkToolsOverlay .inh-pill.active { background: #0f766e; border-color: #0f766e; color: #fff; }
+#pmkToolsOverlay .inh-dur { font-size: .75rem; color: #1e40af; margin: 0; font-weight: 600; }
+#pmkToolsOverlay .inh-card-warn { margin: 0; font-size: .72rem; color: #92400e; background: #fffbeb; border-left: 3px solid #f59e0b; padding: .3rem .5rem; border-radius: .3rem; line-height: 1.4; }
+#pmkToolsOverlay .inh-imgwrap { display: flex; justify-content: center; background: #f8fafc; border-radius: .5rem; padding: .4rem; min-height: 7.5rem; }
+#pmkToolsOverlay .inh-imgwrap img { max-height: 8.5rem; max-width: 100%; width: auto; height: auto; object-fit: contain; }
+#pmkToolsOverlay .inh-sum-card { background: #f0fdfa; border: 1px solid #99f6e4; border-radius: .85rem; padding: .85rem; }
+#pmkToolsOverlay .inh-h { font-weight: 700; color: #134e4a; margin: 0 0 .5rem; font-size: .95rem; }
+#pmkToolsOverlay .inh-tbl-wrap { overflow-x: auto; }
+#pmkToolsOverlay .inh-tbl { border-collapse: collapse; width: 100%; font-size: .8rem; }
+#pmkToolsOverlay .inh-tbl th, #pmkToolsOverlay .inh-tbl td { border: 1px solid #ccfbf1; padding: .35rem .45rem; text-align: left; vertical-align: top; }
+#pmkToolsOverlay .inh-tbl th { background: #ccfbf1; font-size: .72rem; color: #134e4a; white-space: nowrap; }
+#pmkToolsOverlay .inh-note { font-size: .7rem; color: #92400e; margin-top: .2rem; line-height: 1.35; }
+#pmkToolsOverlay .inh-total { font-weight: 700; color: #134e4a; margin: .55rem 0 .4rem; }
+#pmkToolsOverlay .inh-copy { padding: .45rem .9rem; border-radius: .5rem; border: 1px solid #0f766e; background: #fff; color: #0f766e; font-size: .8rem; font-weight: 600; min-height: 40px; }
+#pmkToolsOverlay .inh-copy-status { margin-left: .5rem; font-size: .75rem; color: #0f766e; font-weight: 600; }
+#pmkToolsOverlay .inh-empty { color: #6b7280; text-align: center; }
+#pmkToolsOverlay .inh-notes summary { cursor: pointer; font-weight: 600; font-size: .85rem; color: #374151; }
+#pmkToolsOverlay .inh-notes ul { margin: .55rem 0 0 1.1rem; list-style: disc; font-size: .8rem; color: #4b5563; display: grid; gap: .3rem; }

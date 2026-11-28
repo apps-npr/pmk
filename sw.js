@@ -1,5 +1,5 @@
 /* PMK service worker — bump CACHE_VERSION when precache list or app shell changes */
-const CACHE_VERSION = 'pmk-static-v32';
+const CACHE_VERSION = 'pmk-static-v33';
 const CDN_CACHE = 'pmk-cdn-v2';
 const PRECACHE = [
   './',
@@ -13,6 +13,7 @@ const PRECACHE = [
   './pmk-openheart.js',
   './pmk-tb.js',
   './pmk-ampcalc.js',
+  './pmk-inhaler-tool.js',
   './pmk-opioid.js',
   './images/pid/onepage-hiv-peds.jpg',
   './images/pid/onepage-tb-peds.jpg',
@@ -114,7 +115,22 @@ const PRECACHE = [
   './images/opioid/mst60.webp',
   './images/opioid/msyr.webp',
   './images/opioid/pinj.webp',
-  './images/opioid/tramadol.webp'
+  './images/opioid/tramadol.webp',
+  './images/inhaler/aerotamol.webp',
+  './images/inhaler/aerobidal.webp',
+  './images/inhaler/aerotide-125.webp',
+  './images/inhaler/aerotide-250.webp',
+  './images/inhaler/aeronide-200.webp',
+  './images/inhaler/flixotide-125.webp',
+  './images/inhaler/seretide-50-250.webp',
+  './images/inhaler/seretide2550.webp',
+  './images/inhaler/duoresp-160-4_5.webp',
+  './images/inhaler/duoresp-320-9.webp',
+  './images/inhaler/spiriva-18.webp',
+  './images/inhaler/avamys.webp',
+  './images/inhaler/mometasone.webp',
+  './images/inhaler/busonase.webp',
+  './images/inhaler/metzodin.webp',
 ];
 
 const CDN_PRECACHE = [
