@@ -268,7 +268,7 @@
     root.dataset.opMounted = '1';
     root.innerHTML = `
       <div class="pmk-clinic-head op-head rounded-xl p-4">
-        <h3 class="font-bold mb-1">14. Opioid</h3>
+        <h3 class="font-bold mb-1">14. Pain management</h3>
         <p class="text-sm">ปรับยา opioid: ผู้ป่วยเริ่มยาใหม่ (naive) หรือใช้อยู่แล้ว เทียบขนาดยากิน/ฉีด/แผ่นแปะ ตรวจว่าบดได้ไหม และคำนวณยาแก้ปวดฉุกเฉิน</p>
       </div>
 
@@ -687,7 +687,7 @@
     const p = plan();
     const hasAny = p.pain > 0 || p.status === 'user' || val('opDrp') || val('opPharmName') || val('opDx') || val('opManualOme') || val('opConvDose');
     if (!hasAny) return [];
-    const out = ['Pharmacist note (Opioid clinic)'];
+    const out = ['Pharmacist note (Pain management clinic)'];
     if (val('opDx')) out.push(`Dx: ${val('opDx')}`);
     const a = assessLines();
     out.push(`Pain score: ${p.pain}/10${a.length ? ` (${a.join(', ')})` : ''}`);
@@ -735,7 +735,7 @@
   }
 
   function evalAlerts() {
-    const alerts = []; const p = plan(); const src = 'Opioid clinic';
+    const alerts = []; const p = plan(); const src = 'Pain management clinic';
     if (p.step === 3 && p.safe > 0 && !isChecked('opLaxative')) alerts.push({ level: 'warn', title: 'ยังไม่ได้ยาระบาย', detail: 'ผู้ป่วยที่ได้ opioid ควรได้ยาระบายป้องกันท้องผูก (stimulant ± osmotic)', source: src });
     if (Number.isFinite(p.egfr) && p.egfr < 30) alerts.push({ level: 'danger', title: `eGFR ${fmt(p.egfr)} (< 30)`, detail: 'Morphine/codeine metabolite สะสม พิจารณาเลี่ยง ใช้ fentanyl และปรึกษาแพทย์', source: src });
     if (p.status === 'user' && val('opPrevDrug') === 'pethidine_inj') alerts.push({ level: 'warn', title: 'Pethidine', detail: 'ไม่แนะนำใช้ระยะยาว/ในไตเสื่อม (normeperidine สะสม ชัก)', source: src });
