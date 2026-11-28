@@ -380,6 +380,12 @@
       name: 'คำนวณกล่องยาพ่น',
       desc: 'คำนวณจำนวนกล่องยาพ่นจากขนาดใช้ต่อวันและจำนวนวันนัด',
       icon: 'fa-lungs'
+    },
+    {
+      id: 'ivdrug',
+      name: 'ข้อมูลยาฉีด (IV Drug Reference)',
+      desc: 'วิธีเจือจาง สารละลาย อัตราให้ยา และความคงตัวของยาฉีด 124 รายการ',
+      icon: 'fa-vial'
     }
   ];
 
@@ -431,10 +437,12 @@
     if ($('pmkToolsBody')) $('pmkToolsBody').classList.remove('hidden');
     const amp = $('ampCalcRoot');
     const inh = $('inhalerToolRoot');
+    const ivd = $('ivDrugToolRoot');
     if (amp) amp.classList.toggle('hidden', id !== 'ampcalc');
     if (inh) inh.classList.toggle('hidden', id !== 'inhaler');
+    if (ivd) ivd.classList.toggle('hidden', id !== 'ivdrug');
     const panel = $('pmkToolsPanel');
-    if (panel) panel.classList.toggle('pmk-tools-wide', id === 'inhaler');
+    if (panel) panel.classList.toggle('pmk-tools-wide', id === 'inhaler' || id === 'ivdrug');
     if (id === 'ampcalc' && window.pmkAmpCalc) {
       const root = $('ampCalcRoot');
       if (root && !root.dataset.mounted) window.pmkAmpCalc.render('ampCalcRoot');
@@ -442,6 +450,9 @@
     }
     if (id === 'inhaler' && window.pmkInhalerTool) {
       if (inh && !inh.dataset.mounted) window.pmkInhalerTool.render('inhalerToolRoot');
+    }
+    if (id === 'ivdrug' && window.pmkIvDrug) {
+      if (ivd && !ivd.dataset.mounted) window.pmkIvDrug.render('ivDrugToolRoot');
     }
   }
 

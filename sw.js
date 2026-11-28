@@ -1,5 +1,5 @@
 /* PMK service worker — bump CACHE_VERSION when precache list or app shell changes */
-const CACHE_VERSION = 'pmk-static-v33';
+const CACHE_VERSION = 'pmk-static-v34';
 const CDN_CACHE = 'pmk-cdn-v2';
 const PRECACHE = [
   './',
@@ -14,6 +14,8 @@ const PRECACHE = [
   './pmk-tb.js',
   './pmk-ampcalc.js',
   './pmk-inhaler-tool.js',
+  './pmk-ivdrug.js',
+  './ivdrug/drugs.json',
   './pmk-opioid.js',
   './images/pid/onepage-hiv-peds.jpg',
   './images/pid/onepage-tb-peds.jpg',
@@ -131,6 +133,13 @@ const PRECACHE = [
   './images/inhaler/mometasone.webp',
   './images/inhaler/busonase.webp',
   './images/inhaler/metzodin.webp',
+  './ivdrug/docs/antibiotic.pdf',
+  './ivdrug/docs/cotrimoxazole.pdf',
+  './ivdrug/docs/dantrolene.pdf',
+  './ivdrug/docs/ganciclovir.pdf',
+  './ivdrug/docs/hypercrit.pdf',
+  './ivdrug/docs/recormon.pdf',
+  './ivdrug/docs/vancomycin-oral.pdf',
 ];
 
 const CDN_PRECACHE = [
