@@ -1,6 +1,6 @@
 /* Helper tool (not a clinic): one-day drip order -> ampoules to dispense, for Morphine and Fentanyl infusions.
  * Ported from apps-npr/morphine and apps-npr/fentanyl, with a 24 / 12 / 8 hr bag-duration selector.
- * Lives in clinic 14 (Pain management) as the sub-tab "คำนวณ amp/วัน".
+ * Lives in the global "เครื่องมือ" panel (header button, not a clinic and not a clinic sub-tab).
  * Math (pure functions on window.pmkAmpCalc, unit-tested):
  *   Morphine : mg/hr = cc/hr / (ml per 1 mg); mg per bag = mg/hr x hours; drip amps = ceil(mg per bag / 10 mg per amp)
  *   Fentanyl : mcg per bag = mcg/hr x hours; amps from mcg needed (not whole 100 ml bottles);
@@ -361,4 +361,104 @@
   }
 
   window.pmkAmpCalc = { morphine, fentanyl, compare, bagPlan, fentAmps, render, setDrug, setHours, edit, concChange, calc, copy, reset };
+})();
+
+/* Global tools panel: header button "เครื่องมือ", independent of clinics.
+ * Designed so more tools can be added to TOOLS later. First tool is the amp calculator.
+ */
+(function () {
+  'use strict';
+  const TOOLS = [
+    {
+      id: 'ampcalc',
+      name: 'คำนวณ amp Morphine / Fentanyl',
+      desc: 'คำนวณจำนวน amp ที่ต้องจ่ายต่อ 1 วัน จากคำสั่ง drip และ bolus/PRN',
+      icon: 'fa-syringe'
+    }
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  let current = null;
+  let onKey = null;
+
+  function overlay() { return $('pmkToolsOverlay'); }
+
+  function setExpanded(open) {
+    const b = $('pmkToolsBtn');
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function renderList() {
+    const box = $('pmkToolsList');
+    if (!box) return;
+    box.innerHTML = TOOLS.map((t) => `
+      <button type="button" class="pmk-tool-item" data-tool-id="${t.id}" onclick="window.pmkTools.openTool('${t.id}')">
+        <span class="pmk-tool-icon" aria-hidden="true"><i class="fa-solid ${t.icon}"></i></span>
+        <span>
+          <span class="pmk-tool-name">${t.name}</span>
+          <span class="pmk-tool-desc">${t.desc}</span>
+        </span>
+      </button>`).join('') + (TOOLS.length ? '' : '<p class="pmk-tool-empty">ยังไม่มีเครื่องมือ</p>');
+  }
+
+  function showList() {
+    current = null;
+    const title = $('pmkToolsTitle');
+    if (title) title.textContent = 'เครื่องมือ';
+    const back = $('pmkToolsBackBtn');
+    if (back) back.classList.add('hidden');
+    if ($('pmkToolsList')) $('pmkToolsList').classList.remove('hidden');
+    if ($('pmkToolsBody')) $('pmkToolsBody').classList.add('hidden');
+  }
+
+  function openTool(id) {
+    const tool = TOOLS.find((t) => t.id === id);
+    if (!tool) return;
+    current = id;
+    const title = $('pmkToolsTitle');
+    if (title) title.textContent = tool.name;
+    const back = $('pmkToolsBackBtn');
+    if (back) back.classList.remove('hidden');
+    if ($('pmkToolsList')) $('pmkToolsList').classList.add('hidden');
+    if ($('pmkToolsBody')) $('pmkToolsBody').classList.remove('hidden');
+    if (id === 'ampcalc' && window.pmkAmpCalc) {
+      const root = $('ampCalcRoot');
+      if (root && !root.dataset.mounted) window.pmkAmpCalc.render('ampCalcRoot');
+      else if (window.pmkAmpCalc.calc) window.pmkAmpCalc.calc();
+    }
+  }
+
+  function open() {
+    const el = overlay();
+    if (!el) return;
+    renderList();
+    showList();
+    el.classList.remove('hidden');
+    el.classList.add('flex');
+    setExpanded(true);
+    if (!onKey) {
+      onKey = (e) => {
+        if (e.key !== 'Escape') return;
+        if (current) showList();
+        else close();
+      };
+      document.addEventListener('keydown', onKey);
+    }
+  }
+
+  function close() {
+    const el = overlay();
+    if (!el) return;
+    el.classList.add('hidden');
+    el.classList.remove('flex');
+    setExpanded(false);
+    current = null;
+    if (onKey) { document.removeEventListener('keydown', onKey); onKey = null; }
+  }
+
+  function onOverlayClick(e) {
+    if (e.target === overlay()) close();
+  }
+
+  window.pmkTools = { open, close, showList, openTool, onOverlayClick, TOOLS };
 })();

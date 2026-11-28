@@ -260,7 +260,7 @@
   // ---------------------------------------------------------------
   // Render
   // ---------------------------------------------------------------
-  const SECTIONS = [['manage', 'รักษา/จ่ายยา'], ['convert', 'เทียบยา'], ['profile', 'ยา/บดได้ไหม'], ['assess', 'ประเมินปวด'], ['counsel', 'ข้อมูล/แนะนำ'], ['amp', 'คำนวณ amp/วัน']];
+  const SECTIONS = [['manage', 'รักษา/จ่ายยา'], ['convert', 'เทียบยา'], ['profile', 'ยา/บดได้ไหม'], ['assess', 'ประเมินปวด'], ['counsel', 'ข้อมูล/แนะนำ']];
 
   function render() {
     const root = $('form-OPIOID');
@@ -292,9 +292,7 @@
       ${renderProfile()}
       ${renderAssess()}
       ${renderCounsel()}
-      <div id="opSec-amp" class="op-sec hidden space-y-4"><div id="ampCalcRoot"></div></div>
     `;
-    if (window.pmkAmpCalc) window.pmkAmpCalc.render('ampCalcRoot');
     if ($('opVisitDate') && !val('opVisitDate')) $('opVisitDate').value = todayShortBE();
     renderDerived();
   }
@@ -772,7 +770,6 @@
     if ($('opPrevDrug')) $('opPrevDrug').value = 'morphine_po';
     if ($('opConvDrug')) $('opConvDrug').value = 'morphine_po';
     if ($('opSelected')) $('opSelected').value = '';
-    if (window.pmkAmpCalc) window.pmkAmpCalc.reset();
     section('manage');
     renderDerived();
   }
