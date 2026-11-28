@@ -1019,7 +1019,7 @@
                 <button type="button" onclick="switchTab('PID')" id="tab-PID" data-clinic="PID" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">11. HIV/TB เด็ก (PID)</button>
                 <button type="button" onclick="switchTab('OPENHEART')" id="tab-OPENHEART" data-clinic="OPENHEART" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">12. Open Heart</button>
                 <button type="button" onclick="switchTab('TB')" id="tab-TB" data-clinic="TB" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">13. TB</button>
-                <button type="button" onclick="switchTab('OPIOID')" id="tab-OPIOID" data-clinic="OPIOID" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">14. Opioid</button>
+                <button type="button" onclick="switchTab('OPIOID')" id="tab-OPIOID" data-clinic="OPIOID" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">14. Pain management</button>
                     </div>
                 </div>
                 <button type="button" id="clinicPickerBtn" onclick="toggleClinicPicker(event)"
@@ -10790,7 +10790,7 @@
                 return; 
             }
             if (currentTab === 'OPIOID') {
-                pmkAlert('คลินิก Opioid ยังบันทึกลง Sheet อัตโนมัติไม่ได้ ใช้ปุ่ม 2 คัดลอกไปวางแทนก่อนครับ', { title: 'ยังบันทึกอัตโนมัติไม่ได้' });
+                pmkAlert('คลินิก Pain management ยังบันทึกลง Sheet อัตโนมัติไม่ได้ ใช้ปุ่ม 2 คัดลอกไปวางแทนก่อนครับ', { title: 'ยังบันทึกอัตโนมัติไม่ได้' });
                 return;
             }
             if (!(await confirmEmptyHnIfNeeded())) return;

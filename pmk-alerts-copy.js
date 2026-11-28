@@ -16,7 +16,7 @@
     { id: 'PID', label: 'HIV/TB เด็ก (PID)' },
     { id: 'OPENHEART', label: 'Open Heart' },
     { id: 'TB', label: 'TB' },
-    { id: 'OPIOID', label: 'Opioid' }
+    { id: 'OPIOID', label: 'Pain management' }
   ];
 
   const CLINIC_MAP = Object.fromEntries(CLINICS.map(c => [c.id, c]));
