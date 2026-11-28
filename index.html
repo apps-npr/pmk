@@ -1019,6 +1019,7 @@
                 <button type="button" onclick="switchTab('PID')" id="tab-PID" data-clinic="PID" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">11. HIV/TB เด็ก (PID)</button>
                 <button type="button" onclick="switchTab('OPENHEART')" id="tab-OPENHEART" data-clinic="OPENHEART" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">12. Open Heart</button>
                 <button type="button" onclick="switchTab('TB')" id="tab-TB" data-clinic="TB" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">13. TB</button>
+                <button type="button" onclick="switchTab('OPIOID')" id="tab-OPIOID" data-clinic="OPIOID" class="tab-btn pmk-chip px-4 py-2 rounded-full font-medium border shadow-sm flex items-center gap-1.5">14. Opioid</button>
                     </div>
                 </div>
                 <button type="button" id="clinicPickerBtn" onclick="toggleClinicPicker(event)"
@@ -3342,6 +3343,9 @@
             <!-- Clinic 13: TB rendered by pmk-tb.js -->
             <div id="form-TB" class="space-y-6 clinic-form hidden"></div>
 
+            <!-- Clinic 14: Opioid rendered by pmk-opioid.js -->
+            <div id="form-OPIOID" class="space-y-6 clinic-form hidden"></div>
+
             <div id="form-CAPD" class="space-y-6 clinic-form hidden">
                 <div class="pmk-clinic-head bg-cyan-50 border border-cyan-200 rounded-xl p-4">
                     <h3 class="font-bold text-cyan-900 mb-1">10. CAPD</h3>
@@ -4940,6 +4944,7 @@
             PID: '<circle cx="12" cy="7.2" r="3"/><path d="M6.5 20.5c0-3.2 2.4-5.6 5.5-5.6s5.5 2.4 5.5 5.6"/>',
             OPENHEART: '<path d="M12 20.5S4 15.2 2.6 10.6C1.6 7.3 3.9 4.2 7.2 4.2c1.9 0 3.4 1 4.8 2.6 1.4-1.6 2.9-2.6 4.8-2.6 3.3 0 5.6 3.1 4.6 6.4-1.4 4.6-9.4 9.9-9.4 9.9z"/><path d="M6.5 11.5h2.3l1.3-2.4 2.1 4.6 1.5-2.2h3.8"/>',
             TB: '<path d="M12 3v6"/><path d="M12 9c-1.5 0-2.5 1-3.6 2.4C7 13.2 5 14.5 5 17.2 5 19.4 6.6 21 8.6 21c1.9 0 3.4-1.6 3.4-4.2V9z"/><path d="M12 9c1.5 0 2.5 1 3.6 2.4 1.4 1.8 3.4 3.1 3.4 5.8 0 2.2-1.6 3.8-3.6 3.8-1.9 0-3.4-1.6-3.4-4.2"/><circle cx="8.8" cy="16.5" r="1.1" fill="currentColor" stroke="none"/>',
+            OPIOID: '<rect x="3.2" y="8.6" width="17.6" height="6.8" rx="3.4" transform="rotate(-35 12 12)"/><path d="M9.9 9.1l4.4 6.2"/>',
             _fallback: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/>'
         };
 
@@ -5106,7 +5111,7 @@
             document.documentElement.dataset.pmkClinic = initial;
             const app = document.getElementById('mainAppContainer');
             if (app) app.dataset.pmkClinic = initial;
-            ['form-TB', 'form-PID', 'form-OPENHEART'].forEach(function (id) {
+            ['form-TB', 'form-PID', 'form-OPENHEART', 'form-OPIOID'].forEach(function (id) {
                 const el = document.getElementById(id);
                 if (!el || el._pmkClinicMo) return;
                 el._pmkClinicMo = new MutationObserver(function () { applyClinicTheme(); });
@@ -5165,6 +5170,10 @@
                 if(mainPat) mainPat.classList.remove('hidden');
                 if (typeof generateOutput === 'function') generateOutput();
             }
+
+            // Clinic 14 Opioid has no workload tab yet: button 3 is not shown there
+            const sendDbBtn = document.getElementById('btnSendDb');
+            if (sendDbBtn) sendDbBtn.classList.toggle('hidden', tab === 'OPIOID');
 
             const capdA5Btn = document.getElementById('btnCapdAdviceA5');
             if (capdA5Btn) {
@@ -8045,6 +8054,7 @@
             if (typeof window.pmkPidReset === 'function') window.pmkPidReset();
             if (typeof window.pmkOpenHeartReset === 'function') window.pmkOpenHeartReset();
             if (typeof window.pmkTbReset === 'function') window.pmkTbReset();
+            if (typeof window.pmkOpioidReset === 'function') window.pmkOpioidReset();
             
             const hivLabDateRef = document.getElementById('hivLabDateRef');
             if(hivLabDateRef) hivLabDateRef.value = 'cd4';
@@ -10276,6 +10286,9 @@
             else if (currentTab === 'TB') {
                 if (typeof window.pmkTbBuildNote === 'function') notes = notes.concat(window.pmkTbBuildNote());
             }
+            else if (currentTab === 'OPIOID') {
+                if (typeof window.pmkOpioidBuildNote === 'function') notes = notes.concat(window.pmkOpioidBuildNote());
+            }
             else if (currentTab === 'WARFARIN') {
                 const activeWf = document.querySelector('.wf-nav-link.active')?.id;
                 if (activeWf === 'wf-note-tab') {
@@ -10697,6 +10710,9 @@
             else if (currentTab === 'TB') {
                 rowData = (typeof window.pmkTbBuildRow === 'function') ? window.pmkTbBuildRow(dateStr) : Array(7).fill('');
             }
+            else if (currentTab === 'OPIOID') {
+                rowData = (typeof window.pmkOpioidBuildRow === 'function') ? window.pmkOpioidBuildRow(dateStr) : Array(11).fill('');
+            }
             return rowData;
         }
         function copyToClipboard(elementId) {
@@ -10772,6 +10788,10 @@
             if (!SCRIPT_URL || SCRIPT_URL === 'ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ที่นี่') { 
                 pmkAlert('กรุณาตั้งค่า SCRIPT_URL ในโค้ดแอปของคุณก่อนครับ'); 
                 return; 
+            }
+            if (currentTab === 'OPIOID') {
+                pmkAlert('คลินิก Opioid ยังบันทึกลง Sheet อัตโนมัติไม่ได้ ใช้ปุ่ม 2 คัดลอกไปวางแทนก่อนครับ', { title: 'ยังบันทึกอัตโนมัติไม่ได้' });
+                return;
             }
             if (!(await confirmEmptyHnIfNeeded())) return;
             const btn = document.getElementById('btnSendDb');
@@ -12229,6 +12249,8 @@
                 pharmacistName = (typeof window.pmkTbPharmName === 'function')
                     ? window.pmkTbPharmName()
                     : (document.getElementById('tbPharmName') ? document.getElementById('tbPharmName').value : '');
+            } else if (currentTab === 'OPIOID') {
+                pharmacistName = document.getElementById('opPharmName') ? document.getElementById('opPharmName').value : '';
             }
         
             // ถ้าหาไม่เจอ หรือเภสัชกรไม่ได้กรอกชื่อ ให้ใส่ว่า "ไม่ระบุ"
@@ -12746,6 +12768,7 @@
                 if (Array.isArray(data.adrTimelineDrugs) && data.adrTimelineDrugs.length) { adrTimelineDrugs = data.adrTimelineDrugs; if (typeof renderAdrTimelineRows === 'function') renderAdrTimelineRows(); }
                 if (data.ohState && typeof window.pmkOpenHeartSetState === 'function') window.pmkOpenHeartSetState(data.ohState);
                 if (data.tbState && typeof window.pmkTbSetState === 'function') window.pmkTbSetState(data.tbState);
+                if (typeof window.pmkOpioidSetState === 'function') window.pmkOpioidSetState();
 
                 Object.entries(data.fields).forEach(([key, item]) => {
                     if (item.type === 'radio') {
@@ -13987,6 +14010,7 @@
             if (Array.isArray(target.c9RecoTicked)) c9RecoTicked = new Set(target.c9RecoTicked);
             if (target.ohState && typeof window.pmkOpenHeartSetState === 'function') window.pmkOpenHeartSetState(target.ohState);
             if (target.tbState && typeof window.pmkTbSetState === 'function') window.pmkTbSetState(target.tbState);
+            if (typeof window.pmkOpioidSetState === 'function') window.pmkOpioidSetState();
 
             // กู้คืนค่า Input/Select/Checkbox/Radio ทุกช่อง
             Object.entries(target.fields || {}).forEach(([key, item]) => {
@@ -14222,6 +14246,7 @@
     <script src="pmk-pid.js"></script>
     <script src="pmk-openheart.js"></script>
     <script src="pmk-tb.js"></script>
+    <script src="pmk-opioid.js"></script>
     <script src="pmk-patient-print.js"></script>
     <script src="pwa-client.js"></script>
     <script src="pmk-alerts-copy.js"></script>

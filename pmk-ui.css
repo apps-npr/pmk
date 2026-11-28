@@ -391,6 +391,10 @@ html.pmk-authed button:not(:disabled):not(.pmk-no-press):active,
   --pmk-clinic-TB-bg: #fff7ed;
   --pmk-clinic-TB-border: #fdba74;
   --pmk-clinic-TB-text: #9a3412;
+  --pmk-clinic-OPIOID: #4d7c0f;
+  --pmk-clinic-OPIOID-bg: #f7fee7;
+  --pmk-clinic-OPIOID-border: #bef264;
+  --pmk-clinic-OPIOID-text: #3f6212;
 }
 
 #tab-MR, .clinic-picker-item[data-clinic="MR"], .clinic-form[data-clinic="MR"], .pmk-clinic-MR {
@@ -470,6 +474,12 @@ html.pmk-authed button:not(:disabled):not(.pmk-no-press):active,
   --pmk-clinic-bg: #fff7ed;
   --pmk-clinic-border: #fdba74;
   --pmk-clinic-text: #9a3412;
+}
+#tab-OPIOID, .clinic-picker-item[data-clinic="OPIOID"], .clinic-form[data-clinic="OPIOID"], .pmk-clinic-OPIOID {
+  --pmk-clinic-accent: #4d7c0f;
+  --pmk-clinic-bg: #f7fee7;
+  --pmk-clinic-border: #bef264;
+  --pmk-clinic-text: #3f6212;
 }
 
 .tab-btn.pmk-chip,
@@ -609,3 +619,44 @@ html[data-pmk-clinic] #clinicTabsRow {
     transition: none !important;
   }
 }
+
+
+/* -------- Clinic 14: Opioid (v30) -------- */
+#form-OPIOID .op-head { display: block; background: var(--pmk-clinic-OPIOID-bg); border: 1px solid var(--pmk-clinic-OPIOID-border); color: var(--pmk-clinic-OPIOID-text); }
+#form-OPIOID .op-tint { background: #f7fee7; border-color: #d9f99d; }
+#form-OPIOID .op-subtabs { gap: .5rem; }
+#form-OPIOID .op-subtab { padding: .45rem .9rem; border-radius: 9999px; border: 1px solid #d9f99d; background: #fff; color: #3f6212; font-size: .875rem; font-weight: 600; }
+#form-OPIOID .op-subtab.active { background: #4d7c0f; border-color: #4d7c0f; color: #fff; }
+#form-OPIOID .op-chip { padding: .4rem .75rem; border-radius: 9999px; border: 1px solid #d1d5db; background: #f9fafb; font-size: .8rem; }
+#form-OPIOID .op-chip:hover { background: #f7fee7; border-color: #bef264; }
+#form-OPIOID .op-badge { display: inline-block; min-width: 1.5rem; padding: .1rem .55rem; border-radius: 9999px; background: #f1f5f9; color: #334155; font-size: .78rem; font-weight: 600; text-align: center; }
+#form-OPIOID .op-badge:empty { display: none; }
+#form-OPIOID .op-badge-green { background: #dcfce7; color: #166534; }
+#form-OPIOID .op-badge-amber { background: #fef3c7; color: #92400e; }
+#form-OPIOID .op-badge-red { background: #fee2e2; color: #991b1b; }
+#form-OPIOID .op-warn { margin-top: .25rem; padding: .35rem .6rem; border-left: 3px solid #f59e0b; background: #fffbeb; color: #92400e; border-radius: .375rem; font-size: .8rem; }
+#form-OPIOID .op-option { text-align: left; padding: .6rem .75rem; border: 1px solid #e5e7eb; border-radius: .6rem; background: #fff; font-size: .875rem; }
+#form-OPIOID .op-option.selected { border-color: #4d7c0f; background: #f7fee7; box-shadow: 0 0 0 2px #d9f99d; }
+#form-OPIOID .op-disp { margin-left: .75rem; padding-left: .6rem; border-left: 3px solid #84cc16; }
+#form-OPIOID .op-result { background: #f7fee7; border: 1px solid #d9f99d; }
+#form-OPIOID .op-table { border-collapse: collapse; width: 100%; }
+#form-OPIOID .op-table th, #form-OPIOID .op-table td { border: 1px solid #e5e7eb; padding: .35rem .5rem; text-align: left; vertical-align: top; }
+#form-OPIOID .op-table th { background: #f8fafc; font-weight: 600; font-size: .78rem; }
+#form-OPIOID .op-ref-img { display: block; width: 100%; height: auto; border-radius: .5rem; border: 1px solid #e5e7eb; background: #fff; }
+#form-OPIOID .op-drug-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
+@media (min-width: 640px) { #form-OPIOID .op-drug-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { #form-OPIOID .op-drug-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+#form-OPIOID .op-drug-card { display: flex; flex-direction: column; gap: .25rem; padding: .6rem; border: 1px solid #e5e7eb; border-radius: .75rem; background: #fff; }
+#form-OPIOID .op-drug-card.hidden { display: none; }
+#form-OPIOID .op-drug-img { width: 100%; height: 88px; object-fit: contain; }
+#form-OPIOID .op-tag { align-self: flex-start; padding: .05rem .5rem; border-radius: 9999px; font-size: .72rem; font-weight: 600; border: 1px solid transparent; }
+#form-OPIOID .op-tag-ok { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+#form-OPIOID .op-tag-warn { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+#form-OPIOID .op-tag-no { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+#form-OPIOID .op-tag-patch { background: #e0f2fe; color: #075985; border-color: #bae6fd; }
+#form-OPIOID .op-tag-inj { background: #f1f5f9; color: #334155; border-color: #e2e8f0; }
+#form-OPIOID .op-opt { display: inline-flex; align-items: center; gap: .3rem; padding: .25rem .55rem; border: 1px solid #e5e7eb; border-radius: .5rem; background: #fff; }
+#form-OPIOID .op-ladder { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4rem; }
+@media (min-width: 768px) { #form-OPIOID .op-ladder { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+#form-OPIOID .op-ladder > div { padding: .4rem .55rem; border-radius: .5rem; background: #f8fafc; border: 1px solid #e5e7eb; }
+#form-OPIOID .op-details > summary { list-style: revert; }
