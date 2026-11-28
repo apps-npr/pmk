@@ -1,8 +1,8 @@
 /**
  * PMK tool #2: inhaler / nasal spray box-count calculator.
- * Ported from sony50369-yellow/Inhaler with review fixes (DuoResp in-use
- * shelf life 180 days for both strengths; puffs/day cap raised to 16;
- * Metzodin oxymetazoline warning).
+ * Ported from sony50369-yellow/Inhaler with review fixes (DuoResp 160/4.5
+ * in-use 90 days per hospital practice; 320/9 stays 180 days per label;
+ * puffs/day cap raised to 16; Metzodin oxymetazoline warning).
  */
 (function (global) {
   'use strict';
@@ -21,7 +21,7 @@
     { id: 'aeronide_mdi_200', name: 'Aeronide MDI 200', tags: ['ICS'], puffsPerBox: 200, color: '#FCE6B1', image: 'aeronide-200.webp' },
     { id: 'flixotide_evo_125', name: 'Flixotide Evohaler 125', tags: ['ICS'], puffsPerBox: 120, color: '#FAD0C9', image: 'flixotide-125.webp' },
     { id: 'seretide_accu_50_250', name: 'Seretide Accuhaler 50/250', tags: ['ICS+LABA'], puffsPerBox: 60, color: '#E0D9FF', image: 'seretide-50-250.webp' },
-    { id: 'duorespiromax160', name: 'DuoResp Spiromax 160/4.5', tags: ['ICS+LABA'], puffsPerBox: 120, color: '#F0F6FF', image: 'duoresp-160-4_5.webp', shelfLifeDays: 180 },
+    { id: 'duorespiromax160', name: 'DuoResp Spiromax 160/4.5', tags: ['ICS+LABA'], puffsPerBox: 120, color: '#F0F6FF', image: 'duoresp-160-4_5.webp', shelfLifeDays: 90, note: 'นับอายุหลังเปิดใช้ 90 วัน ตามแนวทางโรงพยาบาล เพราะยาชื้นและอาจหมดอายุก่อน (ฉลากระบุ 6 เดือน)' },
     { id: 'duoresp_320_9', name: 'DuoResp Spiromax 320/9', tags: ['ICS+LABA'], puffsPerBox: 60, color: '#DDE4EC', image: 'duoresp-320-9.webp', shelfLifeDays: 180 },
     { id: 'spiriva_handihaler_18', name: 'Spiriva Handihaler 18', tags: ['LAMA'], puffsPerBox: 30, color: '#E6F0E6', image: 'spiriva-18.webp', unit: 'แคปซูล/กล่อง' },
     { id: 'avamys_27_5', name: 'AVAMYS 27.5', tags: ['Nasal'], puffsPerBox: 120, color: '#CFF7F8', image: 'avamys.webp', unit: 'ครั้งพ่น/ขวด' },
@@ -52,6 +52,7 @@
       puffsNeeded = (D > 0 && P > 0) ? (D * P) : 0;
       byPuffs = puffsNeeded > 0 ? Math.ceil(puffsNeeded / perBox) : 0;
       boxes = byPuffs;
+      if (drug && drug.note) notes.push(drug.note);
     }
 
     if (drug && drug.shelfLifeDays) {
@@ -119,7 +120,8 @@
       '    <summary>หมายเหตุและวิธีคิด</summary>',
       '    <ul>',
       '      <li>สูตรทั่วไป: จำนวนกล่อง = ปัดขึ้น (วันนัด × พ่นต่อวัน ÷ puff ต่อกล่อง)</li>',
-      '      <li>DuoResp Spiromax ทั้ง 160/4.5 และ 320/9 มีอายุหลังเปิดซองฟอยล์ 6 เดือน (180 วัน) ตามเอกสารผลิตภัณฑ์ EMA — ถ้าจำนวนวันที่ใช้เกินอายุหลังเปิด ระบบจะจ่ายเพิ่ม</li>',
+      '      <li>DuoResp Spiromax 160/4.5 นับอายุหลังเปิดซอง 90 วัน ตามแนวทางโรงพยาบาล เพราะยาชื้นและอาจหมดอายุก่อนกำหนดในฉลาก (ฉลากระบุ 6 เดือน) — ถ้าจำนวนวันที่ใช้เกิน 90 วัน ระบบจะจ่ายเพิ่ม</li>',
+      '      <li>DuoResp Spiromax 320/9 นับอายุหลังเปิดซอง 6 เดือน (180 วัน) ตามเอกสารผลิตภัณฑ์ EMA</li>',
       '      <li>Spiriva Handihaler นับเป็น 30 แคปซูล/กล่อง</li>',
       '      <li>Metzodin (oxymetazoline 0.05%) คิดแบบ 1 กล่องต่อ 56 วัน ตามแอปเดิม และไม่ควรใช้ติดต่อกันเกิน 5 วัน</li>',
       '    </ul>',
