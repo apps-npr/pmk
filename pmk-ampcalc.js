@@ -374,6 +374,12 @@
       name: 'คำนวณ amp Morphine / Fentanyl',
       desc: 'คำนวณจำนวน amp ที่ต้องจ่ายต่อ 1 วัน จากคำสั่ง drip และ bolus/PRN',
       icon: 'fa-syringe'
+    },
+    {
+      id: 'inhaler',
+      name: 'คำนวณกล่องยาพ่น',
+      desc: 'คำนวณจำนวนกล่องยาพ่นจากขนาดใช้ต่อวันและจำนวนวันนัด',
+      icon: 'fa-lungs'
     }
   ];
 
@@ -409,6 +415,8 @@
     if (back) back.classList.add('hidden');
     if ($('pmkToolsList')) $('pmkToolsList').classList.remove('hidden');
     if ($('pmkToolsBody')) $('pmkToolsBody').classList.add('hidden');
+    const panel = $('pmkToolsPanel');
+    if (panel) panel.classList.remove('pmk-tools-wide');
   }
 
   function openTool(id) {
@@ -421,10 +429,19 @@
     if (back) back.classList.remove('hidden');
     if ($('pmkToolsList')) $('pmkToolsList').classList.add('hidden');
     if ($('pmkToolsBody')) $('pmkToolsBody').classList.remove('hidden');
+    const amp = $('ampCalcRoot');
+    const inh = $('inhalerToolRoot');
+    if (amp) amp.classList.toggle('hidden', id !== 'ampcalc');
+    if (inh) inh.classList.toggle('hidden', id !== 'inhaler');
+    const panel = $('pmkToolsPanel');
+    if (panel) panel.classList.toggle('pmk-tools-wide', id === 'inhaler');
     if (id === 'ampcalc' && window.pmkAmpCalc) {
       const root = $('ampCalcRoot');
       if (root && !root.dataset.mounted) window.pmkAmpCalc.render('ampCalcRoot');
       else if (window.pmkAmpCalc.calc) window.pmkAmpCalc.calc();
+    }
+    if (id === 'inhaler' && window.pmkInhalerTool) {
+      if (inh && !inh.dataset.mounted) window.pmkInhalerTool.render('inhalerToolRoot');
     }
   }
 
